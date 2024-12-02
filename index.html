@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" 
+    <title></title>
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+            background-color: #eef2f7;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        header {
+            background-color: #4CAF50; /* Verde */
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        header img {
+            height: 60px;
+            border-radius: 8px;
+        }
+
+        header h1 {
+            font-size: 2em;
+            margin: 0;
+            flex: 1;
+        }
+
+        .secure-btn {
+            border: 2px solid #000;
+            background-color: white;
+            color: #000;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .secure-btn:hover {
+            background-color: #000;
+            color: #fff;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: flex-start;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            flex: 1 1 48%;
+            max-width: 48%;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card h1 {
+            margin: 0;
+            padding: 20px;
+            font-size: 1.6em;
+            text-align: center;
+            color: #fff;
+        }
+
+        .card.red h1 {
+            background-color: #8B0000; /* Vermelho escuro */
+        }
+
+        .card.blue h1 {
+            background-color: #00008B; /* Azul escuro */
+        }
+
+        .card.yellow h1 {
+            background-color: #FFD700; /* Amarelo escuro */
+        }
+
+        .form-section {
+            padding: 20px 30px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1em;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #000; /* Borda preta */
+            border-radius: 6px;
+            background-color: transparent; /* Transparente */
+            color: #000; /* Texto preto */
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #000; /* Fundo preto no hover */
+            color: #fff; /* Texto branco no hover */
+            transform: scale(1.02);
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .result div {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .result div:last-child {
+            border-bottom: none;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .card {
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
+        }
+
+        /* Sobreposição do Seguro */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .overlay-content {
+            background-color: #fff;
+            color: #333;
+            border-radius: 8px;
+            padding: 30px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .overlay-content h2 {
+            color: #00008B; /* Azul escuro */
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 2em;
+            color: #FF0000; /* Vermelho */
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="IMG_3220.JPG" alt="Logomarca da Instituição">
+    <h1>E.M. Antono Fernal</h1>
+    <span id="secureBtn" class="secure-btn">SEGURO</span>
+</header>
+
+<!-- Sobreposição do Seguro -->
+<div id="secureOverlay" class="overlay">
+    <div class="overlay-content">
+        <span id="closeBtn" class="close-btn">VOLTAR</span>
+        <h2>SEGURO</h2>
+        <p>A SAN7 BRASIL possui um sistema inclusive para todos os públicos. Inclusive o suporte 100% original que a SAN7 possui com alta tecnologia e uma equipe de suporte com toda qualidade que você merece.</p>
+        <ul>
+            <li>Atendimento 24 horas</li>
+            <li>Entrega rápida de sistemas</li>
+            <li>Auto reparação de sistemas</li>
+            <li>Avisos prévios antes de qualquer manutenção</li>
+        </ul>
+        <p>Entre outras coisas que podem lhe ajudar no <span style="color: #00008B;">SEGURO</span> que nossa equipe disponibiliza em todos os nossos sistemas.</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Consulta de Aluno -->
+    <div class="card red">
+        <h1>Consulta de Aluno</h1>
+        <div class="form-section">
+            <form id="consultaForm" action="#" method="POST">
+                <label for="search">Nome ou CPF do Aluno:</label>
+                <input type="text" id="search" name="search" placeholder="Digite o nome ou CPF" required>
+                <button type="submit">Consultar</button>
+            </form>
+            <div id="resultado" class="result" style="display:none;">
+                <!-- Resultados dos alunos -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Consulta de Faltas -->
+    <div class="card blue">
+        <h1>Consulta de Faltas</h1>
+        <div class="form-section">
+            <form id="faltasForm" action="#" method="POST">
+                <label for="searchFaltas">Nome ou CPF do Aluno:</label>
+                <input type="text" id="searchFaltas" name="searchFaltas" placeholder="Digite o nome ou CPF" required>
+                <button type="submit">Consultar Faltas</button>
+            </form>
+            <div id="resultadoFaltas" class="result" style="display:none;">
+                <!-- Resultados das faltas -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Suporte -->
+    <div class="card yellow" style="order: 1;">
+        <h1>Suporte</h1>
+        <div class="form-section">
+            <p>Acesse o suporte da SAN7 BRASIL para contatar nossa equipe de suporte.</p>
+            <a href="https://wa.me/5584991778690" target="_blank">
+                <button type="button">Contatar Suporte</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const secureBtn = document.getElementById('secureBtn');
+        const closeBtn = document.getElementById('closeBtn');
+
+    // Mostrar a sobreposição quando o botão "SEGURO" for clicado
+    secureBtn.addEventListener('click', function () {
+        secureOverlay.style.display = 'flex';
+    });
+
+    // Fechar a sobreposição quando o "X" for clicado
+    closeBtn.addEventListener('click', function () {
+        secureOverlay.style.display = 'none';
+    });
+</script>
+
+</body>
+</html>
