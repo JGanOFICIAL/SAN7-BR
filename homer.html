@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Moderê - Estoque</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+    }
+
+    header {
+      background-color: #003366;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header input {
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+      width: 50%;
+    }
+
+    #btnHistorico {
+      background-color: #004b99;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #btnAdicionar {
+      background: #003366;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      margin: 20px auto;
+      display: block;
+      cursor: pointer;
+    }
+
+    #formularioProduto {
+      display: none;
+      background-color: white;
+      position: fixed;
+      top: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+
+    #formularioProduto input, #formularioProduto textarea {
+      display: block;
+      margin: 10px 0;
+      width: 100%;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    #btnSalvar {
+      background: green;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .produto {
+      background-color: white;
+      padding: 15px;
+      margin: 15px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .produto .acoes {
+      margin-top: 10px;
+    }
+
+    .produto button {
+      padding: 5px 10px;
+      font-weight: bold;
+      margin-right: 5px;
+    }
+
+    .produto .lixeira {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color: red;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    #produtos {
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+
+
+
+
+  <header>
+    <input type="text" placeholder="Pesquisar produto...">
+    <button id="btnHistorico" onclick="window.location.href='historico.html'">Histórico</button>
+  </header>
+
+<button onclick="window.location.href='login.html'" style="border-radius: 0; padding: 8px 16px; border: 1px solid #000; background-color: #f0f0f0; cursor: pointer;">
+  Sair do sistema
+</button>
+
+  <button id="btnAdicionar">Adicionar Produto</button>
+
+  <div id="formularioProduto">
+    <h3>Novo Produto</h3>
+    <span>ID: <strong id="produtoId"></strong></span>
+    <input type="text" id="nome" placeholder="Nome do Produto">
+    <input type="text" id="marca" placeholder="Marca">
+    <textarea id="descricao" placeholder="Descrição (opcional)"></textarea>
+    <input type="text" id="tamanho" placeholder="Tamanho">
+    <input type="number" id="quantidade" placeholder="Quantidade">
+    <input type="number" id="preco" placeholder="Preço (R$)">
+    <button id="btnSalvar">Salvar Produto</button>
+  </div>
+
+  <div id="produtos"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import {
+      getDatabase, ref, set, push, onValue, remove, update
+    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI",
+      authDomain: "san7-brasil.firebaseapp.com",
+      databaseURL: "https://san7-brasil-default-rtdb.firebaseio.com",
+      projectId: "san7-brasil",
+      storageBucket: "san7-brasil.appspot.com",
+      messagingSenderId: "944294165741",
+      appId: "1:944294165741:web:369986a8c97bb31be620e4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const produtosRef = ref(db, 'produtos');
+    const historicoRef = ref(db, 'historico');
+
+    const btnAdicionar = document.getElementById('btnAdicionar');
+    const form = document.getElementById('formularioProduto');
+    const btnSalvar = document.getElementById('btnSalvar');
+    const produtosDiv = document.getElementById('produtos');
+
+    const gerarID = () => {
+      const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const numeros = '0123456789';
+      let id = '';
+      for (let i = 0; i < 3; i++) id += letras[Math.floor(Math.random() * letras.length)];
+      for (let i = 0; i < 5; i++) id += numeros[Math.floor(Math.random() * numeros.length)];
+      return id;
+    };
+
+    let idAtual = "";
+
+    btnAdicionar.onclick = () => {
+      form.style.display = 'block';
+      idAtual = gerarID();
+      document.getElementById('produtoId').innerText = idAtual;
+    };
+
+    btnSalvar.onclick = () => {
+      const nome = document.getElementById('nome').value.trim();
+      const marca = document.getElementById('marca').value.trim();
+      const descricao = document.getElementById('descricao').value.trim();
+      const tamanho = document.getElementById('tamanho').value.trim();
+      const quantidade = parseInt(document.getElementById('quantidade').value);
+      const preco = parseFloat(document.getElementById('preco').value);
+
+      if (!nome || !marca || !tamanho || isNaN(quantidade) || isNaN(preco)) {
+        alert("Preencha todos os campos obrigatórios!");
+        return;
+      }
+
+      const novoProduto = {
+        id: idAtual,
+        nome,
+        marca,
+        descricao,
+        tamanho,
+        quantidade,
+        preco
+      };
+
+      set(ref(db, 'produtos/' + idAtual), novoProduto);
+      form.style.display = 'none';
+      form.querySelectorAll("input, textarea").forEach(el => el.value = '');
+    };
+
+    onValue(produtosRef, snapshot => {
+      produtosDiv.innerHTML = "";
+      snapshot.forEach(child => {
+        const p = child.val();
+        const div = document.createElement("div");
+        div.className = "produto";
+        div.innerHTML = `
+          <strong>${p.nome}</strong> (${p.id})<br>
+          Marca: ${p.marca}<br>
+          Tamanho: ${p.tamanho}<br>
+          Preço: R$ ${p.preco.toFixed(2)}<br>
+          Quantidade: <span id="qtde-${p.id}">${p.quantidade}</span>
+          <div class="acoes">
+            <button onclick="alterarQuantidade('${p.id}', 1)">+</button>
+            <button onclick="alterarQuantidade('${p.id}', -1)">–</button>
+          </div>
+          <div class="lixeira" onclick="removerProduto('${p.id}')">🗑️</div>
+        `;
+        produtosDiv.appendChild(div);
+      });
+    });
+
+    window.alterarQuantidade = function (id, delta) {
+      const qtdeSpan = document.getElementById("qtde-" + id);
+      const novaQtde = parseInt(qtdeSpan.textContent) + delta;
+      if (novaQtde < 0) return;
+      const prodRef = ref(db, 'produtos/' + id);
+      update(prodRef, { quantidade: novaQtde });
+
+      if (delta < 0) {
+        onValue(prodRef, snap => {
+          const prod = snap.val();
+          const agora = new Date();
+          const registro = {
+            id,
+            nome: prod.nome,
+            quantidade: 1,
+            preco: prod.preco,
+            total: prod.preco,
+            data: agora.toLocaleDateString(),
+            hora: agora.toLocaleTimeString()
+          };
+          push(historicoRef, registro);
+        }, { onlyOnce: true });
+      }
+    };
+
+    window.removerProduto = function (id) {
+      if (confirm("Remover este produto?")) {
+        remove(ref(db, 'produtos/' + id));
+      }
+    };
+  </script>
+</body>
+</html>
