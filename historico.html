@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Histórico de Vendas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #003366;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .registro {
+      background-color: #f9f9f9;
+      margin: 15px;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Histórico de Vendas</h1>
+  </header>
+
+<button onclick="window.location.href='homer.html'" style="border-radius: 0; padding: 8px 16px; border: 1px solid #000; background-color: #f0f0f0; cursor: pointer;">
+  Voltar
+</button>
+
+
+  <div id="registros"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI",
+      authDomain: "san7-brasil.firebaseapp.com",
+      databaseURL: "https://san7-brasil-default-rtdb.firebaseio.com",
+      projectId: "san7-brasil",
+      storageBucket: "san7-brasil.appspot.com",
+      messagingSenderId: "944294165741",
+      appId: "1:944294165741:web:369986a8c97bb31be620e4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const historicoRef = ref(db, 'historico');
+
+    const container = document.getElementById('registros');
+
+    onValue(historicoRef, snapshot => {
+      container.innerHTML = "";
+      snapshot.forEach(child => {
+        const h = child.val();
+        const div = document.createElement("div");
+        div.className = "registro";
+        div.innerHTML = `
+          <strong>${h.nome}</strong> (${h.id})<br>
+          Qtd: ${h.quantidade} | Preço: R$ ${h.preco.toFixed(2)}<br>
+          Total: R$ ${h.total.toFixed(2)}<br>
+          Data: ${h.data} | Hora: ${h.hora}
+        `;
+        container.prepend(div);
+      });
+    });
+  </script>
+
+
+
+
+</body>
+</html>
