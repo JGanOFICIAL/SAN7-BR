@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home - YOU SEE MENSSAGENS</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+    }
+
+    header {
+      background-color: #002244;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h2 {
+      margin: 0;
+    }
+
+    .icons {
+      display: flex;
+      gap: 15px;
+    }
+
+    .icons button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    #contatos, #adicionarContatoOverlay {
+      padding: 20px;
+    }
+
+    .contato {
+      padding: 15px;
+      border-bottom: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    .contato:hover {
+      background-color: #f2f2f2;
+    }
+
+    #adicionarContatoOverlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .popup {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .popup input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .popup button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      border: none;
+      background-color: #002244;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .popup button:hover {
+      background-color: #003366;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2>YOU SEE MENSSAGENS</h2>
+    <div class="icons">
+      <button id="btnConta">👤</button>
+      <button id="btnAddContato">➕</button>
+    </div>
+  </header>
+
+  <div id="contatos">
+    <h3>Conversas</h3>
+    <div id="listaContatos"></div>
+  </div>
+
+  <div id="adicionarContatoOverlay">
+    <div class="popup">
+      <h3>Adicionar Contato</h3>
+      <input type="email" id="emailContato" placeholder="Digite o e-mail do contato" />
+      <button id="procurarContato">Procurar</button>
+      <div id="resultadoBusca"></div>
+      <button onclick="document.getElementById('adicionarContatoOverlay').style.display='none'">Fechar</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { getDatabase, ref, get, set, child } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+      authDomain: "login-you-see.firebaseapp.com",
+      databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+      projectId: "login-you-see",
+      storageBucket: "login-you-see.appspot.com",
+      messagingSenderId: "524877259374",
+      appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
+      measurementId: "G-K7E00VXYHG"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    let usuarioAtual = null;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        usuarioAtual = user;
+        carregarContatos(user.uid);
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    document.getElementById("btnConta").addEventListener("click", async () => {
+      const userRef = ref(db, "usuarios/" + usuarioAtual.uid);
+      const snap = await get(userRef);
+      if (snap.exists()) {
+        const dados = snap.val();
+        alert(`Nome: ${dados.nome}\nCPF: ${dados.cpf}\nEmail: ${usuarioAtual.email}`);
+      }
+    });
+
+    document.getElementById("btnAddContato").addEventListener("click", () => {
+      document.getElementById("adicionarContatoOverlay").style.display = "flex";
+    });
+
+    document.getElementById("procurarContato").addEventListener("click", async () => {
+      const email = document.getElementById("emailContato").value.trim();
+      const usersRef = ref(db, "usuarios");
+      const snap = await get(usersRef);
+      let encontrado = false;
+
+      snap.forEach(childSnap => {
+        const userData = childSnap.val();
+        if (userData.email === email) {
+          const resultado = document.getElementById("resultadoBusca");
+          resultado.innerHTML = `
+            <div>
+              <p><strong>${userData.nome}</strong><br>${userData.email}</p>
+              <button onclick="adicionarContato('${childSnap.key}', '${userData.nome}', '${userData.email}')">Adicionar</button>
+            </div>
+          `;
+          encontrado = true;
+        }
+      });
+
+      if (!encontrado) {
+        document.getElementById("resultadoBusca").innerText = "Contato não encontrado.";
+      }
+    });
+
+    window.adicionarContato = async (uidContato, nome, email) => {
+      const refUsuario = ref(db, `contatos/${usuarioAtual.uid}/${uidContato}`);
+      await set(refUsuario, { nome, email });
+      alert("Contato adicionado!");
+      document.getElementById("adicionarContatoOverlay").style.display = "none";
+      carregarContatos(usuarioAtual.uid);
+    };
+
+    async function carregarContatos(uid) {
+      const contatosRef = ref(db, `contatos/${uid}`);
+      const snap = await get(contatosRef);
+      const lista = document.getElementById("listaContatos");
+      lista.innerHTML = "";
+
+      snap.forEach(child => {
+        const contato = child.val();
+        const div = document.createElement("div");
+        div.className = "contato";
+        div.textContent = contato.nome;
+        div.addEventListener("click", () => {
+          sessionStorage.setItem("contatoUid", child.key);
+          sessionStorage.setItem("contatoNome", contato.nome);
+          window.location.href = "mensagens.html";
+        });
+        lista.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>
