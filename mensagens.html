@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YOU SEE MENSSAGENS - Login</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwyugg9AcFsKtVWhECfEq3P8PVJG_fZSm73EkDe2W2Thv9rN880Pdq1_ue&s=10') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.97);
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    h1 {
+      margin-bottom: 25px;
+      color: #002244;
+      font-size: 24px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input:focus {
+      border-color: #002244;
+      box-shadow: 0 0 5px rgba(0, 34, 68, 0.3);
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      background-color: #002244;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #003366;
+    }
+
+    .link-btn {
+      background: none;
+      color: #002244;
+      text-decoration: underline;
+      font-size: 14px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .mensagem-erro {
+      margin-top: 10px;
+      color: red;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>YOU SEE MENSSAGENS</h1>
+    <input type="email" id="email" placeholder="E-mail" />
+    <input type="password" id="senha" placeholder="Senha" />
+    <button id="btnLogin">Acessar</button>
+    <button onclick="window.location.href='cadastro.html'">Cadastrar-se</button>
+    <button class="link-btn" onclick="window.location.href='recuperacao.html'">Recuperar Senha</button>
+    <div class="mensagem-erro" id="mensagemErro"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { getDatabase, ref, get, onChildAdded } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+      authDomain: "login-you-see.firebaseapp.com",
+      databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+      projectId: "login-you-see",
+      storageBucket: "login-you-see.appspot.com",
+      messagingSenderId: "524877259374",
+      appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
+      measurementId: "G-K7E00VXYHG"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    document.getElementById("btnLogin").addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
+      const senha = document.getElementById("senha").value.trim();
+      const erro = document.getElementById("mensagemErro");
+
+      erro.textContent = "";
+
+      if (!email || !senha) {
+        erro.textContent = "Preencha todos os campos.";
+        return;
+      }
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+        const user = userCredential.user;
+
+        const userRef = ref(db, 'usuarios/' + user.uid);
+        const snapshot = await get(userRef);
+
+        if (snapshot.exists()) {
+          window.location.href = 'home.html';
+        } else {
+          window.location.href = 'cadastro.html';
+        }
+      } catch (error) {
+        erro.textContent = "Erro: " + error.message;
+      }
+    });
+
+    // Adicionando a funcionalidade de mensagens em tempo real
+    const mensagensContainer = document.createElement('div');
+    document.body.appendChild(mensagensContainer); // Container onde as mensagens serão exibidas
+
+    const mensagensRef = ref(db, 'mensagens/');
+    onChildAdded(mensagensRef, (data) => {
+      const mensagem = data.val();
+      const messageElement = document.createElement('div');
+      messageElement.textContent = mensagem.texto;  // Altere 'texto' para o campo que contém a mensagem no seu banco de dados
+      mensagensContainer.appendChild(messageElement);
+    });
+  </script>
+</body>
+</html>
