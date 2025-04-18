@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recuperar Senha - YOU SEE</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwyugg9AcFsKtVWhECfEq3P8PVJG_fZSm73EkDe2W2Thv9rN880Pdq1_ue&s=10') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.97);
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    h1 {
+      margin-bottom: 25px;
+      color: #002244;
+      font-size: 24px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      background-color: #002244;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #003366;
+    }
+
+    .mensagem {
+      margin-top: 15px;
+      color: green;
+      font-size: 14px;
+    }
+
+    .erro {
+      color: red;
+    }
+
+    .link-btn {
+      background: none;
+      color: #002244;
+      text-decoration: underline;
+      font-size: 14px;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Recuperar Senha</h1>
+    <input type="email" id="email" placeholder="Digite seu e-mail cadastrado" />
+    <button id="btnRecuperar">Recuperar Acesso</button>
+    <button class="link-btn" onclick="window.location.href='login.html'">Voltar ao login</button>
+    <div class="mensagem" id="mensagem"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+      authDomain: "login-you-see.firebaseapp.com",
+      databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+      projectId: "login-you-see",
+      storageBucket: "login-you-see.appspot.com",
+      messagingSenderId: "524877259374",
+      appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    document.getElementById("btnRecuperar").addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
+      const mensagem = document.getElementById("mensagem");
+
+      mensagem.textContent = "";
+
+      if (!email) {
+        mensagem.textContent = "Digite um e-mail válido.";
+        mensagem.classList.add("erro");
+        return;
+      }
+
+      try {
+        await sendPasswordResetEmail(auth, email);
+        mensagem.textContent = "☺️ VEJA NO SPAM TAMBÉM! E-mail de recuperação enviado para " + email;
+        mensagem.classList.remove("erro");
+      } catch (error) {
+        mensagem.textContent = "Erro: " + error.message;
+        mensagem.classList.add("erro");
+      }
+    });
+  </script>
+
+
+<!-- Barra de aviso moderna -->
+<div id="barra-email-verificacao" class="barra-cookie-moderna">
+  <div class="conteudo-barra">
+    <p><strong>Recuperação de senha:</strong> ao clicar em <strong>verificar</strong>, a mensagem será enviada para seu e-mail cadastrado. Lembre-se de não enviar sua senha para niguem. Lei nº 13.709, de 14 de agosto de 2018.</p>
+    
+  </div>
+</div>
+
+<style>
+  .barra-cookie-moderna {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(to right, #f8f9fa, #e9ecef);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    padding: 15px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 15px;
+    z-index: 9999;
+    animation: slideIn 0.5s ease forwards;
+  }
+
+  .conteudo-barra {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .barra-cookie-moderna p {
+    margin: 0;
+    color: #333;
+    flex: 1 1 auto;
+    padding-right: 10px;
+  }
+
+  .botoes-barra {
+    flex-shrink: 0;
+  }
+
+  .ok-btn {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s ease;
+  }
+
+  .ok-btn:hover {
+    background-color: #0056b3;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .conteudo-barra {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .barra-cookie-moderna p {
+      font-size: 14px;
+    }
+
+    .ok-btn {
+      width: 100%;
+      padding: 10px;
+      font-size: 15px;
+    }
+  }
+</style>
+
+<script>
+  function fecharBarra() {
+    document.getElementById("barra-email-verificacao").style.display = "none";
+  }
+</script>
+
+</body>
+</html>

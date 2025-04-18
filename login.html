@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YOU SEE MENSSAGENS - Login</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxXtgKfgBITzONBC6aim2NNBpjlfq8Gn1fwQ&usqp=CAU') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.97);
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    h1 {
+      margin-bottom: 25px;
+      color: #002244;
+      font-size: 24px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input:focus {
+      border-color: #002244;
+      box-shadow: 0 0 5px rgba(0, 34, 68, 0.3);
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      background-color: #002244;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #003366;
+    }
+
+    .link-btn {
+      background: none;
+      color: #002244;
+      text-decoration: underline;
+      font-size: 14px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .mensagem-erro {
+      margin-top: 10px;
+      color: red;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>YOU SEE MENSSAGENS</h1>
+    <input type="email" id="email" placeholder="E-mail" />
+    <input type="password" id="senha" placeholder="Senha" />
+    <button id="btnLogin">Acessar</button>
+    <button onclick="window.location.href='cadastro.html'">Cadastrar-se</button>
+    <button class="link-btn" onclick="window.location.href='recuperacao.html'">Recuperar Senha</button>
+    <div class="mensagem-erro" id="mensagemErro"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { getDatabase, ref, get, onChildAdded } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+      authDomain: "login-you-see.firebaseapp.com",
+      databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+      projectId: "login-you-see",
+      storageBucket: "login-you-see.appspot.com",
+      messagingSenderId: "524877259374",
+      appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
+      measurementId: "G-K7E00VXYHG"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    document.getElementById("btnLogin").addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
+      const senha = document.getElementById("senha").value.trim();
+      const erro = document.getElementById("mensagemErro");
+
+      erro.textContent = "";
+
+      if (!email || !senha) {
+        erro.textContent = "Preencha todos os campos.";
+        return;
+      }
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+        const user = userCredential.user;
+
+        const userRef = ref(db, 'usuarios/' + user.uid);
+        const snapshot = await get(userRef);
+
+        if (snapshot.exists()) {
+          window.location.href = 'home.html';
+        } else {
+          window.location.href = 'cadastro.html';
+        }
+      } catch (error) {
+        erro.textContent = "Erro: " + error.message;
+      }
+    });
+
+    // Adicionando a funcionalidade de mensagens em tempo real
+    const mensagensContainer = document.createElement('div');
+    document.body.appendChild(mensagensContainer); // Container onde as mensagens serão exibidas
+
+    const mensagensRef = ref(db, 'mensagens/');
+    onChildAdded(mensagensRef, (data) => {
+      const mensagem = data.val();
+      const messageElement = document.createElement('div');
+      messageElement.textContent = mensagem.texto;  // Altere 'texto' para o campo que contém a mensagem no seu banco de dados
+      mensagensContainer.appendChild(messageElement);
+    });
+  </script>
+
+
+
+<!-- Notificações You See - Azul e Vermelha -->
+<style>
+  .notificacao-you-see {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(-100%);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    color: #fff;
+  }
+
+  .notificacao-you-see.mostrar {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .notificacao-you-see.azul {
+    background: linear-gradient(90deg, #001a33, #003366);
+  }
+
+  .notificacao-you-see.vermelha {
+    background: linear-gradient(90deg, #660000, #990000);
+  }
+
+  .notificacao-you-see strong {
+    color: #00ccff;
+  }
+
+  .notificacao-you-see.vermelha strong {
+    color: #ffcccb;
+  }
+
+  .notificacao-you-see .fechar {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
+  .notificacao-you-see .fechar:hover {
+    color: #ff7777;
+  }
+</style>
+
+<!-- Notificação Azul -->
+<div id="notificacaoAzul" class="notificacao-you-see azul">
+  <span>Em breve nova atualização no aplicativo de mensagens <strong>You See</strong>.</span>
+  <button class="fechar" onclick="mostrarNotificacaoVermelha()">✕</button>
+</div>
+
+<!-- Notificação Vermelha -->
+<div id="notificacaoVermelha" class="notificacao-you-see vermelha" style="display: none;">
+  <span>Na <strong>You See</strong>, você consegue enviar e receber mensagens de forma <strong>100% anônima</strong>. Em vez de número ou ID, você usa seu <strong>e-mail</strong> ou cria um <strong>e-mail aleatório</strong>. Ideal para conversas sem expor dados pessoais!</span>
+  <button class="fechar" onclick="fecharNotificacaoVermelha()">✕</button>
+</div>
+
+<script>
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('notificacaoAzul').classList.add('mostrar');
+    }, 500);
+  });
+
+  function mostrarNotificacaoVermelha() {
+    const azul = document.getElementById('notificacaoAzul');
+    azul.classList.remove('mostrar');
+    setTimeout(() => {
+      azul.style.display = 'none';
+      const vermelha = document.getElementById('notificacaoVermelha');
+      vermelha.style.display = 'flex';
+      setTimeout(() => vermelha.classList.add('mostrar'), 100);
+    }, 800);
+  }
+
+  function fecharNotificacaoVermelha() {
+    const vermelha = document.getElementById('notificacaoVermelha');
+    vermelha.classList.remove('mostrar');
+    setTimeout(() => vermelha.remove(), 800);
+  }
+</script>
+
+
+<div style="
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 999;
+">
+  <a href="suporte.html" style="
+    padding: 10px 18px;
+    border: 2px solid white;
+    background-color: transparent;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 6px;
+    white-space: nowrap;
+    display: inline-block;
+  ">
+    Suporte
+  </a>
+
+  <a href="chat.html" style="
+    padding: 10px 18px;
+    border: 2px solid white;
+    background-color: transparent;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 6px;
+    white-space: nowrap;
+    display: inline-block;
+  ">
+    You Chat
+  </a>
+</div>
+
+
+</body>
+</html>
