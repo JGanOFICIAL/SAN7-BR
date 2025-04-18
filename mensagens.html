@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mensagens - YOU SEE MENSSAGENS</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background-color: #002244;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .mensagens {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+    }
+
+    .msg {
+      margin-bottom: 15px;
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 10px;
+      position: relative;
+    }
+
+    .msg.remetente {
+      background-color: #d0e0ff;
+      align-self: flex-end;
+    }
+
+    .msg small {
+      display: block;
+      margin-top: 5px;
+      font-size: 12px;
+      color: gray;
+    }
+
+    .msg button {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: none;
+      border: none;
+      color: red;
+      cursor: pointer;
+    }
+
+    .input-area {
+      padding: 10px;
+      border-top: 1px solid #ccc;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 10px;
+      resize: none;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .botoes {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .botoes button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #002244;
+      color: white;
+      cursor: pointer;
+    }
+
+    .botoes button:hover {
+      background-color: #003366;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <button onclick="window.location.href='home.html'">⬅ Voltar</button>
+    <h2 id="nomeContato">Conversa</h2>
+  </header>
+
+  <div class="mensagens" id="mensagens"></div>
+
+  <div class="input-area">
+    <textarea id="textoMsg" rows="3" placeholder="Digite sua mensagem..."></textarea>
+    <div class="botoes">
+      <button id="enviarTexto">Enviar Texto</button>
+      <button id="gravarAudio">Gravar Áudio</button>
+      <button id="pararAudio" disabled>Parar</button>
+      <button id="enviarAudio" disabled>Enviar Áudio</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { getDatabase, ref, push, onChildAdded, remove } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+    import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+      authDomain: "login-you-see.firebaseapp.com",
+      databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+      projectId: "login-you-see",
+      storageBucket: "login-you-see.appspot.com",
+      messagingSenderId: "524877259374",
+      appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    const storage = getStorage(app);
+
+    const mensagensDiv = document.getElementById("mensagens");
+    const btnTexto = document.getElementById("enviarTexto");
+    const btnGravar = document.getElementById("gravarAudio");
+    const btnParar = document.getElementById("pararAudio");
+    const btnEnviarAudio = document.getElementById("enviarAudio");
+    const textoMsg = document.getElementById("textoMsg");
+    const nomeContato = document.getElementById("nomeContato");
+
+    const contatoUid = sessionStorage.getItem("contatoUid");
+    const contatoNome = sessionStorage.getItem("contatoNome");
+    nomeContato.textContent = contatoNome;
+
+    let usuarioUid = null;
+    let mediaRecorder;
+    let audioChunks = [];
+
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        usuarioUid = user.uid;
+        escutarMensagens();
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    btnTexto.addEventListener("click", async () => {
+      const texto = textoMsg.value.trim();
+      if (!texto) return;
+      const data = new Date().toLocaleString();
+      await push(ref(db, `mensagens/${usuarioUid}/${contatoUid}`), {
+        tipo: "texto",
+        conteudo: texto,
+        data: data
+      });
+      await push(ref(db, `mensagens/${contatoUid}/${usuarioUid}`), {
+        tipo: "texto",
+        conteudo: texto,
+        data: data
+      });
+      textoMsg.value = "";
+    });
+
+    function escutarMensagens() {
+      const mensagensRef = ref(db, `mensagens/${usuarioUid}/${contatoUid}`);
+      onChildAdded(mensagensRef, (data) => {
+        const msg = data.val();
+        const div = document.createElement("div");
+        div.className = "msg";
+        if (msg.tipo === "texto") {
+          div.innerHTML = `
+            <p>${msg.conteudo}</p>
+            <small>${msg.data}</small>
+            <button onclick="apagarMensagem('${data.key}')">🗑</button>
+          `;
+        } else if (msg.tipo === "audio") {
+          div.innerHTML = `
+            <audio controls src="${msg.conteudo}"></audio>
+            <small>${msg.data}</small>
+            <button onclick="apagarMensagem('${data.key}')">🗑</button>
+          `;
+        }
+        mensagensDiv.appendChild(div);
+        mensagensDiv.scrollTop = mensagensDiv.scrollHeight;
+      });
+    }
+
+    window.apagarMensagem = async (idMsg) => {
+      const ref1 = ref(db, `mensagens/${usuarioUid}/${contatoUid}/${idMsg}`);
+      const ref2 = ref(db, `mensagens/${contatoUid}/${usuarioUid}/${idMsg}`);
+      await remove(ref1);
+      await remove(ref2);
+      location.reload();
+    };
+
+    btnGravar.addEventListener("click", async () => {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+
+      mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+      mediaRecorder.onstop = async () => {
+        const blob = new Blob(audioChunks, { type: 'audio/webm' });
+        const nomeArquivo = `${Date.now()}.webm`;
+        const storageRef = sRef(storage, `audios/${usuarioUid}/${nomeArquivo}`);
+        await uploadBytes(storageRef, blob);
+        const url = await getDownloadURL(storageRef);
+
+        const data = new Date().toLocaleString();
+        await push(ref(db, `mensagens/${usuarioUid}/${contatoUid}`), {
+          tipo: "audio",
+          conteudo: url,
+          data: data
+        });
+        await push(ref(db, `mensagens/${contatoUid}/${usuarioUid}`), {
+          tipo: "audio",
+          conteudo: url,
+          data: data
+        });
+      };
+
+      mediaRecorder.start();
+      btnGravar.disabled = true;
+      btnParar.disabled = false;
+      btnEnviarAudio.disabled = false;
+    });
+
+    btnParar.addEventListener("click", () => {
+      mediaRecorder.stop();
+      btnGravar.disabled = false;
+      btnParar.disabled = true;
+    });
+
+    btnEnviarAudio.addEventListener("click", () => {
+      btnEnviarAudio.disabled = true;
+    });
+  </script>
+</body>
+</html>
