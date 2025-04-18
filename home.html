@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home - YOU SEE MENSSAGENS</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+    }
+
+    header {
+      background-color: #002244;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
+
+    header h2 {
+      margin: 0;
+    }
+
+    .icons {
+      display: flex;
+      gap: 15px;
+      position: relative;
+    }
+
+    .icons button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .notification .badge {
+      position: absolute;
+      top: -5px;
+      right: -10px;
+      padding: 2px 6px;
+      border-radius: 50%;
+      background: red;
+      color: white;
+      font-size: 12px;
+    }
+
+    .solicitacoes-popup {
+      display: none;
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 10px;
+      width: 250px;
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 10;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      color: black;
+    }
+
+    .solicitacao {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+
+    .solicitacao:hover {
+      background-color: #f2f2f2;
+    }
+
+    #contatos, #adicionarContatoOverlay {
+      padding: 20px;
+    }
+
+    .contato {
+      padding: 15px;
+      border-bottom: 1px solid #ccc;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .contato:hover {
+      background-color: #f2f2f2;
+    }
+
+    .mensagem-contador {
+      color: red;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    #adicionarContatoOverlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .popup {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .popup input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .popup button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      border: none;
+      background-color: #002244;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .popup button:hover {
+      background-color: #003366;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2>YOU SEE </h2>
+    <div class="icons">
+      <div class="notification">
+        <button id="btnNotificacao">🔔</button>
+        <span class="badge" id="contadorSolicitacoes" style="display:none;">0</span>
+        <div class="solicitacoes-popup" id="popupSolicitacoes"></div>
+      </div>
+      <button id="btnConta">👤</button>
+      <button id="btnAddContato">➕</button>
+    </div>
+  </header>
+
+  <div id="contatos">
+    <h3>Conversas</h3>
+    <div id="listaContatos"></div>
+  </div>
+
+  <div id="adicionarContatoOverlay">
+    <div class="popup">
+      <h3>Adicionar Contato</h3>
+      <input type="email" id="emailContato" placeholder="Digite o e-mail do contato" />
+      <button id="procurarContato">Procurar</button>
+      <div id="resultadoBusca"></div>
+      <button onclick="document.getElementById('adicionarContatoOverlay').style.display='none'">Fechar</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { getDatabase, ref, get, set, onValue, remove } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+      authDomain: "login-you-see.firebaseapp.com",
+      databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+      projectId: "login-you-see",
+      storageBucket: "login-you-see.appspot.com",
+      messagingSenderId: "524877259374",
+      appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
+      measurementId: "G-K7E00VXYHG"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    let usuarioAtual = null;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        usuarioAtual = user;
+        carregarContatos(user.uid);
+        verificarSolicitacoes(user.uid);
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    document.getElementById("btnConta").addEventListener("click", async () => {
+      const userRef = ref(db, "usuarios/" + usuarioAtual.uid);
+      const snap = await get(userRef);
+      if (snap.exists()) {
+        const dados = snap.val();
+        alert(`Nome: ${dados.nome}\nCPF: ${dados.cpf}\nEmail: ${usuarioAtual.email}`);
+      }
+    });
+
+    document.getElementById("btnAddContato").addEventListener("click", () => {
+      document.getElementById("adicionarContatoOverlay").style.display = "flex";
+    });
+
+    document.getElementById("procurarContato").addEventListener("click", async () => {
+      const email = document.getElementById("emailContato").value.trim();
+      const usersRef = ref(db, "usuarios");
+      const snap = await get(usersRef);
+      let encontrado = false;
+
+      snap.forEach(childSnap => {
+        const userData = childSnap.val();
+        if (userData.email === email) {
+          const resultado = document.getElementById("resultadoBusca");
+          resultado.innerHTML = `
+            <div>
+              <p><strong>${userData.nome}</strong><br>${userData.email}</p>
+              <button onclick="enviarSolicitacao('${childSnap.key}', '${userData.nome}', '${userData.email}')">Solicitar Amizade</button>
+            </div>
+          `;
+          encontrado = true;
+        }
+      });
+
+      if (!encontrado) {
+        document.getElementById("resultadoBusca").innerText = "Contato não encontrado.";
+      }
+    });
+
+    window.enviarSolicitacao = async (uidContato, nome, email) => {
+      const refSolicitacao = ref(db, `solicitacoes/${uidContato}/${usuarioAtual.uid}`);
+      await set(refSolicitacao, {
+        nome: auth.currentUser.displayName || "Novo usuário",
+        email: auth.currentUser.email
+      });
+      alert("Solicitação enviada!");
+      document.getElementById("adicionarContatoOverlay").style.display = "none";
+    };
+
+    async function carregarContatos(uid) {
+      const contatosRef = ref(db, `contatos/${uid}`);
+      const snap = await get(contatosRef);
+      const lista = document.getElementById("listaContatos");
+      lista.innerHTML = "";
+
+      snap.forEach(async child => {
+        const contato = child.val();
+        const div = document.createElement("div");
+        div.className = "contato";
+
+        const mensagensRef = ref(db, `mensagens/${uid}/${child.key}`);
+        const snapMsg = await get(mensagensRef);
+        const quantidade = snapMsg.exists() ? Object.keys(snapMsg.val()).length : 0;
+
+        div.innerHTML = `
+          <span>${contato.nome}</span>
+          <span class="mensagem-contador">${quantidade}</span>
+        `;
+        div.addEventListener("click", () => {
+          sessionStorage.setItem("contatoUid", child.key);
+          sessionStorage.setItem("contatoNome", contato.nome);
+          window.location.href = "mensagens.html";
+        });
+        lista.appendChild(div);
+      });
+    }
+
+    function verificarSolicitacoes(uid) {
+      const solicitacoesRef = ref(db, `solicitacoes/${uid}`);
+      onValue(solicitacoesRef, snapshot => {
+        const popup = document.getElementById("popupSolicitacoes");
+        const badge = document.getElementById("contadorSolicitacoes");
+        popup.innerHTML = "";
+        let total = 0;
+
+        snapshot.forEach(child => {
+          total++;
+          const dados = child.val();
+          const div = document.createElement("div");
+          div.className = "solicitacao";
+          div.innerHTML = `<strong>${dados.nome}</strong><br>${dados.email}`;
+          div.addEventListener("click", async () => {
+            await set(ref(db, `contatos/${uid}/${child.key}`), {
+              nome: dados.nome,
+              email: dados.email
+            });
+            await remove(ref(db, `solicitacoes/${uid}/${child.key}`));
+            carregarContatos(uid);
+            verificarSolicitacoes(uid);
+            popup.style.display = "none";
+          });
+          popup.appendChild(div);
+        });
+
+        if (total > 0) {
+          badge.style.display = "inline-block";
+          badge.innerText = total;
+        } else {
+          badge.style.display = "none";
+        }
+      });
+    }
+
+    document.getElementById("btnNotificacao").addEventListener("click", () => {
+      const popup = document.getElementById("popupSolicitacoes");
+      popup.style.display = popup.style.display === "block" ? "none" : "block";
+    });
+  </script>
+</body>
+</html>
