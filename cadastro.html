@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro - YOU SEE MENSSAGENS</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwyugg9AcFsKtVWhECfEq3P8PVJG_fZSm73EkDe2W2Thv9rN880Pdq1_ue&s=10') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #002244;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #002244;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    button:hover {
+      background-color: #003366;
+    }
+
+    .mensagem {
+      margin-top: 5px;
+      color: red;
+      font-size: 14px;
+    }
+
+    .link-voltar {
+      background-color: transparent;
+      color: #002244;
+      border: 1px solid #002244;
+    }
+
+    .link-voltar:hover {
+      background-color: #002244;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Cadastro</h1>
+    <input type="text" id="nome" placeholder="Nome completo" />
+    <input type="text" id="nascimento" placeholder="Data de nascimento (dd/mm/aaaa)" maxlength="10" />
+    <input type="email" id="email" placeholder="E-mail" />
+    <input type="password" id="senha" placeholder="Senha" />
+    <button id="cadastrar">Cadastrar</button>
+    <button class="link-voltar" onclick="window.location.href='login.html'">Voltar para o Login</button>
+    <p class="mensagem" id="mensagemErro"></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+      authDomain: "login-you-see.firebaseapp.com",
+      databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+      projectId: "login-you-see",
+      storageBucket: "login-you-see.appspot.com",
+      messagingSenderId: "524877259374",
+      appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    const inputNascimento = document.getElementById("nascimento");
+
+    inputNascimento.addEventListener("input", () => {
+      let valor = inputNascimento.value.replace(/\D/g, "");
+      if (valor.length > 2) valor = valor.slice(0, 2) + "/" + valor.slice(2);
+      if (valor.length > 5) valor = valor.slice(0, 5) + "/" + valor.slice(5, 9);
+      inputNascimento.value = valor;
+    });
+
+    document.getElementById("cadastrar").addEventListener("click", async () => {
+      const nome = document.getElementById("nome").value.trim();
+      const nascimento = document.getElementById("nascimento").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const senha = document.getElementById("senha").value.trim();
+      const mensagemErro = document.getElementById("mensagemErro");
+
+      if (!nome || !nascimento || !email || !senha) {
+        mensagemErro.textContent = "Preencha todos os campos.";
+        return;
+      }
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+        const user = userCredential.user;
+
+        await set(ref(database, "usuarios/" + user.uid), {
+          nome: nome,
+          nascimento: nascimento,
+          email: email
+        });
+
+        alert("Cadastro realizado com sucesso!");
+        window.location.href = "login.html";
+      } catch (error) {
+        if (error.code === "auth/email-already-in-use") {
+          mensagemErro.textContent = "Este e-mail já está em uso.";
+        } else {
+          mensagemErro.textContent = "Erro ao cadastrar: " + error.message;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
