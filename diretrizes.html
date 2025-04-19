@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diretrizes da comunidade You See</title>
+  <style>
+    * {
+      margin: 0; padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      background: #fff;
+    }
+
+    header {
+      background: #001F5F;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      position: relative;
+    }
+
+    header h1 {
+      font-size: 20px;
+    }
+
+    .menu-icon {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .menu-icon div {
+      width: 25px;
+      height: 3px;
+      background-color: white;
+      border-radius: 2px;
+    }
+
+    #side-menu {
+      position: fixed;
+      top: 0;
+      right: -270px;
+      width: 270px;
+      height: 100%;
+      background: #001F5F;
+      padding: 20px;
+      transition: right 0.3s ease;
+      z-index: 999;
+      box-shadow: -3px 0 8px rgba(0,0,0,0.4);
+    }
+
+    #side-menu.active {
+      right: 0;
+    }
+
+    #side-menu .close-btn {
+      color: white;
+      font-size: 20px;
+      text-align: right;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    .menu-button {
+      background-color: #f3f3f3;
+      color: #001F5F;
+      border-left: 5px solid #ccc;
+      border-radius: 5px;
+      padding: 12px 15px;
+      text-decoration: none;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 15px;
+      transition: 0.2s;
+    }
+
+    .menu-button:hover {
+      background-color: #e0e0e0;
+    }
+
+    .imagem-area {
+      background: linear-gradient(to right, #ccc, #999);
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 18px;
+    }
+
+    .imagem-area img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .notificacao {
+      background-color: #f3f3f3;
+      border-left: 5px solid #001F5F;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+
+    .notificacao p {
+      color: #333;
+      font-size: 15px;
+    }
+
+    .topico {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .topico summary {
+      background-color: #f0f0f0;
+      padding: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .topico p {
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    .topico a {
+      color: #001F5F;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Diretrizes da comunidade You See</h1>
+    <div class="menu-icon" onclick="toggleMenu()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </header>
+
+  <div id="side-menu">
+    <div class="close-btn" onclick="toggleMenu()">✖</div>
+    <a href="login.html" class="menu-button">Login</a>
+    <a href="recuperacao.html" class="menu-button">Esqueceu a senha</a>
+  </div>
+
+  
+    <div style="border: 2px solid #001f3f; padding: 5px; width: fit-content;">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaisFoubxGQBuHQds08xpFLiBTiZzeha5xVQ&usqp=CAU" alt="Descrição da imagem" style="max-width: 100%; display: block;">
+  <p style="margin: 5px 0 0; color: #001f3f; font-size: 14px;">O aplicativo de mensagens You See segue rigorosamente as diretrizes da LGPD (Lei Geral de Proteção de Dados) para garantir a privacidade e a segurança das informações dos usuários. Todos os dados pessoais, como nome, e-mail e número de telefone, são armazenados com criptografia avançada. O uso do aplicativo implica na aceitação do uso de cookies funcionais que melhoram a experiência e permitem o salvamento de preferências. As conversas são protegidas por criptografia de ponta a ponta, impedindo o acesso de terceiros, incluindo a própria equipe do sistema. O envio de mensagens ofensivas, discriminatórias ou ilegais poderá resultar na suspensão ou banimento da conta. O usuário é totalmente responsável pelo conteúdo que compartilha, inclusive imagens e vídeos. O sistema possui ferramentas internas para denúncia de abusos, garantindo um ambiente saudável para todos. Ao criar uma conta no You See, o usuário concorda com os termos de uso e política de privacidade disponíveis na tela inicial. O compartilhamento de dados com terceiros só ocorre mediante consentimento explícito ou em cumprimento a ordens judiciais. A equipe de moderação pode revisar o uso em casos extremos de violação das normas. A criação de múltiplas contas para fins maliciosos será investigada e punida conforme os termos. O nome de usuário e a foto de perfil devem respeitar os princípios de respeito e veracidade. O aplicativo não armazena permanentemente o conteúdo das mensagens excluídas. É proibido utilizar o app para atividades comerciais não autorizadas ou spam. O usuário menor de idade deve ter consentimento dos responsáveis legais para utilizar a plataforma. O uso de bots ou ferramentas automatizadas é estritamente proibido. O aplicativo poderá exibir avisos ou notificações em caso de atualizações importantes. Atualizações periódicas garantem a correção de falhas e melhorias na segurança do sistema. Qualquer tentativa de invadir, fraudar ou manipular o funcionamento do app será denunciada às autoridades competentes. Ao continuar usando o You See, o usuário declara estar ciente e de acordo com todas essas diretrizes.</p>
+</div>
+
+  
+</script>
+
+
+
+
+<div id="form-card" style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.1); font-family: Arial, sans-serif; width: 100%; max-width: 500px; margin: auto;">
+  <h2 style="color: #001f3f; margin-bottom: 20px; text-align: center;">Fale com a gente</h2>
+  <input type="text" id="nome" placeholder="Nome completo" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px;">
+  <textarea id="mensagem" placeholder="Deixe sua mensagem" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;"></textarea>
+  <button onclick="enviarFormulario()" style="width: 100%; margin-top: 15px; padding: 10px; background: #001f3f; color: white; border: none; border-radius: 5px; cursor: pointer;">Enviar</button>
+</div>
+
+<div id="loading" style="display: none; text-align: center; margin-top: 20px;">
+  <div style="border: 4px solid #f3f3f3; border-top: 4px solid #001f3f; border-radius: 50%; width: 40px; height: 40px; animation: girar 1s linear infinite; margin: auto;"></div>
+  <p style="margin-top: 15px; color: #001f3f;">Enviando mensagem...</p>
+</div>
+
+<div id="sucesso" style="display: none; text-align: center; margin-top: 20px;">
+  <p style="color: #001f3f; font-size: 18px;">Mensagem enviada com sucesso!</p>
+  <button onclick="enviarOutra()" style="margin-top: 15px; padding: 10px 20px; background: #001f3f; color: white; border: none; border-radius: 5px; cursor: pointer;">Enviar outra</button>
+</div>
+
+<style>
+@keyframes girar {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+
+<script>
+function enviarFormulario() {
+  const nome = document.getElementById('nome').value.trim();
+  const mensagem = document.getElementById('mensagem').value.trim();
+
+  if (nome === '' || mensagem === '') {
+    alert('Preencha todos os campos!');
+    return;
+  }
+
+  document.getElementById('form-card').style.display = 'none';
+  document.getElementById('loading').style.display = 'block';
+
+  setTimeout(() => {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('sucesso').style.display = 'block';
+  }, 3000);
+}
+
+function enviarOutra() {
+  document.getElementById('sucesso').style.display = 'none';
+  document.getElementById('form-card').style.display = 'block';
+  document.getElementById('nome').value = '';
+  document.getElementById('mensagem').value = '';
+}
+</script>
+
+
+<div style="position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 9999;">
+  <a href="login.html" style="text-decoration: none; border: 2px solid #001f3f; color: #001f3f; background: transparent; padding: 10px 20px; border-radius: 25px; font-family: Arial, sans-serif; font-size: 14px; text-align: center;">Login</a>
+  <a href="recuperacao.html" style="text-decoration: none; border: 2px solid #001f3f; color: #001f3f; background: transparent; padding: 10px 20px; border-radius: 25px; font-family: Arial, sans-serif; font-size: 14px; text-align: center;">Esqueceu a senha</a>
+</div>
+
+
+
+
+
+
+</body>
+</html>

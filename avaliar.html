@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Questionário - UC</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+    }
+
+    header {
+      background-color: #001f3f;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .voltar-btn {
+      background: none;
+      color: white;
+      border: 1px solid white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    main {
+      max-width: 700px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #001f3f;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .pergunta {
+      margin-bottom: 20px;
+    }
+
+    .pergunta label {
+      font-weight: bold;
+      color: #333;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .pergunta textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: vertical;
+    }
+
+    #enviar-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: transparent;
+      border: 2px solid #001f3f;
+      color: #001f3f;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    #enviar-btn:hover {
+      background-color: #001f3f;
+      color: white;
+    }
+
+    #carregando {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      display: none;
+      flex-direction: column;
+    }
+
+    .spinner {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #001f3f;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #resultado {
+      display: none;
+      max-width: 700px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    #resultado h2 {
+      color: #001f3f;
+    }
+
+    #inicio-btn {
+      margin-top: 20px;
+      padding: 12px 20px;
+      border: 2px solid #001f3f;
+      background: transparent;
+      color: #001f3f;
+      border-radius: 25px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #inicio-btn:hover {
+      background: #001f3f;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>You See - Sua avaliação</h1>
+    
+  </header>
+
+  <main id="formulario">
+    <h2>Questionário de Avaliação</h2>
+    
+    <div class="pergunta">
+      <label>1. O que você achou da interface do aplicativo?</label>
+      <textarea rows="3"></textarea>
+    </div>
+    <div class="pergunta">
+      <label>2. Como foi sua experiência ao enviar mensagens?</label>
+      <textarea rows="3"></textarea>
+    </div>
+    <div class="pergunta">
+      <label>3. Você encontrou algum problema técnico?</label>
+      <textarea rows="3"></textarea>
+    </div>
+    <div class="pergunta">
+      <label>4. O aplicativo atendeu suas expectativas?</label>
+      <textarea rows="3"></textarea>
+    </div>
+    <div class="pergunta">
+      <label>5. Deixe sugestões para melhorias:</label>
+      <textarea rows="3"></textarea>
+    </div>
+
+    <button id="enviar-btn" onclick="enviarQuestionario()">Enviar</button>
+  </main>
+
+  <div id="carregando">
+    <div class="spinner"></div>
+    <p style="margin-top: 15px; color: #001f3f; font-weight: bold;">Enviando respostas...</p>
+  </div>
+
+  <section id="resultado">
+    <h2>Documento de Gratificação</h2>
+    <p>Obrigado por concluir o questionário de avaliação da YOU SEE MENSAGENS!</p>
+    <p>Seu feedback é essencial para continuarmos evoluindo e entregando uma experiência ainda melhor.</p>
+    <button id="inicio-btn" onclick="location.href='login.html'">Voltar para o início</button>
+  </section>
+
+  <script>
+    function enviarQuestionario() {
+      const inputs = document.querySelectorAll('textarea');
+      for (let input of inputs) {
+        if (input.value.trim() === "") {
+          alert("Por favor, responda todas as perguntas.");
+          return;
+        }
+      }
+
+      document.getElementById('formulario').style.display = 'none';
+      document.getElementById('carregando').style.display = 'flex';
+
+      setTimeout(() => {
+        document.getElementById('carregando').style.display = 'none';
+        document.getElementById('resultado').style.display = 'block';
+      }, 3000);
+    }
+  </script>
+
+
+<div style="position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 9999;">
+  <a href="login.html" style="text-decoration: none; border: 2px solid #001f3f; color: #001f3f; background: transparent; padding: 10px 20px; border-radius: 25px; font-family: Arial, sans-serif; font-size: 14px; text-align: center;">Voltar para o início</a>
+
+
+
+
+</body>
+</html>
