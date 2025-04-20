@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home - YOU SEE MENSSAGENS</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+    }
+
+    header {
+      background-color: #002244;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h2 {
+      margin: 0;
+    }
+
+    .icons {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .icon-img {
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+    }
+
+    .perfil-icon {
+      border-radius: 50%;
+    }
+
+    .icon-wrapper {
+      position: relative;
+    }
+
+    .badge {
+      background-color: green;
+      color: white;
+      font-weight: bold;
+      border-radius: 10px;
+      padding: 2px 8px;
+      font-size: 12px;
+      position: absolute;
+      top: -5px;
+      right: -10px;
+    }
+
+    #notificacao {
+      position: fixed;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #222;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      z-index: 9999;
+      transition: opacity 0.4s ease-in-out;
+    }
+
+    #notificacao.show {
+      opacity: 1;
+    }
+
+    #solicitacoes {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      display: none;
+      width: 260px;
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 999;
+    }
+
+    #solicitacoes .solicitacao {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+
+    #solicitacoes .solicitacao:hover {
+      background-color: #f2f2f2;
+    }
+
+    #contatos {
+      padding: 20px;
+    }
+
+    .contato {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      cursor: pointer;
+      transition: background 0.3s;
+      position: relative;
+    }
+
+    .contato:hover {
+      background-color: #f9f9f9;
+    }
+
+    .foto-contato {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .info-contato {
+      flex-grow: 1;
+    }
+
+    .info-contato strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .info-contato span {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .popup {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .popup input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .popup button {
+      margin-top: 10px;
+      padding: 10px 150px;
+      border: none;
+      background-color: #002244;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .perfil-popup .foto-perfil-grande {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+
+    .perfil-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .opcoes-imagens {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: center;
+      margin: 10px 0;
+    }
+
+    .opcoes-imagens input {
+      padding: 8px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .email-menor {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .acoes {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 9999;
+    }
+
+    .acoes a {
+      text-decoration: none;
+      border: 2px solid #001f3f;
+      color: #001f3f;
+      background: transparent;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2>YOU SEE</h2>
+    <div class="icons">
+      <img id="btnConta" src="URL_DA_IMAGEM_DO_PERFIL" class="icon-img perfil-icon" />
+      <div class="icon-wrapper">
+        <img id="btnSino" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiN-2wTE1vHoBvI5lioaJKEb8xzHzpHl5j_4toi4ahtnbzuaOF2YWVwkShQ5zk7Vnq0LI-wa34IgDyWmkwM6OrTkBcDyKa_zwQUR6heOUOo2SLkBXiqOON5KYOJHDBLMxOZALj-RVM1hvdPIhoACuKK3SFUY-Ulvl3WGnPpIO-9XxYjW8tO9PK1gYFpk7o/s500/7F46C202-95B1-40FD-AF5B-B2DF5162CFE6.png" class="icon-img" />
+        <span id="contadorSolicitacoes" class="badge" style="display:none">0</span>
+      </div>
+      <img id="btnAddContato" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgnIdsaAsSV29YzyjxfBF_CtIvlzcbRtGy-K2Cu5y7FKwdOUPyZLcv0-g6E5Out9LNtjp-lXCtdjBd3MrnoXF1hj6cFS9g_uck2j6niA36YRAIJOYOVpqOuNj0cwGnP8MhDOYFkWH-PGCnaAnIvL4VnCDkzZPlQ5egidLKiTnhb01qzUFapGpAW84SdnfU/s500/24EE1416-76A7-482A-8127-CCCB8F359E6B.png" class="icon-img" />
+    </div>
+  </header>
+
+  <div id="notificacao"><span id="textoNotificacao"></span><button id="fecharNotificacao">✖</button></div>
+  <div id="solicitacoes"></div>
+
+  <div id="contatos">
+    <h3>Conversas</h3>
+    <div id="listaContatos"></div>
+  </div>
+
+  <div id="adicionarContatoOverlay" class="overlay">
+    <div class="popup">
+      <h3>Adicionar Contato</h3>
+      <input type="email" id="emailContato" placeholder="Digite o e-mail do contato" />
+      <button id="procurarContato">Procurar</button>
+      <div id="resultadoBusca"></div>
+      <button onclick="document.getElementById('adicionarContatoOverlay').style.display='none'">Fechar</button>
+    </div>
+  </div>
+
+  <div id="perfilOverlay" class="overlay">
+    <div class="popup perfil-popup">
+      <div class="perfil-header">
+        <h3>Meu Perfil</h3>
+        <button id="fecharPerfil">✖</button>
+      </div>
+      <img id="fotoPerfil" src="URL_DA_IMAGEM_DO_PERFIL" class="foto-perfil-grande" />
+      <div id="opcoesFoto">
+        <p>URL da imagem de perfil:</p>
+        <input type="text" id="inputFotoURL" placeholder="Cole a URL da imagem aqui" />
+        <button onclick="confirmarAlteracaoFoto()">Alterar Imagem</button>
+      </div>
+      <p id="nomeUsuario"></p>
+      <p id="emailUsuario" class="email-menor"></p>
+      <p id="cpfUsuario" class="email-menor"></p>
+    </div>
+  </div>
+
+  <div class="acoes">
+    <a href="login.html">Sair da conta</a>
+    <a href="recuperacao.html">Recuperar senha</a>
+  </div>
+
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import {
+  getDatabase, ref, get, set, update, remove, onChildAdded
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+  authDomain: "login-you-see.firebaseapp.com",
+  databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+  projectId: "login-you-see",
+  storageBucket: "login-you-see.appspot.com",
+  messagingSenderId: "524877259374",
+  appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+let usuarioAtual = null;
+let mensagensNaoLidas = {};
+
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    usuarioAtual = user;
+    carregarContatos();
+    escutarMensagens();
+    carregarSolicitacoes();
+    carregarPerfil();
+  } else {
+    window.location.href = "login.html";
+  }
+});
+
+const notificar = (msg) => {
+  const n = document.getElementById("notificacao");
+  document.getElementById("textoNotificacao").textContent = msg;
+  n.classList.add("show");
+  setTimeout(() => n.classList.remove("show"), 2000);
+};
+
+document.getElementById("fecharNotificacao").onclick = () => {
+  document.getElementById("notificacao").classList.remove("show");
+};
+
+const carregarContatos = async () => {
+  const snap = await get(ref(db, `contatos/${usuarioAtual.uid}`));
+  const lista = document.getElementById("listaContatos");
+  lista.innerHTML = "";
+
+  if (snap.exists()) {
+    const contatos = Object.entries(snap.val());
+
+    for (const [uid, dados] of contatos) {
+      const userSnap = await get(ref(db, `usuarios/${uid}`));
+      const userData = userSnap.val();
+      const foto = userData?.foto || "default.jpg";
+
+      const msgSnap = await get(ref(db, "mensagens"));
+      let ultima = "";
+      let ultimaData = 0;
+
+      msgSnap.forEach(child => {
+        const m = child.val();
+        if (
+          (m.origem === uid && m.destino === usuarioAtual.uid) ||
+          (m.origem === usuarioAtual.uid && m.destino === uid)
+        ) {
+          if (m.timestamp && m.timestamp > ultimaData) {
+            ultimaData = m.timestamp;
+            ultima = m.texto.includes(".gif") ? "GIF" : m.texto;
+          }
+        }
+      });
+
+      const div = document.createElement("div");
+      div.className = "contato";
+      div.innerHTML = `
+        <img src="${foto}" class="foto-contato"/>
+        <div class="info-contato">
+          <strong>${dados.nome}</strong>
+          <span>${ultima}</span>
+        </div>
+        <span id="badge-${uid}" class="badge" style="display:none">0</span>
+      `;
+      div.onclick = () => {
+        marcarComoLida(uid);
+        sessionStorage.setItem("contatoUid", uid);
+        sessionStorage.setItem("contatoNome", dados.nome);
+        window.location.href = "mensagens.html";
+      };
+      lista.appendChild(div);
+    }
+  }
+};
+
+const escutarMensagens = () => {
+  const refMsgs = ref(db, "mensagens/");
+  onChildAdded(refMsgs, async snap => {
+    const msg = snap.val();
+    if (msg.destino === usuarioAtual.uid && !msg.lida) {
+      const badge = document.getElementById(`badge-${msg.origem}`);
+      if (badge) {
+        let qtd = mensagensNaoLidas[msg.origem] || 0;
+        mensagensNaoLidas[msg.origem] = ++qtd;
+        badge.style.display = "inline";
+        badge.textContent = qtd;
+        badge.style.backgroundColor = "green";
+        badge.style.fontWeight = "bold";
+
+        const userSnap = await get(ref(db, `usuarios/${msg.origem}`));
+        const nome = userSnap.exists() ? userSnap.val().nome : "Contato";
+        notificar(`${nome}: ${msg.texto.includes(".gif") ? "GIF" : msg.texto}`);
+        carregarContatos();
+      }
+    }
+  });
+};
+
+const marcarComoLida = async (uidContato) => {
+  const snap = await get(ref(db, "mensagens"));
+  snap.forEach(child => {
+    const m = child.val();
+    if (m.origem === uidContato && m.destino === usuarioAtual.uid) {
+      update(ref(db, `mensagens/${child.key}`), { lida: true });
+    }
+  });
+  mensagensNaoLidas[uidContato] = 0;
+  const badge = document.getElementById(`badge-${uidContato}`);
+  if (badge) badge.style.display = "none";
+};
+
+document.getElementById("btnConta").onclick = () => {
+  document.getElementById("perfilOverlay").style.display = "flex";
+};
+
+document.getElementById("btnAddContato").onclick = () => {
+  document.getElementById("adicionarContatoOverlay").style.display = "flex";
+};
+
+document.getElementById("btnSino").onclick = () => {
+  const box = document.getElementById("solicitacoes");
+  box.style.display = box.style.display === "block" ? "none" : "block";
+};
+
+document.getElementById("fecharPerfil").onclick = async () => {
+  document.getElementById("perfilOverlay").style.display = "none";
+  const snap = await get(ref(db, `usuarios/${usuarioAtual.uid}`));
+  if (snap.exists()) {
+    const dados = snap.val();
+    if (dados.foto) {
+      document.getElementById("btnConta").src = dados.foto;
+    }
+  }
+};
+
+document.getElementById("procurarContato").onclick = async () => {
+  const email = document.getElementById("emailContato").value.trim();
+  const usersRef = ref(db, "usuarios");
+  const snap = await get(usersRef);
+  let encontrado = false;
+
+  snap.forEach(childSnap => {
+    const userData = childSnap.val();
+    if (userData.email === email && childSnap.key !== usuarioAtual.uid) {
+      const foto = userData.foto || "default.jpg";
+      document.getElementById("resultadoBusca").innerHTML = `
+        <img src="${foto}" class="foto-contato" style="width:40px;height:40px;margin-bottom:10px"/>
+        <p><strong>${userData.nome}</strong><br>${userData.email}</p>
+        <button onclick="enviarSolicitacao('${childSnap.key}', '${userData.nome}', '${userData.email}')">Solicitar</button>
+      `;
+      encontrado = true;
+    }
+  });
+
+  if (!encontrado) {
+    document.getElementById("resultadoBusca").innerText = "Contato não encontrado.";
+  }
+};
+
+window.enviarSolicitacao = async (uidDestino, nome, email) => {
+  const snap = await get(ref(db, `usuarios/${usuarioAtual.uid}`));
+  await set(ref(db, `solicitacoes/${uidDestino}/${usuarioAtual.uid}`), {
+    nome: snap.val().nome,
+    email: usuarioAtual.email,
+    foto: snap.val().foto || ""
+  });
+  alert("Solicitação enviada!");
+  document.getElementById("adicionarContatoOverlay").style.display = "none";
+};
+
+const carregarSolicitacoes = async () => {
+  const box = document.getElementById("solicitacoes");
+  const snap = await get(ref(db, `solicitacoes/${usuarioAtual.uid}`));
+  box.innerHTML = "";
+  let contador = 0;
+
+  if (snap.exists()) {
+    snap.forEach(child => {
+      contador++;
+      const dados = child.val();
+      const div = document.createElement("div");
+      div.className = "solicitacao";
+      div.innerHTML = `<strong>${dados.nome}</strong><br><small>${dados.email}</small>`;
+      div.onclick = async () => {
+        await set(ref(db, `contatos/${usuarioAtual.uid}/${child.key}`), {
+          nome: dados.nome,
+          email: dados.email
+        });
+        const snapMe = await get(ref(db, `usuarios/${usuarioAtual.uid}`));
+        const meusDados = snapMe.val();
+        await set(ref(db, `contatos/${child.key}/${usuarioAtual.uid}`), {
+          nome: meusDados.nome,
+          email: usuarioAtual.email
+        });
+        await remove(ref(db, `solicitacoes/${usuarioAtual.uid}/${child.key}`));
+        carregarContatos();
+        carregarSolicitacoes();
+        notificar(`Solicitação de ${dados.nome} aceita.`);
+      };
+      box.appendChild(div);
+    });
+  }
+
+  const badge = document.getElementById("contadorSolicitacoes");
+  badge.textContent = contador;
+  badge.style.display = contador > 0 ? "inline" : "none";
+};
+
+window.confirmarAlteracaoFoto = function () {
+  const url = document.getElementById("inputFotoURL").value.trim();
+  if (!url) return alert("Insira a URL da imagem.");
+  if (!confirm("Deseja realmente alterar sua foto de perfil?")) return;
+
+  update(ref(db, `usuarios/${usuarioAtual.uid}`), { foto: url }).then(() => {
+    document.getElementById("fotoPerfil").src = url;
+    document.getElementById("btnConta").src = url;
+    notificar("Foto de perfil atualizada!");
+  });
+};
+
+const carregarPerfil = async () => {
+  const snap = await get(ref(db, `usuarios/${usuarioAtual.uid}`));
+  if (snap.exists()) {
+    const dados = snap.val();
+    document.getElementById("nomeUsuario").innerText = dados.nome;
+    document.getElementById("emailUsuario").innerText = usuarioAtual.email;
+    document.getElementById("cpfUsuario").innerText = dados.cpf;
+    if (dados.foto) {
+      document.getElementById("fotoPerfil").src = dados.foto;
+      document.getElementById("btnConta").src = dados.foto;
+    }
+  }
+};
+</script>
+</body>
+</html>

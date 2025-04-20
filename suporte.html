@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ajuda You See</title>
+  <style>
+    * {
+      margin: 0; padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      background: #fff;
+    }
+
+    header {
+      background: #001F5F;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      position: relative;
+    }
+
+    header h1 {
+      font-size: 20px;
+    }
+
+    .menu-icon {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .menu-icon div {
+      width: 25px;
+      height: 3px;
+      background-color: white;
+      border-radius: 2px;
+    }
+
+    #side-menu {
+      position: fixed;
+      top: 0;
+      right: -270px;
+      width: 270px;
+      height: 100%;
+      background: #001F5F;
+      padding: 20px;
+      transition: right 0.3s ease;
+      z-index: 999;
+      box-shadow: -3px 0 8px rgba(0,0,0,0.4);
+    }
+
+    #side-menu.active {
+      right: 0;
+    }
+
+    #side-menu .close-btn {
+      color: white;
+      font-size: 20px;
+      text-align: right;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    .menu-button {
+      background-color: #f3f3f3;
+      color: #001F5F;
+      border-left: 5px solid #ccc;
+      border-radius: 5px;
+      padding: 12px 15px;
+      text-decoration: none;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 15px;
+      transition: 0.2s;
+    }
+
+    .menu-button:hover {
+      background-color: #e0e0e0;
+    }
+
+    .imagem-area {
+      background: linear-gradient(to right, #ccc, #999);
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 18px;
+    }
+
+    .imagem-area img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .notificacao {
+      background-color: #f3f3f3;
+      border-left: 5px solid #001F5F;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+
+    .notificacao p {
+      color: #333;
+      font-size: 15px;
+    }
+
+    .topico {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .topico summary {
+      background-color: #f0f0f0;
+      padding: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .topico p {
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    .topico a {
+      color: #001F5F;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Ajuda You See</h1>
+    <div class="menu-icon" onclick="toggleMenu()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </header>
+
+  <div id="side-menu">
+    <div class="close-btn" onclick="toggleMenu()">✖</div>
+    <a href="login.html" class="menu-button">Login</a>
+    <a href="recuperacao.html" class="menu-button">Esqueceu a senha</a>
+<a href="diretrizes.html" class="menu-button">Diretrizes</a>
+
+<a href="blog.html" class="menu-button">Blog News</a>
+
+<a href="avaliar.html" class="menu-button">Deixe sua avaliação</a>
+
+
+  </div>
+
+
+
+
+  <div class="imagem-area">
+    <!-- Substitua o link abaixo pela sua imagem -->
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5NQqlPmJ33yi2ADpXrPQfI2TaylNn-7zk0A&usqp=CAU" alt="Imagem de Ajuda">
+  </div>
+
+  <div class="container">
+    <div class="notificacao">
+      <p>
+        A You See é uma plataforma de mensagens com total segurança e sigilo.
+        Você consegue enviar mensagens sem utilizar número de telefone ou ID.
+        Assim garantindo a segurança de todos os usuários presentes na plataforma e novos cadastrados.
+        As mensagens são criptografadas e são mantidas em sigilo para pessoas que precisam desse tipo de contato.
+      </p>
+    </div>
+
+    <details class="topico">
+      <summary>Como recuperar a senha</summary>
+      <p>Para recuperar a senha, <a onclick="irParaRecuperacao()">clique aqui</a>, digite seu e-mail e verifique se chegou a notificação que pode estar em spam.</p>
+    </details>
+
+    <details class="topico">
+      <summary>Como criar uma conta</summary>
+      <p>Para criar uma conta, acesse a tela de login e clique em "Cadastrar-se". Preencha os campos obrigatórios.</p>
+    </details>
+
+    <details class="topico">
+      <summary>Como adicionar contatos</summary>
+      <p>Após logar, vá até "Solicitações" e clique para aceitar ou adicionar novos usuários.</p>
+    </details>
+
+    <details class="topico">
+      <summary>Como enviar mensagens</summary>
+      <p>Abra a conversa com o contato e digite sua mensagem. Pressione "Enter" para enviar.</p>
+    </details>
+
+    <details class="topico">
+      <summary>Mensagens não entregues</summary>
+      <p>Verifique sua conexão com a internet ou se o contato aceitou a solicitação.</p>
+    </details>
+
+    <details class="topico">
+      <summary>Privacidade e segurança</summary>
+      <p>Todos os dados são criptografados e protegidos por nossa política de segurança.</p>
+    </details>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('side-menu');
+      menu.classList.toggle('active');
+    }
+
+    function irParaRecuperacao() {
+      window.location.href = "recuperacao.html";
+    }
+  </script>
+
+
+<!-- Barra de Cookies You See -->
+<style>
+  .barra-cookies {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(90deg, #001a33, #003366);
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    z-index: 9999;
+    box-sizing: border-box;
+  }
+
+  .barra-cookies.mostrar {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .barra-cookies p {
+    text-align: center;
+    max-width: 100%;
+    width: 100%;
+    font-size: 14px;
+    line-height: 1.4;
+    margin: 0;
+    padding: 0 8px;
+  }
+
+  .barra-cookies p strong {
+    color: #00ccff;
+  }
+
+  .barra-cookies .botoes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    padding: 0 8px;
+  }
+
+  .barra-cookies button {
+    flex: 1 1 140px;
+    max-width: 200px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 13px;
+  }
+
+  .barra-cookies .ok-btn {
+    background-color: #00ccff;
+    color: #001a33;
+  }
+
+  .barra-cookies .ok-btn:hover {
+    background-color: #00aacc;
+  }
+
+  .barra-cookies .compartilhar-btn {
+    background-color: #ffffff22;
+    color: #fff;
+    border: 1px solid #fff;
+  }
+
+  .barra-cookies .compartilhar-btn:hover {
+    background-color: #ffffff44;
+  }
+
+  @media (max-width: 480px) {
+    .barra-cookies p {
+      font-size: 13px;
+    }
+
+    .barra-cookies button {
+      flex: 1 1 100%;
+      max-width: none;
+    }
+  }
+</style>
+
+<div id="barraCookies" class="barra-cookies">
+  <p>
+    Este site utiliza cookies para melhorar sua experiência. As <strong>conversas são 100% anônimas</strong>, 
+    <strong>não compartilhamos mensagens</strong> com terceiros e nenhuma informação pessoal é exposta. 
+    Ao continuar, você concorda com nossa política de privacidade.
+  </p>
+  <div class="botoes">
+    <button class="ok-btn" onclick="fecharBarraCookies()">OK</button>
+    <button class="compartilhar-btn" onclick="window.location.href='https://seudominio.com/compartilhar'">Compartilhar com amigos</button>
+  </div>
+</div>
+
+<script>
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('barraCookies').classList.add('mostrar');
+    }, 1000);
+  });
+
+  function fecharBarraCookies() {
+    const barra = document.getElementById('barraCookies');
+    barra.classList.remove('mostrar');
+    setTimeout(() => barra.remove(), 1000);
+  }
+</script>
+
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy0lrRZYJZYKKzNOcbjauNiZ3gNzvQuTOwoA&usqp=CAU">
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
