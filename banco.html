@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YOU SEE - CARTEIRA</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body {
+      background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_XT_JVWc93-8RW0yRX51UfSTIz5UnaU9pYPzbb3bWIfjGze4dftkbo_ed&s=10') no-repeat center center fixed;
+      background-size: cover;
+    }
+    .container {
+      width: 100%;
+      height: 100vh;
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .login-box {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 30px;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+    .login-box h2 {
+      color: white;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background-color: rgba(255,255,255,0.9);
+    }
+    .login-box button {
+      width: 48%;
+      padding: 12px;
+      border: none;
+      margin: 10px 1%;
+      background-color: navy;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .painel-usuario {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      max-width: 600px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      padding: 20px;
+    }
+    .header {
+      background-color: #002d5f;
+      padding: 15px;
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+      text-align: center;
+      border-radius: 10px 10px 0 0;
+    }
+    .perfil {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 15px;
+    }
+    .perfil img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-right: 20px;
+      object-fit: cover;
+      border: 2px solid navy;
+    }
+    .dados h3, .dados p { margin: 5px 0; }
+    .info-box {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      border-top: 2px solid #ccc;
+      padding-top: 15px;
+    }
+    .info-item {
+      text-align: center;
+    }
+    .info-item img {
+      width: 30px;
+      height: 30px;
+    }
+    .barra-progresso {
+      margin-top: 20px;
+      height: 20px;
+      width: 100%;
+      background-color: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .barra-interna {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, #00bfff, #00ff7f);
+      transition: width 0.4s ease;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="login-box" id="loginBox">
+    <h2>Login - Suas Moedas</h2>
+    <input type="email" id="email" placeholder="Seu e-mail">
+    <input type="password" id="senha" placeholder="Sua senha">
+    <div style="display: flex; justify-content: space-between;">
+      <button onclick="logar()">Acessar</button>
+      <button onclick="history.back()">Cancelar</button>
+    </div>
+  </div>
+
+  <div class="painel-usuario" id="painelUsuario">
+    <div class="header">Suas moedas</div>
+    <div class="perfil">
+      <img id="fotoUsuario" src="" alt="Perfil">
+      <div class="dados">
+        <h3 id="nomeUsuario">Nome do Usuário</h3>
+        <p>ID: <span id="numeroSerie">000000000000</span></p>
+      </div>
+    </div>
+    <div class="info-box">
+      <div class="info-item">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7DsDVmtMAdAYQwbbw7smpbE3Df19wxE3s3w&usqp=CAU" alt="Moedas">
+        <p><strong id="saldo">0</strong> Moedas</p>
+      </div>
+      <div class="info-item">
+        <p><strong id="quantidade">0</strong><br>Adicionados</p>
+      </div>
+    </div>
+    <div class="barra-progresso">
+      <div class="barra-interna" id="barraProgresso"></div>
+    </div>
+  </div>
+</div>
+
+<a href="login.html" id="backBtn" class="floating-button" >Voltar</a>
+
+<style>
+  .floating-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: white;
+    color: #333;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 50px;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    border: 2px solid #333;
+  }
+
+  .floating-button:hover {
+    background-color: #f1f1f1;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+  }
+</style>
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+  authDomain: "login-you-see.firebaseapp.com",
+  databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+  projectId: "login-you-see",
+  storageBucket: "login-you-see.appspot.com",
+  messagingSenderId: "524877259374",
+  appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+let uid = "";
+
+window.logar = () => {
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("senha").value;
+
+  signInWithEmailAndPassword(auth, email, senha)
+    .then(userCredential => {
+      uid = userCredential.user.uid;
+      carregarPainel(uid);
+    })
+    .catch(error => {
+      alert("Erro ao logar: " + error.message);
+    });
+};
+
+function carregarPainel(uid) {
+  const userRef = ref(db, `usuarios/${uid}`);
+
+  get(userRef).then(snapshot => {
+    const data = snapshot.val();
+    if (!data) return;
+
+    const nome = data.nome || "Usuário";
+    const foto = data.foto || "https://via.placeholder.com/80";
+    const numero = data.numeroSerie || gerarNumero();
+
+    document.getElementById("nomeUsuario").innerText = nome;
+    document.getElementById("fotoUsuario").src = foto;
+    document.getElementById("numeroSerie").innerText = numero;
+
+    if (!data.numeroSerie) {
+      set(ref(db, `usuarios/${uid}/numeroSerie`), numero);
+    }
+
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("painelUsuario").style.display = "flex";
+
+    acompanharContatos(uid);
+  });
+}
+
+function acompanharContatos(uid) {
+  const contatosRef = ref(db, `contatos/${uid}`);
+
+  onValue(contatosRef, snapshot => {
+    const contatos = snapshot.val() || {};
+
+    const lista = Object.values(contatos); // lista de e-mails
+    const quantidade = lista.length;
+    const moedas = quantidade * 2;
+
+    document.getElementById("quantidade").innerText = quantidade;
+    document.getElementById("saldo").innerText = moedas;
+    atualizarBarra(moedas);
+
+    update(ref(db, `usuarios/${uid}`), {
+      adicionados: quantidade,
+      moedas: moedas
+    });
+  });
+}
+
+function gerarNumero() {
+  return Array(12).fill(0).map(() => Math.floor(Math.random() * 10)).join("");
+}
+
+function atualizarBarra(moedas) {
+  const porcentagem = Math.min((moedas / 40) * 100, 100);
+  document.getElementById("barraProgresso").style.width = porcentagem + "%";
+}
+</script>
