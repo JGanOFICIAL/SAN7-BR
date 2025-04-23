@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YOU SEE - CARTEIRA</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKxuOLillPlw3hX5slVianip7QaS-sUcTKMXLkLNqmpvHlxubCfGEgUF4&s=10') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .container {
+      width: 100%;
+      height: 100vh;
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .login-box {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 30px;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+
+    .login-box h2 {
+      color: white;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background-color: rgba(255,255,255,0.9);
+    }
+
+    .login-box button {
+      width: 48%;
+      padding: 12px;
+      border: none;
+      margin: 10px 1%;
+      background-color: navy;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .painel-usuario {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      max-width: 600px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      padding: 20px;
+    }
+
+    .header {
+      background-color: #002d5f;
+      padding: 15px;
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+      text-align: center;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .perfil {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 15px;
+    }
+
+    .perfil img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-right: 20px;
+      object-fit: cover;
+      border: 2px solid navy;
+    }
+
+    .dados {
+      flex: 1;
+    }
+
+    .dados h3, .dados p {
+      margin: 5px 0;
+    }
+
+    .info-box {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      border-top: 2px solid #ccc;
+      padding-top: 15px;
+    }
+
+    .info-item {
+      text-align: center;
+    }
+
+    .info-item img {
+      width: 30px;
+      height: 30px;
+    }
+
+    .grupo-btn {
+      display: none;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .grupo-btn button {
+      padding: 12px 25px;
+      background-color: #007BFF;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="login-box" id="loginBox">
+    <h2>Login - Suas Moedas</h2>
+    <input type="email" id="email" placeholder="Seu e-mail">
+    <input type="password" id="senha" placeholder="Sua senha">
+    <div style="display: flex; justify-content: space-between;">
+      <button onclick="logar()">Acessar</button>
+      <button onclick="history.back()">Cancelar</button>
+    </div>
+  </div>
+
+  <div class="painel-usuario" id="painelUsuario">
+    <div class="header">YOU SEE - BANCO VIRTUAL</div>
+    <div class="perfil">
+      <img id="fotoUsuario" src="" alt="Perfil">
+      <div class="dados">
+        <h3 id="nomeUsuario">Nome do Usuário</h3>
+        <p id="numeroSerie">#00000000000000000000</p>
+      </div>
+    </div>
+    <div class="info-box">
+      <div class="info-item">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7DsDVmtMAdAYQwbbw7smpbE3Df19wxE3s3w&usqp=CAU" alt="Moedas">
+        <p><strong id="saldo">0</strong> Moedas</p>
+      </div>
+      <div class="info-item">
+        <p><strong id="quantidade">0</strong><br>Adicionados</p>
+      </div>
+    </div>
+    <div class="grupo-btn" id="botaoGrupo">
+      <button onclick="history.back()">Fazer Novo Grupo</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+  import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+    authDomain: "login-you-see.firebaseapp.com",
+    databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+    projectId: "login-you-see",
+    storageBucket: "login-you-see.appspot.com",
+    messagingSenderId: "524877259374",
+    appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
+    measurementId: "G-K7E00VXYHG"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  window.logar = () => {
+    const email = document.getElementById('email').value;
+    const senha = document.getElementById('senha').value;
+
+    signInWithEmailAndPassword(auth, email, senha)
+      .then(userCredential => {
+        const user = userCredential.user;
+        const uid = user.uid;
+
+        const userRef = ref(db, 'usuarios/' + uid);
+        get(userRef).then(snapshot => {
+          const data = snapshot.val();
+          if (data) {
+            // Preencher dados
+            document.getElementById("nomeUsuario").innerText = data.nome || "Usuário";
+            document.getElementById("fotoUsuario").src = data.foto || "https://via.placeholder.com/80";
+            document.getElementById("saldo").innerText = data.moedas || 0;
+            document.getElementById("quantidade").innerText = data.adicionados || 0;
+
+            // Gerar número de série se não existir
+            if (!data.numeroSerie) {
+              const numeroSerie = "#" + Array(20).fill(0).map(() => Math.floor(Math.random() * 10)).join("");
+              set(ref(db, 'usuarios/' + uid + '/numeroSerie'), numeroSerie);
+              document.getElementById("numeroSerie").innerText = numeroSerie;
+            } else {
+              document.getElementById("numeroSerie").innerText = data.numeroSerie;
+            }
+
+            // Mostrar botão se tiver 60 moedas
+            if ((data.moedas || 0) >= 60) {
+              document.getElementById("botaoGrupo").style.display = "block";
+            }
+
+            document.getElementById("loginBox").style.display = "none";
+            document.getElementById("painelUsuario").style.display = "flex";
+          }
+        });
+      })
+      .catch(error => {
+        alert("Login inválido: " + error.message);
+      });
+  }
+</script>
+
+
+<div style="
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 999;
+">
+  
+
+  <a href="suporte.html" style="
+    padding: 10px 18px;
+    border: 2px solid white;
+    background-color: transparent;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 6px;
+    white-space: nowrap;
+    display: inline-block;
+  ">
+    Nosso Suporte
+  </a>
+
+<a href="login.html" style="
+    padding: 10px 18px;
+    border: 2px solid white;
+    background-color: transparent;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 6px;
+    white-space: nowrap;
+    display: inline-block;
+  ">
+    Voltar ao login
+  </a>
+</div>
+
+
+
+<!-- Notificação You See no Topo -->
+<div id="youSeeNotify" style="
+  position: fixed;
+  top: -100px;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #1a1a40, #004488);
+  color: white;
+  padding: 14px 20px 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+  opacity: 0;
+  transition: all 0.6s ease;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+">
+  <div style="flex: 1;">
+    <strong style="font-size: 14.5px;">SÓ NA YOU SEE</strong>
+    <p style="margin: 6px 0 0; font-size: 13px;">
+      Acesse sua carteira You See para checar quantas moedas você possui e desfrute de vários eventos e disponibilidades do aplicativo de mensagens You See.
+    </p>
+  </div>
+  <button onclick="fecharNotificacao()" style="
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+  " title="Fechar">×</button>
+</div>
+
+<!-- Tela de carregamento (oculta por padrão) -->
+<div id="carregamentoSaberMais" style="
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  backdrop-filter: blur(12px);
+  background-color: rgba(0,0,0,0.5);
+  z-index: 10000;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+">
+  <div style="
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255,255,255,0.3);
+    border-top: 5px solid white;
+    border-radius: 50%;
+    animation: girar 1s linear infinite;
+  "></div>
+  <p style="margin-top: 20px; font-size: 15px;">Levando você para saber mais...</p>
+</div>
+
+<!-- Animação girando -->
+<style>
+@keyframes girar {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+
+<script>
+  // Mostrar notificação após 1 segundo
+  setTimeout(() => {
+    const notify = document.getElementById('youSeeNotify');
+    notify.style.top = '0';
+    notify.style.opacity = '1';
+  }, 1000);
+
+  // Fechar notificação
+  function fecharNotificacao() {
+    const notify = document.getElementById('youSeeNotify');
+    notify.style.top = '-100px';
+    notify.style.opacity = '0';
+    setTimeout(() => notify.remove(), 600);
+  }
+
+  // Abrir carregamento (não usado neste caso específico)
+  function abrirCarregamento() {
+    const tela = document.getElementById('carregamentoSaberMais');
+    tela.style.display = 'flex';
+    setTimeout(() => {
+      window.location.href = "sabermais.html";
+    }, 2000);
+  }
+</script>
+
+
+</body>
+</html>

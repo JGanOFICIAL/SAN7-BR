@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>You See</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0d0d0d;
+      color: #f1f1f1;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: #101010;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.7);
+      z-index: 1000;
+    }
+
+    header h1 {
+      font-size: 22px;
+      color: #00bfff;
+    }
+
+    .menu-icon {
+      font-size: 28px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    .side-menu {
+      position: fixed;
+      top: 0;
+      right: -280px;
+      width: 280px;
+      height: 100%;
+      background-color: #1a1a1a;
+      transition: right 0.3s ease;
+      padding: 20px;
+      z-index: 2000;
+      box-shadow: -3px 0 15px rgba(0,0,0,0.5);
+    }
+
+    .side-menu.active {
+      right: 0;
+    }
+
+    .side-menu .close-btn {
+      font-size: 26px;
+      color: #fff;
+      cursor: pointer;
+      text-align: right;
+    }
+
+    .side-menu a {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 14px;
+      margin-top: 25px;
+      background-color: #2c2c2c;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: background 0.2s;
+    }
+
+    .side-menu a:hover {
+      background-color: #00bfff;
+      color: #000;
+    }
+
+    .search-container {
+      margin-top: 70px;
+      padding: 20px;
+    }
+
+    .search-container input {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      background-color: #1f1f1f;
+      color: #fff;
+      outline: none;
+      box-shadow: 0 0 6px rgba(0,0,0,0.3);
+      transition: 0.3s ease;
+    }
+
+    .search-container input:focus {
+      background-color: #2a2a2a;
+      box-shadow: 0 0 10px #00bfff55;
+    }
+
+    .hero {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .hero img {
+      width: 100%;
+      height: auto;
+      max-height: 300px;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.8);
+    }
+
+    .hero-overlay {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 150px;
+      background: linear-gradient(to top, #0d0d0d, transparent);
+    }
+
+    .hero-text {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      color: #fff;
+    }
+
+    .hero-text h2 {
+      font-size: 26px;
+      margin-bottom: 8px;
+      text-shadow: 1px 1px 4px #000;
+    }
+
+    .hero-text p {
+      font-size: 15px;
+      color: #ccc;
+    }
+
+    main {
+      padding: 20px;
+    }
+
+    .card {
+      background-color: #181818;
+      border-radius: 12px;
+      padding: 22px;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.35);
+      transition: 0.3s;
+      margin-bottom: 30px;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+    }
+
+    .card h3 {
+      color: #00bfff;
+      margin-bottom: 18px;
+      font-size: 22px;
+    }
+
+    .card ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .card ul li {
+      margin-bottom: 12px;
+      position: relative;
+      padding-left: 22px;
+      font-size: 15px;
+    }
+
+    .card ul li::before {
+      content: "✔";
+      position: absolute;
+      left: 0;
+      color: #00bfff;
+      font-size: 14px;
+    }
+
+    .buy-button {
+      display: inline-block;
+      margin-top: 25px;
+      padding: 14px 28px;
+      background-color: #00bfff;
+      color: #000;
+      font-weight: bold;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .buy-button:hover {
+      background-color: #00a4d6;
+    }
+
+    .avaliacoes {
+      margin-top: 20px;
+    }
+
+    .avaliacao {
+      background-color: #131313;
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .avaliacao h4 {
+      color: #00bfff;
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .avaliacao p {
+      font-weight: bold;
+      font-size: 15px;
+      color: #ddd;
+    }
+
+    footer {
+      background-color: #111;
+      padding: 20px;
+      text-align: center;
+      margin-top: 40px;
+      border-top: 1px solid #333;
+    }
+
+    footer a {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #00bfff;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+
+    footer a:hover {
+      background-color: #00a4d6;
+    }
+
+    @media(max-width: 600px) {
+      .hero-text h2 {
+        font-size: 20px;
+      }
+
+      .hero-text p {
+        font-size: 13px;
+      }
+
+      .card h3 {
+        font-size: 18px;
+      }
+
+      .buy-button {
+        padding: 12px 20px;
+        font-size: 15px;
+      }
+
+      .avaliacao h4 {
+        font-size: 14px;
+      }
+
+      .avaliacao p {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>You See</h1>
+    <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
+  </header>
+
+  <div class="side-menu" id="sideMenu">
+    <div class="close-btn" onclick="toggleMenu()">×</div>
+    <a href="login.html">Login</a>
+    <a href="cadastro.html">Cadastre-se</a>
+  </div>
+
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Buscar vantagens, promoções...">
+  </div>
+
+  <section class="hero">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJzH3Lpfd3WMm9BZ4N3Vb1TlqAtxRGfv6tVg&usqp=CAU" alt="Banner Promoção">
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <h2>Selo Verificado Azul R$ 14,99</h2>
+      <p>Promoção exclusiva por tempo limitado</p>
+    </div>
+  </section>
+
+  <main id="content">
+    <div class="card">
+      <h3>Importância do Selo Azul no seu perfil</h3>
+      <ul>
+        <li>Destaque no app de mensagens</li>
+        <li>Mais credibilidade e visibilidade</li>
+        <li>Atendimento prioritário</li>
+        <li>Validação rápida e segura</li>
+        <li>Acesso a recursos premium</li>
+      </ul>
+      <a class="buy-button" href="verificado-v2.html">Comprar agora</a>
+    </div>
+
+    <div class="avaliacoes">
+      <div class="avaliacao">
+        <h4>João Silva</h4>
+        <p>Excelente! Minha conta ficou muito mais profissional.</p>
+      </div>
+      <div class="avaliacao">
+        <h4>Maria Oliveira</h4>
+        <p>Amei o selo azul! Trouxe mais confiança para meus seguidores.</p>
+      </div>
+      <div class="avaliacao">
+        <h4>Carlos Souza</h4>
+        <p>Vale cada centavo. Atendimento rápido e eficiente.</p>
+      </div>
+      <div class="avaliacao">
+        <h4>Fernanda Lima</h4>
+        <p>Agora passo mais credibilidade. Super recomendo!</p>
+      </div>
+      <div class="avaliacao">
+        <h4>Bruno Mendes</h4>
+        <p>Serviço excelente. Adquiri o selo em minutos!</p>
+      </div>
+    </div>
+  </main>
+
+
+
+<div style="
+  width: 90%;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 180px 50px 100px 50px;
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(255, 255, 255, 0)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfcS2pwQcw-7m-SEcGDI6tepcVkbfSgcow2w&usqp=CAU');
+  background-size: cover;
+  background-position: center;
+  border: 4px solid white;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  border-radius: 0px;
+  color: white;
+  text-align: left;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+">
+  <h2 style="font-weight: bold; font-size: 6vw; margin-bottom: 30px;">You See para amigos</h2>
+  <p style="font-size: 3vw; line-height: 1.8;">Na You See, você consegue compartilhar mensagens e status com amigos. a melhor parte é que ao invés de utilizar numero de telefone, você pode compartilhar um E-mail aleátorio para adcionar amigos e ser adcionado(a).</p>
+</div>
+
+
+
+
+
+<div style="
+  width: 90%;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 180px 50px 100px 50px;
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(255, 255, 255, 0)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkMysGICAbWAXT7C0E7QLUn3tjdvubYDXlRg&usqp=CAU');
+  background-size: cover;
+  background-position: center;
+  border: 4px solid white;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  border-radius: 0px;
+  color: white;
+  text-align: left;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+">
+  <h2 style="font-weight: bold; font-size: 6vw; margin-bottom: 30px;">Feito no Brasil</h2>
+  <p style="font-size: 3vw; line-height: 1.8;">Sim, o You See, aplicativo de mensagens modernizado e moderno, foi desenvolvido e começou no Brasil.
+Hoje, ele representa uma nova forma de se comunicar: rápida, segura e personalizada.  
+Pensado para conectar pessoas com mais praticidade e estilo, o You See une inovação tecnológica com identidade local, mostrando ao mundo o poder da criatividade brasileira.  
+</p>
+</div>
+
+
+
+  <footer>
+    <a href="login.html">Fazer Login</a>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById("sideMenu").classList.toggle("active");
+    }
+
+    const searchInput = document.getElementById("searchInput");
+    const content = document.getElementById("content");
+
+    searchInput.addEventListener("input", function () {
+      const cards = content.querySelectorAll(".card");
+      const filter = this.value.toLowerCase();
+
+      cards.forEach(card => {
+        card.style.display = card.textContent.toLowerCase().includes(filter) ? "block" : "none";
+      });
+    });
+  </script>
+
+</body>
+</html>
