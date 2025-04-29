@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>SAN7 CONV. LOGIN</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0,0,0,0.2);
+            width: 300px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 20px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .recuperar {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .recuperar:hover {
+            text-decoration: underline;
+        }
+        .erro {
+            color: red;
+            text-align: center;
+            margin-bottom: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2>SEU ACESSO</h2>
+    <div class="erro" id="erroLogin"></div>
+    <input type="text" id="email" placeholder="Usuário (Email)">
+    <input type="password" id="senha" placeholder="Senha">
+    <button onclick="fazerLogin()">Entrar</button>
+    <a href="recuperacao-point.html" class="recuperar">Recuperar acesso</a>
+
+<br>
+<br>
+<br>
+
+
+Desenvolvido por João Felix - Todos os direitos reservados 2018 - 2025.
+
+<hr>
+
+* Não compartile seu acesso com terceiros, por segurança.
+
+<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhWwtgkpd8nlznojnq6yihUQf2ulQs2VBmKXzfRBkfdz4hLS-SQ4fb3QJi2PO9IF307KnbP67Oi0LVzy2SnIx7pGMFNXl8_KhhIyHk1KQ9VLkpkuiYse-ADHZi_FivrFcrsHisUD9aOyltiR45_kqw9a4mF7BXWU4t5tfHtyZdgc3DyNYD6_EAeCeTQubU/s519/1239541F-919E-45B3-8131-6871451968D5.jpeg" class="imagem-canto">
+
+<style>
+  .imagem-canto {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 120px; /* aumentei o tamanho */
+    height: auto;
+  }
+</style>
+
+
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI",
+        authDomain: "san7-brasil.firebaseapp.com",
+        projectId: "san7-brasil",
+        storageBucket: "san7-brasil.appspot.com",
+        messagingSenderId: "944294165741",
+        appId: "1:944294165741:web:369986a8c97bb31be620e4",
+        measurementId: "G-TQMJ1DJF51"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.fazerLogin = function() {
+        const email = document.getElementById('email').value.trim();
+        const senha = document.getElementById('senha').value.trim();
+        const erroLogin = document.getElementById('erroLogin');
+
+        if (email === "" || senha === "") {
+            erroLogin.style.display = 'block';
+            erroLogin.textContent = "Preencha todos os campos.";
+            return;
+        }
+
+        signInWithEmailAndPassword(auth, email, senha)
+            .then((userCredential) => {
+                // Login bem-sucedido
+                window.location.href = "home-point.html";
+            })
+            .catch((error) => {
+                erroLogin.style.display = 'block';
+                erroLogin.textContent = "Usuário ou senha incorretos.";
+            });
+    }
+</script>
+
+</body>
+</html>

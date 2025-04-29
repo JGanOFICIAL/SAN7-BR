@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recuperação de Acesso</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+    p {
+      color: #666;
+      margin-bottom: 30px;
+    }
+    #acessar {
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #000;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    #acessar:hover {
+      background-color: #333;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Falar com o João Félix</h1>
+<p>Acesse o suporte para recuperação de acesso.</p>
+<button id="acessar">Acessar</button>
+
+<script>
+  document.getElementById('acessar').addEventListener('click', () => {
+    const mensagem = encodeURIComponent('quero recuperar o acesso ao meu sistema.');
+    window.location.href = `https://wa.me/5584991778690?text=${mensagem}`;
+  });
+</script>
+
+</body>
+</html>

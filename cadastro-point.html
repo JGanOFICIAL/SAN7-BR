@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .cadastro-container {
+      background: white;
+      padding: 30px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .mensagem {
+      font-size: 14px;
+      color: green;
+      margin-top: 20px;
+    }
+    .erro {
+      font-size: 14px;
+      color: red;
+      margin-top: 20px;
+    }
+    .voltar {
+      display: block;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #007bff;
+      text-decoration: none;
+    }
+    .voltar:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div class="cadastro-container" id="cadastroForm">
+  <h2>Criar Conta</h2>
+  <input type="text" id="nomeCompleto" placeholder="Nome completo ou empresa" required>
+  <input type="email" id="emailCadastro" placeholder="Email" required>
+  <input type="password" id="senhaCadastro" placeholder="Senha" required>
+  <button onclick="criarConta()">Criar</button>
+  <a href="login.html" class="voltar">← Voltar</a>
+  <div class="erro" id="mensagemErro"></div>
+</div>
+
+<div class="mensagem" id="mensagemSucesso" style="display: none;">
+  Conta criada com sucesso!<br>Você já pode acessar o sistema.
+  <br><br>
+  <a href="login.html" class="voltar">→ Ir para Login</a>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI",
+    authDomain: "san7-brasil.firebaseapp.com",
+    databaseURL: "https://san7-brasil-default-rtdb.firebaseio.com",
+    projectId: "san7-brasil",
+    storageBucket: "san7-brasil.appspot.com",
+    messagingSenderId: "944294165741",
+    appId: "1:944294165741:web:369986a8c97bb31be620e4",
+    measurementId: "G-TQMJ1DJF51"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const database = getDatabase(app);
+
+  window.criarConta = function() {
+    const nomeCompleto = document.getElementById('nomeCompleto').value.trim();
+    const email = document.getElementById('emailCadastro').value.trim();
+    const senha = document.getElementById('senhaCadastro').value;
+    const mensagemSucesso = document.getElementById('mensagemSucesso');
+    const mensagemErro = document.getElementById('mensagemErro');
+    const cadastroForm = document.getElementById('cadastroForm');
+
+    if (nomeCompleto === "" || email === "" || senha === "") {
+      mensagemErro.textContent = "Preencha todos os campos.";
+      return;
+    }
+
+    createUserWithEmailAndPassword(auth, email, senha)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        set(ref(database, 'usuarios/' + user.uid), {
+          nome: nomeCompleto,
+          email: email
+        });
+        cadastroForm.style.display = "none";
+        mensagemSucesso.style.display = "block";
+      })
+      .catch((error) => {
+        mensagemErro.textContent = "Erro ao criar conta: " + error.message;
+      });
+  }
+</script>
+
+</body>
+</html>
