@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Histórico de Vendas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #000;
+      color: #fff;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+    #btn-voltar {
+      background: #fff;
+      color: #000;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #historicoContainer {
+      padding: 20px;
+    }
+    .registro {
+      background: #fff;
+      margin: 15px auto;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+      max-width: 500px;
+      border-left: 5px solid #000;
+    }
+    .registro strong {
+      color: #000;
+    }
+    .registro .total {
+      color: #006400; /* verde escuro */
+      font-weight: bold;
+    }
+    .linha {
+      border-top: 1px solid #ccc;
+      margin-top: 10px;
+      padding-top: 10px;
+    }
+    .btn-pdf {
+      background: #000;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      margin-top: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Histórico</h1>
+    <button id="btn-voltar">Voltar</button>
+  </header>
+
+  <div id="historicoContainer">Carregando...</div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI",
+      authDomain: "san7-brasil.firebaseapp.com",
+      databaseURL: "https://san7-brasil-default-rtdb.firebaseio.com",
+      projectId: "san7-brasil",
+      storageBucket: "san7-brasil.appspot.com",
+      messagingSenderId: "944294165741",
+      appId: "1:944294165741:web:369986a8c97bb31be620e4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const container = document.getElementById('historicoContainer');
+    const btnVoltar = document.getElementById('btn-voltar');
+
+    btnVoltar.addEventListener('click', () => {
+      window.location.href = "home-teste.html";
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const userId = user.uid;
+      const historicoRef = ref(db, `vendas/${userId}/historico`);
+
+      try {
+        const snapshot = await get(historicoRef);
+
+        if (snapshot.exists()) {
+          const dados = snapshot.val();
+          const chaves = Object.keys(dados).sort().reverse();
+
+          container.innerHTML = '';
+
+          chaves.forEach((chave, index) => {
+            const venda = dados[chave];
+            const div = document.createElement('div');
+            div.className = 'registro';
+            div.innerHTML = `
+              <div><strong>Data:</strong> ${venda.data}</div>
+              <div><strong>Hora encerramento:</strong> ${venda.hora}</div>
+              <div class="total"><strong>Total:</strong> R$ ${parseFloat(venda.total).toFixed(2)}</div>
+              <div><small><strong>Nº Série:</strong> ${venda.numeroSerie}</small></div>
+              <button class="btn-pdf" onclick="baixarPDF('${venda.data}', '${venda.hora}', '${venda.total}', '${venda.numeroSerie}')">Baixar PDF</button>
+            `;
+            container.appendChild(div);
+          });
+        } else {
+          container.innerHTML = '<p>Nenhum histórico encontrado.</p>';
+        }
+      } catch (error) {
+        console.error(error);
+        container.innerHTML = '<p>Erro ao carregar o histórico.</p>';
+      }
+    });
+
+    // Função simulada para baixar PDF
+    window.baixarPDF = function(data, hora, total, numeroSerie) {
+      const texto = `Data: ${data}\nHora: ${hora}\nTotal: R$ ${parseFloat(total).toFixed(2)}\nNº Série: ${numeroSerie}`;
+      const blob = new Blob([texto], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `venda_${data}_${hora}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    };
+  </script>
+</body>
+</html>
+
+
