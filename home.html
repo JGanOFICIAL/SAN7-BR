@@ -1,639 +1,234 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Home - YOU SEE MENSSAGENS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aluno - SAN7 Cursos</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #ffffff;
-    }
-
-    header {
-      background-color: #002244;
-      color: white;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    header h2 {
-      margin: 0;
-    }
-
-    .icons {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
-
-    .icon-img {
-      width: 30px;
-      height: 30px;
-      cursor: pointer;
-    }
-
-    .perfil-icon {
-      border-radius: 50%;
-    }
-
-    .icon-wrapper {
-      position: relative;
-    }
-
-    .badge {
-      background-color: green;
-      color: white;
-      font-weight: bold;
-      border-radius: 10px;
-      padding: 2px 8px;
-      font-size: 12px;
-      position: absolute;
-      top: -5px;
-      right: -10px;
-    }
-
-    #solicitacoes {
-      position: absolute;
-      top: 60px;
-      right: 20px;
       background: white;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      color: #333;
+    }
+
+    .tela-inicial, .tela-material {
       display: none;
-      width: 260px;
-      max-height: 300px;
-      overflow-y: auto;
-      z-index: 999;
-    }
-
-    #solicitacoes .solicitacao {
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-      cursor: pointer;
-    }
-
-    #solicitacoes .solicitacao:hover {
-      background-color: #f2f2f2;
-    }
-
-    #contatos {
+      min-height: 100vh;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
       padding: 20px;
     }
 
-    .contato {
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      margin-bottom: 10px;
+    .tela-inicial {
       display: flex;
-      align-items: center;
-      gap: 15px;
-      cursor: pointer;
-      transition: background 0.3s;
-      position: relative;
     }
 
-    .contato:hover {
-      background-color: #f9f9f9;
-    }
-
-    .foto-contato {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .info-contato {
-      flex-grow: 1;
-    }
-
-    .info-contato strong {
-      display: block;
-      font-size: 16px;
-    }
-
-    .info-contato span {
-      font-size: 13px;
-      color: #666;
-    }
-
-    .overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: rgba(0,0,0,0.6);
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-
-    .popup {
-      background-color: white;
-      padding: 30px;
+    .imagem-topo {
+      width: 100%;
+      max-width: 320px;
+      margin-bottom: 30px;
       border-radius: 10px;
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
     }
 
-    .acoes {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
+    .botoes-container {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      z-index: 9999;
+      gap: 20px;
+      width: 100%;
+      max-width: 320px;
     }
 
-    .acoes a {
-      text-decoration: none;
-      border: 2px solid #001f3f;
-      color: #001f3f;
-      background: transparent;
-      padding: 10px 20px;
-      border-radius: 25px;
-      font-family: Arial, sans-serif;
-      font-size: 14px;
+    .botao-inicial {
+      padding: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
       text-align: center;
     }
 
-    /* Notificação moderna */
-    #notificacao {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #007bff;
-      color: white;
-      padding: 15px 20px;
-      border-radius: 12px;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      opacity: 0;
-      z-index: 9999;
-      transition: opacity 0.4s ease-in-out;
-      border: 1px solid #0056b3;
-    }
-
-    #notificacao.show {
-      opacity: 1;
-    }
-
-    #notificacao .hora {
-      font-size: 12px;
-      opacity: 0.8;
-      margin-left: auto;
-    }
-
-    /* Popup moderno do perfil */
-    .perfil-popup {
-      padding: 25px;
-      background-color: #fff;
-      border-radius: 12px;
-      width: 100%;
-      max-width: 450px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      font-family: Arial, sans-serif;
-      position: relative;
-    }
-
-    .perfil-popup .perfil-topo {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 15px;
-    }
-
-    .perfil-popup .perfil-topo img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .perfil-popup .fechar-perfil {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      background: none;
-      border: none;
-      font-size: 18px;
-      cursor: pointer;
-      color: #666;
-    }
-
-    .perfil-popup .opcoes-imagem {
-      margin-top: 20px;
-      border-top: 1px solid #ccc;
-      padding-top: 15px;
-    }
-
-    .perfil-popup .opcoes-imagem input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 6px;
-      border: 1px solid #bbb;
-    }
-
-    .perfil-popup .opcoes-imagem button {
-      margin-top: 10px;
-      padding: 10px;
-      width: 100%;
-      background-color: #002244;
+    .btn-material {
+      background-color: #0056b3;
       color: white;
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
     }
 
-    .perfil-popup .tutorial {
-      margin-top: 15px;
-      font-size: 13px;
-      color: #444;
-      line-height: 1.4;
-      background-color: #f9f9f9;
-      padding: 10px;
-      border-radius: 6px;
+    .btn-material:hover {
+      background-color: #003f87;
     }
 
-    .perfil-popup .dados-extra {
-      margin-top: 15px;
-      font-size: 12px;
-      color: #666;
-      border-top: 1px solid #ccc;
-      padding-top: 15px;
+    .btn-prova {
+      background-color: transparent;
+      color: #0056b3;
+      border: 2px solid #0056b3;
     }
 
-    .contato .badge {
-      position: absolute;
-      right: 15px;
-      top: 15px;
-      background-color: green;
-      color: white;
-      padding: 4px 8px;
-      font-size: 12px;
+    .btn-prova:hover {
+      background-color: #e6f0ff;
+    }
+
+    .mensagem-explicativa {
+      margin-top: 25px;
+      font-size: 16px;
+      text-align: center;
+      font-style: italic;
       font-weight: bold;
-      border-radius: 12px;
-      display: none;
+      color: #444;
+      max-width: 320px;
+    }
+
+    .tela-material {
+      background-color: #f4f4f4;
+      padding-bottom: 40px;
+    }
+
+    header {
+      background-color: #0056b3;
+      color: white;
+      width: 100%;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    header h1 {
+      flex: 1;
+      font-size: 20px;
+    }
+
+    .voltar-btn {
+      background-color: white;
+      color: #0056b3;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .bloco {
+      background: white;
+      margin: 20px auto;
+      padding: 20px;
+      width: 90%;
+      max-width: 800px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+
+    .bloco h2 {
+      margin-bottom: 10px;
+      color: #0056b3;
+    }
+
+    .bloco p {
+      margin-bottom: 15px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 315px;
+      border: none;
+      border-radius: 6px;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h2>YOU SEE</h2>
-    <div class="icons">
-      <img id="btnConta" src="URL_DA_IMAGEM_DO_PERFIL" class="icon-img perfil-icon" />
-      <div class="icon-wrapper">
-        <img id="btnSino" src="URL_DO_SINO" class="icon-img" />
-        <span id="contadorSolicitacoes" class="badge" style="display:none">0</span>
-      </div>
-      <img id="btnAddContato" src="URL_DO_ADD_CONTATO" class="icon-img" />
+  <!-- Tela Inicial -->
+  <div class="tela-inicial" id="telaInicial">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8InIn3eDdyorivqbxwu9wZ0s5M9QdJzgbBA&usqp=CAU" alt="Imagem de topo" class="imagem-topo">
+
+    <div class="botoes-container">
+      <button class="botao-inicial btn-material" onclick="mostrarMaterial()">Acessar Material Didático</button>
+      <button class="botao-inicial btn-prova" onclick="window.location.href='prova.html'">Realizar Prova</button>
     </div>
-  </header>
 
-  <div id="notificacao">
-    <span id="textoNotificacao"></span>
-    <span class="hora" id="horaNotificacao"></span>
-    <button id="fecharNotificacao" style="background:none;border:none;color:white;font-size:16px;cursor:pointer">✖</button>
-  </div>
-
-  <div id="solicitacoes"></div>
-
-  <div id="contatos">
-    <h3>Conversas</h3>
-    <div id="listaContatos"></div>
-  </div>
-
-  <div id="adicionarContatoOverlay" class="overlay">
-    <div class="popup">
-      <h3>Adicionar Contato</h3>
-      <input type="email" id="emailContato" placeholder="Digite o e-mail do contato" />
-      <button id="procurarContato">Procurar</button>
-      <div id="resultadoBusca"></div>
-      <button onclick="document.getElementById('adicionarContatoOverlay').style.display='none'">Fechar</button>
+    <div class="mensagem-explicativa">
+      <strong><em>É importante acessar o material didático e estudar antes de iniciar a prova.</em></strong>
     </div>
   </div>
 
-  <!-- NOVO POPUP DE PERFIL -->
-  <div id="perfilOverlay" class="overlay">
-    <div class="popup perfil-popup">
-      <button class="fechar-perfil" id="fecharPerfil">✖</button>
-      <div class="perfil-topo">
-        <img id="fotoPerfil" src="URL_DA_IMAGEM_DO_PERFIL" alt="Perfil" />
-        <div>
-          <h3 id="nomeUsuario" style="margin: 0;"></h3>
-        </div>
-      </div>
+  <!-- Tela Material Didático -->
+  <div class="tela-material" id="telaMaterial">
+    <header>
+      <h1>Material Didático</h1>
+      <button class="voltar-btn" onclick="window.location.href='home.html'">Voltar</button>
+    </header>
 
-      <div class="opcoes-imagem">
-        <label for="inputFotoURL">URL da imagem de perfil:</label>
-        <input type="text" id="inputFotoURL" placeholder="Cole a URL da imagem aqui" />
-        <button onclick="confirmarAlteracaoFoto()">Atualizar Imagem</button>
-      </div>
+    <div class="bloco">
+      <h2>Introdução</h2>
+      <p>A atendente de farmácia é uma profissional essencial no cotidiano da área da saúde, sendo o primeiro contato de muitos clientes ao buscarem medicamentos ou orientações básicas. Com simpatia, atenção e responsabilidade, ela auxilia na organização dos produtos, realiza o atendimento ao público e fornece informações sobre o uso correto dos remédios, sempre respeitando os limites da sua função. Além disso, é fundamental que tenha conhecimentos sobre os principais medicamentos, higiene no ambiente de trabalho e práticas de atendimento humanizado. Sua atuação contribui diretamente para o bem-estar dos clientes, exigindo ética, agilidade e boa comunicação. A atendente de farmácia também colabora com farmacêuticos e demais profissionais da equipe, garantindo que os processos ocorram de forma eficiente e segura.</p>
+    </div>
 
-      <div class="tutorial">
-        <strong>Como mudar sua imagem:</strong><br>
-        Copie a URL de uma imagem pública (ex: de um site de avatares).<br><br>
-        <em>Por segurança, não envie fotos pessoais. O sistema é público e visível por qualquer usuário.</em>
-      </div>
 
-      <div class="dados-extra">
-        <div id="emailUsuario"></div>
-        <div id="cpfUsuario"></div>
-      </div>
+
+<div style="width: 100%; max-width: 100%; box-sizing: border-box;">
+
+  <!-- Vídeo 1 -->
+  <div style="border: 1px solid #0a1d3a; margin-bottom: 10px;">
+    <div style="position: relative; width: 100%; padding-bottom: 56.25%; background-color: #000;">
+      <iframe src="https://www.youtube.com/embed/lWC7LpPAwpk"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+        allowfullscreen></iframe>
     </div>
   </div>
 
-  <div class="acoes">
-    <a href="login.html">Sair da conta</a>
-    <a href="recuperacao.html">Recuperar senha</a>
+  <!-- Vídeo 2 -->
+  <div style="border: 1px solid #0a1d3a; margin-bottom: 10px;">
+    <div style="position: relative; width: 100%; padding-bottom: 56.25%; background-color: #000;">
+      <iframe src="https://www.youtube.com/embed/4XKqUc7TRSk"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+        allowfullscreen></iframe>
+    </div>
   </div>
 
-  <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import {
-  getDatabase, ref, get, set, update, remove, onChildAdded
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+  <!-- Vídeo 3 -->
+  <div style="border: 1px solid #0a1d3a;">
+    <div style="position: relative; width: 100%; padding-bottom: 56.25%; background-color: #000;">
+      <iframe src="https://www.youtube.com/embed/QwEGxJcqfls"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+        allowfullscreen></iframe>
+    </div>
+  </div>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
-  authDomain: "login-you-see.firebaseapp.com",
-  databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
-  projectId: "login-you-see",
-  storageBucket: "login-you-see.appspot.com",
-  messagingSenderId: "524877259374",
-  appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f"
-};
+</div>
+    
+    <div class="bloco">
+      <h2>Medicamentos sob supervisão do Farmaceutico</h2>
+      <p>O medicamento é um recurso fundamental para o tratamento e alívio de diversas doenças, sendo responsável por melhorar a qualidade de vida e, muitas vezes, salvar vidas. No entanto, seu uso inadequado pode trazer riscos à saúde, como reações adversas, interações perigosas ou ineficácia do tratamento. Por isso, é essencial que os clientes sempre peçam orientações ao farmacêutico presente na farmácia, pois ele é o profissional habilitado para oferecer informações técnicas, verificar prescrições e garantir o uso seguro dos remédios. Contar com a opinião do farmacêutico evita erros comuns e reforça a segurança no tratamento. A comunicação clara entre o paciente, a atendente e o farmacêutico fortalece a confiança e promove o cuidado responsável com a saúde.</p>
+    </div>
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
+   
 
-let usuarioAtual = null;
-let mensagensNaoLidas = {};
+    <div class="bloco">
+      <h2>Conclusão: principais pontos</h2>
+      <p>O atendente de farmácia exerce um papel fundamental no acolhimento do cliente e na orientação inicial sobre produtos e serviços. É importante que ele esteja atento às necessidades de cada pessoa, sabendo ouvir com paciência e responder com clareza. Além de conhecer os medicamentos mais comuns, o atendente deve estar preparado para falar sobre cosméticos, itens de higiene pessoal, suplementos, produtos infantis e equipamentos de saúde que também são vendidos na farmácia. A variedade de produtos exige um conhecimento amplo, mesmo que básico, para oferecer um atendimento completo e satisfatório. O formato de atendimento pode ser presencial, por telefone ou até por aplicativos, e em todos eles é necessário manter um padrão de cordialidade e respeito. O atendimento humanizado é um diferencial que fideliza o cliente e transmite confiança. O atendente não deve apenas repassar informações, mas também entender o que o cliente realmente precisa, muitas vezes interpretando sinais de dúvida ou insegurança. É essencial lembrar que a venda de medicamentos exige responsabilidade, e qualquer questionamento mais técnico deve ser sempre encaminhado ao farmacêutico. Entre as dicas importantes está manter o ambiente limpo, o estoque organizado, checar datas de validade e conhecer as promoções em andamento. O atendente também deve saber oferecer produtos complementares com educação, como por exemplo indicar uma pomada após a compra de um curativo. Outro ponto relevante é manter-se atualizado sobre lançamentos e mudanças no setor farmacêutico. A atenção aos detalhes, o cuidado com cada cliente e o compromisso com a saúde são características indispensáveis. O atendente de farmácia é um elo entre o cliente e o cuidado com o bem-estar, e seu trabalho impacta diretamente na imagem da farmácia. Portanto, é necessário agir com ética, compromisso e empatia em todos os momentos.</p>
+    </div>
+  </div>
 
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    usuarioAtual = user;
-    carregarContatos();
-    escutarMensagens();
-    carregarSolicitacoes();
-    carregarPerfil();
-  } else {
-    window.location.href = "login.html";
-  }
-});
 
-const notificar = (msg) => {
-  const n = document.getElementById("notificacao");
-  const texto = document.getElementById("textoNotificacao");
-  const hora = document.getElementById("horaNotificacao");
 
-  texto.textContent = msg;
 
-  const agora = new Date();
-  const horas = agora.getHours().toString().padStart(2, '0');
-  const minutos = agora.getMinutes().toString().padStart(2, '0');
-  hora.textContent = `${horas}:${minutos}`;
 
-  n.classList.add("show");
-  setTimeout(() => n.classList.remove("show"), 4000);
-};
 
-document.getElementById("fecharNotificacao").onclick = () => {
-  document.getElementById("notificacao").classList.remove("show");
-};
 
-const carregarContatos = async () => {
-  const snap = await get(ref(db, `contatos/${usuarioAtual.uid}`));
-  const lista = document.getElementById("listaContatos");
-  lista.innerHTML = "";
-
-  if (snap.exists()) {
-    const contatos = Object.entries(snap.val());
-
-    for (const [uid, dados] of contatos) {
-      const userSnap = await get(ref(db, `usuarios/${uid}`));
-      const userData = userSnap.val();
-      const foto = userData?.foto || "default.jpg";
-
-      const msgSnap = await get(ref(db, "mensagens"));
-      let ultima = "";
-      let ultimaData = 0;
-      let naoLidas = 0;
-
-      msgSnap.forEach(child => {
-        const m = child.val();
-        const entreUsuarios = 
-          (m.origem === uid && m.destino === usuarioAtual.uid) ||
-          (m.origem === usuarioAtual.uid && m.destino === uid);
-
-        if (entreUsuarios && m.timestamp > ultimaData) {
-          ultimaData = m.timestamp;
-          ultima = m.texto.includes(".gif") ? "GIF" : m.texto;
-        }
-
-        if (m.origem === uid && m.destino === usuarioAtual.uid && !m.lida) {
-          naoLidas++;
-        }
-      });
-
-      const div = document.createElement("div");
-      div.className = "contato";
-      div.innerHTML = `
-        <img src="${foto}" class="foto-contato"/>
-        <div class="info-contato">
-          <strong>${dados.nome}</strong>
-          <span>${ultima}</span>
-        </div>
-        <span id="badge-${uid}" class="badge" style="${naoLidas > 0 ? 'display:inline' : 'display:none'}">${naoLidas}</span>
-      `;
-      div.onclick = () => {
-        marcarComoLida(uid);
-        sessionStorage.setItem("contatoUid", uid);
-        sessionStorage.setItem("contatoNome", dados.nome);
-        window.location.href = "mensagens.html";
-      };
-
-      mensagensNaoLidas[uid] = naoLidas;
-      lista.appendChild(div);
+  <script>
+    function mostrarMaterial() {
+      document.getElementById('telaInicial').style.display = 'none';
+      document.getElementById('telaMaterial').style.display = 'flex';
     }
-  }
-};
+  </script>
 
-const escutarMensagens = () => {
-  const refMsgs = ref(db, "mensagens/");
-  onChildAdded(refMsgs, async snap => {
-    const msg = snap.val();
-
-    if (msg.destino === usuarioAtual.uid && !msg.lida) {
-      let qtd = mensagensNaoLidas[msg.origem] || 0;
-      mensagensNaoLidas[msg.origem] = ++qtd;
-
-      const badge = document.getElementById(`badge-${msg.origem}`);
-      if (badge) {
-        badge.style.display = "inline";
-        badge.textContent = mensagensNaoLidas[msg.origem];
-      }
-
-      const userSnap = await get(ref(db, `usuarios/${msg.origem}`));
-      const nome = userSnap.exists() ? userSnap.val().nome : "Contato";
-      notificar(`${nome}: ${msg.texto.includes(".gif") ? "GIF" : msg.texto}`);
-
-      carregarContatos(); // Atualiza lista
-    }
-  });
-};
-
-const marcarComoLida = async (uidContato) => {
-  const snap = await get(ref(db, "mensagens"));
-  snap.forEach(child => {
-    const m = child.val();
-    if (m.origem === uidContato && m.destino === usuarioAtual.uid && !m.lida) {
-      update(ref(db, `mensagens/${child.key}`), { lida: true });
-    }
-  });
-  mensagensNaoLidas[uidContato] = 0;
-  const badge = document.getElementById(`badge-${uidContato}`);
-  if (badge) badge.style.display = "none";
-};
-
-document.getElementById("btnConta").onclick = () => {
-  document.getElementById("perfilOverlay").style.display = "flex";
-};
-
-document.getElementById("btnAddContato").onclick = () => {
-  document.getElementById("adicionarContatoOverlay").style.display = "flex";
-};
-
-document.getElementById("btnSino").onclick = () => {
-  const box = document.getElementById("solicitacoes");
-  box.style.display = box.style.display === "block" ? "none" : "block";
-};
-
-document.getElementById("fecharPerfil").onclick = async () => {
-  document.getElementById("perfilOverlay").style.display = "none";
-  const snap = await get(ref(db, `usuarios/${usuarioAtual.uid}`));
-  if (snap.exists()) {
-    const dados = snap.val();
-    if (dados.foto) {
-      document.getElementById("btnConta").src = dados.foto;
-    }
-  }
-};
-
-document.getElementById("procurarContato").onclick = async () => {
-  const email = document.getElementById("emailContato").value.trim();
-  const usersRef = ref(db, "usuarios");
-  const snap = await get(usersRef);
-  let encontrado = false;
-
-  snap.forEach(childSnap => {
-    const userData = childSnap.val();
-    if (userData.email === email && childSnap.key !== usuarioAtual.uid) {
-      const foto = userData.foto || "default.jpg";
-      document.getElementById("resultadoBusca").innerHTML = `
-        <img src="${foto}" class="foto-contato" style="width:40px;height:40px;margin-bottom:10px"/>
-        <p><strong>${userData.nome}</strong><br>${userData.email}</p>
-        <button onclick="enviarSolicitacao('${childSnap.key}', '${userData.nome}', '${userData.email}')">Solicitar</button>
-      `;
-      encontrado = true;
-    }
-  });
-
-  if (!encontrado) {
-    document.getElementById("resultadoBusca").innerText = "Contato não encontrado.";
-  }
-};
-
-window.enviarSolicitacao = async (uidDestino, nome, email) => {
-  const snap = await get(ref(db, `usuarios/${usuarioAtual.uid}`));
-  await set(ref(db, `solicitacoes/${uidDestino}/${usuarioAtual.uid}`), {
-    nome: snap.val().nome,
-    email: usuarioAtual.email,
-    foto: snap.val().foto || ""
-  });
-  notificar("Solicitação enviada!");
-  document.getElementById("adicionarContatoOverlay").style.display = "none";
-};
-
-const carregarSolicitacoes = async () => {
-  const box = document.getElementById("solicitacoes");
-  const snap = await get(ref(db, `solicitacoes/${usuarioAtual.uid}`));
-  box.innerHTML = "";
-  let contador = 0;
-
-  if (snap.exists()) {
-    snap.forEach(child => {
-      contador++;
-      const dados = child.val();
-      const div = document.createElement("div");
-      div.className = "solicitacao";
-      div.innerHTML = `<strong>${dados.nome}</strong><br><small>${dados.email}</small>`;
-      div.onclick = async () => {
-        await set(ref(db, `contatos/${usuarioAtual.uid}/${child.key}`), {
-          nome: dados.nome,
-          email: dados.email
-        });
-        const snapMe = await get(ref(db, `usuarios/${usuarioAtual.uid}`));
-        const meusDados = snapMe.val();
-        await set(ref(db, `contatos/${child.key}/${usuarioAtual.uid}`), {
-          nome: meusDados.nome,
-          email: usuarioAtual.email
-        });
-        await remove(ref(db, `solicitacoes/${usuarioAtual.uid}/${child.key}`));
-        carregarContatos();
-        carregarSolicitacoes();
-        notificar(`Solicitação de ${dados.nome} aceita.`);
-      };
-      box.appendChild(div);
-    });
-  }
-
-  const badge = document.getElementById("contadorSolicitacoes");
-  badge.textContent = contador;
-  badge.style.display = contador > 0 ? "inline" : "none";
-};
-
-window.confirmarAlteracaoFoto = function () {
-  const url = document.getElementById("inputFotoURL").value.trim();
-  if (!url) return alert("Insira a URL da imagem.");
-  if (!confirm("Deseja realmente alterar sua foto de perfil?")) return;
-
-  update(ref(db, `usuarios/${usuarioAtual.uid}`), { foto: url }).then(() => {
-    document.getElementById("fotoPerfil").src = url;
-    document.getElementById("btnConta").src = url;
-    notificar("Foto de perfil atualizada!");
-  });
-};
-
-const carregarPerfil = async () => {
-  const snap = await get(ref(db, `usuarios/${usuarioAtual.uid}`));
-  if (snap.exists()) {
-    const dados = snap.val();
-    document.getElementById("nomeUsuario").innerText = dados.nome;
-    document.getElementById("emailUsuario").innerText = usuarioAtual.email;
-    document.getElementById("cpfUsuario").innerText = dados.cpf;
-    if (dados.foto) {
-      document.getElementById("fotoPerfil").src = dados.foto;
-      document.getElementById("btnConta").src = dados.foto;
-    }
-  }
-};
-</script>
 </body>
 </html>
