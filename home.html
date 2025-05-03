@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aluno - SAN7 Cursos</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: white;
+      color: #333;
+    }
+
+    .tela-inicial, .tela-material {
+      display: none;
+      min-height: 100vh;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .tela-inicial {
+      display: flex;
+    }
+
+    .imagem-topo {
+      width: 100%;
+      max-width: 320px;
+      margin-bottom: 30px;
+      border-radius: 10px;
+    }
+
+    .botoes-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .botao-inicial {
+      padding: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+      text-align: center;
+    }
+
+    .btn-material {
+      background-color: #0056b3;
+      color: white;
+      border: none;
+    }
+
+    .btn-material:hover {
+      background-color: #003f87;
+    }
+
+    .btn-prova {
+      background-color: transparent;
+      color: #0056b3;
+      border: 2px solid #0056b3;
+    }
+
+    .btn-prova:hover {
+      background-color: #e6f0ff;
+    }
+
+    .mensagem-explicativa {
+      margin-top: 25px;
+      font-size: 16px;
+      text-align: center;
+      font-style: italic;
+      font-weight: bold;
+      color: #444;
+      max-width: 320px;
+    }
+
+    .tela-material {
+      background-color: #f4f4f4;
+      padding-bottom: 40px;
+    }
+
+    header {
+      background-color: #0056b3;
+      color: white;
+      width: 100%;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    header h1 {
+      flex: 1;
+      font-size: 20px;
+    }
+
+    .voltar-btn {
+      background-color: white;
+      color: #0056b3;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .bloco {
+      background: white;
+      margin: 20px auto;
+      padding: 20px;
+      width: 90%;
+      max-width: 800px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+
+    .bloco h2 {
+      margin-bottom: 10px;
+      color: #0056b3;
+    }
+
+    .bloco p {
+      margin-bottom: 15px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 315px;
+      border: none;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Tela Inicial -->
+  <div class="tela-inicial" id="telaInicial">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8InIn3eDdyorivqbxwu9wZ0s5M9QdJzgbBA&usqp=CAU" alt="Imagem de topo" class="imagem-topo">
+
+    <div class="botoes-container">
+      <button class="botao-inicial btn-material" onclick="mostrarMaterial()">Acessar Material Didático</button>
+
+<button class="botao-inicial btn-prova" onclick="window.location.href='prova.html'">Realizar Prova</button>
+
+
+    </div>
+
+    <div class="mensagem-explicativa">
+      <strong><em>É importante acessar o material didático e estudar antes de iniciar a prova.</em></strong>
+    </div>
+  </div>
+
+  <!-- Tela Material Didático -->
+  <div class="tela-material" id="telaMaterial">
+    <header>
+      <h1>Material Didático</h1>
+      <button class="voltar-btn" onclick="window.location.href='home.html'">Voltar</button>
+    </header>
+
+    <div class="bloco">
+      <h2>Introdução</h2>
+      <p>A atendente de farmácia é uma profissional essencial no cotidiano da área da saúde, sendo o primeiro contato de muitos clientes ao buscarem medicamentos ou orientações básicas. Com simpatia, atenção e responsabilidade, ela auxilia na organização dos produtos, realiza o atendimento ao público e fornece informações sobre o uso correto dos remédios, sempre respeitando os limites da sua função. Além disso, é fundamental que tenha conhecimentos sobre os principais medicamentos, higiene no ambiente de trabalho e práticas de atendimento humanizado. Sua atuação contribui diretamente para o bem-estar dos clientes, exigindo ética, agilidade e boa comunicação. A atendente de farmácia também colabora com farmacêuticos e demais profissionais da equipe, garantindo que os processos ocorram de forma eficiente e segura.</p>
+    </div>
+
+
+
+<div style="width: 100%; max-width: 100%; box-sizing: border-box;">
+
+  <!-- Vídeo 1 -->
+  <div style="border: 1px solid #0a1d3a; margin-bottom: 10px;">
+    <div style="position: relative; width: 100%; padding-bottom: 56.25%; background-color: #000;">
+      <iframe src="https://www.youtube.com/embed/lWC7LpPAwpk"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+        allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- Vídeo 2 -->
+  <div style="border: 1px solid #0a1d3a; margin-bottom: 10px;">
+    <div style="position: relative; width: 100%; padding-bottom: 56.25%; background-color: #000;">
+      <iframe src="https://www.youtube.com/embed/4XKqUc7TRSk"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+        allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- Vídeo 3 -->
+  <div style="border: 1px solid #0a1d3a;">
+    <div style="position: relative; width: 100%; padding-bottom: 56.25%; background-color: #000;">
+      <iframe src="https://www.youtube.com/embed/QwEGxJcqfls"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+        allowfullscreen></iframe>
+    </div>
+  </div>
+
+</div>
+    
+    <div class="bloco">
+      <h2>Medicamentos sob supervisão do Farmaceutico</h2>
+      <p>O medicamento é um recurso fundamental para o tratamento e alívio de diversas doenças, sendo responsável por melhorar a qualidade de vida e, muitas vezes, salvar vidas. No entanto, seu uso inadequado pode trazer riscos à saúde, como reações adversas, interações perigosas ou ineficácia do tratamento. Por isso, é essencial que os clientes sempre peçam orientações ao farmacêutico presente na farmácia, pois ele é o profissional habilitado para oferecer informações técnicas, verificar prescrições e garantir o uso seguro dos remédios. Contar com a opinião do farmacêutico evita erros comuns e reforça a segurança no tratamento. A comunicação clara entre o paciente, a atendente e o farmacêutico fortalece a confiança e promove o cuidado responsável com a saúde.</p>
+    </div>
+
+
+
+<div class="bloco">
+      <h2>Famacologia: conceito e os formatos que devem ser realizados por um Profissional Farmaceutico. Este assunto aprimora seu conhecimento, mas não está em ações de um Atendente de Farmácia</h2>
+      <p>A farmacologia é o estudo dos medicamentos e como eles interagem com o corpo humano. Para um atendente de farmácia, ter noções básicas dessa área é importante para orientar clientes com segurança. Os medicamentos são classificados conforme suas funções, como analgésicos para dor, antitérmicos para febre e antibióticos para infecções. É essencial entender que apenas o médico pode diagnosticar e prescrever medicamentos controlados. O atendente deve saber identificar remédios de venda livre e explicar corretamente as formas de uso conforme indicado na bula. Conhecer as apresentações, como comprimidos, xaropes e pomadas, ajuda a esclarecer dúvidas comuns dos clientes. Também é necessário diferenciar medicamentos de referência, genéricos e similares. O armazenamento correto dos produtos garante a eficácia do tratamento. A data de validade deve ser sempre conferida antes da venda. É proibido recomendar medicamentos sem respaldo técnico. Em casos de reações adversas, o cliente deve ser orientado a procurar um profissional de saúde. A atenção, ética e responsabilidade são essenciais no atendimento ao público.</p>
+    </div>
+
+   
+
+    <div class="bloco">
+      <h2>Conclusão: principais pontos</h2>
+      <p>O atendente de farmácia exerce um papel fundamental no acolhimento do cliente e na orientação inicial sobre produtos e serviços. É importante que ele esteja atento às necessidades de cada pessoa, sabendo ouvir com paciência e responder com clareza. Além de conhecer os medicamentos mais comuns, o atendente deve estar preparado para falar sobre cosméticos, itens de higiene pessoal, suplementos, produtos infantis e equipamentos de saúde que também são vendidos na farmácia. A variedade de produtos exige um conhecimento amplo, mesmo que básico, para oferecer um atendimento completo e satisfatório. O formato de atendimento pode ser presencial, por telefone ou até por aplicativos, e em todos eles é necessário manter um padrão de cordialidade e respeito. O atendimento humanizado é um diferencial que fideliza o cliente e transmite confiança. O atendente não deve apenas repassar informações, mas também entender o que o cliente realmente precisa, muitas vezes interpretando sinais de dúvida ou insegurança. É essencial lembrar que a venda de medicamentos exige responsabilidade, e qualquer questionamento mais técnico deve ser sempre encaminhado ao farmacêutico. Entre as dicas importantes está manter o ambiente limpo, o estoque organizado, checar datas de validade e conhecer as promoções em andamento. O atendente também deve saber oferecer produtos complementares com educação, como por exemplo indicar uma pomada após a compra de um curativo. Outro ponto relevante é manter-se atualizado sobre lançamentos e mudanças no setor farmacêutico. A atenção aos detalhes, o cuidado com cada cliente e o compromisso com a saúde são características indispensáveis. O atendente de farmácia é um elo entre o cliente e o cuidado com o bem-estar, e seu trabalho impacta diretamente na imagem da farmácia. Portanto, é necessário agir com ética, compromisso e empatia em todos os momentos.</p>
+    </div>
+
+
+
+<!-- Imagem com descrição -->
+<div class="imagem-container">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmtSYVnrDQlbRDipd3kKVZlJWp2uU2UFG3IA&usqp=CAU" alt="Descrição da imagem" class="imagem-estilizada">
+  <p class="descricao" id="descricaoTexto">
+    <strong>
+      De acordo com a Lei nº 5.991/1973, o atendimento ao público deve garantir a presença de um farmacêutico durante todo o horário de funcionamento. O atendente não pode realizar a dispensação de medicamentos sujeitos a controle especial, sendo essa uma atividade exclusiva do farmacêutico.  "Ver mais" É vedado ao atendente interpretar receitas médicas ou indicar medicamentos, mesmo que isentos de prescrição. Seu papel está restrito à organização de produtos, atendimento básico ao cliente e apoio administrativo. A Agência Nacional de Vigilância Sanitária (ANVISA) reforça a importância do cumprimento das normas sanitárias. O Código de Ética da Farmácia também delimita as funções permitidas aos colaboradores. A capacitação do atendente pode ser feita por meio de cursos técnicos, mas não substitui a formação em Farmácia. O ambiente deve ser fiscalizado periodicamente pelos conselhos regionais. A quebra das regras pode resultar em sanções para o estabelecimento. O atendente deve manter postura ética e respeitosa com o público. Seu trabalho contribui para o bom funcionamento da farmácia. A comunicação com o farmacêutico é essencial para garantir um atendimento seguro. A legislação protege o consumidor contra práticas irregulares. É responsabilidade da farmácia garantir a orientação adequada ao paciente. O atendente deve sempre encaminhar dúvidas técnicas ao profissional habilitado. O cumprimento das leis assegura a qualidade do serviço prestado.
+    </strong>
+  </p>
+  <button id="verMaisBtn" onclick="expandirDescricao()">Ver mais</button>
+</div>
+
+<!-- Estilos -->
+<style>
+  .imagem-container {
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    padding: 10px;
+  }
+
+  .imagem-estilizada {
+    width: 100%;
+    height: auto;
+    border: 4px solid #007BFF;
+    border-radius: 8px;
+  }
+
+  .descricao {
+    margin-top: 10px;
+    font-weight: bold;
+    overflow: hidden;
+    max-height: 80px;
+    transition: max-height 0.3s ease;
+  }
+
+  #verMaisBtn {
+    margin-top: 10px;
+    padding: 8px 14px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: none;
+  }
+
+  #verMaisBtn:hover {
+    background-color: #0056b3;
+  }
+
+  @media (max-width: 600px) {
+    .imagem-container {
+      padding: 5px;
+    }
+  }
+</style>
+
+<!-- Script -->
+<script>
+  window.onload = function () {
+    const descricao = document.getElementById("descricaoTexto");
+    const botao = document.getElementById("verMaisBtn");
+
+    if (descricao.scrollHeight > 80) {
+      botao.style.display = "inline-block";
+    }
+  };
+
+  function expandirDescricao() {
+    const descricao = document.getElementById("descricaoTexto");
+    descricao.style.maxHeight = "1000px";
+    document.getElementById("verMaisBtn").style.display = "none";
+  }
+</script>
+
+
+
+
+
+
+
+  <script>
+    function mostrarMaterial() {
+      document.getElementById('telaInicial').style.display = 'none';
+      document.getElementById('telaMaterial').style.display = 'flex';
+    }
+  </script>
+
+
+  </div>
+
+
+
+
+
+
+</body>
+</html>
