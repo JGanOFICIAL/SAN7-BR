@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cadastro UNINTA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    body {
+      background-color: #8B0000;
+      padding: 0;
+      margin: 0;
+    }
+
+    header {
+      background-color: #fff;
+      padding: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    header img {
+      max-height: 80px;
+    }
+
+    .container {
+      max-width: 500px;
+      background: #fff;
+      margin: 40px auto;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    h2 {
+      color: #8B0000;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      color: #333;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .radio-group label {
+      font-weight: normal;
+    }
+
+    button {
+      background-color: #8B0000;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #a40000;
+    }
+
+    .success-message {
+      text-align: center;
+      color: white;
+      font-size: 20px;
+      margin-top: 50px;
+    }
+
+    footer {
+      text-align: center;
+      color: white;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <!-- Coloque a URL da sua imagem abaixo -->
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkaqo7o8j88GPUERhZgdeEvKWsk0bhbxdrpg&usqp=CAU" />
+  </header>
+
+  <div class="container" id="form-container">
+    <h1>Formulário Uninta</h1>
+    <p>Após o cadastro, um suporte Uninta entrará em contato com você pelo WhatsApp.<p>
+<br>
+
+    <form id="cadastroForm">
+      <label for="nome">Nome completo:</label>
+      <input type="text" id="nome" required>
+
+      <label for="cpf">CPF:</label>
+      <input type="text" id="cpf" required>
+
+      <label for="nascimento">Data de Nascimento:</label>
+      <input type="text" id="nascimento" required>
+
+      <label for="telefone">Celular (WhatsApp):</label>
+      <input type="text" id="telefone" required>
+
+      <label for="rua">Rua:</label>
+      <input type="text" id="rua" required>
+
+      <label for="numero">Número da casa:</label>
+      <input type="text" id="numero" required>
+
+      <label for="cidade">Cidade:</label>
+      <input type="text" id="cidade" required>
+
+<br>
+<br>
+
+      <label>Possui Ensino Médio?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="ensino" value="Sim" required> Sim</label>
+        <label><input type="radio" name="ensino" value="Não"> Não</label>
+      </div>
+
+<br>
+
+      <label for="observacoes">Observações (opcional):</label>
+      <textarea id="observacoes" rows="4"></textarea>
+
+<br>
+      <button type="submit">Enviar</button>
+    </form>
+<br>
+
+
+<p>Após enviar, aguarde que um suporte responsável entrará em contato. Amamos ter você conosco!<p>
+  </div>
+
+
+  <div class="success-message" id="successMsg" style="display:none;">
+    Obrigado! Aguarde que a equipe da UNINTA entrará em contato via WhatsApp.
+  </div>
+
+  <footer>
+    Desenvolvido por João Paulo Félix
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="https://unpkg.com/imask"></script>
+  <script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+      authDomain: "login-you-see.firebaseapp.com",
+      databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+      projectId: "login-you-see",
+      storageBucket: "login-you-see.appspot.com",
+      messagingSenderId: "524877259374",
+      appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
+      measurementId: "G-K7E00VXYHG"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Máscaras
+    IMask(document.getElementById('cpf'), { mask: '000.000.000-00' });
+    IMask(document.getElementById('nascimento'), { mask: '00/00/0000' });
+    IMask(document.getElementById('telefone'), { mask: '(00) 00000-0000' });
+
+    document.getElementById('cadastroForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const nome = document.getElementById('nome').value;
+      const cpf = document.getElementById('cpf').value;
+      const nascimento = document.getElementById('nascimento').value;
+      const telefone = document.getElementById('telefone').value;
+      const rua = document.getElementById('rua').value;
+      const numero = document.getElementById('numero').value;
+      const cidade = document.getElementById('cidade').value;
+      const ensino = document.querySelector('input[name="ensino"]:checked')?.value;
+      const observacoes = document.getElementById('observacoes').value;
+
+      const aluno = {
+        nome, cpf, nascimento, telefone, rua, numero, cidade, ensino, observacoes
+      };
+
+      db.ref("cadastros").push(aluno).then(() => {
+        document.getElementById('form-container').style.display = 'none';
+        document.getElementById('successMsg').style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
