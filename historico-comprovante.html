@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Histórico de Comprovantes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: linear-gradient(to right, #000, #333);
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header img {
+      height: 40px;
+    }
+    header button {
+      background: white;
+      border: none;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+    .container {
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      box-shadow: 0 0 10px #ccc;
+    }
+    .comprovante {
+      border: 2px dotted #333;
+      padding: 15px;
+      margin-bottom: 20px;
+      background: #fefefe;
+    }
+    .comprovante h3 {
+      margin-top: 0;
+    }
+    .comprovante button {
+      margin-right: 10px;
+      margin-top: 10px;
+      padding: 8px 12px;
+      border: none;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    .comprovante .excluir {
+      background: red;
+    }
+    #msg {
+      text-align: center;
+      color: gray;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="https://via.placeholder.com/100x40?text=Empresa" alt="Logo Empresa">
+  <button onclick="location.href='comprovante.html'">Voltar</button>
+</header>
+
+<div class="container">
+  <h1>Histórico de Comprovantes</h1>
+  <div id="comprovantes"></div>
+  <div id="msg">Carregando comprovantes...</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+    authDomain: "login-you-see.firebaseapp.com",
+    databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+    projectId: "login-you-see",
+    storageBucket: "login-you-see.appspot.com",
+    messagingSenderId: "524877259374",
+    appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const container = document.getElementById('comprovantes');
+  const msg = document.getElementById('msg');
+
+  db.ref("comprovantes").on("value", snapshot => {
+    container.innerHTML = '';
+    const data = snapshot.val();
+    if (!data) {
+      msg.textContent = "Nenhum comprovante encontrado.";
+      return;
+    }
+    msg.style.display = 'none';
+    Object.entries(data).reverse().forEach(([id, item]) => {
+      const div = document.createElement("div");
+      div.className = "comprovante";
+      div.innerHTML = `
+        <h3>${item.produto} (${item.metodo})</h3>
+        <p><strong>Cliente:</strong> ${item.nome}</p>
+        <p><strong>Marca:</strong> ${item.marca}</p>
+        ${item.descricao ? `<p><strong>Descrição:</strong> ${item.descricao}</p>` : ''}
+        <p><strong>Preço:</strong> ${item.preco}</p>
+        <p><strong>Série:</strong> ${item.serie}</p>
+        <p><strong>Data:</strong> ${new Date(item.data).toLocaleString()}</p>
+        <button onclick='baixarPDF(${JSON.stringify(item)})'>Baixar PDF</button>
+        <button class="excluir" onclick="excluirComprovante('${id}')">Excluir</button>
+      `;
+      container.appendChild(div);
+    });
+  });
+
+  function baixarPDF(dados) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(12);
+    doc.text("COMPROVANTE BANCÁRIO", 20, 20);
+    doc.text(`Nome: ${dados.nome}`, 20, 30);
+    doc.text(`Produto: ${dados.produto}`, 20, 40);
+    doc.text(`Marca: ${dados.marca}`, 20, 50);
+    if (dados.descricao) doc.text(`Descrição: ${dados.descricao}`, 20, 60);
+    doc.text(`Preço: ${dados.preco}`, 20, 70);
+    doc.text(`Pagamento: ${dados.metodo}`, 20, 80);
+    doc.text(`Série: ${dados.serie}`, 20, 90);
+    doc.save(`Comprovante_${dados.nome.replace(/\s/g, '_')}.pdf`);
+  }
+
+  function excluirComprovante(id) {
+    if (confirm("Deseja realmente excluir este comprovante?")) {
+      db.ref("comprovantes/" + id).remove();
+    }
+  }
+</script>
+
+</body>
+</html>
