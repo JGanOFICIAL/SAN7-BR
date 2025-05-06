@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Loja - Home</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background: #1e1e1e; color: white; padding-top: 60px; }
+
+    header {
+      position: fixed;
+      top: 0; left: 0; width: 100%;
+      background: black; color: white;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px; z-index: 10;
+    }
+
+    header img {
+      width: 40px; height: 40px;
+    }
+
+    header a {
+      color: white; text-decoration: none;
+      background: #333; padding: 10px;
+      border-radius: 4px;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    #saldo {
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .botoes {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none; border-radius: 4px;
+      background: #444; color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .produto {
+      background: #2c2c2c;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      box-shadow: 2px 2px 5px black;
+    }
+
+    .produto h3, .produto p { margin: 5px 0; }
+
+    .produto button {
+      background: red;
+      margin-top: 5px;
+    }
+
+    #formCadastro {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+    }
+
+    #formCadastro form {
+      background: #333;
+      padding: 20px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+    }
+
+    #formCadastro input {
+      margin: 8px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    #notificacao {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 255, 100, 0.2);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      display: none;
+      z-index: 99;
+      backdrop-filter: blur(3px);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhI10DzSTqR3iSxpFIhR9gQ7a6dl6WelrEsh773tNDLZ7Vam05YTVUqZFIn75NWiDQJMf-MzCtu7oRWPblbtiyD3VMG2DbnDwJdnMFEqnAf30ZZdrlUUNN5Wj8uOyUcqChUWlyXaL4NxmXbkFSVavtfEZ1lXLoRy7beUWIDY4i9atR4ngnDdFm6636cFhY/s1520/8EE03F3C-77CE-4525-9160-3D41763ABEA7.jpeg" alt="Logo" />
+    <a href="historico.html">Histórico</a>
+  </header>
+
+  <div id="notificacao"></div>
+
+  <div class="container">
+    <div id="saldo">0.00</div>
+
+    <div class="botoes">
+      <button onclick="mostrarFormulario()">Cadastrar Produto</button>
+      <button onclick="finalizarDia()">Finalizar Dia</button>
+    </div>
+
+    <div id="produtos"></div>
+  </div>
+
+  <div id="formCadastro">
+    <form onsubmit="cadastrarProduto(event)">
+      <input type="text" id="nome" placeholder="Nome do produto" required />
+      <input type="number" id="quantidade" placeholder="Quantidade em estoque" required />
+      <input type="number" id="preco" placeholder="Preço unitário" required />
+      <input type="text" id="marca" placeholder="Marca (opcional)" />
+      <button type="submit">Cadastrar</button>
+      <button type="button" onclick="fecharFormulario()">Cancelar</button>
+    </form>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+      authDomain: "login-you-see.firebaseapp.com",
+      databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+      projectId: "login-you-see",
+      storageBucket: "login-you-see.appspot.com",
+      messagingSenderId: "524877259374",
+      appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let saldo = 0;
+
+    // Recupera saldo do banco
+    db.ref("saldoAtual").once("value").then(snapshot => {
+      saldo = parseFloat(snapshot.val() || "0");
+      atualizarSaldo();
+    });
+
+    function atualizarSaldo() {
+      document.getElementById("saldo").innerText = saldo.toFixed(2);
+    }
+
+    function mostrarFormulario() {
+      document.getElementById("formCadastro").style.display = "flex";
+    }
+
+    function fecharFormulario() {
+      document.getElementById("formCadastro").style.display = "none";
+    }
+
+    function cadastrarProduto(e) {
+      e.preventDefault();
+      const nome = document.getElementById("nome").value;
+      const quantidade = parseInt(document.getElementById("quantidade").value);
+      const preco = parseFloat(document.getElementById("preco").value);
+      const marca = document.getElementById("marca").value;
+
+      const id = Date.now();
+      db.ref("produtos/" + id).set({
+        id, nome, quantidade, preco, marca,
+        quantidadeInicial: quantidade
+      });
+
+      fecharFormulario();
+      document.querySelector("form").reset();
+    }
+
+    function renderizarProdutos() {
+      const container = document.getElementById("produtos");
+      container.innerHTML = "";
+
+      db.ref("produtos").on("value", (snapshot) => {
+        container.innerHTML = "";
+        snapshot.forEach(prodSnap => {
+          const produto = prodSnap.val();
+
+          const div = document.createElement("div");
+          div.className = "produto";
+          div.innerHTML = `
+            <h3>${produto.nome}</h3>
+            <p>Estoque: ${produto.quantidade}</p>
+            <p>Preço: R$ ${produto.preco.toFixed(2)}</p>
+            <p>Marca: ${produto.marca || '---'}</p>
+            <button onclick="vender(${produto.id})">- Vender</button>
+          `;
+          container.appendChild(div);
+        });
+      });
+    }
+
+    function vender(id) {
+      const prodRef = db.ref("produtos/" + id);
+      prodRef.once("value").then(snapshot => {
+        const produto = snapshot.val();
+        if (produto.quantidade > 0) {
+          produto.quantidade -= 1;
+          saldo += produto.preco;
+
+          db.ref("saldoAtual").set(saldo.toFixed(2));
+          atualizarSaldo();
+
+          prodRef.update({ quantidade: produto.quantidade });
+        }
+      });
+    }
+
+    function finalizarDia() {
+      if (!confirm("Você realmente deseja finalizar o dia?")) return;
+
+      db.ref("produtos").once("value", (snapshot) => {
+        const data = new Date().toLocaleString();
+
+        db.ref("historico").push({
+          data,
+          saldo: saldo.toFixed(2)
+        });
+
+        db.ref("saldoAtual").set(0);
+        saldo = 0;
+        atualizarSaldo();
+
+        mostrarNotificacao(`Dia finalizado. Valor total: R$ ${saldo.toFixed(2)}`);
+      });
+    }
+
+    function mostrarNotificacao(texto) {
+      const noti = document.getElementById("notificacao");
+      noti.innerText = texto;
+      noti.style.display = "block";
+      setTimeout(() => {
+        noti.style.display = "none";
+      }, 4000);
+    }
+
+    renderizarProdutos();
+  </script>
+</body>
+</html>
+
+
+<!-- Botão flutuante para abrir a calculadora -->
+<style>
+  #abrirCalc {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    z-index: 1000;
+  }
+
+  #abrirCalc img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid #004d00;
+    object-fit: cover;
+  }
+
+  #calculadora {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+    background: white;
+    border-top: 4px solid #004d00;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.4);
+    transition: bottom 0.5s ease;
+    z-index: 999;
+  }
+
+  #calculadora.ativa {
+    bottom: 0;
+  }
+
+  .calc-header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+    background: #f2f2f2;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .calc-header button {
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .calc-container {
+    padding: 20px;
+  }
+
+  .calc-display {
+    width: 100%;
+    height: 60px;
+    font-size: 2rem;
+    text-align: right;
+    padding: 10px;
+    border: 2px solid #004d00;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    color: #004d00;
+  }
+
+  .calc-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+
+  .calc-buttons button {
+    padding: 20px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 6px;
+    background: #e6e6e6;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .calc-buttons button:hover {
+    background: #cccccc;
+  }
+
+  .btn-operador {
+    background: #d0f0d0;
+    color: #004d00;
+  }
+
+  .btn-igual {
+    background: #004d00;
+    color: white;
+    grid-column: span 2;
+  }
+</style>
+
+<!-- Botão para abrir -->
+<button id="abrirCalc">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSljnQJGYaS3PvX2zgqy2aijoPs-F13XIwIgts3-z0FNQZp4VJaHdullwyX&s=10" alt="Abrir Calculadora">
+</button>
+
+<!-- Calculadora -->
+<div id="calculadora">
+  <div class="calc-header">
+    <button onclick="fecharCalculadora()">X</button>
+  </div>
+  <div class="calc-container">
+    <input type="text" class="calc-display" id="displayCalc" readonly>
+    <div class="calc-buttons">
+      <button onclick="inserir('C')">C</button>
+      <button onclick="inserir('%')">%</button>
+      <button onclick="inserir('/')">/</button>
+      <button class="btn-operador" onclick="inserir('*')">x</button>
+      <button onclick="inserir('7')">7</button>
+      <button onclick="inserir('8')">8</button>
+      <button onclick="inserir('9')">9</button>
+      <button class="btn-operador" onclick="inserir('-')">-</button>
+      <button onclick="inserir('4')">4</button>
+      <button onclick="inserir('5')">5</button>
+      <button onclick="inserir('6')">6</button>
+      <button class="btn-operador" onclick="inserir('+')">+</button>
+      <button onclick="inserir('1')">1</button>
+      <button onclick="inserir('2')">2</button>
+      <button onclick="inserir('3')">3</button>
+      <button onclick="inserir('.')">.</button>
+      <button onclick="inserir('0')">0</button>
+      <button class="btn-igual" onclick="calcular()">=</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const calc = document.getElementById('calculadora');
+  const display = document.getElementById('displayCalc');
+  let expressao = '';
+
+  document.getElementById('abrirCalc').addEventListener('click', () => {
+    calc.classList.add('ativa');
+  });
+
+  function fecharCalculadora() {
+    calc.classList.remove('ativa');
+  }
+
+  function inserir(valor) {
+    if (valor === 'C') {
+      expressao = '';
+    } else {
+      expressao += valor;
+    }
+    display.value = expressao;
+  }
+
+  function calcular() {
+    try {
+      expressao = eval(expressao).toString();
+      display.value = expressao;
+    } catch {
+      display.value = 'Erro';
+      expressao = '';
+    }
+  }
+</script>
+
+
+
+<!-- BOTÃO REDONDO COMPROVANTE -->
+<a href="comprovante.html" class="botao-comprovante">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_fe-xTqPS9D0OEwhekTp0GGGMYFLAhQl5ng&usqp=CAU" alt="Comprovante" />
+</a>
+
+<style>
+  .botao-comprovante {
+    position: fixed;
+    bottom: 110px; /* Ajusta a altura para ficar acima do botão da calculadora */
+    right: 15px;   /* Mesma proporção lateral */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid yellow;
+    background-color: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+
+  .botao-comprovante img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+  }
+</style>
+
+  
