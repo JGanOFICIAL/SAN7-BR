@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Garotas VIP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --preto: #0a0a23;
+      --roxo: #8000ff;
+      --roxo-escuro: #30004d;
+      --dourado: #ffd700;
+      --branco: #fff;
+      --cinza: #aaa;
+      --card: #1a1a33;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--preto);
+      color: var(--branco);
+    }
+
+    header {
+      background: linear-gradient(to right, var(--roxo-escuro), var(--roxo));
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      box-shadow: 0 3px 10px #000;
+    }
+
+    header h1 {
+      font-size: 24px;
+      color: var(--dourado);
+      text-shadow: 2px 2px #000;
+    }
+
+    header button {
+      padding: 8px 20px;
+      border-radius: 25px;
+      border: 2px solid var(--branco);
+      background: transparent;
+      color: var(--branco);
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    header button:hover {
+      background: var(--branco);
+      color: var(--roxo);
+    }
+
+    .search-bar {
+      text-align: center;
+      padding: 30px 20px 10px;
+    }
+
+    .search-bar input {
+      width: 90%;
+      max-width: 500px;
+      padding: 14px;
+      font-size: 16px;
+      border: none;
+      border-radius: 30px;
+      background: #222244;
+      color: var(--branco);
+      box-shadow: 0 0 10px #000;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+      padding: 30px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid var(--dourado);
+      box-shadow: 0 0 18px rgba(255, 215, 0, 0.3);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      opacity: 0;
+      transform: scale(0.95);
+      animation: fadeInUp 0.8s forwards;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 25px var(--dourado);
+    }
+
+    .card img {
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+    }
+
+    .card .info {
+      padding: 15px;
+      text-align: center;
+    }
+
+    .info h3 {
+      margin: 10px 0 5px;
+      font-size: 20px;
+      color: var(--dourado);
+    }
+
+    .info p {
+      font-size: 14px;
+      color: var(--cinza);
+    }
+
+    .floating-btn {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--dourado);
+      color: #111;
+      padding: 14px 30px;
+      border-radius: 30px;
+      font-weight: bold;
+      text-decoration: none;
+      box-shadow: 0 0 18px rgba(255, 215, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .floating-btn:hover {
+      background: #ffe74c;
+    }
+
+    .skeleton {
+      background: #2d2d50;
+      height: 300px;
+      border-radius: 16px;
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.3; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Garotas VIPs com mais avaliações e destaque.</h1>
+
+    <button onclick="location.href='home.html'">Voltar</button>
+  </header>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Buscar por nome ou cidade..." oninput="filtrar()">
+  </div>
+
+  <div class="grid" id="vipContainer">
+    <!-- Cards -->
+  </div>
+
+  <a class="floating-btn" href="https://wa.me/5584991778690?text=Quero%20promover%20meu%20perfil%20no%20garotacomigo.com" target="_blank">Promova agora seu perfil ♥️</a>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBs2GrFPGib7Nz02F03Eeo5DTW-8OTJmFI",
+      authDomain: "san7-2b351.firebaseapp.com",
+      databaseURL: "https://san7-2b351-default-rtdb.firebaseio.com",
+      projectId: "san7-2b351",
+      storageBucket: "san7-2b351.appspot.com",
+      messagingSenderId: "511547914036",
+      appId: "1:511547914036:web:0595e39aef88258c649761"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const container = document.getElementById('vipContainer');
+
+    function showSkeletons(qtde = 6) {
+      container.innerHTML = '';
+      for (let i = 0; i < qtde; i++) {
+        const div = document.createElement('div');
+        div.className = 'skeleton';
+        container.appendChild(div);
+      }
+    }
+
+    function carregarPerfis() {
+      showSkeletons();
+      db.ref('usuarios').once('value').then(snapshot => {
+        container.innerHTML = '';
+        snapshot.forEach(child => {
+          const u = child.val();
+          if (!u.vip || !u.fotoPerfil) return;
+
+          const div = document.createElement('div');
+          div.className = 'card';
+          div.onclick = () => {
+            sessionStorage.setItem('perfilId', child.key);
+            location.href = 'artigo.html';
+          };
+          div.innerHTML = `
+            <img src="${u.fotoPerfil}">
+            <div class="info">
+              <h3>${u.nome}</h3>
+              <p>${u.cidade}</p>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      });
+    }
+
+    function filtrar() {
+      const termo = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        const nome = card.querySelector('h3').textContent.toLowerCase();
+        const cidade = card.querySelector('p').textContent.toLowerCase();
+        card.style.display = (nome.includes(termo) || cidade.includes(termo)) ? 'block' : 'none';
+      });
+    }
+
+    window.onload = carregarPerfis;
+  </script>
+</body>
+</html>
+
+
+
+<style>
+  /* Fundo desfocado */
+  #loader-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+  }
+
+  /* Bolinha giratória multicolorida pequena e moderna */
+  #loader {
+    width: 30px;
+    height: 30px;
+    border: 4px solid transparent;
+    border-top-color: #e74c3c;    /* Vermelho */
+    border-right-color: #f1c40f;  /* Amarelo */
+    border-bottom-color: #2ecc71; /* Verde */
+    border-left-color: #3498db;   /* Azul */
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.7), 0 0 12px rgba(231, 76, 60, 0.7);
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+
+<div id="loader-bg">
+  <div id="loader"></div>
+</div>
+
+<script>
+  setTimeout(() => {
+    const loaderBg = document.getElementById('loader-bg');
+    loaderBg.style.opacity = '0';
+    setTimeout(() => loaderBg.remove(), 500);
+  }, 2000);
+</script>

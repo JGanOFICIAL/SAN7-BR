@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Promover Garotas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --fundo: #0a0a23;
+      --roxo: #6b00b3;
+      --roxo-escuro: #1b005f;
+      --card: #1c1c3c;
+      --branco: #fff;
+      --cinza: #aaa;
+    }
+
+    body {
+      background: var(--fundo);
+      color: var(--branco);
+      font-family: 'Segoe UI', sans-serif;
+      padding-bottom: 80px;
+    }
+
+    header {
+      background: linear-gradient(90deg, var(--roxo-escuro), var(--roxo));
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h2 {
+      font-size: 22px;
+    }
+
+    header button {
+      padding: 8px 18px;
+      border-radius: 25px;
+      background: transparent;
+      border: 2px solid var(--branco);
+      color: var(--branco);
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .search {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .search input {
+      padding: 10px 20px;
+      border-radius: 30px;
+      border: none;
+      width: 90%;
+      max-width: 500px;
+      background: #222244;
+      color: white;
+      font-size: 16px;
+    }
+
+    .lista {
+      padding: 0 20px;
+    }
+
+    .card {
+      background: var(--card);
+      margin: 10px auto;
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #0006;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 700px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .card .info {
+      flex: 1;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .card p {
+      margin: 5px 0 0;
+      color: var(--cinza);
+      font-size: 14px;
+    }
+
+    .card input[type="checkbox"] {
+      transform: scale(1.4);
+    }
+
+    .salvar-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #25d366;
+      color: white;
+      padding: 12px 30px;
+      font-weight: bold;
+      font-size: 16px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 0 12px #0006;
+      z-index: 999;
+    }
+
+    .salvar-btn:hover {
+      background: #1cb854;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Painel de Promoção</h2>
+    <button onclick="location.href='home.html'">Voltar</button>
+  </header>
+
+  <div class="search">
+    <input type="text" id="searchInput" placeholder="Buscar por nome ou cidade" oninput="filtrarUsuarios()">
+  </div>
+
+  <div class="lista" id="listaUsuarios">
+    <!-- Lista de perfis com checkbox -->
+  </div>
+
+  <button class="salvar-btn" onclick="salvarAlteracoes()">Salvar</button>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBs2GrFPGib7Nz02F03Eeo5DTW-8OTJmFI",
+      authDomain: "san7-2b351.firebaseapp.com",
+      databaseURL: "https://san7-2b351-default-rtdb.firebaseio.com",
+      projectId: "san7-2b351",
+      storageBucket: "san7-2b351.appspot.com",
+      messagingSenderId: "511547914036",
+      appId: "1:511547914036:web:0595e39aef88258c649761"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const lista = document.getElementById('listaUsuarios');
+    const dadosUsuarios = [];
+
+    function carregarUsuarios() {
+      db.ref('usuarios').once('value').then(snapshot => {
+        lista.innerHTML = '';
+        snapshot.forEach(child => {
+          const u = child.val();
+          const uid = child.key;
+          const div = document.createElement('div');
+          div.className = 'card';
+          div.innerHTML = `
+            <div class="info">
+              <h3>${u.nome || 'Sem nome'}</h3>
+              <p>${u.cidade || ''}</p>
+            </div>
+            <input type="checkbox" data-uid="${uid}" ${u.vip ? 'checked' : ''}>
+          `;
+          lista.appendChild(div);
+          dadosUsuarios.push({ uid, nome: u.nome || '', cidade: u.cidade || '' });
+        });
+      });
+    }
+
+    function salvarAlteracoes() {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(cb => {
+        const uid = cb.getAttribute('data-uid');
+        db.ref('usuarios/' + uid + '/vip').set(cb.checked);
+      });
+      alert("Alterações salvas com sucesso!");
+    }
+
+    function filtrarUsuarios() {
+      const termo = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        const nome = card.querySelector('h3').textContent.toLowerCase();
+        const cidade = card.querySelector('p').textContent.toLowerCase();
+        card.style.display = nome.includes(termo) || cidade.includes(termo) ? 'flex' : 'none';
+      });
+    }
+
+    window.onload = carregarUsuarios;
+  </script>
+</body>
+</html>

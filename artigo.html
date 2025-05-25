@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Perfil da Garota</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --roxo: #6b00b3;
+      --roxo-escuro: #1b005f;
+      --fundo: #0a0a23;
+      --branco: #fff;
+      --cinza: #bbb;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--fundo);
+      color: var(--branco);
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: linear-gradient(90deg, var(--roxo-escuro), var(--roxo));
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    header h2 {
+      font-size: 22px;
+    }
+
+    header button {
+      background: transparent;
+      border: 2px solid var(--branco);
+      color: var(--branco);
+      padding: 8px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s ease;
+    }
+
+    header button:hover {
+      background: var(--branco);
+      color: var(--roxo);
+    }
+
+    main {
+      padding: 130px 20px 60px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .perfil {
+      text-align: center;
+      margin-bottom: 30px;
+      animation: fadeIn 0.8s ease;
+    }
+
+    .perfil img {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 4px solid var(--roxo);
+      object-fit: cover;
+      box-shadow: 0 0 15px var(--roxo);
+    }
+
+    .perfil h3 {
+      margin-top: 15px;
+      font-size: 1.8rem;
+    }
+
+    .perfil p {
+      font-size: 1rem;
+      color: var(--cinza);
+    }
+
+    .zap {
+      margin-top: 12px;
+    }
+
+    .zap a {
+      display: inline-block;
+      padding: 10px 22px;
+      background: #25d366;
+      color: white;
+      border-radius: 30px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .zap a:hover {
+      background: #1cb854;
+    }
+
+    .contador {
+      margin-top: 10px;
+      font-size: 15px;
+      color: #aaa;
+      animation: bounceIn 0.5s ease;
+    }
+
+    .postagem {
+      background: #14143a;
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px #0006;
+    }
+
+    .postagem h3 {
+      margin-top: 0;
+    }
+
+    .postagem p {
+      color: #ccc;
+      margin-bottom: 10px;
+    }
+
+    .midia-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .midia-container img, .midia-container video {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .comentarios {
+      margin-top: 40px;
+      background: #1d1d3f;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #0005;
+    }
+
+    .comentarios h4 {
+      margin-bottom: 12px;
+    }
+
+    .comentarios input, .comentarios textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border: none;
+      border-radius: 6px;
+      background: #2c2c55;
+      color: white;
+    }
+
+    .comentarios button {
+      background: var(--roxo);
+      color: white;
+      padding: 10px 24px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      display: block;
+      margin: auto;
+    }
+
+    .comentario {
+      background: #202050;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    .comentario span {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 4px;
+      color: var(--roxo);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      60% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Perfil da Garota</h2>
+    <button onclick="history.back()">Voltar</button>
+  </header>
+
+  <main>
+    <div class="perfil">
+      <img id="fotoPerfil" src="" alt="Foto da garota">
+      <h3 id="nome"></h3>
+      <p id="cidade"></p>
+      <div class="zap">
+        <a id="zapBtn" href="#" target="_blank" onclick="registrarClick()">Chamar no WhatsApp</a>
+      </div>
+      <div class="contador">
+        Cliques no WhatsApp: <span id="clicks">0</span>
+      </div>
+    </div>
+
+    <div id="publicacoes"></div>
+
+    <div class="comentarios">
+      <h4>Deixe um comentário</h4>
+      <input id="nomeComentario" placeholder="Seu nome">
+      <textarea id="mensagemComentario" placeholder="Sua mensagem"></textarea>
+      <button onclick="enviarComentario()">Comentar</button>
+      <div id="listaComentarios"></div>
+    </div>
+  </main>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBs2GrFPGib7Nz02F03Eeo5DTW-8OTJmFI",
+    authDomain: "san7-2b351.firebaseapp.com",
+    databaseURL: "https://san7-2b351-default-rtdb.firebaseio.com",
+    projectId: "san7-2b351",
+    storageBucket: "san7-2b351.appspot.com",
+    messagingSenderId: "511547914036",
+    appId: "1:511547914036:web:0595e39aef88258c649761"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const uid = sessionStorage.getItem('perfilId');
+  if (!uid) location.href = 'home.html';
+
+  const clickKey = `click_${uid}`;
+
+  // Carrega perfil
+  db.ref("usuarios/" + uid).once("value").then(snapshot => {
+    const data = snapshot.val();
+    if (!data) return;
+    document.getElementById('fotoPerfil').src = data.fotoPerfil || '';
+    document.getElementById('nome').textContent = data.nome || '';
+    document.getElementById('cidade').textContent = data.cidade || '';
+    document.getElementById('zapBtn').href = `https://wa.me/${data.whatsapp.replace(/\D/g, '')}`;
+  });
+
+  // Carrega publicações
+  db.ref("publicacoes/" + uid).once("value").then(snapshot => {
+    const container = document.getElementById("publicacoes");
+    snapshot.forEach(child => {
+      const pub = child.val();
+      const div = document.createElement("div");
+      div.className = "postagem";
+      div.innerHTML = `
+        <h3>${pub.titulo || 'Sem título'}</h3>
+        <p>${pub.descricao || ''}</p>
+        <div class="midia-container"></div>
+      `;
+      const midiaDiv = div.querySelector(".midia-container");
+
+      (pub.fotos || []).forEach(foto => {
+        const img = document.createElement("img");
+        img.src = foto;
+        midiaDiv.appendChild(img);
+      });
+
+      (pub.videos || []).forEach(video => {
+        const vid = document.createElement("video");
+        vid.src = video;
+        vid.controls = true;
+        midiaDiv.appendChild(vid);
+      });
+
+      container.appendChild(div);
+    });
+  });
+
+  // Contador de cliques
+  function registrarClick() {
+    if (localStorage.getItem(clickKey)) return;
+    localStorage.setItem(clickKey, "1");
+
+    const ref = db.ref("cliques/" + uid);
+    ref.transaction(curr => (curr || 0) + 1);
+  }
+
+  // Atualiza contador em tempo real
+  db.ref("cliques/" + uid).on("value", snap => {
+    const clicks = snap.val() || 0;
+    const el = document.getElementById("clicks");
+    el.textContent = clicks;
+    el.style.animation = "bounceIn 0.6s";
+    setTimeout(() => el.style.animation = "", 600);
+  });
+
+  // Envia comentário
+  function enviarComentario() {
+    const nome = document.getElementById("nomeComentario").value.trim();
+    const msg = document.getElementById("mensagemComentario").value.trim();
+    if (!nome || !msg) return alert("Preencha todos os campos.");
+
+    const novo = {
+      nome,
+      mensagem: msg,
+      data: Date.now()
+    };
+
+    db.ref("comentarios/" + uid).push(novo).then(() => {
+      document.getElementById("nomeComentario").value = '';
+      document.getElementById("mensagemComentario").value = '';
+      carregarComentarios();
+    });
+  }
+
+  // Carrega comentários
+  function carregarComentarios() {
+    const container = document.getElementById("listaComentarios");
+    container.innerHTML = '';
+    db.ref("comentarios/" + uid).limitToLast(20).once("value").then(snapshot => {
+      snapshot.forEach(child => {
+        const c = child.val();
+        const div = document.createElement("div");
+        div.className = "comentario";
+        div.innerHTML = `<span>${c.nome}</span>${c.mensagem}`;
+        container.prepend(div);
+      });
+    });
+  }
+
+  window.onload = carregarComentarios;
+</script>
+</body>
+
+<div id="tela-carregamento">
+  <div class="carregando">
+    <div class="spinner"></div>
+    <p>Carregando...</p>
+  </div>
+</div>
+
+<style>
+#tela-carregamento {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carregando {
+  text-align: center;
+  color: white;
+  font-family: sans-serif;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid transparent;
+  border-top: 6px solid #00ffff;
+  border-radius: 50%;
+  animation: girar 1s linear infinite;
+  margin: 0 auto 10px;
+}
+
+@keyframes girar {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+
+<script>
+  setTimeout(() => {
+    const tela = document.getElementById('tela-carregamento');
+    if (tela) tela.style.display = 'none';
+  }, 3000);
+</script>

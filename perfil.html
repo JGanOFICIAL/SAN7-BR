@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Perfil da Garota</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --roxo-escuro: #1b005f;
+      --roxo-claro: #6b00b3;
+      --fundo: #0a0a23;
+      --card: #1d1d3f;
+      --branco: #fff;
+      --cinza: #ccc;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--fundo);
+      color: var(--branco);
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 15px 30px;
+      background: linear-gradient(90deg, var(--roxo-escuro), var(--roxo-claro));
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    header h2 {
+      font-size: 22px;
+      text-shadow: 1px 1px 3px #000;
+    }
+
+    .logout-btn {
+      background: transparent;
+      border: 2px solid var(--branco);
+      color: var(--branco);
+      padding: 8px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: var(--branco);
+      color: var(--roxo-claro);
+    }
+
+    main {
+      padding: 120px 20px 40px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .perfil-box {
+      text-align: center;
+      background: var(--card);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 15px #0004;
+      animation: fadeIn 1s ease;
+    }
+
+    .perfil-box img {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 4px solid var(--roxo-claro);
+      object-fit: cover;
+      box-shadow: 0 0 15px var(--roxo-claro);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .perfil-box img:hover {
+      transform: scale(1.05);
+    }
+
+    .perfil-info {
+      margin-top: 25px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .perfil-info label {
+      font-size: 16px;
+      opacity: 0.7;
+    }
+
+    .perfil-info input {
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid var(--roxo-claro);
+      color: var(--branco);
+      font-size: 17px;
+      padding: 5px;
+      width: 100%;
+      transition: 0.3s;
+    }
+
+    .perfil-info .editar {
+      float: right;
+      cursor: pointer;
+      color: var(--roxo-claro);
+      font-size: 16px;
+    }
+
+    .publicar {
+      background: var(--card);
+      margin-top: 40px;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #0003;
+    }
+
+    .publicar h3 {
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .publicar input, .publicar textarea {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 15px;
+      background: #292952;
+      color: white;
+    }
+
+    .publicar input[type="file"] {
+      background: transparent;
+    }
+
+    .publicar button {
+      background: transparent;
+      border: 2px solid var(--branco);
+      color: var(--branco);
+      padding: 10px 30px;
+      border-radius: 25px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      display: block;
+      margin: auto;
+    }
+
+    .publicar button:hover {
+      background: var(--branco);
+      color: var(--roxo-claro);
+    }
+
+    .postagem {
+      background: #171738;
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #0005;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .postagem h4 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .postagem p {
+      margin-bottom: 10px;
+    }
+
+    .midia-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .midia-container img, .midia-container video {
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .postagem button {
+      background: crimson;
+      color: white;
+      padding: 8px 18px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* Animações */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .perfil-box img {
+        width: 100px;
+        height: 100px;
+      }
+
+      .publicar input, .publicar textarea {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Meu Perfil</h2>
+    <button class="logout-btn" onclick="logout()">Sair</button>
+  </header>
+
+  <main>
+    <div class="perfil-box">
+      <input type="file" id="novaFoto" accept="image/*" style="display: none;">
+      <img id="fotoPerfil" src="" onclick="document.getElementById('novaFoto').click()" alt="Foto de Perfil">
+      <div class="perfil-info">
+        <div><label>Nome:</label> <input id="nome" disabled> <span class="editar" onclick="editarCampo('nome')">✎</span></div>
+        <div><label>CPF:</label> <input id="cpf" disabled> <span class="editar" onclick="editarCampo('cpf')">✎</span></div>
+        <div><label>Data de Nascimento:</label> <input id="nascimento" disabled> <span class="editar" onclick="editarCampo('nascimento')">✎</span></div>
+        <div><label>Cidade:</label> <input id="cidade" disabled> <span class="editar" onclick="editarCampo('cidade')">✎</span></div>
+        <div><label>WhatsApp:</label> <input id="whatsapp" disabled> <span class="editar" onclick="editarCampo('whatsapp')">✎</span></div>
+      </div>
+    </div>
+
+    <div class="publicar">
+      <h3>Nova Publicação</h3>
+      <input id="titulo" placeholder="Título">
+      <textarea id="descricao" placeholder="Descrição"></textarea>
+      <input id="fotos" type="file" accept="image/*" multiple>
+      <input id="videos" type="file" accept="video/*" multiple>
+      <button onclick="publicar()">Publicar</button>
+    </div>
+
+    <div id="minhasPublicacoes"></div>
+  </main>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBs2GrFPGib7Nz02F03Eeo5DTW-8OTJmFI",
+    authDomain: "san7-2b351.firebaseapp.com",
+    databaseURL: "https://san7-2b351-default-rtdb.firebaseio.com",
+    projectId: "san7-2b351",
+    storageBucket: "san7-2b351.appspot.com",
+    messagingSenderId: "511547914036",
+    appId: "1:511547914036:web:0595e39aef88258c649761"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.database();
+
+  let uid = null;
+
+  auth.onAuthStateChanged(user => {
+    if (!user) return window.location.href = 'login.html';
+    uid = user.uid;
+    carregarPerfil();
+    carregarPublicacoes();
+  });
+
+  function editarCampo(id) {
+    const input = document.getElementById(id);
+    input.disabled = !input.disabled;
+    if (input.disabled) {
+      db.ref('usuarios/' + uid + '/' + id).set(input.value);
+    } else {
+      input.focus();
+    }
+  }
+
+  document.getElementById('novaFoto').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      document.getElementById('fotoPerfil').src = reader.result;
+      db.ref('usuarios/' + uid + '/fotoPerfil').set(reader.result);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function carregarPerfil() {
+    db.ref("usuarios/" + uid).once("value").then(snapshot => {
+      const u = snapshot.val();
+      document.getElementById('fotoPerfil').src = u.fotoPerfil || '';
+      document.getElementById('nome').value = u.nome || '';
+      document.getElementById('cpf').value = u.cpf || '';
+      document.getElementById('nascimento').value = u.nascimento || '';
+      document.getElementById('cidade').value = u.cidade || '';
+      document.getElementById('whatsapp').value = u.whatsapp || '';
+    });
+  }
+
+  function publicar() {
+    const titulo = document.getElementById('titulo').value.trim();
+    const descricao = document.getElementById('descricao').value.trim();
+    const fotos = document.getElementById('fotos').files;
+    const videos = document.getElementById('videos').files;
+
+    if (!titulo || !descricao) return alert("Preencha título e descrição.");
+    if (fotos.length > 10 || videos.length > 5) {
+      return alert("Máximo: 10 fotos e 5 vídeos.");
+    }
+
+    const novaPub = { titulo, descricao, fotos: [], videos: [] };
+    const promises = [];
+
+    for (let f of fotos) {
+      const reader = new FileReader();
+      promises.push(new Promise(res => {
+        reader.onload = () => {
+          novaPub.fotos.push(reader.result);
+          res();
+        };
+        reader.readAsDataURL(f);
+      }));
+    }
+
+    for (let v of videos) {
+      const reader = new FileReader();
+      promises.push(new Promise(res => {
+        reader.onload = () => {
+          novaPub.videos.push(reader.result);
+          res();
+        };
+        reader.readAsDataURL(v);
+      }));
+    }
+
+    Promise.all(promises).then(() => {
+      const ref = db.ref("publicacoes/" + uid).push();
+      ref.set(novaPub).then(() => {
+        document.getElementById('titulo').value = '';
+        document.getElementById('descricao').value = '';
+        document.getElementById('fotos').value = '';
+        document.getElementById('videos').value = '';
+        carregarPublicacoes();
+      });
+    });
+  }
+
+  function carregarPublicacoes() {
+    const container = document.getElementById("minhasPublicacoes");
+    container.innerHTML = '';
+
+    db.ref("publicacoes/" + uid).once("value").then(snapshot => {
+      snapshot.forEach(child => {
+        const pub = child.val();
+        const key = child.key;
+        const div = document.createElement("div");
+        div.className = "postagem";
+        div.innerHTML = `
+          <h4>${pub.titulo}</h4>
+          <p>${pub.descricao}</p>
+          <div class="midia-container">
+            ${(pub.fotos || []).map(f => `<img src="${f}" loading="lazy">`).join('')}
+            ${(pub.videos || []).map(v => `<video controls src="${v}"></video>`).join('')}
+          </div>
+          <button onclick="excluirPublicacao('${key}')">Excluir</button>
+        `;
+        container.appendChild(div);
+      });
+    });
+  }
+
+  function excluirPublicacao(key) {
+    if (confirm("Deseja excluir esta publicação?")) {
+      db.ref("publicacoes/" + uid + "/" + key).remove().then(() => carregarPublicacoes());
+    }
+  }
+
+  function logout() {
+    auth.signOut().then(() => location.href = "login.html");
+  }
+</script>
+</body>
+
+
+<a href="envio.html" class="botao-shorts">CRIE SEU SHORTS</a>
+
+<style>
+.botao-shorts {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: white;
+  color: black;
+  font-weight: bold;
+  border: none;
+  padding: 16px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-family: sans-serif;
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+  animation: pulsar 2s infinite;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.botao-shorts:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(255, 0, 150, 0.5);
+}
+
+@keyframes pulsar {
+  0% {
+    box-shadow: 0 0 10px #ff007f;
+  }
+  25% {
+    box-shadow: 0 0 15px #00c3ff;
+  }
+  50% {
+    box-shadow: 0 0 20px #39ff14;
+  }
+  75% {
+    box-shadow: 0 0 15px #ffcc00;
+  }
+  100% {
+    box-shadow: 0 0 10px #ff007f;
+  }
+}
+</style>
+
+
+
+<div id="tela-carregamento">
+  <div class="carregando">
+    <div class="spinner"></div>
+    <p>Carregando...</p>
+  </div>
+</div>
+
+<style>
+#tela-carregamento {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carregando {
+  text-align: center;
+  color: white;
+  font-family: sans-serif;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid transparent;
+  border-top: 6px solid #00ffff;
+  border-radius: 50%;
+  animation: girar 1s linear infinite;
+  margin: 0 auto 10px;
+}
+
+@keyframes girar {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+
+<script>
+  setTimeout(() => {
+    const tela = document.getElementById('tela-carregamento');
+    if (tela) tela.style.display = 'none';
+  }, 3000);
+</script>

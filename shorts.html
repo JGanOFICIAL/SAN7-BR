@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shorts Recentes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --fundo: #0a0a23;
+      --card: #161636;
+      --branco: #fff;
+      --cinza: #aaa;
+      --roxo: #6b00b3;
+      --play-btn-size: 50px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--fundo);
+      font-family: 'Segoe UI', 'Poppins', sans-serif;
+      color: var(--branco);
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: var(--branco);
+      color: var(--fundo);
+      padding: 18px 20px;
+      font-size: 22px;
+      font-weight: bold;
+      box-shadow: 0 2px 10px #0004;
+      z-index: 1000;
+      text-align: center;
+    }
+
+    .search-bar {
+      margin-top: 80px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .search-bar input {
+      width: 90%;
+      max-width: 450px;
+      padding: 14px 20px;
+      border-radius: 30px;
+      font-size: 16px;
+      border: none;
+      outline: none;
+      box-shadow: 0 0 10px #0005;
+    }
+
+    /* Filtro dropdown */
+    .filtro-container {
+      text-align: center;
+      margin: 10px 0 0;
+    }
+
+    .filtro-btn {
+      background: #1e1e3f;
+      color: #fff;
+      padding: 10px 20px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      border-radius: 8px;
+      box-shadow: 0 0 5px #0007;
+    }
+
+    .filtro-menu {
+      display: none;
+      margin-top: 5px;
+      background: #1e1e3f;
+      border-radius: 8px;
+      padding: 6px 0;
+      box-shadow: 0 0 8px #0006;
+    }
+
+    .filtro-menu button {
+      display: block;
+      background: none;
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .filtro-menu button:hover {
+      background: #333360;
+    }
+
+    .shorts-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .short-card {
+      background: var(--card);
+      border-radius: 16px;
+      overflow: hidden;
+      animation: fadeInScale 0.5s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .short-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 6px 16px #0006;
+    }
+
+    .perfil-info {
+      display: flex;
+      align-items: center;
+      padding: 14px;
+    }
+
+    .perfil-info img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 10px;
+      border: 2px solid var(--roxo);
+      cursor: pointer;
+    }
+
+    .perfil-info .nome {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .perfil-info .cidade {
+      font-size: 12px;
+      color: var(--cinza);
+    }
+
+    .short-wrapper {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .short-wrapper img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      border-radius: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .short-wrapper:hover img {
+      transform: scale(1.05);
+    }
+
+    .short-wrapper .play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: var(--play-btn-size);
+      height: var(--play-btn-size);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .video-duracao {
+      position: absolute;
+      bottom: 6px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      font-size: 13px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+      pointer-events: none;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 0;
+      display: none;
+    }
+
+    .tempo {
+      font-size: 12px;
+      color: var(--cinza);
+      padding: 10px 14px;
+      text-align: right;
+    }
+
+    .skeleton {
+      width: 100%;
+      height: 340px;
+      background: #2a2a4a;
+      border-radius: 16px;
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 0.3; }
+      100% { opacity: 0.6; }
+    }
+
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @media (max-width: 600px) {
+      .short-wrapper img {
+        height: 200px;
+      }
+    }
+
+    /* MENU LATERAL */
+    .menu-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 35px;
+      height: 30px;
+      cursor: pointer;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .menu-toggle span {
+      height: 4px;
+      background: #fff;
+      border-radius: 2px;
+      transition: 0.4s;
+    }
+
+    .menu-toggle.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    .side-menu {
+      position: fixed;
+      top: -100%;
+      right: 0;
+      width: 100%;
+      background: linear-gradient(to bottom, #1e1e3f, #4b0082);
+      transition: top 0.5s ease;
+      padding: 60px 20px 20px;
+      z-index: 9998;
+      text-align: center;
+    }
+
+    .side-menu.active {
+      top: 0;
+    }
+
+    .side-menu a {
+      display: block;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 12px;
+      margin: 10px 0;
+      color: #fff;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 8px;
+      backdrop-filter: blur(10px);
+      transition: background 0.3s;
+    }
+
+    .side-menu a:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+
+OS MELHORES SHORTS
+
+<br>
+<button onclick="location.href='home.html'" style="background: purple; color: white; border: none; padding: 8px 12px; cursor: pointer;">
+  VOLTAR PARA O INÍCIO
+</button>
+
+
+
+
+
+</header>
+
+<br>
+
+  <div class="menu-toggle" id="menuToggle">
+    <span></span><span></span><span></span>
+  </div>
+
+  <div class="side-menu" id="sideMenu">
+    <a href="home.html">TELA INICIAL</a>
+    <a href="validar-documento.html">CADASTRAR COMO GAROTA</a>
+    <a href="curtidas.html">MAIS CURTIDAS</a>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="🔍 Buscar por cidade" oninput="filtrarPorCidade()" />
+  </div>
+
+  <div class="filtro-container">
+    <button class="filtro-btn" onclick="toggleFiltro()">FILTRAR SHORTS</button>
+    <div class="filtro-menu" id="filtroMenu">
+      <button onclick="filtrarModo('recentes')">Mais recentes</button>
+      <button onclick="filtrarModo('aleatorio')">Aleatórios</button>
+    </div>
+  </div>
+
+  <div class="shorts-container" id="shortsContainer"></div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBs2GrFPGib7Nz02F03Eeo5DTW-8OTJmFI",
+      authDomain: "san7-2b351.firebaseapp.com",
+      databaseURL: "https://san7-2b351-default-rtdb.firebaseio.com",
+      projectId: "san7-2b351",
+      storageBucket: "san7-2b351.appspot.com",
+      messagingSenderId: "511547914036",
+      appId: "1:511547914036:web:0595e39aef88258c649761"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const container = document.getElementById("shortsContainer");
+    let modoFiltro = 'aleatorio';
+
+    function toggleFiltro() {
+      document.getElementById("filtroMenu").classList.toggle("mostrar");
+      const menu = document.getElementById("filtroMenu");
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function filtrarModo(modo) {
+      modoFiltro = modo;
+      carregarShorts();
+      toggleFiltro();
+    }
+
+    function showSkeletons(qtd = 6) {
+      container.innerHTML = '';
+      for (let i = 0; i < qtd; i++) {
+        const div = document.createElement("div");
+        div.className = "skeleton";
+        container.appendChild(div);
+      }
+    }
+
+    function formatarData(timestamp) {
+      const data = new Date(timestamp);
+      return data.toLocaleDateString("pt-BR") + " às " + data.toLocaleTimeString("pt-BR").slice(0, 5);
+    }
+
+    function formatarTempo(timestamp) {
+      const diff = Date.now() - timestamp;
+      const horas = Math.floor(diff / 3600000);
+      const minutos = Math.floor((diff % 3600000) / 60000);
+      if (horas > 0) return `Postado há ${horas}h`;
+      if (minutos > 0) return `Postado há ${minutos} min`;
+      return "Agora mesmo";
+    }
+
+    function carregarShorts() {
+      showSkeletons();
+
+      db.ref("shorts").once("value").then(snapshot => {
+        const lista = [];
+
+        snapshot.forEach(user => {
+          const uid = user.key;
+          const shorts = user.val();
+
+          db.ref("usuarios/" + uid).once("value").then(userSnap => {
+            const u = userSnap.val();
+            if (!u) return;
+
+            for (const key in shorts) {
+              const s = shorts[key];
+              if (Date.now() - s.timestamp > 86400000) {
+                db.ref("shorts/" + uid + "/" + key).remove();
+                continue;
+              }
+              lista.push({ uid, short: s, user: u });
+            }
+
+            if (modoFiltro === "aleatorio") embaralhar(lista);
+            if (modoFiltro === "recentes") lista.sort((a, b) => b.short.timestamp - a.short.timestamp);
+
+            renderizar(lista);
+          });
+        });
+      });
+    }
+
+    function embaralhar(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function renderizar(lista) {
+      container.innerHTML = '';
+      lista.forEach(({ uid, short, user }) => {
+        const div = document.createElement("div");
+        div.className = "short-card";
+        div.innerHTML = `
+          <div class="perfil-info">
+            <img src="${user.fotoPerfil}" onclick="verPerfil('${uid}')">
+            <div>
+              <div class="nome">${user.nome}</div>
+              <div class="cidade">${user.cidade}</div>
+            </div>
+          </div>
+          <div class="short-wrapper" onclick="playShort(this)">
+            <img src="${short.capa}" alt="Capa do short">
+            <img class="play-btn" src="https://static.vecteezy.com/system/resources/thumbnails/013/757/848/small_2x/abstract-play-button-logo-illustration-in-trendy-and-minimal-style-png.png" alt="Play">
+            <span class="video-duracao">--:--</span>
+          </div>
+          <video src="${short.video}" controls></video>
+          <div class="tempo">Postado em ${formatarData(short.timestamp)}<br>${formatarTempo(short.timestamp)}</div>
+        `;
+        container.appendChild(div);
+
+        const videoEl = div.querySelector("video");
+        const duracaoEl = div.querySelector(".video-duracao");
+
+        videoEl.addEventListener("loadedmetadata", () => {
+          const dur = Math.floor(videoEl.duration);
+          const min = Math.floor(dur / 60).toString().padStart(2, "0");
+          const seg = (dur % 60).toString().padStart(2, "0");
+          duracaoEl.textContent = `${min}:${seg}`;
+        });
+      });
+    }
+
+    function playShort(wrapper) {
+      const video = wrapper.nextElementSibling;
+      wrapper.style.display = "none";
+      video.style.display = "block";
+      video.play();
+    }
+
+    function verPerfil(uid) {
+      sessionStorage.setItem('perfilId', uid);
+      location.href = "artigo.html";
+    }
+
+    function filtrarPorCidade() {
+      const termo = document.getElementById("searchInput").value.toLowerCase();
+      const cards = document.querySelectorAll(".short-card");
+
+      cards.forEach(card => {
+        const cidade = card.querySelector(".cidade")?.textContent.toLowerCase();
+        card.style.display = cidade.includes(termo) ? 'block' : 'none';
+      });
+
+      if (termo === "") carregarShorts();
+    }
+
+    const toggle = document.getElementById('menuToggle');
+    const menu = document.getElementById('sideMenu');
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('active');
+      menu.classList.toggle('active');
+    });
+
+    window.onload = carregarShorts;
+  </script>
+</body>
+</html>
+
+
+
+
+<style>
+  /* Fundo desfocado */
+  #loader-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+  }
+
+  /* Bolinha giratória multicolorida pequena e moderna */
+  #loader {
+    width: 30px;
+    height: 30px;
+    border: 4px solid transparent;
+    border-top-color: #e74c3c;    /* Vermelho */
+    border-right-color: #f1c40f;  /* Amarelo */
+    border-bottom-color: #2ecc71; /* Verde */
+    border-left-color: #3498db;   /* Azul */
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.7), 0 0 12px rgba(231, 76, 60, 0.7);
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+
+<div id="loader-bg">
+  <div id="loader"></div>
+</div>
+
+<script>
+  setTimeout(() => {
+    const loaderBg = document.getElementById('loader-bg');
+    loaderBg.style.opacity = '0';
+    setTimeout(() => loaderBg.remove(), 500);
+  }, 2000);
+</script>

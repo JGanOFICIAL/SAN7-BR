@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin - Contas Ativas</title>
+  <style>
+    body {
+      margin: 0;
+      background: #0a0a23;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    header {
+      background: linear-gradient(90deg, #1b005f, #6b00b3);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px #000;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    main {
+      padding: 30px 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #14143a;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px #0006;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .user-info img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #6b00b3;
+    }
+
+    .user-info div p {
+      margin: 4px 0;
+    }
+
+    .delete-btn {
+      background: red;
+      border: none;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .delete-btn:hover {
+      background: darkred;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Painel Admin - Contas Ativas</h1>
+  </header>
+
+  <main>
+    <div id="userList">Carregando contas...</div>
+  </main>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBs2GrFPGib7Nz02F03Eeo5DTW-8OTJmFI",
+      authDomain: "san7-2b351.firebaseapp.com",
+      databaseURL: "https://san7-2b351-default-rtdb.firebaseio.com",
+      projectId: "san7-2b351",
+      storageBucket: "san7-2b351.appspot.com",
+      messagingSenderId: "511547914036",
+      appId: "1:511547914036:web:0595e39aef88258c649761"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function carregarUsuarios() {
+      const userList = document.getElementById('userList');
+      db.ref('usuarios').once('value').then(snapshot => {
+        userList.innerHTML = '';
+        snapshot.forEach(child => {
+          const uid = child.key;
+          const data = child.val();
+
+          const div = document.createElement('div');
+          div.className = 'user-card';
+          div.innerHTML = `
+            <div class="user-info">
+              <img src="${data.fotoPerfil || ''}" alt="Foto">
+              <div>
+                <p><strong>Nome:</strong> ${data.nome || ''}</p>
+                <p><strong>Cidade:</strong> ${data.cidade || ''}</p>
+                <p><strong>WhatsApp:</strong> ${data.whatsapp || ''}</p>
+              </div>
+            </div>
+            <button class="delete-btn" onclick="excluirUsuario('${uid}')">Excluir</button>
+          `;
+          userList.appendChild(div);
+        });
+      });
+    }
+
+    function excluirUsuario(uid) {
+      if (confirm("Deseja realmente excluir esta conta? Isso apagará todos os dados do perfil.")) {
+        db.ref('usuarios/' + uid).remove().then(() => {
+          alert("Conta excluída com sucesso.");
+          carregarUsuarios();
+        }).catch(err => {
+          alert("Erro ao excluir: " + err.message);
+        });
+      }
+    }
+
+    window.onload = carregarUsuarios;
+  </script>
+</body>
+</html>

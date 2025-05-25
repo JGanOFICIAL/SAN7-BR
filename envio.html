@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Enviar Short</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --fundo: #0a0a23;
+      --card: #1d1d3f;
+      --roxo: #6b00b3;
+      --branco: #fff;
+      --vermelho: crimson;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--fundo);
+      color: var(--branco);
+    }
+
+    header {
+      background: var(--branco);
+      color: var(--fundo);
+      text-align: center;
+      font-weight: bold;
+      font-size: 20px;
+      padding: 16px;
+      box-shadow: 0 2px 10px #0005;
+    }
+
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .login-box {
+      background: #fff;
+      color: #000;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 20px #000;
+    }
+
+    .login-box input {
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+
+    .login-box label {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .login-box button {
+      width: 100%;
+      background: var(--roxo);
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .upload-section {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 10px #0005;
+    }
+
+    .upload-section h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .upload-section label {
+      display: block;
+      font-size: 14px;
+      margin-top: 10px;
+      margin-bottom: 6px;
+    }
+
+    .upload-section input[type="file"] {
+      background: var(--branco);
+      color: var(--fundo);
+      border-radius: 8px;
+      padding: 10px;
+      width: 100%;
+    }
+
+    .upload-section button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 14px;
+      background: var(--roxo);
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 30px;
+      cursor: pointer;
+    }
+
+    .loading {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .loading img {
+      width: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+
+    .short-preview {
+      margin-top: 30px;
+    }
+
+    .short-item {
+      background: #1b1b3d;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+    }
+
+    .short-item img, .short-item video {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .short-item button {
+      width: 100%;
+      background: var(--vermelho);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+
+<header><br><h1>Enviar Short</h2> <p> Compartilhe sua rotina com seus futuros cliente.♥️</header>
+
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <h2>Login</h2>
+<p>Por segurança, acesse com sua conta</p>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="senha" placeholder="Senha">
+    <label><input type="checkbox" id="lembrar"> Salvar login</label>
+    <button onclick="fazerLogin()">Entrar</button>
+  </div>
+</div>
+
+<div class="container" style="display: none;" id="uploadArea">
+  <div class="upload-section">
+    <h2>Postar Novo Short</h2>
+    <label>Vídeo (máx. 1 minuto):</label>
+    <input type="file" accept="video/*" id="videoInput">
+
+    <label>Capa do Vídeo (imagem):</label>
+    <input type="file" accept="image/*" id="capaInput">
+
+    <button onclick="enviarShort()">Enviar</button>
+
+    <div class="loading" id="loading" style="display:none;">
+      <img src="https://i.imgur.com/llF5iyg.gif" alt="Carregando...">
+    </div>
+  </div>
+
+  <div class="short-preview" id="shortsList"></div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBs2GrFPGib7Nz02F03Eeo5DTW-8OTJmFI",
+    authDomain: "san7-2b351.firebaseapp.com",
+    databaseURL: "https://san7-2b351-default-rtdb.firebaseio.com",
+    projectId: "san7-2b351",
+    storageBucket: "san7-2b351.appspot.com",
+    messagingSenderId: "511547914036",
+    appId: "1:511547914036:web:0595e39aef88258c649761"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.database();
+
+  let uid = null;
+  const loginOverlay = document.getElementById("loginOverlay");
+  const uploadArea = document.getElementById("uploadArea");
+  const loading = document.getElementById("loading");
+  const shortsList = document.getElementById("shortsList");
+
+  window.onload = () => {
+    const savedEmail = localStorage.getItem("email");
+    const savedSenha = localStorage.getItem("senha");
+    if (savedEmail && savedSenha) {
+      document.getElementById("email").value = savedEmail;
+      document.getElementById("senha").value = savedSenha;
+      document.getElementById("lembrar").checked = true;
+    }
+  };
+
+  function fazerLogin() {
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+    const lembrar = document.getElementById("lembrar").checked;
+
+    auth.signInWithEmailAndPassword(email, senha)
+      .then(user => {
+        uid = user.user.uid;
+        if (lembrar) {
+          localStorage.setItem("email", email);
+          localStorage.setItem("senha", senha);
+        }
+        loginOverlay.style.display = "none";
+        uploadArea.style.display = "block";
+        carregarShorts();
+      })
+      .catch(err => alert("Erro no login: " + err.message));
+  }
+
+  function enviarShort() {
+    const videoFile = document.getElementById("videoInput").files[0];
+    const capaFile = document.getElementById("capaInput").files[0];
+
+    if (!videoFile || !capaFile) {
+      alert("Por favor, selecione vídeo e imagem da capa.");
+      return;
+    }
+
+    loading.style.display = "block";
+
+    const readerVideo = new FileReader();
+    const readerCapa = new FileReader();
+
+    readerVideo.onload = () => {
+      readerCapa.onload = () => {
+        const short = {
+          video: readerVideo.result,
+          capa: readerCapa.result,
+          timestamp: Date.now()
+        };
+        const ref = db.ref("shorts/" + uid).push();
+        ref.set(short).then(() => {
+          document.getElementById("videoInput").value = '';
+          document.getElementById("capaInput").value = '';
+          loading.style.display = "none";
+          carregarShorts();
+        });
+      };
+      readerCapa.readAsDataURL(capaFile);
+    };
+
+    readerVideo.readAsDataURL(videoFile);
+  }
+
+  function carregarShorts() {
+    shortsList.innerHTML = '';
+    db.ref("shorts/" + uid).once("value").then(snapshot => {
+      snapshot.forEach(child => {
+        const short = child.val();
+        const key = child.key;
+
+        const div = document.createElement("div");
+        div.className = "short-item";
+        div.innerHTML = `
+          <img src="${short.capa}" alt="Capa do vídeo">
+          <video controls src="${short.video}"></video>
+          <button onclick="excluirShort('${key}')">Excluir</button>
+        `;
+        shortsList.appendChild(div);
+      });
+    });
+  }
+
+  function excluirShort(key) {
+    if (confirm("Tem certeza que deseja excluir este short?")) {
+      db.ref("shorts/" + uid + "/" + key).remove().then(() => carregarShorts());
+    }
+  }
+</script>
+
+<!-- IMPORTANTE: Substitua abaixo a URL da imagem do botão de Play lá no shorts.html -->
+<!-- URL_DO_SEU_BOTAO_PLAY_AQUI: https://cdn-icons-png.flaticon.com/512/727/727245.png -->
+
+
+
+<div id="tela-carregamento">
+  <div class="carregando">
+    <div class="spinner"></div>
+    <p>Carregando...</p>
+  </div>
+</div>
+
+<style>
+#tela-carregamento {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carregando {
+  text-align: center;
+  color: white;
+  font-family: sans-serif;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid transparent;
+  border-top: 6px solid #00ffff;
+  border-radius: 50%;
+  animation: girar 1s linear infinite;
+  margin: 0 auto 10px;
+}
+
+@keyframes girar {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+
+<script>
+  setTimeout(() => {
+    const tela = document.getElementById('tela-carregamento');
+    if (tela) tela.style.display = 'none';
+  }, 3000);
+</script>
+
+
+
+
+<!-- Botão no cabeçalho -->
+<div id="menu-toggle" onclick="abrirMenu()">&#9776;</div>
+
+<!-- Menu lateral oculto -->
+<div id="menu-lateral">
+  <div class="menu-conteudo">
+    <div id="fechar-menu" onclick="fecharMenu()">&#10005;</div>
+    <a href="perfil.html" class="botao-perfil">Voltar pro perfil</a>
+  </div>
+</div>
+
+<style>
+#menu-toggle {
+  font-size: 28px;
+  cursor: pointer;
+  padding: 10px 15px;
+  color: white;
+  background: #111;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1000;
+  border-radius: 6px;
+}
+
+#menu-lateral {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background: rgba(0, 0, 0, 0.9);
+  overflow: hidden;
+  transition: height 0.5s ease;
+  z-index: 999;
+}
+
+.menu-conteudo {
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#fechar-menu {
+  font-size: 24px;
+  color: white;
+  align-self: flex-end;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.botao-perfil {
+  padding: 12px 20px;
+  background: white;
+  color: black;
+  font-weight: bold;
+  border-radius: 8px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background 0.3s;
+}
+
+.botao-perfil:hover {
+  background: #ddd;
+}
+</style>
+
+<script>
+function abrirMenu() {
+  document.getElementById("menu-lateral").style.height = "100%";
+}
+function fecharMenu() {
+  document.getElementById("menu-lateral").style.height = "0";
+}
+</script>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Encontros+</title>
+  <style>
+    :root {
+      --roxo-escuro: #1b005f;
+      --roxo-claro: #6b00b3;
+      --fundo: #0a0a23;
+      --fundo-card: #1c1c3c;
+      --branco: #fff;
+      --cinza: #ccc;
+      --skeleton: #2b2b4b;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--fundo);
+      color: var(--branco);
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: linear-gradient(90deg, var(--roxo-escuro), var(--roxo-claro));
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      z-index: 1000;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    header h1 {
+      font-size: 24px;
+      text-shadow: 2px 2px #000;
+    }
+
+    .login-btn {
+      background: transparent;
+      border: 2px solid var(--branco);
+      color: var(--branco);
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .login-btn:hover {
+      background-color: var(--branco);
+      color: var(--roxo-claro);
+    }
+
+    .welcome {
+      margin-top: 90px;
+      background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiVJ8gHgAoa4hVEsJCxGqR9xSsFYQUKApb-uBq802zxOGOUqT2CRFZm38&s=10') center/cover no-repeat;
+      text-align: center;
+      padding: 100px 20px 60px;
+      animation: fadeIn 1s ease;
+    }
+
+    .welcome h2 {
+      font-size: 42px;
+      text-shadow: 2px 2px #000;
+      margin-bottom: 10px;
+    }
+
+    .welcome p {
+      font-size: 20px;
+      text-shadow: 1px 1px #000;
+    }
+
+    .search-bar {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .search-bar input {
+      width: 90%;
+      max-width: 500px;
+      padding: 14px 20px;
+      border-radius: 30px;
+      border: none;
+      font-size: 16px;
+      outline: none;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .search-bar input:focus {
+      transform: scale(1.02);
+    }
+
+    .profiles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      padding: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .profile-card {
+      background: var(--fundo-card);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+      transition: transform 0.3s, box-shadow 0.3s, opacity 0.5s ease;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s forwards;
+    }
+
+    .profile-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    }
+
+    .profile-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    .profile-info {
+      padding: 15px;
+    }
+
+    .profile-info h3 {
+      margin-bottom: 8px;
+    }
+
+    .profile-info p {
+      font-size: 14px;
+      color: var(--cinza);
+    }
+
+    /* Skeleton loading cards */
+    .skeleton-card {
+      background: var(--skeleton);
+      border-radius: 15px;
+      height: 300px;
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 0.3; }
+      100% { opacity: 0.6; }
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .welcome h2 {
+        font-size: 32px;
+      }
+      .welcome p {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+
+
+
+
+
+
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhAPFwCBjmZatuWWaXPW_iJUtbjhfMVW2Ea9qZ0KyDryZkQe9YcTYjgMXP0WOMkoX7_FrpS3uz6jvjaHrYgbzcHeb7qiWGSNCB4J7KXFzz5Wb0tzGIJDBC2JICQ0629IjlRAAEvcJwUUf2CqT1AobkqTWvPrMIywR8nX5laH1ayj3gZtON27bdmgyKnhIQ/s797/EA765F23-912D-4193-882D-6ACA85BC7C1A.png" style="width: 220px; height: auto;">
+
+
+
+<!-- MENU LATERAL MODERNO -->
+<style>
+  /* Ícone de menu */
+  .menu-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 35px;
+    height: 30px;
+    cursor: pointer;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .menu-toggle span {
+    height: 4px;
+    background: #fff;
+    border-radius: 2px;
+    transition: 0.4s;
+  }
+
+  .menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+  }
+
+  /* Menu lateral */
+  .side-menu {
+    position: fixed;
+    top: -100%;
+    right: 0;
+    width: 100%;
+    background: linear-gradient(to bottom, #1e1e3f, #4b0082);
+    transition: top 0.5s ease;
+    padding: 60px 20px 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    z-index: 9998;
+    text-align: center;
+  }
+
+  .side-menu.active {
+    top: 0;
+  }
+
+  .side-menu a {
+    display: block;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 12px;
+    margin: 10px 0;
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    transition: background 0.3s;
+  }
+
+  .side-menu a:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Ícone opcional (exemplo de imagem) */
+  /* <img src="URL_DA_SUA_IMAGEM_AQUI" alt="Logo" class="logo"> */
+</style>
+
+<div class="menu-toggle" id="menuToggle">
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<div class="side-menu" id="sideMenu">
+  <a href="login.html">LOGIN COMO GAROTA</a>
+  <a href="validar-documento.html">CADASTRAR COMO GAROTA</a>
+  <a href="curtidas.html">MAIS CURTIDAS</a>
+</div>
+
+<script>
+  const toggle = document.getElementById('menuToggle');
+  const menu = document.getElementById('sideMenu');
+
+  toggle.addEventListener('click', () => {
+    toggle.classList.toggle('active');
+    menu.classList.toggle('active');
+  });
+</script>
+
+
+
+
+
+    
+
+  </header>
+
+  <section class="welcome">
+    <h2>Bem-vindo ao Encontros+</h2>
+    <p>Conheça garotas incríveis perto de você</p>
+  </section>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="📍BUSCAR PELA CIDADE OU ESTADO" oninput="filtrarPorCidade()" />
+  </div>
+
+  <div class="profiles" id="profilesContainer">
+    <!-- Skeletons + Cards -->
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBs2GrFPGib7Nz02F03Eeo5DTW-8OTJmFI",
+      authDomain: "san7-2b351.firebaseapp.com",
+      databaseURL: "https://san7-2b351-default-rtdb.firebaseio.com",
+      projectId: "san7-2b351",
+      storageBucket: "san7-2b351.appspot.com",
+      messagingSenderId: "511547914036",
+      appId: "1:511547914036:web:0595e39aef88258c649761"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function showSkeletons(count = 6) {
+      const container = document.getElementById("profilesContainer");
+      container.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        const div = document.createElement("div");
+        div.className = "skeleton-card";
+        container.appendChild(div);
+      }
+    }
+
+    function embaralhar(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function carregarPerfis() {
+      showSkeletons();
+      const container = document.getElementById('profilesContainer');
+      db.ref('usuarios').once('value').then(snapshot => {
+        container.innerHTML = '';
+        const perfis = [];
+
+        snapshot.forEach(child => {
+          const data = child.val();
+          if (!data.fotoPerfil) return;
+
+          perfis.push({
+            key: child.key,
+            nome: data.nome,
+            cidade: data.cidade,
+            descricao: data.descricao || '',
+            fotoPerfil: data.fotoPerfil
+          });
+        });
+
+        embaralhar(perfis).forEach(data => {
+          const div = document.createElement('div');
+          div.className = 'profile-card';
+          div.onclick = () => verPerfil(data.key);
+          div.innerHTML = `
+            <img src="${data.fotoPerfil}" alt="Perfil de ${data.nome}" />
+            <div class="profile-info">
+              <h3>${data.nome}</h3>
+              <p>${data.cidade}</p>
+              <p>${data.descricao}</p>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      });
+    }
+
+    function verPerfil(uid) {
+      sessionStorage.setItem('perfilId', uid);
+      window.location.href = 'artigo.html';
+    }
+
+    function filtrarPorCidade() {
+      showSkeletons();
+      const termo = document.getElementById('searchInput').value.toLowerCase();
+      setTimeout(() => {
+        const cards = document.querySelectorAll('.profile-card');
+        cards.forEach(card => {
+          const cidade = card.querySelector('p').textContent.toLowerCase();
+          card.style.display = cidade.includes(termo) ? 'block' : 'none';
+        });
+        const container = document.getElementById('profilesContainer');
+        if (!termo) carregarPerfis();
+      }, 300);
+    }
+
+    window.onload = carregarPerfis;
+  </script>
+</body>
+</html>
+
+
+
+
+<!-- Menu Flutuante Profissional e Compacto -->
+<style>
+  .menu-flutuante {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    display: flex;
+    gap: 24px;
+    padding: 10px 18px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    z-index: 999;
+  }
+
+  .menu-flutuante a {
+    width: 58px;
+    text-align: center;
+    text-decoration: none;
+    color: #222;
+    font-family: "Segoe UI", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+  }
+
+  .menu-flutuante a:hover {
+    transform: translateY(-2px);
+  }
+
+  .menu-flutuante a img {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 4px;
+    object-fit: contain;
+  }
+
+  .menu-flutuante a span {
+    font-size: 12px;
+    font-weight: 500;
+  }
+</style>
+
+<div class="menu-flutuante">
+  <a href="shorts.html">
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjYTJiJAijSN7HZVPKRzCtMeMAipcJkuZUSnn_-7cn91RiilewtKaJqCaDL51Orqh1vCMuEDl6BuL9Mi8z_cMDEF_XTUp3XTfXHfZUMyMuWV-FehTyTf_RvbnqAt0CBPXOjuLx5G-T_ZQLgK6xHIrfSXb5qusyojz-TBAL51WoJNKGfuHRE5bFKs8TfInY/s288/87BE2719-7826-4055-8CFC-0C3F10CE7A75.jpeg" alt="Shors">
+    <span>Shors</span>
+  </a>
+
+  <a href="curtidas.html">
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi4LfLlH0d6wzV6nmWsoreAyFUy89QA7xOPhPYEXFFiwb73EVHFqreEj6NALSJpD8Ghb9_A1LW03RAvQ6c5VSJx7pxiF0MSSLcmY0q3gZTagoHTm-h8pc1ULeUI3EBY7dEGX2PAOI5EONaTOfn9jJ_FSjAn2p-4-mcWazgMDeq_CPzJANOSJ4xJ2g8woGw/s220/1C39F127-909B-451C-811D-8A49F846F0FE.jpeg">
+    <span>+ Curtidas</span>
+  </a>
+  <a href="astops.html">
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtEq3BbVnfo9C7i1_f3R2ufpLV7DcnXdi_ifxcrgO2sXKnXyVAD4caNA4A-JjzJs5kc_dcB8T7boZDmQ9OEK-0lq_llCLAdpbFXLLsfL7etsXeJRfpBkJgrsA0zAP1cosduB-t6gUi4qlFq1yaYcMGO7ROVdsKfEhrLHZDQygV0QOV3o8vGs6lAhUSV_Q/s209/ED04BD4E-6BF5-4864-B6EE-B22E8337DAFF.jpeg" alt="+ Curtidas">
+    <span>As Tops</span>
+  </a>
+</div>
