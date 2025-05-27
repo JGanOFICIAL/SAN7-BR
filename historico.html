@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload de Arquivos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f4f4;
+    }
+
+    header {
+      background-color: #0d1b2a;
+      color: white;
+      padding: 15px 30px;
+      font-size: 20px;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .historico-item {
+      background: white;
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px dashed #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .historico-item h3 {
+      margin: 0 0 10px 0;
+    }
+
+    .produto {
+      padding: 5px 0;
+      border-bottom: 1px dotted #ccc;
+      font-size: 15px;
+    }
+
+    .produto:last-child {
+      border-bottom: none;
+    }
+
+    .botoes {
+      margin-top: 10px;
+    }
+
+    .botoes button {
+      background-color: #0d1b2a;
+      color: white;
+      padding: 6px 12px;
+      margin-right: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .botoes button.delete {
+      background-color: crimson;
+    }
+
+    .linha {
+      border-bottom: 1px dashed #aaa;
+      margin: 15px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>Histórico de Vendas</header>
+
+  <div class="container" id="listaHistorico">
+    <!-- Histórico aparecerá aqui -->
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBs2GrFPGib7Nz02F03Eeo5DTW-8OTJmFI",
+      authDomain: "san7-2b351.firebaseapp.com",
+      databaseURL: "https://san7-2b351-default-rtdb.firebaseio.com",
+      projectId: "san7-2b351",
+      storageBucket: "san7-2b351.appspot.com",
+      messagingSenderId: "511547914036",
+      appId: "1:511547914036:web:0595e39aef88258c649761"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const lista = document.getElementById('listaHistorico');
+
+    function carregarHistorico() {
+      db.ref('historico').once('value').then(snapshot => {
+        lista.innerHTML = '';
+        const dados = snapshot.val();
+
+        if (!dados) {
+          lista.innerHTML = '<p>Nenhum histórico encontrado.</p>';
+          return;
+        }
+
+        Object.entries(dados).reverse().forEach(([id, registro]) => {
+          const div = document.createElement('div');
+          div.className = 'historico-item';
+
+          div.innerHTML = `
+            <h3>Data: ${registro.data} - Hora: ${registro.hora}</h3>
+            <p><strong>Total do dia:</strong> R$ ${registro.saldo.toFixed(2)}</p>
+            <div id="produtos-${id}"></div>
+            <div class="botoes">
+              <button onclick="baixarPDF('${id}', ${JSON.stringify(registro).replace(/"/g, '&quot;')})">Baixar PDF</button>
+              <button class="delete" onclick="excluirHistorico('${id}')">Excluir</button>
+            </div>
+          `;
+
+          const prodDiv = div.querySelector(`#produtos-${id}`);
+          if (registro.vendas && registro.vendas.length > 0) {
+            registro.vendas.forEach((venda, i) => {
+              db.ref('produtos/' + venda.id).once('value').then(prodSnap => {
+                const produto = prodSnap.val();
+                const nome = produto ? produto.nome : 'Produto apagado';
+                prodDiv.innerHTML += `<div class="produto">${i+1}. ${nome} - R$ ${venda.preco.toFixed(2)}</div>`;
+              });
+            });
+          }
+
+          lista.appendChild(div);
+        });
+      });
+    }
+
+    function excluirHistorico(id) {
+      if (confirm("Deseja mesmo excluir este histórico?")) {
+        db.ref('historico/' + id).remove().then(() => {
+          carregarHistorico();
+        });
+      }
+    }
+
+    function baixarPDF(id, registro) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      doc.setFontSize(16);
+      doc.text("Histórico de Vendas - SAN7", 10, 20);
+      doc.setFontSize(12);
+      doc.text(`Data: ${registro.data}`, 10, 30);
+      doc.text(`Hora: ${registro.hora}`, 10, 37);
+      doc.text(`Total do Dia: R$ ${registro.saldo.toFixed(2)}`, 10, 44);
+
+      doc.text("Produtos Vendidos:", 10, 55);
+      let y = 62;
+      if (registro.vendas && registro.vendas.length > 0) {
+        registro.vendas.forEach((venda, i) => {
+          doc.text(`${i+1}. ID: ${venda.id} - R$ ${venda.preco.toFixed(2)}`, 10, y);
+          y += 7;
+        });
+      } else {
+        doc.text("Nenhuma venda registrada.", 10, y);
+      }
+
+      doc.save(`historico_${registro.data.replace(/\//g, "-")}.pdf`);
+    }
+
+    carregarHistorico();
+  </script>
+</body>
+</html>
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Botão Moderno</title>
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    position: relative;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .btn-home {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #4a90e2, #357ABD);
+    color: white;
+    border: none;
+    padding: 14px 22px;
+    font-size: 16px;
+    border-radius: 30px;
+    box-shadow: 0 6px 12px rgba(53, 122, 189, 0.6);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+  }
+  .btn-home:hover {
+    background: linear-gradient(135deg, #357ABD, #4a90e2);
+    box-shadow: 0 8px 20px rgba(53, 122, 189, 0.9);
+    transform: translateY(-3px);
+  }
+  .btn-home:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(53, 122, 189, 0.7);
+  }
+</style>
+</head>
+<body>
+
+<button class="btn-home" onclick="location.href='index.html'">VOLTAR</button>
+
+</body>
+</html>
