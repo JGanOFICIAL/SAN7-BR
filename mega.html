@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Mais Vendidos - SAN7</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f4f4;
+    }
+
+    header {
+      background-color: #0d1b2a;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 20px;
+    }
+
+    .btn-voltar {
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    #pesquisa {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .produto {
+      background-color: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .produto img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .produto-info {
+      flex-grow: 1;
+    }
+
+    .produto-info h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .produto-info p {
+      margin: 3px 0;
+      color: #444;
+      font-size: 14px;
+    }
+
+    .medalha {
+      font-size: 24px;
+      margin-right: 10px;
+    }
+
+    .ouro { color: gold; }
+    .prata { color: silver; }
+    .bronze { color: #cd7f32; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>🏆 Mais Vendidos</div>
+    <button class="btn-voltar" onclick="location.href='index.html'">Voltar</button>
+  </header>
+
+  <div class="container">
+    <input type="text" id="pesquisa" placeholder="🔍 Buscar por nome ou marca...">
+    <div id="listaMaisVendidos"></div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBs2GrFPGib7Nz02F03Eeo5DTW-8OTJmFI",
+      authDomain: "san7-2b351.firebaseapp.com",
+      databaseURL: "https://san7-2b351-default-rtdb.firebaseio.com",
+      projectId: "san7-2b351",
+      storageBucket: "san7-2b351.appspot.com",
+      messagingSenderId: "511547914036",
+      appId: "1:511547914036:web:0595e39aef88258c649761"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const listaDiv = document.getElementById('listaMaisVendidos');
+    const inputPesquisa = document.getElementById('pesquisa');
+    let todosProdutos = {};
+
+    function contarVendas() {
+      db.ref('historico').once('value').then(snapshot => {
+        const vendasContagem = {};
+
+        snapshot.forEach(dia => {
+          const vendas = dia.val().vendas || [];
+          vendas.forEach(venda => {
+            if (venda.id) {
+              vendasContagem[venda.id] = (vendasContagem[venda.id] || 0) + 1;
+            }
+          });
+        });
+
+        db.ref('produtos').once('value').then(snapshot => {
+          const produtos = snapshot.val() || {};
+          todosProdutos = produtos;
+
+          // Monta lista com contagem
+          const lista = Object.entries(produtos).map(([id, produto]) => ({
+            id,
+            ...produto,
+            quantidadeVendida: vendasContagem[id] || 0
+          }));
+
+          // Ordena por quantidadeVendida
+          lista.sort((a, b) => b.quantidadeVendida - a.quantidadeVendida);
+          renderizarProdutos(lista.slice(0, 3));
+        });
+      });
+    }
+
+    function renderizarProdutos(produtos) {
+      listaDiv.innerHTML = '';
+      produtos.forEach((produto, index) => {
+        const medalha = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+        const classe = index === 0 ? 'ouro' : index === 1 ? 'prata' : 'bronze';
+
+        const div = document.createElement('div');
+        div.className = 'produto';
+
+        div.innerHTML = `
+          <span class="medalha ${classe}">${medalha}</span>
+          ${produto.imagem ? `<img src="${produto.imagem}">` : '<img src="https://via.placeholder.com/80">'}
+          <div class="produto-info">
+            <h3>${produto.nome}</h3>
+            <p><strong>Marca:</strong> ${produto.marca}</p>
+            <p><strong>Preço:</strong> R$ ${produto.preco.toFixed(2)}</p>
+            <p><strong>Vendidos:</strong> ${produto.quantidadeVendida}</p>
+          </div>
+        `;
+        listaDiv.appendChild(div);
+      });
+    }
+
+    inputPesquisa.addEventListener('input', () => {
+      const termo = inputPesquisa.value.toLowerCase();
+      const filtrados = Object.entries(todosProdutos).filter(([id, p]) =>
+        p.nome.toLowerCase().includes(termo) || p.marca.toLowerCase().includes(termo)
+      ).map(([id, p]) => ({ id, ...p }));
+
+      // Adiciona contagem de vendas
+      db.ref('historico').once('value').then(snapshot => {
+        const contagem = {};
+        snapshot.forEach(dia => {
+          const vendas = dia.val().vendas || [];
+          vendas.forEach(v => {
+            if (v.id) contagem[v.id] = (contagem[v.id] || 0) + 1;
+          });
+        });
+
+        filtrados.forEach(p => {
+          p.quantidadeVendida = contagem[p.id] || 0;
+        });
+
+        filtrados.sort((a, b) => b.quantidadeVendida - a.quantidadeVendida);
+        renderizarProdutos(filtrados.slice(0, 3));
+      });
+    });
+
+    contarVendas();
+  </script>
+</body>
+</html>
