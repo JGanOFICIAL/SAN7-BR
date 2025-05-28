@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Vendas - SAN7</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: Arial; margin: 0; background: #f4f4f4; }
+    header { background: #0d1b2a; color: #fff; padding: 15px 30px; font-size: 22px; display: flex; justify-content: space-between; align-items: center; }
+    .saldo { font-size: 18px; display: flex; align-items: center; }
+    .saldo span { margin-left: 8px; background: #fff; color: #0d1b2a; padding: 3px 8px; border-radius: 4px; }
+    #finalizarDia { margin: 15px 30px 10px; background: crimson; color: white; padding: 10px 16px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; }
+    #pesquisa { margin: 10px 30px; padding: 10px; width: calc(100% - 60px); font-size: 16px; border: 1px solid #ccc; border-radius: 5px; }
+    table { width: 95%; margin: 0 auto; border-collapse: collapse; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+    th { background: #0d1b2a; color: white; }
+    .btn { padding: 6px 10px; background: #0d1b2a; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .alerta { color: red; font-weight: bold; }
+    .botoes-fixos { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 9999; }
+    .botoes-fixos a { background: #0077cc; color: white; padding: 12px 20px; border: none; border-radius: 25px; font-size: 14px; text-align: center; text-decoration: none; box-shadow: 0 4px 8px rgba(0,0,0,0.2); font-weight: bold; transition: 0.3s; }
+    .botoes-fixos a:hover { background: #005fa3; transform: scale(1.05); }
+    .faixa-numero { position: fixed; bottom: 0; width: 100%; height: 40px; background: rgba(255, 255, 255, 0.2); overflow: hidden; z-index: 9999; pointer-events: none; }
+    .texto-numero { position: absolute; white-space: nowrap; font-size: 20px; font-weight: bold; color: rgba(0, 0, 0, 0.3); animation: deslizar 5s linear infinite; }
+    @keyframes deslizar { 0% { left: 100%; } 100% { left: -100%; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div>Vendas - SAN7</div>
+    <div class="saldo">Saldo: R$ <span id="saldoDia">0.00</span></div>
+  </header>
+
+  <input type="text" id="pesquisa" placeholder="Pesquisar por nome ou marca...">
+  <button id="finalizarDia">Finalizar Dia</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Produto</th>
+        <th>Marca</th>
+        <th>Preço</th>
+        <th>Estoque</th>
+        <th>Ação</th>
+      </tr>
+    </thead>
+    <tbody id="tabelaProdutos"></tbody>
+  </table>
+
+  <div class="botoes-fixos">
+    <a href="index.html">Voltar</a>
+    <a href="historico.html">Histórico</a>
+  </div>
+
+  <div class="faixa-numero">
+    <div class="texto-numero">SAN7 TECNOLOGIA - 84 99177-8690</div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBs2GrFPGib7Nz02F03Eeo5DTW-8OTJmFI",
+      authDomain: "san7-2b351.firebaseapp.com",
+      databaseURL: "https://san7-2b351-default-rtdb.firebaseio.com",
+      projectId: "san7-2b351",
+      storageBucket: "san7-2b351.appspot.com",
+      messagingSenderId: "511547914036",
+      appId: "1:511547914036:web:0595e39aef88258c649761"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const tabela = document.getElementById('tabelaProdutos');
+    const saldoDia = document.getElementById('saldoDia');
+    const finalizarBtn = document.getElementById('finalizarDia');
+    const inputPesquisa = document.getElementById('pesquisa');
+
+    let saldo = 0;
+    let vendas = [];
+    let todosProdutos = {};
+
+    function carregarSaldoTemp() {
+      db.ref('temporario/saldo').once('value').then(snapshot => {
+        const dados = snapshot.val();
+        if (dados) {
+          saldo = dados.saldo || 0;
+          vendas = dados.vendas || [];
+          saldoDia.textContent = saldo.toFixed(2);
+        }
+      });
+    }
+
+    function salvarSaldoTemp() {
+      db.ref('temporario/saldo').set({ saldo, vendas });
+    }
+
+    function limparSaldoTemp() {
+      db.ref('temporario/saldo').remove();
+    }
+
+    function exibirProdutos(filtrados) {
+      tabela.innerHTML = '';
+      if (Object.keys(filtrados).length === 0) {
+        tabela.innerHTML = '<tr><td colspan="5">Nenhum produto encontrado.</td></tr>';
+        return;
+      }
+      Object.entries(filtrados).forEach(([id, produto]) => {
+        const alertaEstoque = produto.estoque <= 3 ? ' <span class="alerta">[Estoque baixo]</span>' : '';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${produto.nome}</td>
+          <td>${produto.marca}</td>
+          <td>R$ ${produto.preco.toFixed(2)}</td>
+          <td>${produto.estoque}${alertaEstoque}</td>
+          <td><button class="btn" onclick="venderProduto('${id}', ${produto.preco})">VENDER</button></td>
+        `;
+        tabela.appendChild(tr);
+      });
+    }
+
+    function carregarProdutos() {
+      db.ref('produtos').on('value', snapshot => {
+        todosProdutos = snapshot.val() || {};
+        aplicarFiltro();
+      });
+    }
+
+    function aplicarFiltro() {
+      const termo = inputPesquisa.value.toLowerCase();
+      const filtrados = {};
+      Object.entries(todosProdutos).forEach(([id, produto]) => {
+        if (produto.nome.toLowerCase().includes(termo) || produto.marca.toLowerCase().includes(termo)) {
+          filtrados[id] = produto;
+        }
+      });
+      exibirProdutos(filtrados);
+    }
+
+    inputPesquisa.addEventListener('input', aplicarFiltro);
+
+    function venderProduto(id, preco) {
+      const ref = db.ref('produtos/' + id);
+      ref.once('value').then(snapshot => {
+        const produto = snapshot.val();
+        if (produto && produto.estoque > 0) {
+          ref.update({ estoque: produto.estoque - 1 });
+          saldo += preco;
+          saldoDia.textContent = saldo.toFixed(2);
+          vendas.push({ id, preco });
+          salvarSaldoTemp();
+        } else {
+          alert("Estoque esgotado!");
+        }
+      });
+    }
+
+    finalizarBtn.onclick = () => {
+      if (vendas.length === 0) {
+        alert("Nenhuma venda realizada!");
+        return;
+      }
+      const agora = new Date();
+      const data = agora.toLocaleDateString();
+      const hora = agora.toLocaleTimeString();
+      const historico = { data, hora, saldo, vendas };
+      const novaChave = db.ref().child('historico').push().key;
+      db.ref('historico/' + novaChave).set(historico).then(() => {
+        limparSaldoTemp();
+        window.location.href = 'historico.html';
+      });
+    };
+
+    carregarProdutos();
+    carregarSaldoTemp();
+  </script>
+</body>
+</html>
