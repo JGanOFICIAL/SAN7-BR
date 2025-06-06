@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema de Balcão de Loja</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>SAN7</h1>
+    <div id="saldo">Saldo: R$ 0,00</div>
+    <button id="finalizarDiaBtn" class="btn vermelho">Finalizar Dia</button>
+    <button id="historicoBtn" class="btn preto" onclick="window.location.href='historico.html'">Histórico</button>
+  </header>
+
+  <main>
+    <div class="barra-superior">
+      <input type="text" id="pesquisaInput" placeholder="Pesquisar produto...">
+      <button id="abrirCadastroBtn">Cadastrar Produto</button>
+    </div>
+
+    <div id="cadastroForm" class="modal">
+      <div class="modal-content">
+        <span class="close" id="fecharCadastro">&times;</span>
+        <h2>Cadastrar Produto</h2>
+        <input type="text" id="nome" placeholder="Nome do Produto">
+        <input type="text" id="marca" placeholder="Marca">
+        <input type="number" id="quantidade" placeholder="Quantidade">
+        <input type="number" id="precoVista" placeholder="Preço à Vista">
+        <input type="number" id="precoCartao" placeholder="Preço no Cartão">
+        <button id="adicionarBtn">Adicionar</button>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Marca</th>
+          <th>Quantidade</th>
+          <th>Preço à Vista</th>
+          <th>Preço Cartão</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="produtosTable"></tbody>
+    </table>
+  </main>
+
+  <!-- Modal de Venda -->
+  <div id="vendaModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="fecharVenda">&times;</span>
+      <h2>Venda de Produto</h2>
+      <p id="vendaProdutoNome"></p>
+      <input type="number" id="quantidadeVenda" placeholder="Quantidade">
+      <label><input type="radio" name="tipoVenda" value="avista" checked> À Vista</label>
+      <label><input type="radio" name="tipoVenda" value="cartao"> Cartão</label>
+      <button id="confirmarVendaBtn">Confirmar Venda</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
