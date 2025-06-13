@@ -6,81 +6,30 @@
   <title>Informações do Pet</title>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
-    body {
-      margin: 0;
-      padding: 0;
-      background: #fff;
-      color: #111;
-    }
-    header {
-      width: 100%;
-      background: #f4f4f4;
-      padding: 20px;
-      border-bottom: 1px solid #ccc;
-      text-align: center;
-    }
-    header img {
-      max-height: 60px;
-    }
-    main {
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 20px;
-    }
-    h2 {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    .info {
-      margin-bottom: 15px;
-    }
-    .label {
-      font-weight: bold;
-      color: #333;
-    }
-    .whatsapp {
-      margin-top: 30px;
-      display: flex;
-      gap: 10px;
-    }
-    .whatsapp a img {
-      width: 40px;
-      height: 40px;
-    }
+    * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { margin: 0; background: #fff; color: #111; padding: 0 20px; }
+    header { background: #f4f4f4; padding: 20px; border-bottom: 1px solid #ccc; text-align: center; }
+    .logo { max-width: 150px; margin: 0 auto 10px; }
+    main { max-width: 700px; margin: 30px auto; padding: 20px; background: #fafafa; border-radius: 10px; border: 1px solid #ddd; }
+    h2 { margin-bottom: 20px; font-size: 24px; text-align: center; }
+    .info-item { margin-bottom: 15px; }
+    .info-item strong { display: block; font-size: 16px; margin-bottom: 5px; color: #333; }
+    .info-item span { font-size: 18px; color: #111; }
+    .contato { margin-top: 30px; text-align: center; }
+    .contato a img { width: 40px; margin: 0 10px; }
   </style>
 </head>
 <body>
 
 <header>
-  <!-- Substituir com sua logomarca -->
-  <img src="URL_DA_SUA_LOGOMARCA.png" alt="Logomarca">
+  <img class="logo" src="URL_DA_SUA_LOGOMARCA_AQUI" alt="Logo do Projeto" />
+  <h1>Informações do Pet</h1>
 </header>
 
-<main>
-  <h2>Informações do Animal</h2>
-  <div id="dadosPet">
-    <div class="info"><span class="label">Nome do Dono:</span> <span id="dono"></span></div>
-    <div class="info"><span class="label">Nome do Pet:</span> <span id="pet"></span></div>
-    <div class="info"><span class="label">Modelo:</span> <span id="modelo"></span></div>
-    <div class="info"><span class="label">Raça:</span> <span id="raca"></span></div>
-    <div class="info"><span class="label">Cor:</span> <span id="cor"></span></div>
-    <div class="info"><span class="label">Vacinas:</span> <span id="vacinas"></span></div>
-    <div class="info"><span class="label">Telefone 1:</span> <span id="tel1"></span></div>
-    <div class="info"><span class="label">Telefone 2:</span> <span id="tel2"></span></div>
-    <div class="info"><span class="label">Telefone 3:</span> <span id="tel3"></span></div>
-    <div class="info"><span class="label">Endereço 1:</span> <span id="end1"></span></div>
-    <div class="info"><span class="label">Endereço 2:</span> <span id="end2"></span></div>
-  </div>
-
-  <div class="whatsapp" id="whatsLinks">
-    <!-- Ícones de WhatsApp com links serão inseridos dinamicamente -->
-  </div>
+<main id="info">
+  <h2>Carregando informações...</h2>
 </main>
 
 <script>
@@ -96,49 +45,47 @@
   firebase.initializeApp(cfg);
   const db = firebase.database();
 
-  function getParam(param) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
+  function getUidFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("uid");
   }
 
-  const uid = getParam("uid");
-  if (uid) {
-    const ref = db.ref("usuarios/" + uid);
-    ref.on("value", (snapshot) => {
-      const dados = snapshot.val();
-      if (dados) {
-        document.getElementById("dono").textContent = dados.dono || "";
-        document.getElementById("pet").textContent = dados.pet || "";
-        document.getElementById("modelo").textContent = dados.modelo || "";
-        document.getElementById("raca").textContent = dados.raca || "";
-        document.getElementById("cor").textContent = dados.cor || "";
-        document.getElementById("vacinas").textContent = dados.vacinas || "";
-        document.getElementById("tel1").textContent = dados.tel1 || "";
-        document.getElementById("tel2").textContent = dados.tel2 || "";
-        document.getElementById("tel3").textContent = dados.tel3 || "";
-        document.getElementById("end1").textContent = dados.end1 || "";
-        document.getElementById("end2").textContent = dados.end2 || "";
+  function carregarDados(uid) {
+    if (!uid) {
+      document.getElementById("info").innerHTML = "<h2>UID não fornecido.</h2>";
+      return;
+    }
 
-        // WhatsApp links
-        const whats = document.getElementById("whatsLinks");
-        whats.innerHTML = "";
-        [dados.tel1, dados.tel2, dados.tel3].forEach(num => {
-          if (num) {
-            const link = document.createElement("a");
-            link.href = https://wa.me/55${num.replace(/\D/g, "")};
-            link.target = "_blank";
-            const img = document.createElement("img");
-            img.src = "https://cdn-icons-png.flaticon.com/512/733/733585.png";
-            img.alt = "WhatsApp";
-            link.appendChild(img);
-            whats.appendChild(link);
-          }
-        });
+    db.ref("usuarios/" + uid).on("value", (snapshot) => {
+      const data = snapshot.val();
+      if (!data) {
+        document.getElementById("info").innerHTML = "<h2>Informações não encontradas.</h2>";
+        return;
       }
+
+      document.getElementById("info").innerHTML = `
+        <div class="info-item"><strong>Nome do Dono:</strong><span>${data.nomeDono || '-'}</span></div>
+        <div class="info-item"><strong>Nome do Pet:</strong><span>${data.nomePet || '-'}</span></div>
+        <div class="info-item"><strong>Modelo:</strong><span>${data.modelo || '-'}</span></div>
+        <div class="info-item"><strong>Raça:</strong><span>${data.raca || '-'}</span></div>
+        <div class="info-item"><strong>Cor:</strong><span>${data.cor || '-'}</span></div>
+        <div class="info-item"><strong>Vacinas:</strong><span>${data.vacinas || '-'}</span></div>
+        <div class="info-item"><strong>Telefone 1:</strong><span>${data.telefone1 || '-'}</span></div>
+        ${data.telefone2 ? <div class="info-item"><strong>Telefone 2:</strong><span>${data.telefone2}</span></div> : ""}
+        ${data.telefone3 ? <div class="info-item"><strong>Telefone 3:</strong><span>${data.telefone3}</span></div> : ""}
+        ${data.endereco1 ? <div class="info-item"><strong>Endereço 1:</strong><span>${data.endereco1}</span></div> : ""}
+        ${data.endereco2 ? <div class="info-item"><strong>Endereço 2:</strong><span>${data.endereco2}</span></div> : ""}
+        <div class="contato">
+          <a href="https://wa.me/${(data.telefone1 || '').replace(/\D/g, '')}" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" />
+          </a>
+        </div>
+      `;
     });
-  } else {
-    document.getElementById("dadosPet").innerHTML = "<p>ID inválido. Não foi possível carregar os dados.</p>";
   }
+
+  const uid = getUidFromURL();
+  carregarDados(uid);
 </script>
 
 </body>
