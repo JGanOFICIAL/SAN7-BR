@@ -2,91 +2,126 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Informações do Pet</title>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <title>Informações do PET</title>
   <style>
-    * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
-    body { margin: 0; background: #fff; color: #111; padding: 0 20px; }
-    header { background: #f4f4f4; padding: 20px; border-bottom: 1px solid #ccc; text-align: center; }
-    .logo { max-width: 150px; margin: 0 auto 10px; }
-    main { max-width: 700px; margin: 30px auto; padding: 20px; background: #fafafa; border-radius: 10px; border: 1px solid #ddd; }
-    h2 { margin-bottom: 20px; font-size: 24px; text-align: center; }
-    .info-item { margin-bottom: 15px; }
-    .info-item strong { display: block; font-size: 16px; margin-bottom: 5px; color: #333; }
-    .info-item span { font-size: 18px; color: #111; }
-    .contato { margin-top: 30px; text-align: center; }
-    .contato a img { width: 40px; margin: 0 10px; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0b3d0b;
+      color: white;
+    }
+
+    header {
+      background-color: #062d06;
+      padding: 20px;
+      text-align: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .container {
+      margin-top: 140px;
+      padding: 20px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: white;
+      color: black;
+      border-radius: 10px;
+    }
+
+    .info {
+      margin-bottom: 15px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+    }
+
+    .info strong {
+      color: #0b3d0b;
+    }
   </style>
 </head>
 <body>
 
-<header>
-  <img class="logo" src="URL_DA_SUA_LOGOMARCA_AQUI" alt="Logo do Projeto" />
-  <h1>Informações do Pet</h1>
-</header>
+  <header>
+    <div class="logo">SISTEMA DE COLEIRAS</div>
+  </header>
 
-<main id="info">
-  <h2>Carregando informações...</h2>
-</main>
+  <div class="container">
+    <h2>Informações do PET</h2>
+    <div id="petData">Carregando informações...</div>
+  </div>
 
-<script>
-  const cfg = {
-    apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
-    authDomain: "login-you-see.firebaseapp.com",
-    databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
-    projectId: "login-you-see",
-    storageBucket: "login-you-see.appspot.com",
-    messagingSenderId: "524877259374",
-    appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f"
-  };
-  firebase.initializeApp(cfg);
-  const db = firebase.database();
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-  function getUidFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("uid");
-  }
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+      authDomain: "login-you-see.firebaseapp.com",
+      databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+      projectId: "login-you-see",
+      storageBucket: "login-you-see.firebasestorage.app",
+      messagingSenderId: "524877259374",
+      appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
+      measurementId: "G-K7E00VXYHG"
+    };
 
-  function carregarDados(uid) {
-    if (!uid) {
-      document.getElementById("info").innerHTML = "<h2>UID não fornecido.</h2>";
-      return;
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function getQueryParam(param) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(param);
     }
 
-    db.ref("usuarios/" + uid).on("value", (snapshot) => {
-      const data = snapshot.val();
-      if (!data) {
-        document.getElementById("info").innerHTML = "<h2>Informações não encontradas.</h2>";
-        return;
-      }
+    const serieId = getQueryParam("id");
 
-      document.getElementById("info").innerHTML = `
-        <div class="info-item"><strong>Nome do Dono:</strong><span>${data.nomeDono || '-'}</span></div>
-        <div class="info-item"><strong>Nome do Pet:</strong><span>${data.nomePet || '-'}</span></div>
-        <div class="info-item"><strong>Modelo:</strong><span>${data.modelo || '-'}</span></div>
-        <div class="info-item"><strong>Raça:</strong><span>${data.raca || '-'}</span></div>
-        <div class="info-item"><strong>Cor:</strong><span>${data.cor || '-'}</span></div>
-        <div class="info-item"><strong>Vacinas:</strong><span>${data.vacinas || '-'}</span></div>
-        <div class="info-item"><strong>Telefone 1:</strong><span>${data.telefone1 || '-'}</span></div>
-        ${data.telefone2 ? <div class="info-item"><strong>Telefone 2:</strong><span>${data.telefone2}</span></div> : ""}
-        ${data.telefone3 ? <div class="info-item"><strong>Telefone 3:</strong><span>${data.telefone3}</span></div> : ""}
-        ${data.endereco1 ? <div class="info-item"><strong>Endereço 1:</strong><span>${data.endereco1}</span></div> : ""}
-        ${data.endereco2 ? <div class="info-item"><strong>Endereço 2:</strong><span>${data.endereco2}</span></div> : ""}
-        <div class="contato">
-          <a href="https://wa.me/${(data.telefone1 || '').replace(/\D/g, '')}" target="_blank">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" />
-          </a>
-        </div>
-      `;
-    });
-  }
+    if (serieId) {
+      db.ref("usuarios").once("value").then(snapshot => {
+        let encontrado = false;
 
-  const uid = getUidFromURL();
-  carregarDados(uid);
-</script>
+        snapshot.forEach(child => {
+          const dados = child.val();
+          if (dados.serie === serieId) {
+            encontrado = true;
 
+            // Agora busca dados do PET usando o UID
+            firebase.database().ref("pets/" + child.key).once("value").then(petSnap => {
+              const pet = petSnap.val();
+              if (pet) {
+                document.getElementById("petData").innerHTML = `
+                  <div class="info"><strong>Nome do PET:</strong> ${pet.petName}</div>
+                  <div class="info"><strong>Dono:</strong> ${pet.ownerName}</div>
+                  <div class="info"><strong>Contato 1:</strong> ${pet.phone1 || "Não informado"}</div>
+                  <div class="info"><strong>Contato 2:</strong> ${pet.phone2 || "Não informado"}</div>
+                  <div class="info"><strong>Email:</strong> ${pet.emailOptional || "Não informado"}</div>
+                  <div class="info"><strong>Endereço 1:</strong> ${pet.address1 || "Não informado"}</div>
+                  <div class="info"><strong>Endereço 2:</strong> ${pet.address2 || "Não informado"}</div>
+                  <div class="info"><strong>Cidade:</strong> ${pet.city}, ${pet.state}</div>
+                `;
+              } else {
+                document.getElementById("petData").innerText = "Dados do PET não encontrados.";
+              }
+            });
+          }
+        });
+
+        if (!encontrado) {
+          document.getElementById("petData").innerText = "Número de série inválido.";
+        }
+      });
+    } else {
+      document.getElementById("petData").innerText = "ID do QR Code ausente.";
+    }
+  </script>
 </body>
 </html>
