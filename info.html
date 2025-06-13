@@ -3,112 +3,143 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Informações do Pet - SAN7</title>
+  <title>Informações do Pet</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     * {
-      margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
     }
     body {
+      margin: 0;
+      padding: 0;
       background: #fff;
-      color: #333;
+      color: #111;
+    }
+    header {
+      width: 100%;
+      background: #f4f4f4;
+      padding: 20px;
+      border-bottom: 1px solid #ccc;
+      text-align: center;
+    }
+    header img {
+      max-height: 60px;
+    }
+    main {
+      max-width: 600px;
+      margin: 20px auto;
       padding: 20px;
     }
-    .logo {
-      width: 100px;
-      height: 100px;
-      background: #eee;
-      margin: 20px auto;
-      border-radius: 8px;
-    }
     h2 {
-      text-align: center;
+      font-size: 24px;
       margin-bottom: 20px;
     }
-    .info-block {
-      background: #f9f9f9;
-      padding: 15px;
-      border-radius: 10px;
+    .info {
       margin-bottom: 15px;
-      border-left: 5px solid #000;
     }
-    .info-block strong {
-      display: block;
-      margin-bottom: 5px;
-      color: #000;
+    .label {
+      font-weight: bold;
+      color: #333;
     }
-    .whatsapp-icon {
-      margin-top: 20px;
-      display: block;
-      text-align: center;
+    .whatsapp {
+      margin-top: 30px;
+      display: flex;
+      gap: 10px;
     }
-    .whatsapp-icon img {
+    .whatsapp a img {
       width: 40px;
       height: 40px;
     }
   </style>
 </head>
 <body>
-  <div class="logo" id="logo-local"></div> <!-- Local para logomarca -->
 
-  <h2>Pet Encontrado</h2>
+<header>
+  <!-- Substituir com sua logomarca -->
+  <img src="URL_DA_SUA_LOGOMARCA.png" alt="Logomarca">
+</header>
 
-  <div id="dadosPet"></div>
-
-  <div class="whatsapp-icon">
-    <a id="wplink" href="#" target="_blank">
-      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">
-    </a>
+<main>
+  <h2>Informações do Animal</h2>
+  <div id="dadosPet">
+    <div class="info"><span class="label">Nome do Dono:</span> <span id="dono"></span></div>
+    <div class="info"><span class="label">Nome do Pet:</span> <span id="pet"></span></div>
+    <div class="info"><span class="label">Modelo:</span> <span id="modelo"></span></div>
+    <div class="info"><span class="label">Raça:</span> <span id="raca"></span></div>
+    <div class="info"><span class="label">Cor:</span> <span id="cor"></span></div>
+    <div class="info"><span class="label">Vacinas:</span> <span id="vacinas"></span></div>
+    <div class="info"><span class="label">Telefone 1:</span> <span id="tel1"></span></div>
+    <div class="info"><span class="label">Telefone 2:</span> <span id="tel2"></span></div>
+    <div class="info"><span class="label">Telefone 3:</span> <span id="tel3"></span></div>
+    <div class="info"><span class="label">Endereço 1:</span> <span id="end1"></span></div>
+    <div class="info"><span class="label">Endereço 2:</span> <span id="end2"></span></div>
   </div>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <div class="whatsapp" id="whatsLinks">
+    <!-- Ícones de WhatsApp com links serão inseridos dinamicamente -->
+  </div>
+</main>
 
-  <script>
-    const cfg = {
-      apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
-      authDomain: "login-you-see.firebaseapp.com",
-      databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
-      projectId: "login-you-see",
-      storageBucket: "login-you-see.appspot.com",
-      messagingSenderId: "524877259374",
-      appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f"
-    };
-    firebase.initializeApp(cfg);
-    const db = firebase.database();
+<script>
+  const cfg = {
+    apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+    authDomain: "login-you-see.firebaseapp.com",
+    databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+    projectId: "login-you-see",
+    storageBucket: "login-you-see.appspot.com",
+    messagingSenderId: "524877259374",
+    appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f"
+  };
+  firebase.initializeApp(cfg);
+  const db = firebase.database();
 
-    function getParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
-    }
+  function getParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
 
-    const uid = getParam("uid");
+  const uid = getParam("uid");
+  if (uid) {
+    const ref = db.ref("usuarios/" + uid);
+    ref.on("value", (snapshot) => {
+      const dados = snapshot.val();
+      if (dados) {
+        document.getElementById("dono").textContent = dados.dono || "";
+        document.getElementById("pet").textContent = dados.pet || "";
+        document.getElementById("modelo").textContent = dados.modelo || "";
+        document.getElementById("raca").textContent = dados.raca || "";
+        document.getElementById("cor").textContent = dados.cor || "";
+        document.getElementById("vacinas").textContent = dados.vacinas || "";
+        document.getElementById("tel1").textContent = dados.tel1 || "";
+        document.getElementById("tel2").textContent = dados.tel2 || "";
+        document.getElementById("tel3").textContent = dados.tel3 || "";
+        document.getElementById("end1").textContent = dados.end1 || "";
+        document.getElementById("end2").textContent = dados.end2 || "";
 
-    if (!uid) {
-      document.getElementById("dadosPet").innerHTML = "<p>Dados não encontrados.</p>";
-    } else {
-      db.ref("usuarios/" + uid).once("value").then(snapshot => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const html = `
-            <div class="info-block"><strong>Nome do Dono:</strong> ${data.nomeDono}</div>
-            <div class="info-block"><strong>Nome do Pet:</strong> ${data.nomePet}</div>
-            <div class="info-block"><strong>Raça/Modelo:</strong> ${data.modeloPet}</div>
-            <div class="info-block"><strong>Cor:</strong> ${data.corPet}</div>
-            <div class="info-block"><strong>Vacinas:</strong> ${data.vacinas}</div>
-            <div class="info-block"><strong>Telefone 1:</strong> ${data.tel1}</div>
-            <div class="info-block"><strong>Telefone 2:</strong> ${data.tel2}</div>
-            <div class="info-block"><strong>Telefone 3:</strong> ${data.tel3}</div>
-            <div class="info-block"><strong>Endereço 1:</strong> ${data.end1}</div>
-            <div class="info-block"><strong>Endereço 2:</strong> ${data.end2}</div>
-          `;
-          document.getElementById("dadosPet").innerHTML = html;
-          document.getElementById("wplink").href = https://wa.me/${data.tel1.replace(/\D/g, '')};
-        } else {
-          document.getElementById("dadosPet").innerHTML = "<p>Informações não encontradas.</p>";
-        }
-      });
-    }
-  </script>
+        // WhatsApp links
+        const whats = document.getElementById("whatsLinks");
+        whats.innerHTML = "";
+        [dados.tel1, dados.tel2, dados.tel3].forEach(num => {
+          if (num) {
+            const link = document.createElement("a");
+            link.href = https://wa.me/55${num.replace(/\D/g, "")};
+            link.target = "_blank";
+            const img = document.createElement("img");
+            img.src = "https://cdn-icons-png.flaticon.com/512/733/733585.png";
+            img.alt = "WhatsApp";
+            link.appendChild(img);
+            whats.appendChild(link);
+          }
+        });
+      }
+    });
+  } else {
+    document.getElementById("dadosPet").innerHTML = "<p>ID inválido. Não foi possível carregar os dados.</p>";
+  }
+</script>
+
 </body>
 </html>
