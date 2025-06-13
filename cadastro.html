@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cadastro de Usuários - SAN7</title>
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      background: #fff;
+      padding: 20px;
+    }
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .input-line {
+      border: none;
+      border-bottom: 2px solid #ccc;
+      padding: 10px 5px;
+      font-size: 18px;
+      width: 100%;
+      background: transparent;
+      outline: none;
+      margin-bottom: 15px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 18px;
+      background: #000;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    .user-block {
+      background: #f9f9f9;
+      border-left: 4px solid #000;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+    }
+    .user-block p {
+      margin: 5px 0;
+    }
+    .qr-container {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .qr-container canvas {
+      margin-top: 5px;
+    }
+    .delete-btn {
+      margin-top: 10px;
+      background: #c00;
+      border: none;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>Cadastrar Novo Usuário</h2>
+
+  <input type="email" id="novoEmail" class="input-line" placeholder="E-mail">
+  <input type="password" id="novaSenha" class="input-line" placeholder="Senha">
+  <button onclick="cadastrar()">Cadastrar</button>
+
+  <h2>Usuários Cadastrados</h2>
+  <div id="listaUsuarios"></div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <!-- QR Code -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+
+  <script>
+    const cfg = {
+      apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+      authDomain: "login-you-see.firebaseapp.com",
+      databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+      projectId: "login-you-see",
+      storageBucket: "login-you-see.appspot.com",
+      messagingSenderId: "524877259374",
+      appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f"
+    };
+    firebase.initializeApp(cfg);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    async function cadastrar() {
+      const email = document.getElementById("novoEmail").value.trim();
+      const senha = document.getElementById("novaSenha").value.trim();
+
+      if (!email || !senha) return alert("Preencha os campos.");
+
+      try {
+        const userCred = await auth.createUserWithEmailAndPassword(email, senha);
+        const uid = userCred.user.uid;
+        const dataCriacao = new Date().toLocaleString("pt-BR");
+        await db.ref("usuarios/" + uid).set({
+          email,
+          criadoEm: dataCriacao,
+          status: "Não utilizado"
+        });
+        alert("Usuário criado com sucesso!");
+        document.getElementById("novoEmail").value = "";
+        document.getElementById("novaSenha").value = "";
+        listarUsuarios();
+      } catch (err) {
+        alert("Erro: " + err.message);
+      }
+    }
+
+    function listarUsuarios() {
+      db.ref("usuarios").once("value").then(snapshot => {
+        const lista = document.getElementById("listaUsuarios");
+        lista.innerHTML = "";
+
+        snapshot.forEach(child => {
+          const data = child.val();
+          const uid = child.key;
+
+          const bloco = document.createElement("div");
+          bloco.className = "user-block";
+          bloco.innerHTML = `
+            <p><strong>Email:</strong> ${data.email || '---'}</p>
+            <p><strong>Status:</strong> ${data.bloqueado ? 'Utilizado' : 'Não utilizado'}</p>
+            <p><strong>Data:</strong> ${data.criadoEm || '---'}</p>
+            <div class="qr-container" id="qr-${uid}"></div>
+            <button class="delete-btn" onclick="excluir('${uid}')">Excluir</button>
+          `;
+          lista.appendChild(bloco);
+
+          const qrDiv = document.getElementById("qr-" + uid);
+          QRCode.toCanvas(document.createElement("canvas"), https://jganoficial.github.io/SAN7-BR/info.html?uid=${uid}, {
+            width: 140
+          }, (err, canvas) => {
+            if (!err) qrDiv.appendChild(canvas);
+          });
+        });
+      });
+    }
+
+    function excluir(uid) {
+      if (!confirm("Deseja realmente excluir este usuário?")) return;
+      db.ref("usuarios/" + uid).remove().then(() => {
+        alert("Usuário excluído!");
+        listarUsuarios();
+      });
+    }
+
+    window.onload = listarUsuarios;
+  </script>
+</body>
+</html>
