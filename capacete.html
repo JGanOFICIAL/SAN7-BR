@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tech Vision Pro - Noite</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      overflow: hidden;
+      color: #333;
+    }
+    video, canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 1;
+      transition: filter 0.3s ease;
+    }
+    canvas { pointer-events: none; }
+    #header {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      background: white;
+      border-bottom: 1px solid #ccc;
+      padding: 10px 20px;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #switchBtn {
+      background: #0051a8;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    #startBtn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 16px 36px;
+      font-size: 16px;
+      background: #0051a8;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 20;
+      box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    }
+    #controls {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: rgba(255,255,255,0.96);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+      align-items: center;
+      padding: 12px 0 20px;
+      z-index: 30;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    }
+    .control {
+      text-align: center;
+      margin: 10px 20px;
+    }
+    .control label {
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .slider {
+      width: 160px;
+      appearance: none;
+      height: 8px;
+      background: linear-gradient(to right, #0051a8, #00c3ff);
+      border-radius: 5px;
+      outline: none;
+    }
+    .slider::-webkit-slider-thumb {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #002b5c;
+      border: 2px solid white;
+      cursor: pointer;
+    }
+    .color-bar {
+      width: 160px;
+      height: 8px;
+      border-radius: 5px;
+      background: linear-gradient(to right, yellow, green, blue, red, purple);
+      position: relative;
+    }
+    .color-indicator {
+      position: absolute;
+      top: -5px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid white;
+      background: #0051a8;
+      transform: translateX(-50%);
+      cursor: pointer;
+      box-shadow: 0 0 4px rgba(0,0,0,0.3);
+    }
+    #clock {
+      font-size: 14px;
+    }
+    #darkModeToggle {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      gap: 8px;
+      margin-top: 8px;
+      font-weight: bold;
+    }
+    #darkCheckbox {
+      width: 18px;
+      height: 18px;
+      accent-color: #333;
+      cursor: pointer;
+    }
+    body.dark {
+      background: #000;
+    }
+    #controls.dark {
+      background: rgba(20,20,20,0.95);
+      color: white;
+    }
+    #header.dark {
+      background: #111;
+      color: white;
+      border-color: #444;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="header">
+    <div id="clock">--:--:--</div>
+    <button id="switchBtn">🔄 Trocar Câmera</button>
+  </div>
+
+  <video id="video" autoplay muted playsinline></video>
+  <canvas id="canvas"></canvas>
+  <button id="startBtn">Iniciar Monitoramento</button>
+
+  <div id="controls">
+    <div class="control">
+      <label for="esp">Espessura: <span id="espLabel">5x</span></label>
+      <input type="range" id="esp" min="0" max="13" value="5" class="slider">
+    </div>
+    <div class="control">
+      <label>Cor da Linha</label>
+      <div class="color-bar" id="colorBar">
+        <div class="color-indicator" id="colorIndicator"></div>
+      </div>
+    </div>
+    <div class="control" id="darkModeToggle">
+      <input type="checkbox" id="darkCheckbox">
+      <label for="darkCheckbox">Modo Noturno Inteligente</label>
+    </div>
+  </div>
+<script>
+  const video = document.getElementById("video");
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  const clock = document.getElementById("clock");
+  const switchBtn = document.getElementById("switchBtn");
+  const startBtn = document.getElementById("startBtn");
+  const espInput = document.getElementById("esp");
+  const espLabel = document.getElementById("espLabel");
+  const colorBar = document.getElementById("colorBar");
+  const colorIndicator = document.getElementById("colorIndicator");
+  const darkCheckbox = document.getElementById("darkCheckbox");
+  const controls = document.getElementById("controls");
+  const header = document.getElementById("header");
+
+  let model, stream, usingFrontCamera = true;
+  let detecting = false;
+  let lineWidth = 5;
+  let lineColor = "#0051a8";
+  const traducaoObjetos = {
+    "person": "pessoa","bicycle": "bicicleta","car": "carro","motorcycle": "moto",
+    "airplane": "avião","bus": "ônibus","train": "trem","truck": "caminhão",
+    "boat": "barco","traffic light": "semáforo","fire hydrant": "hidrante",
+    "stop sign": "placa de pare","parking meter": "parquímetro","bench": "banco",
+    "bird": "pássaro","cat": "gato","dog": "cachorro","horse": "cavalo",
+    "sheep": "ovelha","cow": "vaca","elephant": "elefante","bear": "urso",
+    "zebra": "zebra","giraffe": "girafa","backpack": "mochila",
+    "umbrella": "guarda-chuva","handbag": "bolsa","tie": "gravata",
+    "suitcase": "mala","frisbee": "frisbee","skis": "esquis",
+    "snowboard": "snowboard","sports ball": "bola","kite": "pipa",
+    "baseball bat": "taco de beisebol","baseball glove": "luva de beisebol",
+    "skateboard": "skate","surfboard": "prancha","tennis racket": "raquete de tênis",
+    "bottle": "garrafa","wine glass": "taça de vinho","cup": "copo",
+    "fork": "garfo","knife": "faca","spoon": "colher","bowl": "tigela",
+    "banana": "banana","apple": "maçã","sandwich": "sanduíche","orange": "laranja",
+    "broccoli": "brócolis","carrot": "cenoura","hot dog": "cachorro‑quente",
+    "pizza": "pizza","donut": "rosquinha","cake": "bolo","chair": "cadeira",
+    "couch": "sofá","potted plant": "planta","bed": "cama",
+    "dining table": "mesa de jantar","toilet": "vaso sanitário",
+    "tv": "televisão","laptop": "notebook","mouse": "mouse",
+    "remote": "controle remoto","keyboard": "teclado",
+    "cell phone": "celular","microwave": "micro‑ondas","oven": "forno",
+    "toaster": "torradeira","sink": "pia","refrigerator": "geladeira",
+    "book": "livro","clock": "relógio","vase": "vaso","scissors": "tesoura",
+    "teddy bear": "urso de pelúcia","hair drier": "secador","toothbrush": "escova de dentes"
+  };
+
+  setInterval(() => {
+    const now = new Date();
+    clock.textContent = now.toLocaleTimeString("pt-BR");
+  }, 1000);
+
+  async function startCamera(facing = "user") {
+    if (stream) stream.getTracks().forEach(track => track.stop());
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: facing }, audio: true
+      });
+      video.srcObject = stream;
+      video.onloadedmetadata = () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+      };
+    } catch (e) {
+      alert("Erro ao acessar câmera/microfone: " + e);
+    }
+  }
+
+  switchBtn.onclick = () => {
+    usingFrontCamera = !usingFrontCamera;
+    startCamera(usingFrontCamera ? "user" : "environment");
+  };
+
+  function draw(preds) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    preds.forEach(p => {
+      const [x, y, w, h] = p.bbox;
+      ctx.lineWidth = lineWidth;
+      ctx.strokeStyle = lineColor;
+      ctx.strokeRect(x, y, w, h);
+      ctx.font = "14px Arial";
+      ctx.fillStyle = lineColor;
+      const nomeTraduzido = traducaoObjetos[p.class] || p.class;
+      ctx.fillText(`${nomeTraduzido} (${Math.round(p.score * 100)}%)`, x + 4, y - 8);
+    });
+  }
+
+  let lastPredictions = [];
+  async function detectLoop() {
+    if (model && video.readyState === 4 && detecting) {
+      const preds = await model.detect(video);
+      lastPredictions = preds;
+      draw(preds);
+    }
+    requestAnimationFrame(detectLoop);
+  }
+
+  startBtn.onclick = () => {
+    detecting = true;
+    startBtn.style.display = "none";
+  };
+
+  espInput.oninput = e => {
+    lineWidth = parseInt(e.target.value);
+    espLabel.textContent = `${lineWidth}x`;
+  };
+
+  colorBar.onclick = e => {
+    const rect = colorBar.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const percent = x / rect.width;
+    let color;
+    if (percent < 0.2) color = "yellow";
+    else if (percent < 0.4) color = "green";
+    else if (percent < 0.6) color = "blue";
+    else if (percent < 0.8) color = "red";
+    else color = "purple";
+    lineColor = color;
+    colorIndicator.style.left = `${x}px`;
+    colorIndicator.style.background = color;
+  };
+
+  darkCheckbox.onchange = () => {
+    const isDark = darkCheckbox.checked;
+    document.body.classList.toggle("dark", isDark);
+    controls.classList.toggle("dark", isDark);
+    header.classList.toggle("dark", isDark);
+    if (isDark) {
+      video.style.filter = "brightness(1.4) contrast(1.3)";
+      if (["#000","black","#002b5c","blue"].includes(lineColor)) {
+        lineColor = "white";
+      }
+    } else {
+      video.style.filter = "none";
+    }
+  };
+
+  function showVehicleCount(carCount, motoCount) {
+    const msgDiv = document.createElement('div');
+    msgDiv.style.position = 'fixed';
+    msgDiv.style.top = '40%';
+    msgDiv.style.left = '50%';
+    msgDiv.style.transform = 'translate(-50%, -50%)';
+    msgDiv.style.background = 'rgba(255,255,255,0.9)';
+    msgDiv.style.color = '#000';
+    msgDiv.style.fontSize = '20px';
+    msgDiv.style.fontWeight = 'bold';
+    msgDiv.style.padding = '20px 30px';
+    msgDiv.style.borderRadius = '10px';
+    msgDiv.style.boxShadow = '0 0 10px rgba(0,0,0,0.2)';
+    msgDiv.style.zIndex = '999';
+    msgDiv.innerText = `Carro: ${carCount} | Moto: ${motoCount}`;
+    document.body.appendChild(msgDiv);
+    setTimeout(() => document.body.removeChild(msgDiv), 3000);
+  }
+
+  function processVehicleCount() {
+    let carCount = 0, motoCount = 0;
+    lastPredictions.forEach(p => {
+      if (p.class === 'car') carCount++;
+      if (p.class === 'motorcycle') motoCount++;
+    });
+    showVehicleCount(carCount, motoCount);
+  }
+
+  let routeActive = false;
+  let stopRoute = false;
+  const orsKey = "SUA_API_KEY_OPENROUTESERVICE";
+  let recognition, recognitionV;
+
+  function speak(text) {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "pt-BR";
+    const voice = speechSynthesis.getVoices().find(v => v.lang.includes("pt"));
+    if (voice) u.voice = voice;
+    speechSynthesis.speak(u);
+  }
+
+  async function getRouteAndSpeak(dest) {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(async pos => {
+      const start = `${pos.coords.longitude},${pos.coords.latitude}`;
+      const resp = await fetch(`https://api.openrouteservice.org/v2/directions/foot-walking?api_key=${orsKey}&start=${start}&end=${dest.lng},${dest.lat}`);
+      const j = await resp.json();
+      const steps = j.features[0].properties.segments[0].steps;
+      routeActive = true;
+      stopRoute = false;
+      for (let s of steps) {
+        if (stopRoute) break;
+        speak(`${s.instruction} em ${Math.round(s.distance)} metros`);
+        await new Promise(r => setTimeout(r, 1000));
+      }
+      if (!stopRoute) speak("Você chegou ao destino.");
+    });
+  }
+
+  function handleVoice(txt) {
+    if (txt.startsWith("me leve a")) {
+      const dest = txt.split("me leve a")[1].trim();
+      speak(`Entendido, indo para ${dest}`);
+      const dmsg = document.createElement("div");
+      dmsg.style = "position:fixed;top:10%;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.9);padding:10px 20px;border-radius:8px;z-index:999;";
+      dmsg.innerText = `Você disse: ${txt}`;
+      document.body.appendChild(dmsg);
+      setTimeout(() => dmsg.remove(), 3000);
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(dest)}`)
+        .then(r => r.json())
+        .then(j => {
+          if (j[0]) getRouteAndSpeak({ lat: j[0].lat, lng: j[0].lon });
+        });
+    } else if (txt === "pare") {
+      stopRoute = true;
+      speak("Rota pausada");
+    } else if (txt.includes("quantos veículos")) {
+      processVehicleCount();
+    }
+  }
+
+  function startVoiceRecognition() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return;
+    recognition = new SR();
+    recognition.lang = "pt-BR";
+    recognition.continuous = true;
+    recognition.onresult = e => {
+      const t = e.results[e.results.length-1][0].transcript.trim().toLowerCase();
+      handleVoice(t);
+    };
+    recognition.start();
+  }
+
+  async function init() {
+    await startCamera();
+    model = await cocoSsd.load();
+    detectLoop();
+    startVoiceRecognition();
+  }
+
+  init();
+</script>
+</body>
+</html>
