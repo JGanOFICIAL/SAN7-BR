@@ -1,127 +1,198 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Informações do PET</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #0b3d0b;
-      color: white;
-    }
-
-    header {
-      background-color: #062d06;
-      padding: 20px;
-      text-align: center;
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 100;
-    }
-
-    .logo {
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    .container {
-      margin-top: 140px;
-      padding: 20px;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-      background-color: white;
-      color: black;
-      border-radius: 10px;
-    }
-
-    .info {
-      margin-bottom: 15px;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 10px;
-    }
-
-    .info strong {
-      color: #0b3d0b;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI Questão com OCR, Wikipédia e INEP - Versão Avançada</title>
+<style>
+  /* --- [mantido exatamente] --- */
+  * { box-sizing: border-box; }
+  body, html { margin: 0; padding: 0; height: 100%; font-family: Arial, sans-serif; background: #fff; color: #222; display: flex; flex-direction: column; }
+  header { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #f9f9f9; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; font-weight: 600; font-size: 1rem; user-select:none; z-index: 10; }
+  #date-time { font-variant-numeric: tabular-nums; }
+  #camera-container { flex-grow: 1; margin-top: 50px; position: relative; background: #000; overflow: hidden; }
+  video { width: 100%; height: 100%; object-fit: cover; }
+  #btn-calc { position: fixed; bottom: 25px; right: 25px; padding: 14px 24px; background: #003366; color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 1.1rem; cursor: pointer; user-select: none; box-shadow: 0 4px 10px rgb(0 51 102 / 0.5); z-index: 15; transition: background-color 0.3s ease; }
+  #btn-calc:disabled { background: #666; cursor: not-allowed; box-shadow: none; }
+  #loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255,255,255,0.95); padding: 20px 30px; border-radius: 12px; font-weight: 700; font-size: 1.3rem; display: none; user-select: none; z-index: 20; text-align: center; }
+  #result-box { position: fixed; top: 20%; left: 50%; transform: translateX(-50%); background: #003366; color: white; padding: 20px 30px; border-radius: 12px; font-size: 1.3rem; font-weight: 700; max-width: 90%; text-align: center; user-select: none; display: none; z-index: 20; box-shadow: 0 8px 20px rgb(0 51 102 / 0.8); }
+</style>
 </head>
 <body>
 
-  <header>
-    <div class="logo">SISTEMA DE COLEIRAS</div>
-  </header>
+<header>
+  <div id="date-time">--:-- --/--/----</div>
+  <div>AI Questão - OCR + Wikipédia + INEP (Avançado)</div>
+</header>
 
-  <div class="container">
-    <h2>Informações do PET</h2>
-    <div id="petData">Carregando informações...</div>
-  </div>
+<div id="camera-container">
+  <video id="video" autoplay muted playsinline></video>
+</div>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<button id="btn-calc" disabled>Calcular Resposta</button>
+<div id="loading">Buscando...</div>
+<div id="result-box"></div>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
-      authDomain: "login-you-see.firebaseapp.com",
-      databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
-      projectId: "login-you-see",
-      storageBucket: "login-you-see.firebasestorage.app",
-      messagingSenderId: "524877259374",
-      appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
-      measurementId: "G-K7E00VXYHG"
-    };
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
+<script>
+  const video = document.getElementById('video');
+  const btnCalc = document.getElementById('btn-calc');
+  const loading = document.getElementById('loading');
+  const resultBox = document.getElementById('result-box');
+  const dateTimeElem = document.getElementById('date-time');
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+  function updateDateTime(){
+    const now = new Date();
+    const h = now.getHours().toString().padStart(2,'0');
+    const m = now.getMinutes().toString().padStart(2,'0');
+    const d = now.getDate().toString().padStart(2,'0');
+    const mm = (now.getMonth()+1).toString().padStart(2,'0');
+    const y = now.getFullYear();
+    dateTimeElem.textContent = `${h}:${m} ${d}/${mm}/${y}`;
+  }
+  setInterval(updateDateTime, 1000);
+  updateDateTime();
 
-    function getQueryParam(param) {
-      const url = new URL(window.location.href);
-      return url.searchParams.get(param);
+  async function startCamera(){
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio:false });
+      video.srcObject = stream;
+      video.addEventListener('loadedmetadata', () => { btnCalc.disabled = false; });
+    } catch(e){
+      alert("Erro ao acessar câmera: " + e.message);
     }
+  }
 
-    const serieId = getQueryParam("id");
+  function captureFrame(){
+    const w = video.videoWidth, h = video.videoHeight;
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(video, 0, 0, w, h);
+    return canvas;
+  }
 
-    if (serieId) {
-      db.ref("usuarios").once("value").then(snapshot => {
-        let encontrado = false;
+  // consulta Wikipédia avançada com resumo e contexto adicional
+  async function buscarWikipediaDetalhado(enunciado, alternativas){
+    try {
+      let query = enunciado;
+      if(alternativas.length){
+        query += ' ' + alternativas.map(a => a.replace(/^([A-Z])\)\s*/i,'')).join(' ');
+      }
+      query = encodeURIComponent(query.substring(0,300));
+      const url = `https://pt.wikipedia.org/w/api.php?origin=*&action=query&format=json&prop=extracts|info&inprop=url&explaintext&exintro&redirects=1&titles=${query}`;
+      const r = await fetch(url);
+      const d = await r.json();
+      const page = Object.values(d.query.pages)[0];
+      if(page.missing!==undefined) return '';
+      return (page.extract || '') + '\n\nFonte: ' + (page.fullurl || '');
+    } catch(e){ return ''; }
+  }
 
-        snapshot.forEach(child => {
-          const dados = child.val();
-          if (dados.serie === serieId) {
-            encontrado = true;
-
-            // Agora busca dados do PET usando o UID
-            firebase.database().ref("pets/" + child.key).once("value").then(petSnap => {
-              const pet = petSnap.val();
-              if (pet) {
-                document.getElementById("petData").innerHTML = `
-                  <div class="info"><strong>Nome do PET:</strong> ${pet.petName}</div>
-                  <div class="info"><strong>Dono:</strong> ${pet.ownerName}</div>
-                  <div class="info"><strong>Contato 1:</strong> ${pet.phone1 || "Não informado"}</div>
-                  <div class="info"><strong>Contato 2:</strong> ${pet.phone2 || "Não informado"}</div>
-                  <div class="info"><strong>Email:</strong> ${pet.emailOptional || "Não informado"}</div>
-                  <div class="info"><strong>Endereço 1:</strong> ${pet.address1 || "Não informado"}</div>
-                  <div class="info"><strong>Endereço 2:</strong> ${pet.address2 || "Não informado"}</div>
-                  <div class="info"><strong>Cidade:</strong> ${pet.city}, ${pet.state}</div>
-                `;
-              } else {
-                document.getElementById("petData").innerText = "Dados do PET não encontrados.";
-              }
-            });
-          }
-        });
-
-        if (!encontrado) {
-          document.getElementById("petData").innerText = "Número de série inválido.";
-        }
+  // consulta INEP com parâmetros estruturados
+  async function buscarINEP(enunciado){
+    try {
+      const base = 'https://apidatalake.inep.gov.br/inep-ws/notasf/index';
+      const params = new URLSearchParams({
+        tituloQuestao: enunciado,
+        origem: 'OCR_AI_Questao',
+        formato: 'json'
       });
-    } else {
-      document.getElementById("petData").innerText = "ID do QR Code ausente.";
+      const r = await fetch(`${base}?${params}`);
+      if(!r.ok) return '';
+      const d = await r.json();
+      // sintetiza apenas dados relevantes
+      return (d.resposta?.texto || '') + ' (INEP)';
+    } catch(e){ return ''; }
+  }
+
+  function similaridade(t1, t2){
+    const w1 = t1.toLowerCase().match(/\b\w+\b/g)||[];
+    const w2 = t2.toLowerCase().match(/\b\w+\b/g)||[];
+    const set2 = new Set(w2);
+    let count=0; w1.forEach(w=> set2.has(w)&&count++);
+    return count/Math.max(w1.length, w2.length);
+  }
+
+  function extrairQuestao(texto){
+    const linhas = texto.split('\n').map(l=>l.trim()).filter(l=>l);
+    let enunciado='', alternativas=[], encontrou=false;
+    for(const l of linhas){
+      if(/^([A-Z])\)/i.test(l) || /^(V|F)$/i.test(l)){
+        encontrou=true; alternativas.push(l);
+      } else if(!encontrou){
+        enunciado += (enunciado?' ':'') + l;
+      }
     }
-  </script>
+    if(alternativas.length===0 && (/verdadeiro/i.test(texto)||/falso/i.test(texto))){
+      alternativas=['Verdadeiro','Falso'];
+    }
+    return {enunciado,alternativas};
+  }
+
+  // escolhe com base em pontuação combinada + peso semântico
+  function escolherAlternativa(wText, iText, alternativas){
+    if(!alternativas.length) return "N/A";
+    if(alternativas.length===1) return alternativas[0];
+
+    if(alternativas.length===2 && alternativas.includes('Verdadeiro') && alternativas.includes('Falso')){
+      const simW = similaridade(wText,'verdadeiro') - similaridade(wText,'falso');
+      const simI = similaridade(iText,'verdadeiro') - similaridade(iText,'falso');
+      return (simW+simI)>=0?'Verdadeiro':'Falso';
+    }
+
+    let melhor='', maxScore=-Infinity;
+    alternativas.forEach(alt=>{
+      const txt = alt.replace(/^([A-Z])\)\s*/i,'');
+      const score = similaridade(wText, txt)*1.2 + similaridade(iText, txt);
+      if(score > maxScore){ maxScore=score; melhor=alt; }
+    });
+    return melhor;
+  }
+
+  btnCalc.addEventListener('click', async ()=>{
+    loading.style.display='block'; resultBox.style.display='none'; btnCalc.disabled=true;
+
+    const frame = captureFrame();
+    const { data:{text} } = await Tesseract.recognize(frame, 'por', {
+      logger: m => {
+        if(m.status==='recognizing text'){
+          loading.textContent = `Reconhecendo texto: ${Math.round(m.progress*100)}%`;
+        }
+      }
+    });
+
+    loading.textContent = 'Processando...';
+    const { enunciado, alternativas } = extrairQuestao(text);
+    if(!enunciado){
+      loading.style.display='none'; btnCalc.disabled=false;
+      return alert("Não foi possível detectar o enunciado. Aponte a câmera melhor e tente novamente.");
+    }
+
+    const [wikiResumo, inepResumo] = await Promise.all([
+      buscarWikipediaDetalhado(enunciado, alternativas),
+      buscarINEP(enunciado)
+    ]);
+
+    const resposta = escolherAlternativa(wikiResumo, inepResumo, alternativas);
+
+    let respFmt = resposta;
+    if(/^([A-Z])\)/i.test(resposta)){
+      respFmt = resposta;
+    } else if(alternativas.length>1){
+      const idx = alternativas.findIndex(a=>a===resposta);
+      if(idx>=0){
+        respFmt = String.fromCharCode(65+idx) + ') ' + resposta;
+      }
+    }
+
+    resultBox.textContent = `Resposta sugerida: ${respFmt}`;
+    resultBox.style.display='block';
+    loading.style.display='none'; btnCalc.disabled=false;
+    setTimeout(()=>resultBox.style.display='none',6000);
+  });
+
+  startCamera();
+</script>
+
 </body>
 </html>
