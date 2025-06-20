@@ -344,68 +344,18 @@
     showVehicleCount(carCount, motoCount);
   }
 
-  let routeActive = false;
-  let stopRoute = false;
-  const orsKey = "SUA_API_KEY_OPENROUTESERVICE";
-  let recognition, recognitionV;
-
-  function speak(text) {
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = "pt-BR";
-    const voice = speechSynthesis.getVoices().find(v => v.lang.includes("pt"));
-    if (voice) u.voice = voice;
-    speechSynthesis.speak(u);
-  }
-
-  async function getRouteAndSpeak(dest) {
-    if (!navigator.geolocation) return;
-    navigator.geolocation.getCurrentPosition(async pos => {
-      const start = `${pos.coords.longitude},${pos.coords.latitude}`;
-      const resp = await fetch(`https://api.openrouteservice.org/v2/directions/foot-walking?api_key=${orsKey}&start=${start}&end=${dest.lng},${dest.lat}`);
-      const j = await resp.json();
-      const steps = j.features[0].properties.segments[0].steps;
-      routeActive = true;
-      stopRoute = false;
-      for (let s of steps) {
-        if (stopRoute) break;
-        speak(`${s.instruction} em ${Math.round(s.distance)} metros`);
-        await new Promise(r => setTimeout(r, 1000));
-      }
-      if (!stopRoute) speak("Você chegou ao destino.");
-    });
-  }
-
-  function handleVoice(txt) {
-    if (txt.startsWith("me leve a")) {
-      const dest = txt.split("me leve a")[1].trim();
-      speak(`Entendido, indo para ${dest}`);
-      const dmsg = document.createElement("div");
-      dmsg.style = "position:fixed;top:10%;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.9);padding:10px 20px;border-radius:8px;z-index:999;";
-      dmsg.innerText = `Você disse: ${txt}`;
-      document.body.appendChild(dmsg);
-      setTimeout(() => dmsg.remove(), 3000);
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(dest)}`)
-        .then(r => r.json())
-        .then(j => {
-          if (j[0]) getRouteAndSpeak({ lat: j[0].lat, lng: j[0].lon });
-        });
-    } else if (txt === "pare") {
-      stopRoute = true;
-      speak("Rota pausada");
-    } else if (txt.includes("quantos veículos")) {
-      processVehicleCount();
-    }
-  }
-
+  let recognition;
   function startVoiceRecognition() {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) return;
-    recognition = new SR();
-    recognition.lang = "pt-BR";
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+    recognition = new SpeechRecognition();
+    recognition.lang = 'pt-BR';
     recognition.continuous = true;
     recognition.onresult = e => {
-      const t = e.results[e.results.length-1][0].transcript.trim().toLowerCase();
-      handleVoice(t);
+      const txt = e.results[e.results.length-1][0].transcript.trim().toLowerCase();
+      if (txt.includes('quantos veículos') || txt.includes('quantos veiculos')) {
+        processVehicleCount();
+      }
     };
     recognition.start();
   }
