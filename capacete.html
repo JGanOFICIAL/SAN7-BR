@@ -1,373 +1,294 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tech Vision Pro - Noite</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
+  <title>Consulta AI + Gov APIs Inteligente</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f9f9f9;
-      overflow: hidden;
-      color: #333;
-    }
-    video, canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: 1;
-      transition: filter 0.3s ease;
-    }
-    canvas { pointer-events: none; }
-    #header {
-      position: absolute;
-      top: 0;
-      width: 100%;
-      background: white;
-      border-bottom: 1px solid #ccc;
-      padding: 10px 20px;
-      z-index: 10;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    #switchBtn {
-      background: #0051a8;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    #startBtn {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      padding: 16px 36px;
-      font-size: 16px;
-      background: #0051a8;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      z-index: 20;
-      box-shadow: 0 0 12px rgba(0,0,0,0.15);
-    }
-    #controls {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      background: rgba(255,255,255,0.96);
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-evenly;
-      align-items: center;
-      padding: 12px 0 20px;
-      z-index: 30;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-    }
-    .control {
-      text-align: center;
-      margin: 10px 20px;
-    }
-    .control label {
-      font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 6px;
-      display: block;
-    }
-    .slider {
-      width: 160px;
-      appearance: none;
-      height: 8px;
-      background: linear-gradient(to right, #0051a8, #00c3ff);
-      border-radius: 5px;
-      outline: none;
-    }
-    .slider::-webkit-slider-thumb {
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #002b5c;
-      border: 2px solid white;
-      cursor: pointer;
-    }
-    .color-bar {
-      width: 160px;
-      height: 8px;
-      border-radius: 5px;
-      background: linear-gradient(to right, yellow, green, blue, red, purple);
-      position: relative;
-    }
-    .color-indicator {
-      position: absolute;
-      top: -5px;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      border: 2px solid white;
-      background: #0051a8;
-      transform: translateX(-50%);
-      cursor: pointer;
-      box-shadow: 0 0 4px rgba(0,0,0,0.3);
-    }
-    #clock {
-      font-size: 14px;
-    }
-    #darkModeToggle {
-      display: flex;
-      align-items: center;
-      font-size: 14px;
-      gap: 8px;
-      margin-top: 8px;
-      font-weight: bold;
-    }
-    #darkCheckbox {
-      width: 18px;
-      height: 18px;
-      accent-color: #333;
-      cursor: pointer;
-    }
-    body.dark {
-      background: #000;
-    }
-    #controls.dark {
-      background: rgba(20,20,20,0.95);
-      color: white;
-    }
-    #header.dark {
-      background: #111;
-      color: white;
-      border-color: #444;
-    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body,html{font-family:'Inter',sans-serif;display:flex;flex-direction:column;height:100%;background:#f0f2f5;color:#222;}
+    header{background:#1a1a2e;color:#eaeaea;padding:15px 20px;position:fixed;width:100%;top:0;display:flex;justify-content:space-between;align-items:center;z-index:100;}
+    header img{height:32px;}
+    .menu-btn{background:none;border:none;color:#eaeaea;font-size:24px;cursor:pointer;}
+    .dropdown{position:absolute;top:60px;right:20px;background:#fff;border:1px solid #ccc;border-radius:6px;box-shadow:0 2px 10px rgba(0,0,0,0.2);width:200px;display:none;z-index:300;}
+    .dropdown.show{display:block;}
+    .dropdown-item{padding:12px;cursor:pointer;border-bottom:1px solid #eee;}
+    .dropdown-item:last-child{border:none;}
+    .panel{position:absolute;top:70px;right:20px;background:#fff;border:1px solid #ccc;border-radius:6px;box-shadow:0 2px 10px rgba(0,0,0,0.2);width:280px;display:none;z-index:300;}
+    .panel.show{display:block;}
+    .panel-header{padding:12px;font-weight:bold;border-bottom:1px solid #eee;}
+    .close-panel{float:right;cursor:pointer;}
+    .panel-content{padding:12px;}
+    .panel-content select,input{width:100%;padding:8px;margin-bottom:10px;font-size:1rem;}
+    .panel-spinner{text-align:center;margin-top:10px;font-size:14px;color:#555;display:none;}
+    main{margin:80px 20px 180px;overflow-y:auto;flex:1;}
+    .post{background:#fff;border-radius:10px;padding:25px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);animation:fadeIn .4s ease;}
+    .post h2{color:#162447;margin-bottom:10px;}
+    .post .meta{font-size:.9rem;color:#555;margin-bottom:15px;}
+    .post p, .post ul{line-height:1.6;margin-bottom:12px;color:#333;}
+    .post h3{margin-top:20px;color:#1a1a2e;}
+    .bottom-bar{position:fixed;bottom:0;width:100%;padding:20px;background:#fff;box-shadow:0 -2px 8px rgba(0,0,0,0.1);display:flex;align-items:center;}
+    #input-query{flex:1;padding:12px;border:2px solid #1a1a2e;border-radius:8px;font-size:1rem;outline:none;}
+    #btn-consultar{margin-left:12px;padding:12px 20px;background:#1a1a2e;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;}
+    #btn-consultar:disabled{background:#aaa;cursor:not-allowed;}
+    #loading{position:fixed;inset:0;display:flex;justify-content:center;align-items:center;background:rgba(255,255,255,0.7);z-index:200;display:none;}
+    .spinner{border:6px solid #ddd;border-top:6px solid #1a1a2e;border-radius:50%;width:60px;height:60px;animation:spin 1s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+    #overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);display:flex;justify-content:center;align-items:center;z-index:150;}
+    .suggestions-box{background:#fff;padding:30px;border-radius:12px;width:90%;max-width:480px;position:relative;box-shadow:0 4px 20px rgba(0,0,0,0.2);animation:fadeIn .4s ease;}
+    .suggestions-box h2{margin-bottom:20px;color:#1a1a2e;}
+    .suggestion-btn{margin:8px 5px;padding:10px 18px;background:#1a1a2e;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:500;}
+    .close-suggestions{position:absolute;top:12px;right:16px;font-size:20px;cursor:pointer;color:#777;}
   </style>
 </head>
 <body>
+  <header>
+    <img src="URL_LOGO" alt="Logo"/>
+    <button class="menu-btn" id="menuBtn">⋮</button>
+  </header>
 
-  <div id="header">
-    <div id="clock">--:--:--</div>
-    <button id="switchBtn">🔄 Trocar Câmera</button>
+  <div class="dropdown" id="dropdown">
+    <div class="dropdown-item" id="optAbout">Quem Somos Nós</div>
+    <div class="dropdown-item" id="optConvert">Calcular Moeda</div>
   </div>
 
-  <video id="video" autoplay muted playsinline></video>
-  <canvas id="canvas"></canvas>
-  <button id="startBtn">Iniciar Monitoramento</button>
-
-  <div id="controls">
-    <div class="control">
-      <label for="esp">Espessura: <span id="espLabel">5x</span></label>
-      <input type="range" id="esp" min="0" max="13" value="5" class="slider">
+  <div class="panel" id="panelAbout">
+    <div class="panel-header">
+      Quem Somos Nós <span class="close-panel" onclick="closePanel('panelAbout')">×</span>
     </div>
-    <div class="control">
-      <label>Cor da Linha</label>
-      <div class="color-bar" id="colorBar">
-        <div class="color-indicator" id="colorIndicator"></div>
-      </div>
-    </div>
-    <div class="control" id="darkModeToggle">
-      <input type="checkbox" id="darkCheckbox">
-      <label for="darkCheckbox">Modo Noturno Inteligente</label>
+    <div class="panel-content">
+      <p>Aplicativo gratuito de respostas e aprendizado com foco no Brasil. Sistema Inteligente multimodal usando Wikipédia e APIs públicas.</p>
     </div>
   </div>
+
+  <div class="panel" id="panelConvert">
+    <div class="panel-header">
+      Calcular Moeda <span class="close-panel" onclick="closePanel('panelConvert')">×</span>
+    </div>
+    <div class="panel-content">
+      <label>Valor em R$:</label>
+      <input id="valBRL" type="number" min="0" step="0.01"/>
+      <label>Converter para:</label>
+      <select id="selCurrency">
+        <option value="USD">USD – Dólar Americano</option>
+        <option value="EUR">EUR – Euro</option>
+        <option value="JPY">JPY – Iene Japonês</option>
+      </select>
+      <div class="panel-spinner" id="convSpinner">🔄 Calculando...</div>
+      <div id="convResult"></div>
+    </div>
+  </div>
+
+  <main id="main-content"></main>
+
+  <div class="bottom-bar">
+    <input id="input-query" placeholder="Digite sua pergunta ou tema (ex: 'qual a capital do Brasil?')"/>
+    <button id="btn-consultar" disabled>Pesquisar</button>
+  </div>
+
+  <div id="loading"><div class="spinner"></div></div>
+
+  <div id="overlay">
+    <div class="suggestions-box">
+      <span class="close-suggestions" onclick="fecharSugestoes()">×</span>
+      <h2>Que tal pesquisar por:</h2>
+      <div id="suggestions-container"></div>
+    </div>
+  </div>
+
 <script>
-  const video = document.getElementById("video");
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
-  const clock = document.getElementById("clock");
-  const switchBtn = document.getElementById("switchBtn");
-  const startBtn = document.getElementById("startBtn");
-  const espInput = document.getElementById("esp");
-  const espLabel = document.getElementById("espLabel");
-  const colorBar = document.getElementById("colorBar");
-  const colorIndicator = document.getElementById("colorIndicator");
-  const darkCheckbox = document.getElementById("darkCheckbox");
-  const controls = document.getElementById("controls");
-  const header = document.getElementById("header");
+const input = document.getElementById('input-query'),
+      btn = document.getElementById('btn-consultar'),
+      loading = document.getElementById('loading'),
+      main = document.getElementById('main-content'),
+      overlay = document.getElementById('overlay'),
+      suggContainer = document.getElementById('suggestions-container');
 
-  let model, stream, usingFrontCamera = true;
-  let detecting = false;
-  let lineWidth = 5;
-  let lineColor = "#0051a8";
-  const traducaoObjetos = {
-    "person": "pessoa","bicycle": "bicicleta","car": "carro","motorcycle": "moto",
-    "airplane": "avião","bus": "ônibus","train": "trem","truck": "caminhão",
-    "boat": "barco","traffic light": "semáforo","fire hydrant": "hidrante",
-    "stop sign": "placa de pare","parking meter": "parquímetro","bench": "banco",
-    "bird": "pássaro","cat": "gato","dog": "cachorro","horse": "cavalo",
-    "sheep": "ovelha","cow": "vaca","elephant": "elefante","bear": "urso",
-    "zebra": "zebra","giraffe": "girafa","backpack": "mochila",
-    "umbrella": "guarda-chuva","handbag": "bolsa","tie": "gravata",
-    "suitcase": "mala","frisbee": "frisbee","skis": "esquis",
-    "snowboard": "snowboard","sports ball": "bola","kite": "pipa",
-    "baseball bat": "taco de beisebol","baseball glove": "luva de beisebol",
-    "skateboard": "skate","surfboard": "prancha","tennis racket": "raquete de tênis",
-    "bottle": "garrafa","wine glass": "taça de vinho","cup": "copo",
-    "fork": "garfo","knife": "faca","spoon": "colher","bowl": "tigela",
-    "banana": "banana","apple": "maçã","sandwich": "sanduíche","orange": "laranja",
-    "broccoli": "brócolis","carrot": "cenoura","hot dog": "cachorro‑quente",
-    "pizza": "pizza","donut": "rosquinha","cake": "bolo","chair": "cadeira",
-    "couch": "sofá","potted plant": "planta","bed": "cama",
-    "dining table": "mesa de jantar","toilet": "vaso sanitário",
-    "tv": "televisão","laptop": "notebook","mouse": "mouse",
-    "remote": "controle remoto","keyboard": "teclado",
-    "cell phone": "celular","microwave": "micro‑ondas","oven": "forno",
-    "toaster": "torradeira","sink": "pia","refrigerator": "geladeira",
-    "book": "livro","clock": "relógio","vase": "vaso","scissors": "tesoura",
-    "teddy bear": "urso de pelúcia","hair drier": "secador","toothbrush": "escova de dentes"
-  };
+document.addEventListener('DOMContentLoaded', ()=>{
+  mostrarSugestoes();
+  input.focus();
+});
+input.addEventListener('input', ()=> btn.disabled = !input.value.trim());
+btn.addEventListener('click', ()=>consultar(input.value.trim()));
 
-  setInterval(() => {
-    const now = new Date();
-    clock.textContent = now.toLocaleTimeString("pt-BR");
-  }, 1000);
+const exemplos = [
+  'qual a capital do Brasil?',
+  'qual o maior estado do Brasil?',
+  'o que é taxa selic?',
+  'qual a área de São Paulo?',
+  'qual o PIB do Brasil?',
+  'quem é Pedro Alvares Cabral?'
+];
 
-  async function startCamera(facing = "user") {
-    if (stream) stream.getTracks().forEach(track => track.stop());
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: facing }, audio: true
-      });
-      video.srcObject = stream;
-      video.onloadedmetadata = () => {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-      };
-    } catch (e) {
-      alert("Erro ao acessar câmera/microfone: " + e);
+function mostrarSugestoes(){
+  suggContainer.innerHTML = '';
+  exemplos.sort(()=>0.5-Math.random()).slice(0,5).forEach(t=>{
+    let b = document.createElement('button');
+    b.textContent = t;
+    b.className = 'suggestion-btn';
+    b.onclick = ()=>{overlay.style.display='none';consultar(t)};
+    suggContainer.appendChild(b);
+  });
+}
+function fecharSugestoes(){overlay.style.display='none';input.focus();}
+function showLoading(on=true){loading.style.display = on?'flex':'none';}
+
+function parse(q){
+  const low = q.toLowerCase();
+  const pergunta = /^(o que é|qual a|quem é|como|quando|onde|por que|qual o)/.test(low);
+  const patterns = [
+    {tipo:'capital', regex:/capital do ([\wçãé]+)/},
+    {tipo:'estado_maior', regex:/maior estado do brasil/},
+    {tipo:'selic', regex:/selic/},
+    {tipo:'ipca', regex:/ipca|inflação/},
+    {tipo:'desemprego', regex:/desemprego/},
+    {tipo:'pib', regex:/pib/},
+  ];
+  for(let p of patterns){
+    if(p.regex.test(low)) return {...p, pergunta};
+  }
+  return {tipo:'wiki', termo:q, pergunta};
+}
+
+async function fetchWiki(term){
+  const res = await fetch(`https://pt.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(term)}`);
+  return res.ok ? await res.json() : null;
+}
+async function fetchBC(codigo){
+  const res = await fetch(`https://api.bcb.gov.br/dados/serie/bcdata.sgs.${codigo}/dados/ultimos/1?formato=json`);
+  return res.ok ? (await res.json())[0] : null;
+}
+async function fetchIBGE(tabela){
+  const res = await fetch(`https://servicodados.ibge.gov.br/api/v3/agregados/${tabela}/periodos/2021/2025/variaveis/9324?localidades=N1[all]`);
+  return res.ok ? await res.json() : null;
+}
+
+async function consultar(raw){
+  main.innerHTML = ''; showLoading(true);
+  const p = parse(raw);
+  let html='';
+
+  if(p.tipo==='capital'){
+    const term = raw.match(/capital do ([\w]+)/i)[1];
+    const wiki = await fetchWiki(term);
+    if(wiki){
+      html+=`<div class="post"><h2>Capital de ${wiki.title}</h2><div class="meta">Definição • ${new Date().toLocaleDateString()}</div><p>${wiki.extract}</p></div>`;
+    }
+  } else if(p.tipo==='estado_maior'){
+    const wiki = await fetchWiki('Lista de unidades federativas do Brasil');
+    if(wiki){
+      html+=`<div class="post"><h2>Maior estado do Brasil</h2><div class="meta">Definição e contexto • ${new Date().toLocaleDateString()}</div><p>${wiki.extract}</p></div>`;
+    }
+  } else if(['selic','ipca','desemprego','pib'].includes(p.tipo)){
+    html+=`<div class="post"><h2>${p.tipo.toUpperCase()}</h2><div class="meta">Dados oficiais + contexto</div>`;
+    if(p.tipo==='selic'){
+      const bc = await fetchBC(11);
+      const wiki = await fetchWiki('Taxa Selic');
+      html+=bc? `<p><strong>Última Selic:</strong> ${bc.valor}% (${bc.data})</p>`:'';
+      html+=wiki?`<p>${wiki.extract}</p>`:'';
+    }
+    if(p.tipo==='ipca'){
+      const ib = await fetchIBGE(1737);
+      const mes = ib[1].resultados.pop();
+      const val=mes.series[0].serie[mes.periodo];
+      const wiki=await fetchWiki('IPCA');
+      html+=`<p><strong>IPCA (último):</strong> ${val}% (${mes.periodo})</p>`;
+      html+=wiki?`<p>${wiki.extract}</p>`:'';
+    }
+    if(p.tipo==='desemprego'){
+      const ib=await fetchIBGE(1737);
+      const mes=ib[0].resultados.pop();
+      const val=mes.series[0].serie[mes.periodo];
+      const wiki=await fetchWiki('Taxa de desemprego no Brasil');
+      html+=`<p><strong>Desemprego (último):</strong> ${val}% (${mes.periodo})</p>`;
+      html+=wiki?`<p>${wiki.extract}</p>`:'';
+    }
+    if(p.tipo==='pib'){
+      const wiki=await fetchWiki('Produto interno bruto do Brasil');
+      html+=wiki?`<p>${wiki.extract}</p>`:'';
+      const ib=await fetchIBGE(1737);
+      const pibInfo=await fetchWiki('PIB do Brasil');
+      html+=ib?`<p><strong>PIB real 4T acumulado:</strong> ${ib[0].resultados.find(r=>r.periodo.includes('4º tri')).series[0].serie[ib[0].resultados.find(r=>r.periodo.includes('4º tri')).periodo]}%</p>`:'';
+    }
+    html+='</div>';
+  } else {
+    const wiki=await fetchWiki(raw);
+    if(wiki){
+      html+=`<div class="post"><h2>${wiki.title}</h2><div class="meta">${p.pergunta?'Definição':'Resumo'} • ${new Date().toLocaleDateString()}</div>`;
+      const text = p.pergunta? wiki.extract: wiki.extract.split('. ').slice(0,5).join('. ') + '.';
+      html+=`<p>${text}</p></div>`;
     }
   }
 
-  switchBtn.onclick = () => {
-    usingFrontCamera = !usingFrontCamera;
-    startCamera(usingFrontCamera ? "user" : "environment");
-  };
+  if(!html) html=`<div class="post"><h2>Sem resultado</h2><p>Não encontrei nada sobre "${raw}".</p></div>`;
+  main.innerHTML=html;
+  showLoading(false);
+}
 
-  function draw(preds) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    preds.forEach(p => {
-      const [x, y, w, h] = p.bbox;
-      ctx.lineWidth = lineWidth;
-      ctx.strokeStyle = lineColor;
-      ctx.strokeRect(x, y, w, h);
-      ctx.font = "14px Arial";
-      ctx.fillStyle = lineColor;
-      const nomeTraduzido = traducaoObjetos[p.class] || p.class;
-      ctx.fillText(`${nomeTraduzido} (${Math.round(p.score * 100)}%)`, x + 4, y - 8);
-    });
+// === MENU E PAINÉIS ===
+const menuBtn = document.getElementById('menuBtn');
+const dropdown = document.getElementById('dropdown');
+const panelAbout = document.getElementById('panelAbout');
+const panelConvert = document.getElementById('panelConvert');
+
+menuBtn.addEventListener('click', () => {
+  dropdown.classList.toggle('show');
+  panelAbout.classList.remove('show');
+  panelConvert.classList.remove('show');
+});
+
+document.getElementById('optAbout').addEventListener('click', () => {
+  panelAbout.classList.add('show');
+  panelConvert.classList.remove('show');
+  dropdown.classList.remove('show');
+});
+document.getElementById('optConvert').addEventListener('click', () => {
+  panelConvert.classList.add('show');
+  panelAbout.classList.remove('show');
+  dropdown.classList.remove('show');
+});
+function closePanel(id){
+  document.getElementById(id).classList.remove('show');
+}
+
+// === CONVERSÃO MOEDA ===
+const valBRL = document.getElementById('valBRL');
+const selCurrency = document.getElementById('selCurrency');
+const convResult = document.getElementById('convResult');
+const convSpinner = document.getElementById('convSpinner');
+
+const moedas = {
+  USD: 1,
+  EUR: 21619,
+  JPY: 21620
+};
+
+async function atualizarConversao(){
+  const valor = parseFloat(valBRL.value.replace(',', '.'));
+  if(isNaN(valor) || valor <= 0){
+    convResult.textContent = '';
+    return;
   }
-
-  let lastPredictions = [];
-  async function detectLoop() {
-    if (model && video.readyState === 4 && detecting) {
-      const preds = await model.detect(video);
-      lastPredictions = preds;
-      draw(preds);
-    }
-    requestAnimationFrame(detectLoop);
+  convSpinner.style.display = 'block';
+  const moeda = selCurrency.value;
+  const codigo = moedas[moeda];
+  try {
+    const res = await fetch(`https://api.bcb.gov.br/dados/serie/bcdata.sgs.${codigo}/dados/ultimos/1?formato=json`);
+    const json = await res.json();
+    const cotacao = parseFloat(json[0].valor.replace(',', '.'));
+    const convertido = valor / cotacao;
+    const siglas = {USD: '$', EUR: '€', JPY: '¥'};
+    convResult.innerHTML = `<strong>Resultado:</strong> ${siglas[moeda]} ${convertido.toFixed(2).toLocaleString()}`;
+  } catch(e){
+    convResult.textContent = 'Erro ao buscar cotação.';
   }
-
-  startBtn.onclick = () => {
-    detecting = true;
-    startBtn.style.display = "none";
-  };
-
-  espInput.oninput = e => {
-    lineWidth = parseInt(e.target.value);
-    espLabel.textContent = `${lineWidth}x`;
-  };
-
-  colorBar.onclick = e => {
-    const rect = colorBar.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const percent = x / rect.width;
-    let color;
-    if (percent < 0.2) color = "yellow";
-    else if (percent < 0.4) color = "green";
-    else if (percent < 0.6) color = "blue";
-    else if (percent < 0.8) color = "red";
-    else color = "purple";
-    lineColor = color;
-    colorIndicator.style.left = `${x}px`;
-    colorIndicator.style.background = color;
-  };
-
-  darkCheckbox.onchange = () => {
-    const isDark = darkCheckbox.checked;
-    document.body.classList.toggle("dark", isDark);
-    controls.classList.toggle("dark", isDark);
-    header.classList.toggle("dark", isDark);
-    if (isDark) {
-      video.style.filter = "brightness(1.4) contrast(1.3)";
-      if (["#000","black","#002b5c","blue"].includes(lineColor)) {
-        lineColor = "white";
-      }
-    } else {
-      video.style.filter = "none";
-    }
-  };
-
-  function showVehicleCount(carCount, motoCount) {
-    const msgDiv = document.createElement('div');
-    msgDiv.style.position = 'fixed';
-    msgDiv.style.top = '40%';
-    msgDiv.style.left = '50%';
-    msgDiv.style.transform = 'translate(-50%, -50%)';
-    msgDiv.style.background = 'rgba(255,255,255,0.9)';
-    msgDiv.style.color = '#000';
-    msgDiv.style.fontSize = '20px';
-    msgDiv.style.fontWeight = 'bold';
-    msgDiv.style.padding = '20px 30px';
-    msgDiv.style.borderRadius = '10px';
-    msgDiv.style.boxShadow = '0 0 10px rgba(0,0,0,0.2)';
-    msgDiv.style.zIndex = '999';
-    msgDiv.innerText = `Carro: ${carCount} | Moto: ${motoCount}`;
-    document.body.appendChild(msgDiv);
-    setTimeout(() => document.body.removeChild(msgDiv), 3000);
-  }
-
-  function processVehicleCount() {
-    let carCount = 0, motoCount = 0;
-    lastPredictions.forEach(p => {
-      if (p.class === 'car') carCount++;
-      if (p.class === 'motorcycle') motoCount++;
-    });
-    showVehicleCount(carCount, motoCount);
-  }
-
-  let recognition;
-  function startVoiceRecognition() {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) return;
-    recognition = new SpeechRecognition();
-    recognition.lang = 'pt-BR';
-    recognition.continuous = true;
-    recognition.onresult = e => {
-      const txt = e.results[e.results.length-1][0].transcript.trim().toLowerCase();
-      if (txt.includes('quantos veículos') || txt.includes('quantos veiculos')) {
-        processVehicleCount();
-      }
-    };
-    recognition.start();
-  }
-
-  async function init() {
-    await startCamera();
-    model = await cocoSsd.load();
-    detectLoop();
-    startVoiceRecognition();
-  }
-
-  init();
+  convSpinner.style.display = 'none';
+}
+valBRL.addEventListener('input', atualizarConversao);
+selCurrency.addEventListener('change', atualizarConversao);
 </script>
+
+
 </body>
 </html>
