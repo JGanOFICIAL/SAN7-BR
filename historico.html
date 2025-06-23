@@ -2,134 +2,94 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Histórico de Vendas</title>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <title>Loja • Histórico</title>
+  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-database-compat.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background: #fff;
-      color: #000;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    h1 {
-      font-size: 32px;
-    }
-    button {
-      font-size: 16px;
-      padding: 6px 12px;
-      margin-left: 10px;
-      border: none;
-      cursor: pointer;
-    }
-    .preto {
-      background: #000;
-      color: #fff;
-    }
-    .vermelho {
-      background: red;
-      color: #fff;
-    }
-    .verde {
-      color: green;
-      font-weight: bold;
-    }
-    .historico-item {
-      border-bottom: 1px solid #ccc;
-      padding: 10px 0;
-    }
-    .historico-item h2 {
-      margin: 0 0 5px 0;
-    }
-    .botoes {
-      margin-top: 10px;
-    }
+    body{font-family:Arial;margin:20px;}
+    header{font-size:24px;}
+    button{margin:5px;padding:10px;}
+    #barraData{margin:10px 0;padding:8px;}
+    table{width:100%;border-collapse:collapse;}
+    th,td{border:1px solid #aaa;padding:5px;}
   </style>
 </head>
 <body>
   <header>
-    <h1>Histórico de Vendas</h1>
-    <button class="preto" onclick="window.location.href='index.html'">Voltar</button>
+    <button onclick="location='index.html'">◀ Voltar</button>
+    Histórico de dias
   </header>
+  <input id="barraData" type="date" />
+  <table>
+    <thead><tr><th>Data</th><th>Qtde Vendas</th><th>Total (R$)</th><th>Ações</th></tr></thead>
+    <tbody id="tb"></tbody>
+  </table>
 
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+    authDomain: "login-you-see.firebaseapp.com",
+    databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+    projectId: "login-you-see",
+    storageBucket: "login-you-see.firebasestorage.app",
+    messagingSenderId: "524877259374",
+    appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
+    measurementId: "G-K7E00VXYHG"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const refVenda = db.ref('vendas');
+  const refSaldo = db.ref('saldo');
 
-<H1>EM DESENVOLVIMENTO, JP FELIX</H1>
-  <div id="historicoContainer"></div>
+  refVenda.on('value', s=>{
+    montarTabela(s.val()||{});
+  });
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBs2GrFPGib7Nz02F03Eeo5DTW-8OTJmFI",
-      authDomain: "san7-2b351.firebaseapp.com",
-      databaseURL: "https://san7-2b351-default-rtdb.firebaseio.com",
-      projectId: "san7-2b351",
-      storageBucket: "san7-2b351.appspot.com",
-      messagingSenderId: "511547914036",
-      appId: "1:511547914036:web:0595e39aef88258c649761"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+  document.getElementById('barraData').addEventListener('change', ()=>{
+    const d = document.getElementById('barraData').value;
+    if(!d) montarTabela(null);
+    else refVenda.child(d).once('value', s=>{
+      montarTabela({[d]:s.val()});
+    });
+  });
 
-    function carregarHistorico() {
-      db.ref('historico').once('value').then(snapshot => {
-        const container = document.getElementById('historicoContainer');
-        container.innerHTML = '';
-        const dados = snapshot.val();
-        if (dados) {
-          Object.keys(dados).forEach(dia => {
-            let produtos = [];
-            let totalDia = 0;
-            Object.values(dados[dia]).forEach(venda => {
-              produtos.push(venda.nome);
-              totalDia += venda.valor;
-            });
-            const div = document.createElement('div');
-            div.className = 'historico-item';
-            div.innerHTML = `
-              <h2>${dia}</h2>
-              <p>Produtos vendidos: ${produtos.join(', ')}</p>
-              <p class="verde">Total do dia: R$ ${totalDia.toFixed(2)}</p>
-              <div class="botoes">
-                <button class="preto" onclick="baixarPDF('${dia}', ${JSON.stringify(produtos)}, ${totalDia})">Baixar PDF</button>
-                <button class="vermelho" onclick="excluirDia('${dia}')">Excluir</button>
-              </div>
-            `;
-            container.appendChild(div);
-          });
-        } else {
-          container.innerHTML = '<p>Nenhuma venda registrada.</p>';
-        }
+  function montarTabela(dados){
+    const tb = document.getElementById('tb');
+    tb.innerHTML = '';
+    for(const dia in dados){
+      const vendas = dados[dia]||{};
+      const qtde = Object.keys(vendas).length;
+      const total = Object.values(vendas).reduce((a,v)=>a+v.preco*v.quantidade,0);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${dia}</td><td>${qtde}</td><td>${total.toFixed(2).replace('.',',')}</td>
+        <td>
+          <button onclick="excluir('${dia}')">Excluir</button>
+          <button onclick="baixar('${dia}')">Baixar PDF</button>
+        </td>`;
+      tb.appendChild(tr);
+    }
+  }
+
+  function excluir(dia){
+    if(confirm('Excluir histórico de '+dia+'?')){
+      refVenda.child(dia).remove();
+      refSaldo.child(dia).remove();
+    }
+  }
+
+  function baixar(dia){
+    refVenda.child(dia).once('value',s=>{
+      const vendas = s.val()||{};
+      let doc = `<h2>Histórico de ${dia}</h2><ul>`;
+      Object.values(vendas).forEach(v=>{
+        doc += `<li>${v.hora} – ${v.produto} x${v.quantidade} (${v.tipo}) – R$ ${v.preco.toFixed(2).replace('.',',')}</li>`;
       });
-    }
-
-    function baixarPDF(dia, produtos, total) {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.setFontSize(16);
-      doc.text(`Relatório de Vendas - ${dia}`, 10, 20);
-      doc.setFontSize(12);
-      doc.text(`Produtos vendidos: ${produtos.join(', ')}`, 10, 30);
-      doc.setTextColor(0, 128, 0);
-      doc.text(`Total do dia: R$ ${total.toFixed(2)}`, 10, 40);
-      doc.save(`relatorio_${dia}.pdf`);
-    }
-
-    function excluirDia(dia) {
-      if (confirm(`Deseja excluir as vendas do dia ${dia}?`)) {
-        db.ref('historico/' + dia).remove().then(() => {
-          alert('Dados excluídos com sucesso.');
-          carregarHistorico();
-        });
-      }
-    }
-
-    window.onload = carregarHistorico;
-  </script>
+      doc += '</ul>';
+      const wnd = window.open();
+      wnd.document.write(doc);
+      wnd.print();
+    });
+  }
+</script>
 </body>
 </html>
