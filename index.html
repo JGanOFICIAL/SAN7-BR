@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Loja • Home</title>
+  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    header { font-size:24px; display:flex; justify-content:space-between; }
+    #saldo { font-size:48px; margin:20px 0; }
+    button { margin:5px; padding:10px; }
+    #barra { margin:10px 0; width:100%; padding:8px; }
+    #lista { width:100%; border-collapse:collapse; }
+    #lista th, #lista td { border:1px solid #aaa; padding:5px; text-align:left; }
+    .alerta { background:#fdd; }
+    .overlay{ position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5); display:none; justify-content:center; align-items:center;}
+    .form{background:#fff; padding:20px;}
+  </style>
+</head>
+<body>
+  <header>
+    <div>Loja</div>
+    <button onclick="location='historico.html'">Histórico</button>
+  </header>
+
+  <div id="saldo">R$ 0,00</div>
+
+  <button onclick="abrirFormProduto()">Cadastrar Produto</button>
+  <button onclick="finalizarDia()">Finalizar Dia</button>
+  <input id="barra" placeholder="Pesquisar produto...">
+
+  <table id="lista">
+    <thead><tr><th>Nome</th><th>Marca</th><th>Estoque</th><th>Preço V.</th><th>Preço C.</th><th>Ações</th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <div id="overlayProduto" class="overlay">
+    <div class="form">
+      <h3>Cadastrar Produto</h3>
+      <input id="pNome" placeholder="Nome"><br>
+      <input id="pMarca" placeholder="Marca"><br>
+      <input id="pVista" placeholder="Preço à vista"><br>
+      <input id="pCartao" placeholder="Preço cartão"><br>
+      <input id="pEstoque" placeholder="Quantidade"><br>
+      <button onclick="salvarProduto()">Cadastrar</button>
+      <button onclick="fecharFormProduto()">Cancelar</button>
+    </div>
+  </div>
+
+  <div id="overlayVenda" class="overlay">
+    <div class="form">
+      <h3>Vender Produto</h3>
+      <input id="vQuantidade" type="number" placeholder="Quantidade"><br>
+      <button onclick="confirmarVenda('vista')">Venda à vista</button>
+      <button onclick="confirmarVenda('cartao')">Venda cartão</button>
+      <button onclick="fecharVenda()">Cancelar</button>
+    </div>
+  </div>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+    authDomain: "login-you-see.firebaseapp.com",
+    databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+    projectId: "login-you-see",
+    storageBucket: "login-you-see.firebasestorage.app",
+    messagingSenderId: "524877259374",
+    appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
+    measurementId: "G-K7E00VXYHG"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const hoje = new Date().toISOString().split('T')[0];
+  const refSaldo = db.ref('saldo/' + hoje);
+  const refProd = db.ref('produtos');
+  const refVenda = db.ref('vendas/' + hoje);
+
+  let produtos = {}, vendendoProduto = null;
+
+  refSaldo.on('value', s => {
+    const v = s.val() || 0;
+    document.getElementById('saldo').innerText = 'R$ ' + (v).toFixed(2).replace('.',',');
+  });
+  refProd.on('value', s => {
+    produtos = s.val() || {};
+    atualizarLista();
+  });
+
+  document.getElementById('barra').addEventListener('input', atualizarLista);
+
+  function atualizarLista(){
+    const q = document.getElementById('barra').value.toLowerCase();
+    const tbody = document.querySelector('#lista tbody');
+    tbody.innerHTML = '';
+    Object.entries(produtos).filter(([,p])=>p.nome.toLowerCase().startsWith(q)).forEach(([k,p])=>{
+      const tr = document.createElement('tr');
+      if(p.estoque <=4) tr.classList.add('alerta');
+      tr.innerHTML = `
+        <td>${p.nome}</td><td>${p.marca}</td><td>${p.estoque}</td>
+        <td>${p.vista.toFixed(2)}</td><td>${p.cartao.toFixed(2)}</td>
+        <td><button onclick="editarProduto('${k}')">Editar</button>
+            <button onclick="venderProduto('${k}')">Vender</button></td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function abrirFormProduto(){
+    document.getElementById('overlayProduto').style.display='flex';
+  }
+  function fecharFormProduto(){
+    document.getElementById('overlayProduto').style.display='none';
+  }
+  function salvarProduto(){
+    const n = document.getElementById('pNome').value;
+    const m = document.getElementById('pMarca').value;
+    const v = parseFloat(document.getElementById('pVista').value);
+    const c = parseFloat(document.getElementById('pCartao').value);
+    const e = parseInt(document.getElementById('pEstoque').value);
+    if(n && m && !isNaN(v) && !isNaN(c) && !isNaN(e)){
+      refProd.push({nome:n,marca:m,vista:v,cartao:c,estoque:e});
+      fecharFormProduto();
+    }
+  }
+
+  function editarProduto(k){
+    const nova = prompt('Nova quantidade em estoque:',produtos[k].estoque);
+    const e = parseInt(nova);
+    if(!isNaN(e)){
+      refProd.child(k+'/estoque').set(e);
+    }
+  }
+
+  function venderProduto(k){
+    vendendoProduto = k;
+    document.getElementById('overlayVenda').style.display='flex';
+  }
+  function fecharVenda(){
+    vendendoProduto = null;
+    document.getElementById('overlayVenda').style.display='none';
+  }
+
+  function confirmarVenda(tipo){
+    const q = parseInt(document.getElementById('vQuantidade').value);
+    if(!vendendoProduto|| isNaN(q)|| q<=0) return;
+    const p = produtos[vendendoProduto];
+    const preco = tipo=='vista'? p.vista : p.cartao;
+    const total = preco * q;
+    const updates = {};
+    updates['saldo/'+hoje] = ( (document.getElementById('saldo').innerText.match(/[\d,\.]+/)[0].replace(',','.')) *1 + total );
+    updates['produtos/'+vendendoProduto+'/estoque'] = p.estoque - q;
+    refVenda.push({produto: p.nome, tipo, quantidade:q, preco, hora:new Date().toLocaleTimeString() });
+    db.ref().update(updates);
+    fecharVenda();
+  }
+
+  function finalizarDia(){
+    refVenda.once('value', s=>{
+      const vendas = s.val()||{};
+      let ticket='Vendas do dia:\n';
+      let tot=0;
+      Object.values(vendas).forEach(v=>{
+        ticket += `${v.hora} • ${v.produto} x${v.quantidade} (${v.tipo}) = ${v.preco* v.quantidade}\n`;
+        tot += v.preco* v.quantidade;
+      });
+      ticket += `Total: ${tot.toFixed(2).replace('.',',')}`;
+      if(confirm(ticket + '\n\nCONCORDO e FINALIZO?')){
+        refSaldo.remove();
+        window.location='historico.html';
+      }
+    });
+  }
+</script>
+</body>
+</html>
+
+
+<style>
+  body {
+    margin: 0; padding: 0; height: 100vh;
+    background: url('URL_DA_SUA_IMAGEM_AQUI') no-repeat center/cover fixed;
+    position: relative;
+    font-family: monospace, monospace;
+  }
+  body::before {
+    content: "";
+    position: absolute;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(6px);
+    z-index: 0;
+    transition: opacity 0.3s ease;
+  }
+  #login {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease;
+  }
+  #login-box {
+    background: white;
+    padding: 20px;
+    border-radius: 4px;
+    width: 260px;
+    text-align: center;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  }
+  #login-box img {
+    max-width: 120px;
+    margin-bottom: 15px;
+  }
+  #senha {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    margin-bottom: 12px;
+    border: 1px solid #888;
+    border-radius: 2px;
+  }
+  #btnLogin {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  #erro {
+    color: red;
+    font-size: 13px;
+    display: none;
+  }
+  /* Quando sumir, deixar transparente e não interativo */
+  .hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+</style>
+
+<div id="login">
+  <div id="login-box">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSppkoKsaYMuIoNLDH7O8ePOacLPG1mKXtEng&s" alt="Logo">
+<h3> Edson - MG GRIFES </h3>
+    <input type="password" id="senha" placeholder="Senha">
+    <button id="btnLogin" onclick="login()">Entrar</button>
+    <div id="erro">Senha incorreta.</div>
+  </div>
+</div>
+
+<script>
+  function login() {
+    const s = document.getElementById('senha').value;
+    const erro = document.getElementById('erro');
+    if (s === 'jc2025') {
+      erro.style.display = 'none';
+      // Esconder o login e o fundo desfocado
+      document.getElementById('login').classList.add('hidden');
+      document.body.style.setProperty('--blur-opacity', '0');
+      document.body.querySelector('::before'); // não funciona, usar outra forma abaixo
+
+      // Esconder o pseudo-elemento ::before com JS: 
+      // Como não pode acessar direto, removemos via classe:
+      document.body.classList.add('blur-off');
+
+      // Se quiser redirecionar, coloque aqui:
+      // window.location.href = 'index.html';
+
+    } else {
+      erro.style.display = 'block';
+    }
+  }
+
+  // Para remover o blur do ::before, melhor controlar via classe no body
+  // Vamos ajustar o CSS para isso:
+
+</script>
+
+<style>
+  body.blur-off::before {
+    opacity: 0 !important;
+    pointer-events: none;
+  }
+</style>
