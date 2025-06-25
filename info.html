@@ -1,157 +1,205 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Chatbot SAN7</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YouSee - Informações</title>
   <style>
-    * {margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
-    body {background:#fff;}
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+
     header {
-      position:fixed;top:0;left:0;width:100%;height:60px;
-      background:linear-gradient(to bottom, #002244, #fff);
-      display:flex;align-items:center;justify-content:center;
-      color:#fff;font-weight:bold;z-index:100;
+      background-color: #064820;
+      padding: 20px;
+      text-align: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
     }
-    main {
-      margin-top:80px;padding:20px;text-align:center;
+
+    .logo img {
+      width: 80px;
+      height: auto;
     }
-    .titulo {
-      font-size:20px;font-weight:bold;margin-bottom:10px;
+
+    .container {
+      margin-top: 140px;
+      padding: 30px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #fff;
+      color: #333;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     }
-    .descricao {
-      font-size:15px;color:#444;margin-bottom:20px;
+
+    h2 {
+      text-align: center;
+      color: #064820;
+      margin-bottom: 25px;
     }
-    .pergunta {
-      background:#f5f5f5;border:1px solid #ccc;
-      margin:10px auto;padding:15px;border-radius:8px;max-width:360px;
+
+    .info {
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+      font-size: 15px;
     }
-    .resposta {
-      background:#dff0d8;color:#2b542c;padding:10px;
-      margin-top:10px;border-radius:5px;font-size:14px;
+
+    .info strong {
+      color: #064820;
     }
-    button {
-      margin:20px;padding:12px 20px;border:none;border-radius:5px;
-      background:#25d366;color:white;font-size:16px;cursor:pointer;
+
+    #petData {
+      animation: fadeIn 0.5s ease;
     }
-    .loading {
-      display:none;
-      position:fixed;
-      top:0;left:0;width:100%;height:100%;
-      background:rgba(255,255,255,0.8);
-      backdrop-filter:blur(5px);
-      z-index:999;
-      align-items:center;
-      justify-content:center;
-      font-size:18px;color:#333;
+
+    #loader-wrapper {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    #loader {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      position: relative;
+      animation: rotate 1.2s linear infinite;
+    }
+
+    #loader::before {
+      content: "";
+      position: absolute;
+      top: 6px; left: 6px; right: 6px; bottom: 6px;
+      border-radius: 50%;
+      border: 6px solid transparent;
+      border-top-color: #064820;
+      border-left-color: #064820;
+      animation: spinPulse 0.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes spinPulse {
+      0% { transform: scale(0.7); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #loader-wrapper.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
-  <header>SAN7 WEB-CHATBOT</header>
-  <main>
-    <div class="titulo" id="titulo">Carregando...</div>
-    <div class="descricao" id="descricao"></div>
-    <div id="chatbox"></div>
-    <button id="btnZap" onclick="acessarZap()">Acessar via WhatsApp</button>
-  </main>
-  <div class="loading" id="loading">Carregando...</div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <header>
+    <div class="logo">
+      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEikzB2NNS-a9VIbBD1rLsdPi-3-61eujSX3Tb3Rtgn2EVB0fPi4GzSqnVT1qEbz1DF8gz8EeyAfFEHv_w3o8oz5ZhBsFySL9Ns4ALFTV36Oj7sIhHs77B596mov4gU68BdUTr_R3GtCcvSI97OoWgqmDPXbJO7RXJpAqPnPdtx8omGL3g3SMLoHYRr6ico7/s414/AF54F15C-63C1-4032-903C-1AF679E0E92A.png" alt="Logo" />
+    </div>
+  </header>
+
+  <div class="container">
+    <h2>Informações do PET</h2>
+    <div id="petData">Carregando informações...</div>
+  </div>
+
+  <div id="loader-wrapper">
+    <div id="loader"></div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
       authDomain: "login-you-see.firebaseapp.com",
       databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
       projectId: "login-you-see",
-      storageBucket: "login-you-see.appspot.com",
+      storageBucket: "login-you-see.firebasestorage.app",
       messagingSenderId: "524877259374",
       appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
       measurementId: "G-K7E00VXYHG"
     };
+
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const uid = new URLSearchParams(location.search).get("id");
-    const chatbox = document.getElementById("chatbox");
-    const loading = document.getElementById("loading");
-    let whatsapp = "";
-    let respostasSelecionadas = [];
+    const loaderWrapper = document.getElementById('loader-wrapper');
 
-    if (!uid) {
-      document.getElementById("titulo").innerText = "ID não encontrado";
-      document.getElementById("btnZap").style.display = "none";
-    } else {
-      carregarChat();
+    function getQueryParam(param) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(param);
     }
 
-    function carregarChat() {
-      loading.style.display = "flex";
-      db.ref("usuarios/" + uid).once("value").then(snapshot => {
-        const data = snapshot.val();
-        if (!data) {
-          document.getElementById("titulo").innerText = "Usuário não encontrado";
-          return;
-        }
-        document.getElementById("titulo").innerText = data.titulo || "Chatbot";
-        document.getElementById("descricao").innerText = data.descricao || "";
-        whatsapp = (data.whatsapp || "").replace(/\D/g, "");
-        renderPerguntas(data.perguntas || {});
-        loading.style.display = "none";
-      });
-    }
+    const serieId = getQueryParam("id");
 
-    function renderPerguntas(perguntas) {
-      Object.entries(perguntas).forEach(([id, p]) => {
-        const div = document.createElement("div");
-        div.className = "pergunta";
-        const questao = document.createElement("div");
-        questao.innerText = p.pergunta || "Pergunta";
-        div.appendChild(questao);
+    if (serieId) {
+      db.ref("usuarios").once("value").then(snapshot => {
+        let encontrado = false;
 
-        for (let i = 1; i <= 4; i++) {
-          if (p["op" + i]) {
-            const btn = document.createElement("button");
-            btn.innerText = p["op" + i];
-            btn.style.display = "block";
-            btn.style.margin = "10px auto";
-            btn.style.padding = "10px";
-            btn.style.background = "#002244";
-            btn.style.color = "#fff";
-            btn.style.border = "none";
-            btn.style.borderRadius = "5px";
-            btn.onclick = () => {
-              mostrarResposta(div, p.resposta || "Obrigado!");
-              respostasSelecionadas.push(`${p.pergunta} → ${p["op" + i]}`);
-            };
-            div.appendChild(btn);
+        snapshot.forEach(child => {
+          const dados = child.val();
+          if (dados.serie === serieId) {
+            encontrado = true;
+
+            firebase.database().ref("pets/" + child.key).once("value").then(petSnap => {
+              const pet = petSnap.val();
+              if (pet) {
+                document.getElementById("petData").innerHTML = `
+                  <div class="info"><strong>Nome do PET:</strong> ${pet.petName}</div>
+                  <div class="info"><strong>Dono:</strong> ${pet.ownerName}</div>
+                  <div class="info"><strong>Contato 1:</strong> ${pet.phone1 || "Não informado"}</div>
+                  <div class="info"><strong>Contato 2:</strong> ${pet.phone2 || "Não informado"}</div>
+                  <div class="info"><strong>Email:</strong> ${pet.emailOptional || "Não informado"}</div>
+                  <div class="info"><strong>Endereço 1:</strong> ${pet.address1 || "Não informado"}</div>
+                  <div class="info"><strong>Endereço 2:</strong> ${pet.address2 || "Não informado"}</div>
+                  <div class="info"><strong>Cidade:</strong> ${pet.city || "Não informado"}, ${pet.state || ""}</div>
+                `;
+              } else {
+                document.getElementById("petData").innerText = "Dados do PET não encontrados.";
+              }
+
+              setTimeout(() => loaderWrapper.classList.add('hide'), 500);
+            });
           }
+        });
+
+        if (!encontrado) {
+          document.getElementById("petData").innerText = "Número de série inválido.";
+          setTimeout(() => loaderWrapper.classList.add('hide'), 500);
         }
-
-        chatbox.appendChild(div);
       });
-    }
-
-    function mostrarResposta(div, texto) {
-      loading.style.display = "flex";
-      setTimeout(() => {
-        loading.style.display = "none";
-        const resposta = document.createElement("div");
-        resposta.className = "resposta";
-        resposta.innerText = texto;
-        div.appendChild(resposta);
-      }, 1000);
-    }
-
-    function acessarZap() {
-      if (!whatsapp) {
-        alert("Número do WhatsApp não disponível.");
-        return;
-      }
-      const msg = encodeURIComponent("Informações preenchidas:\n" + respostasSelecionadas.join("\n"));
-      const url = `https://wa.me/55${whatsapp}?text=${msg}`;
-      window.open(url, "_blank");
+    } else {
+      document.getElementById("petData").innerText = "ID do QR Code ausente.";
+      setTimeout(() => loaderWrapper.classList.add('hide'), 500);
     }
   </script>
 </body>
