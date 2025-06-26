@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Clientes</title>
+  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    header { display: flex; justify-content: space-between; font-size: 24px; }
+    button { padding: 8px; margin: 5px; }
+    .top1 { background: gold; font-weight: bold; }
+    .top2 { background: silver; font-weight: bold; }
+    .top3 { background: #cd7f32; font-weight: bold; }
+    #barra { width: 100%; padding: 10px; margin: 10px 0; }
+    .cliente { border: 1px solid #aaa; padding: 10px; margin: 5px 0; background: #f5f5f5; }
+    .overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 10;
+    }
+    .form {
+      background: #fff; padding: 20px; max-width: 500px; width: 90%;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>Clientes</div>
+    <button onclick="location='index.html'">Voltar</button>
+  </header>
+
+  <input id="barra" placeholder="Buscar por nome ou número" oninput="filtrarClientes()">
+
+  <div id="listaClientes"></div>
+
+  <div id="overlay" class="overlay">
+    <div class="form">
+      <div id="detalhes"></div>
+      <button onclick="document.getElementById('overlay').style.display='none'">Minimizar</button>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+      authDomain: "login-you-see.firebaseapp.com",
+      databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+      projectId: "login-you-see",
+      storageBucket: "login-you-see.firebasestorage.app",
+      messagingSenderId: "524877259374",
+      appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const refClientes = db.ref('clientes');
+    const refVendas = db.ref('vendas');
+
+    let clientes = {}, vendas = [];
+
+    refClientes.on('value', snap => {
+      clientes = snap.val() || {};
+      listarClientes();
+    });
+
+    refVendas.once('value', snap => {
+      const dias = snap.val() || {};
+      for (const dia in dias) {
+        Object.values(dias[dia]).forEach(v => vendas.push(v));
+      }
+    });
+
+    function listarClientes() {
+      const container = document.getElementById('listaClientes');
+      container.innerHTML = '';
+
+      const arr = Object.entries(clientes);
+      arr.sort(([,a],[,b]) => (b.compras||0)-(a.compras||0));
+
+      arr.forEach(([id, c], i) => {
+        const div = document.createElement('div');
+        div.className = 'cliente';
+        if(i===0) div.classList.add('top1');
+        if(i===1) div.classList.add('top2');
+        if(i===2) div.classList.add('top3');
+        div.innerHTML = `
+          <strong>${c.nome}</strong> (${c.numero})<br>
+          Compras: ${c.compras || 0}<br>
+          <button onclick="mostrarInfo('${c.nome}', '${c.numero}')">Info</button>
+          <button onclick="excluirCliente('${id}')">Excluir</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function mostrarInfo(nome, numero) {
+      const info = vendas.filter(v => v.nome === nome || v.cliente === nome || v.numero === numero);
+      let html = `<h3>Compras de ${nome}</h3><table border="1" width="100%"><tr><th>Produto</th><th>Marca</th><th>À vista</th><th>Cartão</th><th>Total</th></tr>`;
+      info.forEach(v => {
+        const total = (v.preco * v.quantidade).toFixed(2).replace('.', ',');
+        html += `<tr><td>${v.produto}</td><td>${v.marca || '-'}</td><td>${v.tipo === 'vista' ? v.preco.toFixed(2) : '-'}</td><td>${v.tipo === 'cartao' ? v.preco.toFixed(2) : '-'}</td><td>${total}</td></tr>`;
+      });
+      html += '</table>';
+      document.getElementById('detalhes').innerHTML = html;
+      document.getElementById('overlay').style.display = 'flex';
+    }
+
+    function excluirCliente(id) {
+      if(confirm('Deseja excluir este cliente?')) {
+        db.ref('clientes/'+id).remove();
+      }
+    }
+
+    function filtrarClientes() {
+      const q = document.getElementById('barra').value.toLowerCase();
+      const container = document.getElementById('listaClientes');
+      container.innerHTML = '';
+
+      const arr = Object.entries(clientes).filter(([,c]) =>
+        (c.nome+c.numero).toLowerCase().includes(q)
+      );
+      arr.sort(([,a],[,b]) => (b.compras||0)-(a.compras||0));
+
+      arr.forEach(([id, c], i) => {
+        const div = document.createElement('div');
+        div.className = 'cliente';
+        if(i===0) div.classList.add('top1');
+        if(i===1) div.classList.add('top2');
+        if(i===2) div.classList.add('top3');
+        div.innerHTML = `
+          <strong>${c.nome}</strong> (${c.numero})<br>
+          Compras: ${c.compras || 0}<br>
+          <button onclick="mostrarInfo('${c.nome}', '${c.numero}')">Info</button>
+          <button onclick="excluirCliente('${id}')">Excluir</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>
