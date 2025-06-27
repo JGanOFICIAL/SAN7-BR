@@ -32,19 +32,20 @@
     }
     #painelEdicao { display: none; margin-top: 10px; }
     #formClienteCampos { display: none; margin-top: 10px; }
+    #overlayFinalizar { display:none; }
   </style>
 </head>
 <body>
   <header>
     <div>Loja</div>
     <button onclick="location='historico.html'">Histórico</button>
-<button onclick="location='clientes.html'">Clientes</button>
+    <button onclick="location='clientes.html'">Clientes</button>
   </header>
 
   <div id="saldo">R$ 0,00</div>
 
   <button onclick="abrirFormProduto()">Cadastrar Produto</button>
-  <button onclick="finalizarDia()">Finalizar Dia</button>
+  <button onclick="confirmarFinalizar()">Finalizar Dia</button>
   <input id="barra" placeholder="Pesquisar produto...">
 
   <table id="lista">
@@ -84,7 +85,7 @@
 
   <div id="senhaOverlay" class="overlay">
     <div class="form">
-      <h3>Digite a senha para editar o estoque</
+      <h3>Digite a senha para editar o estoque</h3>
       <input id="senhaInput" type="password" placeholder="Senha"><br>
       <div class="spinner" id="spinnerSenha"></div>
       <div id="painelEdicao">
@@ -93,6 +94,15 @@
       </div>
       <button onclick="validarSenha()">OK</button>
       <button onclick="fecharSenha()">Cancelar</button>
+    </div>
+  </div>
+
+  <div id="overlayFinalizar" class="overlay">
+    <div class="form" style="max-height: 90%; overflow: auto;">
+      <h3>Resumo do Dia</h3>
+      <ul id="listaResumo"></ul>
+      <button onclick="finalizarConfirmado()">Finalizar</button>
+      <button onclick="document.getElementById('overlayFinalizar').style.display='none'">Cancelar</button>
     </div>
   </div>
 
@@ -259,6 +269,25 @@
     }
     db.ref().update(updates);
     fecharVenda();
+  }
+
+  function confirmarFinalizar(){
+    refVenda.once('value', snap => {
+      const vendas = snap.val() || {};
+      const lista = document.getElementById('listaResumo');
+      lista.innerHTML = '';
+      Object.values(vendas).forEach(v => {
+        const li = document.createElement('li');
+        li.textContent = `${v.hora} – ${v.produto} x${v.quantidade} (${v.tipo}) – R$ ${v.preco.toFixed(2).replace('.',',')}`;
+        lista.appendChild(li);
+      });
+      document.getElementById('overlayFinalizar').style.display = 'flex';
+    });
+  }
+
+  function finalizarConfirmado(){
+    document.getElementById('overlayFinalizar').style.display = 'none';
+    location.href = 'historico.html';
   }
 </script>
 </body>
