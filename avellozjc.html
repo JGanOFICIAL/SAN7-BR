@@ -1,1383 +1,559 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
-
 <head>
-
   <meta charset="UTF-8" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <title>Aveloz João Câmara RN</title>
-
   <style>
-
     :root {
-
       --azul: #003366;
-
       --laranja: #ff6f00;
-
       --branco: #ffffff;
-
       --cinza-claro: #f1f5f9;
-
       --cinza: #d1d5db;
-
     }
-
-
 
     * {
-
       box-sizing: border-box;
-
       margin: 0;
-
       padding: 0;
-
     }
-
-
 
     body {
-
-      font-family: 'Segoe UI', Arial, sans-serif;
-
+      font-family: 'Segoe UI', sans-serif;
       background-color: var(--cinza-claro);
-
       color: var(--azul);
-
     }
-
-
 
     header {
-
       background-color: var(--branco);
-
       padding: 20px 5%;
-
       display: flex;
-
-      justify-content: space-between;
-
       align-items: center;
-
+      justify-content: space-between;
       border-bottom: 3px solid var(--laranja);
-
     }
-
-
 
     .logo {
-
       width: 140px;
-
-      height: 40px;
-
-      background-color: var(--laranja);
-
-      color: var(--branco);
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      font-weight: bold;
-
-      font-size: 1.2rem;
-
-      border-radius: 6px;
-
+      height: auto;
     }
-
-
 
     .titulo-site {
-
       font-size: 1.5rem;
-
       font-weight: 600;
-
     }
-
-
 
     main {
-
       padding: 40px 5%;
-
     }
 
-
+    h1.titulo-principal {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: var(--azul);
+    }
 
     .grid {
-
       display: grid;
-
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-
       gap: 30px;
-
     }
-
-
 
     .card {
-
       background-color: var(--branco);
-
       border: 2px solid var(--azul);
-
       border-radius: 10px;
-
       overflow: hidden;
-
       cursor: pointer;
-
       transition: transform 0.3s, box-shadow 0.3s;
-
     }
-
-
 
     .card:hover {
-
       transform: translateY(-6px);
-
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
     }
-
-
 
     .card img {
-
       width: 100%;
-
-      height: 170px;
-
+      height: 180px;
       object-fit: cover;
-
     }
-
-
 
     .card-content {
-
       padding: 16px;
-
       text-align: center;
-
     }
-
-
 
     .card h2 {
-
       font-size: 1.2rem;
-
       margin-bottom: 6px;
-
       color: var(--azul);
-
     }
-
-
 
     .card p {
-
       color: var(--laranja);
-
       font-weight: bold;
-
       font-size: 1rem;
-
     }
-
-
 
     #form-section {
-
       margin-top: 50px;
-
       display: none;
-
       max-width: 600px;
-
       background: var(--branco);
-
       padding: 30px;
-
       border-radius: 10px;
-
       border: 2px solid var(--azul);
-
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
     }
-
-
 
     #selected-moto {
-
       margin-bottom: 20px;
-
       color: var(--laranja);
-
-      font-size: 1.2rem;
-
+      font-size: 1.3rem;
       font-weight: bold;
-
+      text-align: center;
     }
-
-
 
     .input-line,
-
     select {
-
       width: 100%;
-
       background: transparent;
-
       border: none;
-
       border-bottom: 2px solid var(--azul);
-
       color: var(--azul);
-
       padding: 12px 6px;
-
       font-size: 1rem;
-
       margin-top: 22px;
-
       outline: none;
-
     }
-
-
-
-    select option {
-
-      color: var(--azul);
-
-    }
-
-
 
     .inline-radio {
-
       display: flex;
-
       gap: 25px;
-
       margin-top: 22px;
-
       color: var(--azul);
-
     }
-
-
 
     .inline-radio label {
-
       font-size: 1rem;
-
     }
-
-
 
     #submit-btn {
-
       margin-top: 35px;
-
       width: 100%;
-
       padding: 14px 0;
-
       background-color: var(--laranja);
-
       color: var(--branco);
-
       font-weight: bold;
-
       font-size: 1.05rem;
-
       border: none;
-
       border-radius: 6px;
-
       cursor: pointer;
-
       transition: 0.3s;
-
     }
-
-
 
     #submit-btn.loading {
-
       opacity: 0.6;
-
       pointer-events: none;
-
     }
 
+    footer.accordion-footer {
+      width: 100%;
+      background: #ffffff;
+      color: #000000;
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 40px 5%;
+    }
+
+    .accordion {
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .accordion-item + .accordion-item {
+      border-top: 1px solid #ccc;
+    }
+
+    .accordion-header {
+      background: transparent;
+      border: none;
+      color: inherit;
+      width: 100%;
+      text-align: left;
+      font-size: 1.1rem;
+      padding: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .accordion-header:hover,
+    .accordion-header.active {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    .accordion-content {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.35s ease;
+      padding: 0 16px;
+    }
+
+    .accordion-content p,
+    .accordion-content ul,
+    .accordion-content ol {
+      padding: 12px 0 20px;
+      line-height: 1.5;
+    }
   </style>
-
 </head>
-
 <body>
-
   <header>
-
-
-
-
-
-<div style="width: 140px; height: auto;">
-
-  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxV917l4WaVBhEFonMCGkqol-lFCpM4qeylV4-kmYgyfyxAyAIJ_Fd2k4&s=10" alt="Imagem" style="width: 100%; height: auto;">
-
-</div>
-
-
-
-
-
-<h3>JOÃO CÂMARA / RN</h3>
-
-
-
-
-
-    
-
+    <div class="logo">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxV917l4WaVBhEFonMCGkqol-lFCpM4qeylV4-kmYgyfyxAyAIJ_Fd2k4&s=10" alt="Imagem" style="width: 100%; height: auto;">
+    </div>
+    <h3>JOÃO CÂMARA / RN</h3>
   </header>
 
-
-
-<style>
-
-  .info-table {
-
-    width: 100%;
-
-    max-width: 600px;
-
-    margin: 40px auto;
-
-    border-collapse: collapse;
-
-    background: #ffffff;
-
-    border: 2px solid #003366;
-
-    border-radius: 8px;
-
-    overflow: hidden;
-
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-
-  }
-
-
-
-  .info-table thead {
-
-    background-color: #003366;
-
-    color: #ffffff;
-
-  }
-
-
-
-  .info-table th, .info-table td {
-
-    padding: 14px 18px;
-
-    text-align: left;
-
-    font-size: 15px;
-
-  }
-
-
-
-  .info-table tbody tr:nth-child(even) {
-
-    background-color: #f9f9f9;
-
-  }
-
-
-
-  .info-table tbody tr:hover {
-
-    background-color: #ffefd9;
-
-  }
-
-
-
-  .info-table td {
-
-    color: #003366;
-
-  }
-
-</style>
-
-
-
-<table class="info-table">
-
-  <thead>
-
-    <tr>
-
-      <th>Número de Contato</th>
-
-      <th>Estado</th>
-
-      <th>Endereço</th>
-
-    </tr>
-
-  </thead>
-
-  <tbody>
-
-    <tr>
-
-      <td>(84) 98153-4973</td>
-
-      <td>Rio Grande do Norte</td>
-
-      <td>
-
-        Rua Cicero Varela, Nº 60 / Centro. Na Rua de Manoel do Fotos. 
-
-        <a href="https://maps.app.goo.gl/qXDYZ76zGYejCKsx9" target="_blank">Acessar</a>
-
-      </td>
-
-    </tr>
-
-  </tbody>
-
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   <main>
-
+    <h1 class="titulo-principal">Escolha sua moto</h1>
     <div class="grid">
-
       <div class="card" data-moto="AZ1 50cc – R$ 10.990">
-
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNH4AWCB4JbD3iWPOfu12hPWQReHAzmoGhaQXxozmMfVgK8pSd46j-ojs&s=10" alt="AZ1 50cc" />
-
         <div class="card-content">
-
           <h2>AZ1 50CC</h2>
-
           <p>R$ 10.990</p>
-
         </div>
-
       </div>
-
-
-
       <div class="card" data-moto="AZALFA 125 – R$ 13.990">
-
         <img src="https://i.ytimg.com/vi/GDeV00_1rFI/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLB5UWQgdvmQjkiYdo_Xfuk-AYsZXw" alt="AZALFA 125" />
-
         <div class="card-content">
-
           <h2>AZALFA 125</h2>
-
           <p>R$ 13.990</p>
-
         </div>
-
       </div>
-
-
-
       <div class="card" data-moto="AZX 160 – R$ 19.490">
-
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyVZVK9wjDesOu8xkVrEIZRRT5jC87-qT5oA&usqp=CAU" alt="AZX 160" />
-
         <div class="card-content">
-
           <h2>AZX 160</h2>
-
           <p>R$ 19.490</p>
-
         </div>
-
       </div>
-
     </div>
 
-
-
     <section id="form-section">
-
       <h2 id="selected-moto"></h2>
 
-
-
       <input class="input-line" id="nome" placeholder="Nome completo" />
-
       <input class="input-line" id="nascimento" placeholder="Data de nascimento (DD/MM/AAAA)" maxlength="10" />
-
       <input class="input-line" id="cpf" placeholder="CPF" maxlength="14" />
 
-
-
       <div class="inline-radio">
-
         <label><input type="radio" name="cnh" value="Sim" checked /> CNH Sim</label>
-
         <label><input type="radio" name="cnh" value="Não" /> CNH Não</label>
-
       </div>
 
-
-
       <select id="estado">
-
         <option disabled selected>Selecione o estado</option>
-
         <option>Rio Grande do Norte</option>
-
         <option>Paraíba</option>
-
         <option>Pernambuco</option>
-
       </select>
-
-
 
       <input class="input-line" id="cidade" placeholder="Nome da cidade" />
 
-
-
       <button id="submit-btn">Acessar</button>
-
     </section>
-
   </main>
 
-
+  <footer class="accordion-footer">
+    <div class="accordion">
+      <div class="accordion-item">
+        <button class="accordion-header">AZ1 50CC</button>
+        <div class="accordion-content">
+          <p>Com referência em design, perfomance e praticidade, a moto AZ1 2025...</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-header">AZ125 ALFA</button>
+        <div class="accordion-content">
+          <p>Descubra a potência e a beleza da moto AZ125 ALFA...</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-header">AZX 160</button>
+        <div class="accordion-content">
+          <p>Na estrada ou na trilha, a AZ160 XTREME é a sua parceira de liberdade...</p>
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <script>
-
     const cards = document.querySelectorAll('.card');
-
     const formSection = document.getElementById('form-section');
-
     const selectedMotoTxt = document.getElementById('selected-moto');
 
-    let motoEscolhida = '';
-
-
-
     cards.forEach(card => {
-
       card.addEventListener('click', () => {
-
-        motoEscolhida = card.dataset.moto;
-
-        selectedMotoTxt.textContent = motoEscolhida;
-
-        formSection.scrollIntoView({ behavior: 'smooth' });
-
+        selectedMotoTxt.textContent = card.dataset.moto;
         formSection.style.display = 'block';
-
+        formSection.scrollIntoView({ behavior: 'smooth' });
       });
-
     });
 
-
-
-    const cpfInput = document.getElementById('cpf');
-
-    cpfInput.addEventListener('input', e => {
-
+    document.getElementById('cpf').addEventListener('input', e => {
       let v = e.target.value.replace(/\D/g, '').slice(0, 11);
-
       v = v.replace(/(\d{3})(\d)/, '$1.$2')
-
            .replace(/(\d{3})(\d)/, '$1.$2')
-
            .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-
       e.target.value = v;
-
     });
 
-
-
-    const nascInput = document.getElementById('nascimento');
-
-    nascInput.addEventListener('input', e => {
-
+    document.getElementById('nascimento').addEventListener('input', e => {
       let v = e.target.value.replace(/\D/g, '').slice(0, 8);
-
       if (v.length > 4) v = v.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3');
-
       else if (v.length > 2) v = v.replace(/(\d{2})(\d{1,2})/, '$1/$2');
-
       e.target.value = v;
-
     });
-
-
 
     document.getElementById('submit-btn').addEventListener('click', () => {
-
       const btn = event.target;
-
       const nome = document.getElementById('nome').value.trim();
-
-      const nasc = nascInput.value.trim();
-
-      const cpf = cpfInput.value.trim();
-
+      const nasc = document.getElementById('nascimento').value.trim();
+      const cpf = document.getElementById('cpf').value.trim();
       const cnh = document.querySelector('input[name="cnh"]:checked').value;
-
       const estado = document.getElementById('estado').value;
-
       const cidade = document.getElementById('cidade').value.trim();
-
-
+      const moto = selectedMotoTxt.textContent;
 
       if (!nome || !nasc || !cpf || !estado || !cidade) {
-
         alert('Preencha todos os campos corretamente.');
-
         return;
-
       }
 
-
-
       btn.classList.add('loading');
-
       btn.textContent = 'Carregando...';
 
-
-
       const msg = `*Cadastro Moto*%0A` +
-
-                  `Moto: ${motoEscolhida}%0A` +
-
+                  `Moto: ${moto}%0A` +
                   `Nome: ${nome}%0A` +
-
                   `Data de nascimento: ${nasc}%0A` +
-
                   `CPF: ${cpf}%0A` +
-
                   `Possui CNH: ${cnh}%0A` +
-
                   `Estado: ${estado}%0A` +
-
                   `Cidade: ${cidade}`;
-
       const url = `https://wa.me/5584981534973?text=${msg}`;
 
-
-
       setTimeout(() => {
-
         window.open(url, '_blank');
-
         btn.classList.remove('loading');
-
         btn.textContent = 'Acessar';
-
       }, 800);
-
     });
 
+    document.querySelectorAll('.accordion-header').forEach(header => {
+      header.addEventListener('click', () => {
+        header.classList.toggle('active');
+        const content = header.nextElementSibling;
+        if (content.style.maxHeight) {
+          content.style.maxHeight = null;
+        } else {
+          content.style.maxHeight = content.scrollHeight + 'px';
+        }
+      });
+    });
   </script>
 
-</body>
 
+
+
+<hr style="margin: 60px 5% 30px; border: 1px solid #ccc;" />
+<section style="padding: 0 5%; text-align: left; max-width: 900px; font-family: Arial, sans-serif; color: #003366;">
+
+  <h2 style="margin-bottom: 10px;">Sobre a Marca Avelloz</h2>
+  <p style="margin-bottom: 25px; line-height: 1.6;">
+    A Avelloz é uma marca brasileira que tem se consolidado como sinônimo de inovação e acessibilidade no mercado de motocicletas. Com uma abordagem moderna, a empresa busca democratizar o transporte individual ao oferecer veículos de alta performance, design atual e excelente custo-benefício. Fundada em 2008, a Avelloz integra o Grupo Valoriza e tem presença nacional por meio de mais de 190 pontos de venda. A marca foi destaque entre as mais vendidas do Brasil, graças à confiança do consumidor e à qualidade dos seus produtos.
+  </p>
+
+  <hr style="margin: 40px 0 30px; border: 1px solid #ccc;" />
+
+  <h2 style="margin-bottom: 10px;">Política de Cookies</h2>
+  <p style="margin-bottom: 25px; line-height: 1.6;">
+    Utilizamos cookies e tecnologias semelhantes para garantir o correto funcionamento do site, analisar o tráfego, personalizar conteúdo e oferecer uma melhor experiência aos usuários. Ao continuar navegando, você concorda com a coleta de dados conforme nossa política de privacidade. Os dados não são compartilhados com terceiros e são utilizados apenas para fins de melhoria contínua da plataforma e segurança da navegação.
+  </p>
+
+  <hr style="margin: 40px 0 30px; border: 1px solid #ccc;" />
+
+  <h2 style="margin-bottom: 10px;">A Importância de um Veículo Próprio</h2>
+  <p style="margin-bottom: 25px; line-height: 1.6;">
+    Ter um veículo próprio vai muito além de conveniência — é autonomia, agilidade e independência. Em regiões onde o transporte público é limitado ou instável, possuir uma moto representa uma alternativa rápida e econômica. Além disso, para quem trabalha com entregas ou serviços externos, ela se torna uma ferramenta essencial de renda. O investimento em uma motocicleta significa mais tempo livre, liberdade de deslocamento e capacidade de enfrentar a rotina com mais eficiência.
+  </p>
+
+</section>
+
+<hr style="margin: 60px 5% 30px; border: 1px solid #ccc;" />
+<section id="form-section" style="max-width: 900px; margin: 0 auto; font-family: Arial, sans-serif; color: #003366; padding: 0 5%;">
+  <h2 style="margin-bottom: 20px;">Deixe sua avaliação</h2>
+  <input class="input-line" type="text" id="nome" placeholder="Seu nome completo" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;" />
+  <input class="input-line" type="text" id="cidade" placeholder="Sua cidade" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;" />
+  <textarea class="input-line" id="mensagem" rows="4" placeholder="Digite sua avaliação aqui..." required style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; resize: vertical;"></textarea>
+  <button id="feedback-btn" style="background-color: #003366; color: white; border: none; padding: 15px 25px; font-size: 18px; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">Enviar via WhatsApp</button>
+  <p class="creditos" style="margin-top: 15px; font-size: 14px; color: #555;">Desenvolvido por JP Felix - @eu_jpfelix</p>
+</section>
+
+<script>
+  document.getElementById("feedback-btn").addEventListener("click", function () {
+    const nome = document.getElementById("nome").value.trim();
+    const cidade = document.getElementById("cidade").value.trim();
+    const mensagem = document.getElementById("mensagem").value.trim();
+
+    if (!nome || !cidade || !mensagem) {
+      alert("Por favor, preencha todos os campos.");
+      return;
+    }
+
+    const texto = `📣 *Nova Avaliação Recebida* \n\n👤 Nome: ${nome}\n📍 Cidade: ${cidade}\n💬 Avaliação:\n${mensagem}`;
+    const url = `https://wa.me/5584994776554?text=${encodeURIComponent(texto)}`;
+    window.open(url, "_blank");
+  });
+</script>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px; font-family: Arial, sans-serif; max-width: 360px; margin: 0 auto;">
+  <table style="width: 100%; border-collapse: collapse; color: #333;">
+    <tbody>
+      <tr>
+        <td style="padding: 10px 12px; border: 1px solid #ccc; text-align: center;">100% oficial</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 12px; border: 1px solid #ccc; text-align: center;">Consulta gratuita</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 12px; border: 1px solid #ccc; text-align: center;">Atendimento rápido</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 12px; border: 1px solid #ccc; text-align: center;">Disponível das 8h da manhã às 5h da tarde</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 12px; border: 1px solid #ccc; font-style: italic; color: #555; text-align: center;">
+          Observação: Caso não esteja nesse horário, aguarde que iremos te chamar em algum momento.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="font-size: 12px; color: rgba(0, 0, 0, 0.4); text-align: center; user-select: none;">
+    desenvolvido por @eu_jpfelix
+  </div>
+</div>
+<br>
+<br>
+<br>
+<br>
+</body>
 </html>
 
 
 
 
-
 <style>
-
-  .follow-us {
-
-    text-align: center;
-
-    margin: 20px 0;
-
-    font-family: Arial, sans-serif;
-
-    color: #003366;
-
-    font-size: 18px;
-
-  }
-
-
-
-  .follow-us a {
-
-    color: #ff6f00;
-
-    text-decoration: none;
-
-    font-weight: bold;
-
-    margin-left: 8px;
-
-  }
-
-
-
-  .follow-us a:hover {
-
-    text-decoration: underline;
-
-  }
-
+.cookie-bar {
+  position: fixed;
+  bottom: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border-radius: 0;
+  box-shadow: 0px 5px 20px rgba(0,0,0,0.2);
+  padding: 20px 24px;
+  width: 90%;
+  max-width: 420px;
+  font-family: Arial, sans-serif;
+  z-index: 9999;
+  transition: bottom 0.6s ease, opacity 0.4s ease;
+}
+.cookie-bar.show {
+  bottom: 30px;
+}
+.cookie-bar.hide {
+  opacity: 0;
+  pointer-events: none;
+  bottom: -100%;
+}
+.cookie-bar h3 {
+  margin: 0 0 10px 0;
+  font-size: 17px;
+  color: #000;
+  font-weight: bold;
+}
+.cookie-bar p {
+  margin: 0 0 15px 0;
+  font-size: 15px;
+  color: #333;
+  line-height: 1.4;
+  max-width: 360px;
+}
+.cookie-bar .top-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.cookie-bar .top-line span {
+  font-size: 13px;
+  color: #555;
+}
+.cookie-bar .actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 0;
+  flex-wrap: wrap;
+}
+.cookie-bar button {
+  border: 1.5px solid #005bbb;
+  background: transparent;
+  color: #005bbb;
+  font-weight: bold;
+  font-size: 14px;
+  border-radius: 0;
+  padding: 10px 16px;
+  cursor: pointer;
+  flex: 1;
+}
+.cookie-bar button.accept {
+  background: #005bbb;
+  color: white;
+  border: none;
+}
 </style>
 
-
-
-<div class="follow-us">
-
-  SIGA-NOS:
-
-  <a href="https://www.instagram.com/vallorizajoaocamararn" target="_blank"> @VALLORIZAJOAOCAMARARN
-
-    
-
-  </a>
-
-</div>
-
-
-
-
-
-<!-- Rodapé com acordeão simples em largura total -->
-
-<footer class="accordion-footer">
-
-  <div class="accordion">
-
-    <div class="accordion-item">
-
-      <button class="accordion-header">AZ1 50CC</button>
-
-      <div class="accordion-content">
-
-        Com referência em design, perfomance e praticidade, a moto AZ1 2025 conta com atributos essenciais para o seu dia-a-dia. Cilindrada: 50cc
-
-Taxa de Compressão: 8,5:1
-
-Sistema de Alimentação: Carburada
-
-Potência, máx.: 1,98 kW (2,7 CV) a 8.000 rpm (Gasolina)
-
-Torque, máx.: 2,5 N•m a 5.000 rpm (Gasolina)
-
-Diâmetro do cilindro x Curso: 54 x 54mm
-
-Velocidade, máx.: > 75 km/h
-
-Velocidade de marcha lenta: 1500 r/min
-
-Vela de ignição: A7TC
-
-Intervalo de Vela de Ignição: 0,6 – 0,7 mm
-
-Válvula de Admissão: 0,05 mm
-
-Válvula de Escape: 0,05 mm
-
-Transmissão: 4 velocidades
-
-Sistema de Partida: Elétrico
-
-1° marcha: 3.272
-
-2° marcha: 1.938
-
-3° marcha: 1.35
-
-4° marcha: 1.043
-
-Razão de transmissão da roda dentada: 4.059
-
-Razão de transmissão primária: 2.751
-
-Combustível: Gasolina
-
-      </div>
-
-    </div>
-
-
-
-    <div class="accordion-item">
-
-      <button class="accordion-header">AZ125 ALFA</button>
-
-      <div class="accordion-content">
-
-        Descubra a potência e a beleza da moto AZ125 ALFA: estilo, desempenho e confiança para as suas aventuras. Cilindrada: 125cc
-
-Taxa de Compressão: 8,5:1
-
-Sistema de Alimentação: Injeção Eletrônica (EFI)
-
-Potência, máx. 6,3 kW (8,5 CV) a 8.000 rpm (Gasolina)
-
-Torque, máx. 8,8 N•m (0,87 kgf.m) a 6.000 rpm (Gasolina)
-
-Diâmetro do cilindro x Curso: 54 x 54mm
-
-Velocidade, máx. > 83 km/h
-
-Velocidade de marcha lenta: 1500 r/min
-
-Deslocamento do cilindro: 123,67 ml
-
-Vela de ignição: A7RTC
-
-Intervalo de Vela de Ignição: 0,6 – 0,7 mm
-
-Válvula de Admissão: 0,03 – 0,05 mm
-
-Válvula de Escape: 0,03 – 0,07 mm
-
-Transmissão: 4 Velocidades
-
-Sistema de Partida: Elétrico
-
-Razão de transmissão: 14:34
-
-1° marcha: 3.273
-
-2° marcha: 1.938
-
-3° marcha: 1.353
-
-4° marcha: 1.043
-
-Razão de transmissão da roda dentada: 2.428
-
-Razão de transmissão primária: 4.059
-
-Combustível: Gasolina
-
-      </div>
-
-    </div>
-
-
-
-    <div class="accordion-item">
-
-      <button class="accordion-header">AZX 160</button>
-
-      <div class="accordion-content">
-
-        Na estrada ou na trilha, a AZ160 XTREME é a sua parceira de liberdade, pronta para transformar cada quilômetro em uma história inesquecível. Cilindrada: 160cc
-
-Taxa de Compressão: 9,3:1
-
-Sistema de Alimentação: Injeção Eletrônica (EFI)
-
-Potência, máx.: 9,2 kW (12,3 CV) a 8.000 rpm (Gasolina) 
-
-Torque, máx.:  11,6 N•m (1,1 kgf.m) a 6500 rpm (Gasolina) 
-
-Diâmetro do cilindro x Curso: 61×55,4mm 
-
-Velocidade, máx.: >110 km/h 
-
-Velocidade de marcha lenta: 1500+- 150 rpm 
-
-Deslocamento do cilindro: 161,9 ml 
-
-Vela de ignição: D8TC 
-
-Intervalo de Vela de Ignição: 0,6 – 0,7 mm 
-
-Tampa da Válvula de ar Válvula de Admissão: 0,05 – 0,08 mm 
-
-Válvula de Escape: 0,06 – 0,09 mm
-
-Transmissão: 5 velocidades
-
-Sistema de partida: Elétrico 
-
-Razão de transmissão: 16:42 
-
-1° marcha: 2.5830 
-
-2° marcha: 1.857 
-
-3° marcha: 1.437 
-
-4° marcha: 1.167 
-
-5° marcha: 1.00 
-
-Relação de transmissão do pinhão/coroa: 2.625 
-
-Relação de transmissão primária: 3.09
-
-Combustível: Gasolina
-
-      </div>
-
-    </div>
-
+<div class="cookie-bar" id="cookieBar">
+  <div class="top-line">
+    <h3>Controle sua privacidade</h3>
+
+    <span></span>
   </div>
-
-</footer>
-
-
-
-<style>
-
-  * {
-
-    box-sizing: border-box;
-
-    margin: 0;
-
-    padding: 0;
-
-  }
-
-
-
-  .accordion-footer {
-
-    width: 100%;
-
-    background: #ffffff;
-
-    color: #000000;
-
-    font-family: Arial, Helvetica, sans-serif;
-
-    padding: 20px 0;
-
-  }
-
-
-
-  .accordion {
-
-    max-width: 1000px;
-
-    margin: 0 auto;
-
-    width: 90%;
-
-  }
-
-
-
-  .accordion-item + .accordion-item {
-
-    border-top: 1px solid #ccc;
-
-  }
-
-
-
-  .accordion-header {
-
-    background: transparent;
-
-    border: none;
-
-    color: inherit;
-
-    width: 100%;
-
-    text-align: left;
-
-    font-size: 1.1rem;
-
-    padding: 16px;
-
-    cursor: pointer;
-
-    transition: background 0.3s ease;
-
-  }
-
-
-
-  .accordion-header:hover,
-
-  .accordion-header.active {
-
-    background: rgba(0, 0, 0, 0.05);
-
-  }
-
-
-
-  .accordion-content {
-
-    overflow: hidden;
-
-    max-height: 0;
-
-    transition: max-height 0.35s ease;
-
-    padding: 0 16px;
-
-  }
-
-
-
-  .accordion-content p,
-
-  .accordion-content ul,
-
-  .accordion-content ol {
-
-    padding: 12px 0 20px;
-
-    line-height: 1.5;
-
-  }
-
-</style>
-
-
-
-<script>
-
-  document.querySelectorAll('.accordion-header').forEach(header => {
-
-    header.addEventListener('click', () => {
-
-      header.classList.toggle('active');
-
-      const content = header.nextElementSibling;
-
-
-
-      if (content.style.maxHeight) {
-
-        content.style.maxHeight = null;
-
-      } else {
-
-        content.style.maxHeight = content.scrollHeight + 'px';
-
-      }
-
-    });
-
-  });
-
-</script>
-
-
-
-
-
-
-
-
-
-
-
-<br>
-
-<br>
-
-<hr>
-
-Avelloz é uma marca brasileira de motocicletas que tem ganhado destaque no mercado nacional. Fundada em 2008, a empresa faz parte do Grupo Valoriza e importa motos da China, adaptando-as para o mercado brasileiro. A Avelloz se tornou a oitava marca mais vendida no Brasil em 2023, mesmo sendo relativamente nova. A empresa possui uma rede de mais de 190 pontos de venda e já vendeu mais de 45 mil unidades.
-
-
-
-<div id="loader-wrapper">
-
-  <div class="loader"></div>
-
+  <p>
+    Nosso site utiliza cookies para melhorar a navegação do usuário. Continuando a usar nosso site, você concorda com o uso de cookies.
+<p>Desenvolvido por @eu_jpfelix</p>
+   
+  <div class="actions">
+    <button>Rejeitar</button>
+    <button class="accept">Aceitar</button>
+  </div>
 </div>
 
-
-
-<style>
-
-  #loader-wrapper {
-
-    position: fixed;
-
-    top: 0;
-
-    left: 0;
-
-    width: 100%;
-
-    height: 100%;
-
-    backdrop-filter: blur(8px);
-
-    background-color: rgba(0, 0, 0, 0.4);
-
-    z-index: 9999;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-  }
-
-
-
-  .loader {
-
-    width: 60px;
-
-    height: 60px;
-
-    border: 6px solid white;
-
-    border-top: 6px solid #ff6600;
-
-    border-right: 6px solid #003366;
-
-    border-radius: 50%;
-
-    animation: spin 1s linear infinite;
-
-  }
-
-
-
-  @keyframes spin {
-
-    0% { transform: rotate(0deg); }
-
-    100% { transform: rotate(360deg); }
-
-  }
-
-</style>
-
-
-
 <script>
+setTimeout(() => {
+  document.getElementById("cookieBar").classList.add("show");
+}, 2000);
 
-  window.addEventListener('load', () => {
-
-    setTimeout(() => {
-
-      const loader = document.getElementById('loader-wrapper');
-
-      loader.style.transition = 'opacity 0.5s ease';
-
-      loader.style.opacity = '0';
-
-      setTimeout(() => loader.remove(), 500);
-
-    }, 1000);
-
-  });
-
+document.querySelector('.cookie-bar button.accept').addEventListener('click', () => {
+  const bar = document.getElementById("cookieBar");
+  bar.classList.remove("show");
+  bar.classList.add("hide");
+});
 </script>
-
-
-
-
-
-<br>
-
-<br>
-
-<br>
-
-
-
-<style>
-
-  .selo-footer {
-
-    width: 180px;
-
-    margin: 30px auto 15px;
-
-    text-align: center;
-
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
-    color: #ddd;
-
-    opacity: 0.85;
-
-    user-select: none;
-
-    position: relative;
-
-    cursor: pointer;
-
-  }
-
-
-
-  .selo-footer small {
-
-    display: block;
-
-    font-size: 10px;
-
-    letter-spacing: 1.1px;
-
-    margin-bottom: 3px;
-
-    color: #aaa;
-
-  }
-
-
-
-  .selo-footer .nome {
-
-    font-weight: 700;
-
-    font-size: 14px;
-
-    letter-spacing: 2.5px;
-
-    position: relative;
-
-    overflow: hidden;
-
-  }
-
-
-
-  .selo-footer .nome::before {
-
-    content: "";
-
-    position: absolute;
-
-    top: -40%;
-
-    left: -70%;
-
-    width: 150%;
-
-    height: 180%;
-
-    background: linear-gradient(
-
-      120deg,
-
-      transparent 0%,
-
-      rgba(255, 255, 255, 0.35) 50%,
-
-      transparent 100%
-
-    );
-
-    transform: rotate(25deg);
-
-    animation: brilho 4s infinite;
-
-    pointer-events: none;
-
-  }
-
-
-
-  .selo-footer .desc {
-
-    font-size: 11px;
-
-    margin-top: 2px;
-
-    color: #bbb;
-
-    letter-spacing: 1px;
-
-  }
-
-
-
-  @keyframes brilho {
-
-    0% {
-
-      transform: translateX(-100%) rotate(25deg);
-
-    }
-
-    100% {
-
-      transform: translateX(100%) rotate(25deg);
-
-    }
-
-  }
-
-</style>
-
-
-
-<a href="https://wa.me/5584991778690?text=Ol%C3%A1!%20Gostaria%20de%20saber%20mais%20sobre%20os%20servi%C3%A7os%20de%20cria%C3%A7%C3%A3o%20de%20sites%20ou%20sistemas!" target="_blank" class="selo-footer" rel="noopener noreferrer">
-
-  <small>Desenvolvido por</small>
-
-  <div class="nome">JPFELIX</div>
-
-  <div class="desc">Tecnologia</div>
-
-</a>
