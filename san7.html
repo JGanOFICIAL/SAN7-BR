@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Login San7</title>
+<title>Login Administrativo San7</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
   * {
@@ -21,22 +21,32 @@
   #login-box {
     background: #fff;
     border-radius: 20px;
-    width: 360px;
+    width: 380px;
     padding: 40px 36px 48px;
     box-shadow: 0 15px 40px rgba(212, 175, 55, 0.3);
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 18px;
     transition: transform 0.3s ease;
   }
   #login-box:hover {
     transform: translateY(-6px);
     box-shadow: 0 25px 60px rgba(212, 175, 55, 0.5);
   }
+  #logo {
+    width: 140px;
+    height: 140px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 20px;
+    user-select: none;
+  }
   h2 {
-    margin: 0 0 28px;
+    margin: 0 0 24px;
     font-weight: 700;
-    font-size: 2.2rem;
+    font-size: 2.4rem;
     letter-spacing: 2px;
     color: #b8860b;
     text-transform: uppercase;
@@ -54,7 +64,6 @@
   input[type="password"] {
     width: 100%;
     padding: 14px 18px;
-    margin-bottom: 20px;
     border-radius: 12px;
     border: 2px solid #d4af37;
     font-size: 1rem;
@@ -74,7 +83,6 @@
     font-weight: 500;
     font-size: 0.9rem;
     color: #a67c00;
-    margin-bottom: 28px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -115,29 +123,8 @@
     opacity: 0.85;
     cursor: wait;
   }
-  #btn-go-san7 {
-    display: none;
-    margin-top: 22px;
-    width: 100%;
-    padding: 16px 0;
-    background: #b8860b;
-    color: #fff;
-    font-weight: 700;
-    font-size: 1.15rem;
-    border-radius: 14px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 6px 16px rgba(184, 134, 11, 0.8);
-    user-select: none;
-    transition: background 0.3s ease, box-shadow 0.3s ease;
-  }
-  #btn-go-san7:hover {
-    background: #ffd700;
-    color: #3a2f0b;
-    box-shadow: 0 10px 28px rgba(255, 215, 0, 0.9);
-  }
   #error-msg {
-    margin-top: 14px;
+    margin-top: 10px;
     font-weight: 600;
     font-size: 0.9rem;
     color: #b32900;
@@ -145,15 +132,22 @@
     min-height: 20px;
     user-select: none;
   }
-  @media (max-width: 400px) {
+  #footer-note {
+    margin-top: 16px;
+    font-size: 0.75rem;
+    color: #a67c00;
+    user-select: none;
+    text-align: center;
+  }
+  @media (max-width: 420px) {
     #login-box {
       width: 90vw;
       padding: 32px 28px 40px;
     }
     h2 {
-      font-size: 1.8rem;
+      font-size: 2rem;
     }
-    #btn-login, #btn-go-san7 {
+    #btn-login {
       font-size: 1rem;
       padding: 14px 0;
     }
@@ -162,8 +156,9 @@
 </head>
 <body>
 
-<div id="login-box" role="main" aria-label="Tela de login San7">
-  <h2>Login San7</h2>
+<div id="login-box" role="main" aria-label="Tela de login administrativo San7">
+  <
+  <h2>Login Administrativo</h2>
   <label for="email">E-mail</label>
   <input type="email" id="email" autocomplete="username" required placeholder="Digite seu e-mail" aria-required="true" aria-describedby="error-msg" />
   
@@ -175,9 +170,9 @@
   </label>
   
   <button id="btn-login" type="button" aria-live="polite" aria-busy="false">Acessar</button>
-  <button id="btn-go-san7" type="button" aria-hidden="true">Ir para San7</button>
   
   <div id="error-msg" role="alert" aria-live="assertive"></div>
+  <div id="footer-note">© JpFelix Tecnologia - Sistema Administrativo</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -200,9 +195,12 @@
   const passwordInput = document.getElementById('password');
   const saveAccessCheckbox = document.getElementById('save-access');
   const btnLogin = document.getElementById('btn-login');
-  const btnGoSan7 = document.getElementById('btn-go-san7');
   const errorMsg = document.getElementById('error-msg');
-  const loginBox = document.getElementById('login-box');
+  const logoDiv = document.getElementById('logo');
+
+  // Coloque a URL da imagem aqui:
+  const logoURL = "https://i.imgur.com/2QZOL5u.png"; // <<< substitua esse link pela sua imagem
+  logoDiv.style.backgroundImage = `url('${logoURL}')`;
 
   function setLoading(loading){
     btnLogin.disabled = loading;
@@ -223,7 +221,6 @@
       emailInput.value = savedEmail;
       passwordInput.value = savedPass;
       saveAccessCheckbox.checked = true;
-      login(savedEmail, savedPass);
     }
   });
 
@@ -235,10 +232,6 @@
       errorMsg.textContent = 'Preencha email e senha.';
       return;
     }
-    login(email, password);
-  });
-
-  function login(email, password){
     setLoading(true);
     auth.signInWithEmailAndPassword(email, password)
       .then(() => {
@@ -249,18 +242,12 @@
           localStorage.removeItem('san7_email');
           localStorage.removeItem('san7_pass');
         }
-        loginBox.style.display = 'none';
-        btnGoSan7.style.display = 'block';
-        btnGoSan7.setAttribute('aria-hidden', 'false');
+        window.location.href = 'home2.html';
       })
       .catch(error => {
         setLoading(false);
         errorMsg.textContent = 'Erro: ' + error.message;
       });
-  }
-
-  btnGoSan7.addEventListener('click', () => {
-    window.location.href = 'home2.html';
   });
 </script>
 
