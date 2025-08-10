@@ -1,206 +1,401 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>YouSee - Informações</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f5f5f5;
-      color: #333;
-    }
-
-    header {
-      background-color: #064820;
-      padding: 20px;
-      text-align: center;
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 100;
-    }
-
-    .logo img {
-      width: 80px;
-      height: auto;
-    }
-
-    .container {
-      margin-top: 140px;
-      padding: 30px;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-      background-color: #fff;
-      color: #333;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    }
-
-    h2 {
-      text-align: center;
-      color: #064820;
-      margin-bottom: 25px;
-    }
-
-    .info {
-      margin-bottom: 16px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #ddd;
-      font-size: 15px;
-    }
-
-    .info strong {
-      color: #064820;
-    }
-
-    #petData {
-      animation: fadeIn 0.5s ease;
-    }
-
-    #loader-wrapper {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255, 255, 255, 0.5);
-      backdrop-filter: blur(10px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      transition: opacity 0.5s ease;
-    }
-
-    #loader {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      position: relative;
-      animation: rotate 1.2s linear infinite;
-    }
-
-    #loader::before {
-      content: "";
-      position: absolute;
-      top: 6px; left: 6px; right: 6px; bottom: 6px;
-      border-radius: 50%;
-      border: 6px solid transparent;
-      border-top-color: #064820;
-      border-left-color: #064820;
-      animation: spinPulse 0.8s ease-in-out infinite alternate;
-    }
-
-    @keyframes rotate {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    @keyframes spinPulse {
-      0% { transform: scale(0.7); opacity: 0.7; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    #loader-wrapper.hide {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Jpfelix Tecnologia — Perfil</title>
+<style>
+  :root{
+    --gold:#c69c26;--gold-dark:#a17814;--bg:#fff;--muted:#666;--radius:12px;
+    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  }
+  body{margin:0;background:linear-gradient(180deg,#fff,#fffaf0);min-height:100vh}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:#fff;border-bottom:1px solid rgba(0,0,0,0.04);box-shadow:0 6px 20px rgba(0,0,0,0.03)}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand .logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+  .brand h2{margin:0;font-size:16px}
+  .btn-logout{padding:8px 12px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);background:#fff;cursor:pointer}
+  .container{padding:24px;max-width:1100px;margin:0 auto}
+  .balance-card{background:#fff;border-radius:16px;padding:22px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 10px 30px rgba(0,0,0,0.04);margin-bottom:18px}
+  .balance-big{text-align:center;flex:1}
+  .balance-big h3{margin:0;font-size:18px;color:var(--muted)}
+  .balance-big .value{font-size:48px;font-weight:700;color:var(--gold-dark);margin-top:6px}
+  .actions{display:flex;gap:12px}
+  .actions button{background:linear-gradient(90deg,var(--gold),var(--gold-dark));color:#fff;padding:10px 14px;border-radius:12px;border:0;cursor:pointer;font-weight:600}
+  .small{font-size:13px;color:var(--muted)}
+  .search-row{margin:16px 0;display:flex;gap:12px;align-items:center}
+  .search-row input{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,0.06)}
+  .products{display:block;background:#fff;border-radius:12px;padding:12px;border:1px solid rgba(0,0,0,0.03)}
+  .product{display:flex;align-items:center;justify-content:space-between;padding:10px;border-bottom:1px solid rgba(0,0,0,0.03)}
+  .product:last-child{border-bottom:0}
+  .product .meta{display:flex;gap:12px;align-items:center}
+  .product .meta img{width:44px;height:44;border-radius:8px;background:#fff;border:1px solid rgba(0,0,0,0.04)}
+  .product .name{font-weight:600}
+  .product .brand{font-size:12px;color:var(--muted)}
+  .product .opts{display:flex;gap:8px}
+  .opt-btn{padding:8px 10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);cursor:pointer;background:#fff}
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);display:none;align-items:center;justify-content:center;padding:20px;z-index:60}
+  .modal{width:100%;max-width:720px;background:#fff;padding:18px;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+  .modal h3{margin:0 0 8px}
+  .row{display:flex;gap:12px}
+  .input{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06)}
+  .float-icon{width:56px;height:56px;border-radius:12px;background:#fff;border:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .history-list{margin-top:12px}
+  .history-item{padding:12px;border-radius:10px;background:#fff;border:1px solid rgba(0,0,0,0.03);margin-bottom:8px;display:flex;justify-content:space-between}
+  .small-muted{font-size:12px;color:var(--muted)}
+</style>
 </head>
 <body>
-
-  <header>
-    <div class="logo">
-      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEikzB2NNS-a9VIbBD1rLsdPi-3-61eujSX3Tb3Rtgn2EVB0fPi4GzSqnVT1qEbz1DF8gz8EeyAfFEHv_w3o8oz5ZhBsFySL9Ns4ALFTV36Oj7sIhHs77B596mov4gU68BdUTr_R3GtCcvSI97OoWgqmDPXbJO7RXJpAqPnPdtx8omGL3g3SMLoHYRr6ico7/s414/AF54F15C-63C1-4032-903C-1AF679E0E92A.png" alt="Logo" />
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">♥️</div>
+      <div>
+        <h2>Caixa Aberto</h2>
+        <div class="small-muted" id="userEmail">—</div>
+      </div>
     </div>
-  </header>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div id="pencilWrap" class="float-icon" title="Ver vendas do dia"><span id="pencilImg">✏️</span></div>
+      <button id="btnLogout" class="btn-logout">Sair</button>
+    </div>
+  </div>
 
   <div class="container">
-    <h2>Informações do PET</h2>
-    <div id="petData">Carregando informações...</div>
+    <div class="balance-card">
+      <div class="balance-big">
+        <h3>Saldo</h3>
+        <div class="value" id="balanceValue">R$ 0,00</div>
+        <div class="small-muted">Saldo atual (persistente até finalizar dia)</div>
+      </div>
+      <div class="actions">
+        <button id="btnAddProduct">Cadastrar Produto</button>
+        <button id="btnFinalize">Finalizar Dia</button>
+      </div>
+    </div>
+
+    <div class="search-row">
+      <input id="searchBox" placeholder="Pesquisar por nome ou marca..." />
+      <div class="small-muted">Produtos cadastrados</div>
+    </div>
+
+    <div class="products" id="productsList"></div>
+
+    <h3 style="margin-top:18px">Histórico</h3>
+    <div class="history-list" id="historyList"></div>
   </div>
 
-  <div id="loader-wrapper">
-    <div id="loader"></div>
+  <div id="overlayAdd" class="overlay">
+    <div class="modal">
+      <h3>Cadastrar Produto</h3>
+      <div style="margin-top:8px" class="row">
+        <input id="prodName" class="input" placeholder="Nome do produto (obrigatório)"/>
+        <input id="prodBrand" class="input" placeholder="Marca (opcional)"/>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:8px;justify-content:flex-end">
+        <button id="closeAdd" class="opt-btn">Cancelar</button>
+        <button id="saveProd" class="opt-btn">Adicionar</button>
+      </div>
+    </div>
   </div>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <div id="overlaySell" class="overlay">
+    <div class="modal">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3>Vender Produto</h3>
+        <button id="minSell" class="opt-btn">X</button>
+      </div>
+      <div style="margin-top:8px" class="row">
+        <input id="sellValue" class="input" placeholder="Valor da venda (ex: 25.90)"/>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:8px;justify-content:flex-end">
+        <button id="cancelSell" class="opt-btn">Cancelar</button>
+        <button id="confirmSell" class="opt-btn">Concluir</button>
+      </div>
+    </div>
+  </div>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
-      authDomain: "login-you-see.firebaseapp.com",
-      databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
-      projectId: "login-you-see",
-      storageBucket: "login-you-see.firebasestorage.app",
-      messagingSenderId: "524877259374",
-      appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
-      measurementId: "G-K7E00VXYHG"
-    };
+  <div id="overlayPencil" class="overlay">
+    <div class="modal">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3>Vendas do Dia</h3>
+        <button id="minPencil" class="opt-btn">X</button>
+      </div>
+      <div id="vendasDiaList" style="margin-top:12px"></div>
+    </div>
+  </div>
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+  <div id="overlayFinalize" class="overlay">
+    <div class="modal">
+      <h3>Finalizar Dia</h3>
+      <div id="finalizeContent" style="margin-top:12px"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+        <button id="cancelFinalize" class="opt-btn">Cancelar</button>
+        <button id="doFinalize" class="opt-btn">Confirmar Finalizar</button>
+      </div>
+    </div>
+  </div>
 
-    const loaderWrapper = document.getElementById('loader-wrapper');
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-    function getQueryParam(param) {
-      const url = new URL(window.location.href);
-      return url.searchParams.get(param);
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBs2GrFPGib7Nz02F03Eeo5DTW-8OTJmFI",
+  authDomain: "san7-2b351.firebaseapp.com",
+  databaseURL: "https://san7-2b351-default-rtdb.firebaseio.com",
+  projectId: "san7-2b351",
+  storageBucket: "san7-2b351.appspot.com",
+  messagingSenderId: "511547914036",
+  appId: "1:511547914036:web:0595e39aef88258c649761"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+
+const userEmail = document.getElementById('userEmail');
+const balanceValue = document.getElementById('balanceValue');
+const btnAddProduct = document.getElementById('btnAddProduct');
+const overlayAdd = document.getElementById('overlayAdd');
+const closeAdd = document.getElementById('closeAdd');
+const saveProd = document.getElementById('saveProd');
+const prodName = document.getElementById('prodName');
+const prodBrand = document.getElementById('prodBrand');
+const productsList = document.getElementById('productsList');
+const searchBox = document.getElementById('searchBox');
+const btnLogout = document.getElementById('btnLogout');
+const btnFinalize = document.getElementById('btnFinalize');
+const overlaySell = document.getElementById('overlaySell');
+const sellValue = document.getElementById('sellValue');
+const confirmSell = document.getElementById('confirmSell');
+const cancelSell = document.getElementById('cancelSell');
+const minSell = document.getElementById('minSell');
+const pencilWrap = document.getElementById('pencilWrap');
+const overlayPencil = document.getElementById('overlayPencil');
+const minPencil = document.getElementById('minPencil');
+const vendasDiaList = document.getElementById('vendasDiaList');
+const overlayFinalize = document.getElementById('overlayFinalize');
+const finalizeContent = document.getElementById('finalizeContent');
+const cancelFinalize = document.getElementById('cancelFinalize');
+const doFinalize = document.getElementById('doFinalize');
+const historyList = document.getElementById('historyList');
+
+let currentUser = null;
+let uid = null;
+let products = {};
+let sellingProductKey = null;
+
+auth.onAuthStateChanged(user=>{
+  if(!user){
+    location.href = 'login.html';
+    return;
+  }
+  currentUser = user;
+  uid = user.uid;
+  userEmail.textContent = user.email;
+  startRealtimeListeners();
+});
+
+function startRealtimeListeners(){
+  db.ref('users/'+uid+'/products').on('value', snap=>{
+    products = snap.val() || {};
+    renderProducts();
+  });
+  db.ref('users/'+uid+'/currentBalance').on('value', snap=>{
+    const val = snap.val() || 0;
+    balanceValue.textContent = formatCurrency(val);
+  });
+  db.ref('users/'+uid+'/todaySales').on('value', snap=>{
+    renderVendasDia(snap.val() || {});
+  });
+  db.ref('users/'+uid+'/history').on('value', snap=>{
+    renderHistory(snap.val() || {});
+  });
+}
+
+function formatCurrency(n){
+  const num = Number(n || 0);
+  return num.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+}
+function renderProducts(filter=''){
+  productsList.innerHTML = '';
+  const keys = Object.keys(products || {});
+  if(keys.length === 0){ productsList.innerHTML = '<div style="padding:12px;color:#777">Nenhum produto cadastrado</div>'; return; }
+  keys.forEach(k=>{
+    const p = products[k];
+    const txt = (p.name + ' ' + (p.brand||'')).toLowerCase();
+    if(filter && !txt.includes(filter.toLowerCase())) return;
+    const div = document.createElement('div');
+    div.className = 'product';
+    div.innerHTML = `
+      <div class="meta">
+        <img alt="img" src="https://via.placeholder.com/60?text=PR"/>
+        <div>
+          <div class="name">${escapeHtml(p.name)}</div>
+          <div class="brand">${escapeHtml(p.brand||'')}</div>
+        </div>
+      </div>
+      <div class="opts">
+        <button class="opt-btn" data-k="${k}" data-action="sell">Vender</button>
+        <button class="opt-btn" data-k="${k}" data-action="del">Excluir</button>
+      </div>
+    `;
+    productsList.appendChild(div);
+  });
+}
+function renderVendasDia(list){
+  vendasDiaList.innerHTML = '';
+  const keys = Object.keys(list || {});
+  if(keys.length === 0){ vendasDiaList.innerHTML = '<div class="small-muted">Nenhuma venda hoje</div>'; return; }
+  keys.forEach(k=>{
+    const v = list[k];
+    const el = document.createElement('div');
+    el.style.padding = '8px 0';
+    el.innerHTML = `<div style="display:flex;justify-content:space-between"><div>${escapeHtml(v.productName)} ${v.brand?(' - '+escapeHtml(v.brand)) : ''}</div><div><strong>${formatCurrency(v.value)}</strong></div></div>
+    <div class="small-muted">${new Date(v.createdAt).toLocaleString()}</div>`;
+    vendasDiaList.appendChild(el);
+  });
+}
+function renderHistory(hist){
+  historyList.innerHTML = '';
+  const days = Object.keys(hist || {}).sort((a,b)=>b.localeCompare(a));
+  if(days.length === 0){ historyList.innerHTML = '<div class="small-muted">Nenhum dia finalizado</div>'; return; }
+  days.forEach(dateKey=>{
+    const item = hist[dateKey];
+    const el = document.createElement('div');
+    el.className = 'history-item';
+    el.innerHTML = `<div><div><strong>${escapeHtml(dateKey)}</strong></div><div class="small-muted">Total: ${formatCurrency(item.total)}</div></div>
+                    <div style="display:flex;gap:8px">
+                      <button class="opt-btn" data-day="${dateKey}" data-action="view">Info</button>
+                      <button class="opt-btn" data-day="${dateKey}" data-action="del">Excluir</button>
+                    </div>`;
+    historyList.appendChild(el);
+  });
+}
+
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[m]); }
+
+btnAddProduct.addEventListener('click', ()=>{ overlayAdd.style.display='flex'; });
+closeAdd.addEventListener('click', ()=>{ overlayAdd.style.display='none'; prodName.value=''; prodBrand.value=''; });
+saveProd.addEventListener('click', async ()=>{
+  const name = prodName.value.trim();
+  const brand = prodBrand.value.trim();
+  if(!name){ alert('Nome do produto obrigatório'); return; }
+  const newKey = db.ref('users/'+uid+'/products').push().key;
+  await db.ref('users/'+uid+'/products/'+newKey).set({
+    name, brand, createdAt: Date.now()
+  });
+  prodName.value='';prodBrand.value='';overlayAdd.style.display='none';
+});
+
+productsList.addEventListener('click', e=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  const key = btn.dataset.k;
+  const action = btn.dataset.action;
+  if(action === 'sell'){
+    sellingProductKey = key;
+    overlaySell.style.display='flex';
+    sellValue.value = '';
+  } else if(action === 'del'){
+    if(confirm('Excluir produto? Esta ação não pode ser desfeita.')){
+      db.ref('users/'+uid+'/products/'+key).remove();
     }
+  }
+});
 
-    const serieId = getQueryParam("id");
+confirmSell.addEventListener('click', async ()=>{
+  const val = parseFloat(String(sellValue.value).replace(',','.'));
+  if(isNaN(val) || val <= 0){ alert('Valor inválido'); return; }
+  const prod = products[sellingProductKey];
+  const saleRef = db.ref('users/'+uid+'/todaySales').push();
+  const saleObj = {
+    productKey: sellingProductKey,
+    productName: prod.name,
+    brand: prod.brand || '',
+    value: val,
+    createdAt: Date.now()
+  };
+  await saleRef.set(saleObj);
+  const balanceRef = db.ref('users/'+uid+'/currentBalance');
+  await balanceRef.transaction(curr => (Number(curr||0) + Number(val)));
+  overlaySell.style.display='none';
+});
+cancelSell.addEventListener('click', ()=>{ overlaySell.style.display='none'; });
+minSell.addEventListener('click', ()=>{ overlaySell.style.display='none'; });
 
-    if (serieId) {
-      db.ref("usuarios").once("value").then(snapshot => {
-        let encontrado = false;
+pencilWrap.addEventListener('click', ()=>{ overlayPencil.style.display='flex'; });
+minPencil.addEventListener('click', ()=>{ overlayPencil.style.display='none'; });
 
-        snapshot.forEach(child => {
-          const dados = child.val();
-          if (dados.serie === serieId) {
-            encontrado = true;
+btnFinalize.addEventListener('click', async ()=>{
+  const snap = await db.ref('users/'+uid+'/todaySales').once('value');
+  const sales = snap.val() || {};
+  const arr = Object.values(sales || {});
+  let total = arr.reduce((s,x)=>s + Number(x.value || 0), 0);
+  let html = `<div class="small-muted">Vendas hoje: ${arr.length}</div>
+              <div style="margin-top:8px"><strong>Total: ${formatCurrency(total)}</strong></div>
+              <div style="margin-top:12px">Itens:</div>`;
+  arr.forEach(s=>{
+    html += `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #eee"><div>${escapeHtml(s.productName)} ${s.brand?(' - '+escapeHtml(s.brand)) : ''}</div><div>${formatCurrency(s.value)}</div></div>`;
+  });
+  finalizeContent.innerHTML = html;
+  overlayFinalize.style.display = 'flex';
+});
+cancelFinalize.addEventListener('click', ()=> overlayFinalize.style.display='none');
+doFinalize.addEventListener('click', async ()=>{
+  const snap = await db.ref('users/'+uid+'/todaySales').once('value');
+  const sales = snap.val() || {};
+  const arr = Object.values(sales || {});
+  let total = arr.reduce((s,x)=>s + Number(x.value || 0), 0);
+  const dateKey = new Date().toISOString().slice(0,10);
+  const historyRef = db.ref('users/'+uid+'/history/'+dateKey);
+  await historyRef.set({
+    total,
+    date: dateKey,
+    items: sales,
+    finalizedAt: Date.now()
+  });
+  await db.ref('users/'+uid+'/todaySales').remove();
+  await db.ref('users/'+uid+'/currentBalance').set(0);
+  overlayFinalize.style.display='none';
+});
 
-            firebase.database().ref("pets/" + child.key).once("value").then(petSnap => {
-              const pet = petSnap.val();
-              if (pet) {
-                document.getElementById("petData").innerHTML = `
-                  <div class="info"><strong>Nome do PET:</strong> ${pet.petName}</div>
-                  <div class="info"><strong>Dono:</strong> ${pet.ownerName}</div>
-                  <div class="info"><strong>Contato 1:</strong> ${pet.phone1 || "Não informado"}</div>
-                  <div class="info"><strong>Contato 2:</strong> ${pet.phone2 || "Não informado"}</div>
-                  <div class="info"><strong>Email:</strong> ${pet.emailOptional || "Não informado"}</div>
-                  <div class="info"><strong>Endereço 1:</strong> ${pet.address1 || "Não informado"}</div>
-                  <div class="info"><strong>Endereço 2:</strong> ${pet.address2 || "Não informado"}</div>
-                  <div class="info"><strong>Cidade:</strong> ${pet.city || "Não informado"}, ${pet.state || ""}</div>
-                `;
-              } else {
-                document.getElementById("petData").innerText = "Dados do PET não encontrados.";
-              }
+searchBox.addEventListener('input', (e)=> renderProducts(e.target.value));
 
-              setTimeout(() => loaderWrapper.classList.add('hide'), 500);
-            });
-          }
-        });
+btnLogout.addEventListener('click', async ()=>{
+  await auth.signOut();
+  location.href = 'login.html';
+});
 
-        if (!encontrado) {
-          document.getElementById("petData").innerText = "Número de série inválido.";
-          setTimeout(() => loaderWrapper.classList.add('hide'), 500);
-        }
-      });
-    } else {
-      document.getElementById("petData").innerText = "ID do QR Code ausente.";
-      setTimeout(() => loaderWrapper.classList.add('hide'), 500);
+historyList.addEventListener('click', async (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  const day = btn.dataset.day;
+  const action = btn.dataset.action;
+  if(action === 'view'){
+    const snap = await db.ref('users/'+uid+'/history/'+day).once('value');
+    const data = snap.val();
+    if(!data) { alert('Registro não encontrado'); return;}
+    overlayFinalize.style.display='flex';
+    let html = `<div><strong>${escapeHtml(day)}</strong> — Total: ${formatCurrency(data.total)}</div><div style="margin-top:10px">`;
+    const items = data.items || {};
+    Object.values(items).forEach(it=>{
+      html += `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #eee"><div>${escapeHtml(it.productName)}</div><div>${formatCurrency(it.value)}</div></div>`;
+    });
+    html += '</div>';
+    finalizeContent.innerHTML = html;
+  } else if(action === 'del'){
+    if(confirm('Excluir histórico deste dia?')){
+      await db.ref('users/'+uid+'/history/'+day).remove();
     }
-  </script>
+  }
+});
+
+document.querySelectorAll('.overlay').forEach(o=>{
+  o.addEventListener('click', e=>{
+    if(e.target === o) o.style.display='none';
+  });
+});
+</script>
 </body>
 </html>
