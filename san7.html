@@ -1,163 +1,234 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Login Administrativo</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Jpfelix Tecnologia — Login</title>
+<!-- Estilo simples, moderno (dourado + branco) -->
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-  body {
-    margin:0; height:100vh; background: linear-gradient(135deg, #4b3b00, #d4af37);
-    font-family: 'Poppins', sans-serif;
-    display:flex; justify-content:center; align-items:center;
-    color: #fff;
+  :root{
+    --gold:#c69c26;
+    --gold-dark:#a17814;
+    --bg:#fff;
+    --muted:#707070;
+    --glass: rgba(255,255,255,0.6);
+    --radius:14px;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   }
-  header {
-    position: fixed;
-    top:0; left:0; right:0; height:60px;
-    background: rgba(212,175,55,0.95);
-    display:flex; align-items:center; padding-left: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#fff 0%, #fffaf0 100%);}
+  .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:28px}
+  .card{
+    width:100%;max-width:520px;background:var(--bg);border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    padding:32px;box-sizing:border-box;border:1px solid rgba(0,0,0,0.04);
   }
-  header img {
-    height: 40px;
-    max-width: 150px;
-    object-fit: contain;
+  header.title{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+  .logo{
+    width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--gold) 0%, var(--gold-dark) 100%);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px;
   }
-  .login-box {
-    background: rgba(255 255 255 / 0.1);
-    padding: 40px 50px;
-    border-radius: 12px;
-    box-shadow: 0 0 30px rgba(212,175,55,0.7);
-    width: 320px;
-    text-align: center;
+  h1{margin:0;font-size:20px}
+  p.lead{margin:2px 0 18px;color:var(--muted);font-size:13px}
+  .typing{
+    height:56px;border-radius:12px;border:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;padding:12px 16px;
+    font-size:18px;color:#111;box-sizing:border-box;background:linear-gradient(180deg,transparent, rgba(0,0,0,0.01));
+    margin-bottom:14px;position:relative;overflow:hidden;
   }
-  .login-box h1 {
-    margin-bottom: 30px;
-    font-weight: 600;
-    text-shadow: 1px 1px 4px #000000a8;
-    font-size: 1.8rem;
+  .typing .cursor{display:inline-block;width:2px;height:20px;background:#111;vertical-align:middle;margin-left:6px;animation:blink .9s steps(2) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .form-row{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+  input[type="email"], input[type="password"]{
+    width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(0,0,0,0.08);outline:none;font-size:15px;
   }
-  .login-box input[type="email"],
-  .login-box input[type="password"] {
-    width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 25px;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    outline: none;
-    box-shadow: inset 0 0 6px #d4af37;
-    background: rgba(255 255 255 / 0.15);
-    color: #fff;
-    transition: background-color 0.3s ease;
+  .btn{
+    width:100%;padding:12px;border-radius:12px;border:0;background:linear-gradient(90deg,var(--gold),var(--gold-dark));color:#fff;
+    font-weight:600;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;
   }
-  .login-box input::placeholder {
-    color: #ffeb99dd;
-  }
-  .login-box input[type="email"]:focus,
-  .login-box input[type="password"]:focus {
-    background: rgba(255 255 255 / 0.3);
-  }
-  .login-box button {
-    width: 100%;
-    padding: 14px 0;
-    background: #d4af37;
-    border: none;
-    border-radius: 6px;
-    color: #422f00;
-    font-weight: 700;
-    font-size: 1.1rem;
-    cursor: pointer;
-    box-shadow: 0 5px 10px #d4af37bb;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  }
-  .login-box button:hover {
-    background: #fff7c2;
-    box-shadow: 0 7px 15px #d4af37ee;
-  }
-  .error-message {
-    color: #ffcccc;
-    margin-top: -20px;
-    margin-bottom: 15px;
-    font-weight: 600;
-    font-size: 0.9rem;
-  }
+  .btn:active{transform:translateY(1px)}
+  .terms{font-size:12px;color:var(--muted);margin-top:10px;text-align:center}
+  .serial{margin-top:14px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+  .serial code{background:#fff8e6;padding:6px 10px;border-radius:8px;border:1px solid rgba(0,0,0,0.03);font-weight:600}
+  .footer-small{font-size:12px;color:var(--muted);margin-top:12px;text-align:center}
+  .spinner{width:18px;height:18px;border-radius:50%;border:3px solid rgba(255,255,255,0.3);border-left-color:rgba(255,255,255,0.9);animation:spin .9s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .note{font-size:11px;color:#7a7a7a;margin-top:8px;text-align:center}
 </style>
 </head>
 <body>
+<div class="wrap">
+  <div class="card" role="main">
+    <header class="title">
+      
+      <div>
+       
 
-<header>
-  <!-- COLE A URL DA LOGOMARCA AQUI -->
-  <img id="logoEmpresa" src="https://via.placeholder.com/150x40?text=LOGO" alt="Logomarca Empresa" />
-</header>
+        
 
-<div class="login-box">
-  <h1>Login Administrativo</h1>
-  <form id="loginForm">
-    <input type="email" id="email" placeholder="E-mail" required autocomplete="username" />
-    <input type="password" id="password" placeholder="Senha" required autocomplete="current-password" />
-    <div class="error-message" id="errorMsg"></div>
-    <button type="submit">Entrar</button>
-  </form>
+
+
+<style>
+  .mini-img {
+    display: inline-block;
+    width: 100px; /* ajuste o tamanho aqui */
+    height: auto;
+  }
+</style>
+
+<img class="mini-img" src="https://826d3d7dee.cbaul-cdnwnd.com/62fd26f239c381f07684529cff4b51b2/200000057-0b5110b513/450/AA04E86A-543C-453C-A626-30C72864BE27.webp" alt="Imagem Incorporada">
+
+
+ <h3>Acesso Administrativo</h3>
+
+
+
+
+      </div>
+    </header>
+
+    <div class="typing" aria-hidden="true"><span id="typeText"></span><span class="cursor"></span></div>
+
+    <div class="form-row">
+      <input id="email" type="email" placeholder="E-mail da loja" autocomplete="username"/>
+      <input id="password" type="password" placeholder="Senha" autocomplete="current-password"/>
+    </div>
+
+    <button id="btnLogin" class="btn">
+      <span id="btnContent">Acessar</span>
+    </button>
+
+<br>
+
+<br>
+<hr>
+<br>
+   
+    <div class="serial">
+      <div><strong>ID:</strong></div>
+      <code id="serialId">Gerando...</code>
+    </div>
+
+    <div class="footer-small">Desenvolvido por Jpfelix Tecnologia</div>
+    <div class="note">Sessão segura.📄</div>
+  </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBs2GrFPGib7Nz02F03Eeo5DTW-8OTJmFI",
-    authDomain: "san7-2b351.firebaseapp.com",
-    databaseURL: "https://san7-2b351-default-rtdb.firebaseio.com",
-    projectId: "san7-2b351",
-    storageBucket: "san7-2b351.appspot.com",
-    messagingSenderId: "511547914036",
-    appId: "1:511547914036:web:0595e39aef88258c649761"
+/* ----------------- CONFIG ----------------- */
+const firebaseConfig = {
+  apiKey: "AIzaSyBs2GrFPGib7Nz02F03Eeo5DTW-8OTJmFI",
+  authDomain: "san7-2b351.firebaseapp.com",
+  databaseURL: "https://san7-2b351-default-rtdb.firebaseio.com",
+  projectId: "san7-2b351",
+  storageBucket: "san7-2b351.appspot.com",
+  messagingSenderId: "511547914036",
+  appId: "1:511547914036:web:0595e39aef88258c649761"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+
+/* ------------- UI / TYPING --------------- */
+const sentences = [
+  "Bem-vindo(a)!",
+  "Insira seu e-mail e senha",
+  "Tudo salvo em tempo real",
+  "Design dourado. Simples. Seguro."
+];
+let idx=0, charIdx=0;
+const tEl = document.getElementById('typeText');
+function typingLoop(){
+  if(idx >= sentences.length) idx = 0;
+  const s = sentences[idx];
+  if(charIdx <= s.length){
+    tEl.textContent = s.slice(0,charIdx);
+    charIdx++;
+    setTimeout(typingLoop, 40);
+  } else {
+    charIdx=0; idx++; setTimeout(typingLoop, 900);
+  }
+}
+typingLoop();
+
+/* ------------- SERIAL & CRYPTO ------------- */
+/* generate 28 letters + 24 numbers (letters uppercase) */
+function genSerial(){
+  const letters = Array.from(crypto.getRandomValues(new Uint8Array(28))).map(n=> String.fromCharCode(65 + (n % 26))).join('');
+  const numbers = Array.from(crypto.getRandomValues(new Uint8Array(24))).map(n=> String(n % 10)).join('');
+  return letters + numbers;
+}
+const serial = genSerial();
+document.getElementById('serialId').textContent = serial;
+
+/* Simple client-side encryption of the serial before storing (Web Crypto API) */
+async function encryptAndStoreSerial(sessId){
+  const enc = new TextEncoder();
+  const keyMat = await crypto.subtle.importKey(
+    "raw",
+    enc.encode("jpfelix-session-key-32bytes-long----"), // 32 bytes string (for demo)
+    { name: "AES-GCM" },
+    false,
+    ["encrypt"]
+  );
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = await crypto.subtle.encrypt({name:"AES-GCM", iv}, keyMat, enc.encode(sessId));
+  const ctArr = new Uint8Array(ct);
+  const payload = {
+    iv: Array.from(iv),
+    ct: Array.from(ctArr),
+    createdAt: Date.now()
   };
+  // store in realtime DB (encrypted)
+  const key = db.ref('sessions').push().key;
+  await db.ref('sessions/'+key).set(payload);
+  // also store in localStorage (encrypted)
+  localStorage.setItem('jpfelix.session', JSON.stringify(payload));
+  return key;
+}
+encryptAndStoreSerial(serial).catch(e=>console.warn(e));
 
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
+/* ---------------- LOGIN FLOW ---------------- */
+const btn = document.getElementById('btnLogin');
+const btnContent = document.getElementById('btnContent');
 
-  // Coloque aqui os e-mails e senhas aceitos para redirecionar para home2.html
-  const allowedUsers = [
-    { email: "admin@empresa.com", password: "senha123" },
-    { email: "user@empresa.com", password: "senha456" }
-  ];
+async function showLoading(){
+  btn.disabled = true;
+  btnContent.innerHTML = '<div class="spinner" aria-hidden="true"></div><span>Carregando...</span>';
+}
+function hideLoading(){
+  btn.disabled = false;
+  btnContent.innerHTML = 'Acessar';
+}
 
-  const loginForm = document.getElementById('loginForm');
-  const errorMsg = document.getElementById('errorMsg');
+btn.addEventListener('click', async ()=>{
+  await showLoading();
+  // Always show spinner even if fields empty (per request)
+  const email = document.getElementById('email').value.trim();
+  const pass = document.getElementById('password').value;
+  // Attempt to sign in (if empty, will fail but spinner shown briefly)
+  try{
+    const cred = await auth.signInWithEmailAndPassword(email, pass);
+    // store session meta for the user
+    const uid = cred.user.uid;
+    await db.ref('users/'+uid+'/lastSession').set({
+      serialId: serial,
+      startedAt: Date.now()
+    });
+    // redirect to perfil.html
+    location.href = 'home2.html';
+  } catch(err){
+    // show minimal feedback and still hide loading after a short delay
+    console.error(err);
+    setTimeout(()=>{ hideLoading(); alert('Erro ao autenticar. Verifique e-mail/senha.'); }, 700);
+  }
+});
 
-  loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    errorMsg.textContent = '';
-
-    const email = loginForm.email.value.trim();
-    const password = loginForm.password.value.trim();
-
-    // Validações simples no front
-    if (!email || !password) {
-      errorMsg.textContent = 'Preencha todos os campos.';
-      return;
-    }
-
-    // Verifica se o usuário está na lista permitida
-    const userAllowed = allowedUsers.find(u => u.email === email && u.password === password);
-    if (!userAllowed) {
-      errorMsg.textContent = 'Credenciais inválidas.';
-      return;
-    }
-
-    // Tenta autenticar com Firebase Authentication
-    auth.signInWithEmailAndPassword(email, password)
-      .then(() => {
-        window.location.href = "home2.html";
-      })
-      .catch((error) => {
-        errorMsg.textContent = 'Erro ao autenticar: ' + error.message;
-      });
-  });
+/* Auto-generate placeholder credentials for convenience (developer mode)
+   NOTE: This does not create a user — creation should occur via admin.html
+*/
 </script>
-
 </body>
 </html>
