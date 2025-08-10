@@ -1,329 +1,217 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tech Vision Pro - Noite</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f9f9f9;
-      overflow: hidden;
-      color: #333;
-    }
-
-    video, canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: 1;
-      transition: filter 0.3s ease;
-    }
-
-    canvas { pointer-events: none; }
-
-    #header {
-      position: absolute;
-      top: 0;
-      width: 100%;
-      background: white;
-      border-bottom: 1px solid #ccc;
-      padding: 10px 20px;
-      z-index: 10;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    #switchBtn {
-      background: #0051a8;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    #startBtn {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      padding: 16px 36px;
-      font-size: 16px;
-      background: #0051a8;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      z-index: 20;
-      box-shadow: 0 0 12px rgba(0,0,0,0.15);
-    }
-
-    #controls {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      background: rgba(255,255,255,0.96);
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-evenly;
-      align-items: center;
-      padding: 12px 0 20px;
-      z-index: 30;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-    }
-
-    .control {
-      text-align: center;
-      margin: 10px 20px;
-    }
-
-    .control label {
-      font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 6px;
-      display: block;
-    }
-
-    .slider {
-      width: 160px;
-      appearance: none;
-      height: 8px;
-      background: linear-gradient(to right, #0051a8, #00c3ff);
-      border-radius: 5px;
-      outline: none;
-    }
-
-    .slider::-webkit-slider-thumb {
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #002b5c;
-      border: 2px solid white;
-      cursor: pointer;
-    }
-
-    .color-bar {
-      width: 160px;
-      height: 8px;
-      border-radius: 5px;
-      background: linear-gradient(to right, yellow, green, blue, red, purple);
-      position: relative;
-    }
-
-    .color-indicator {
-      position: absolute;
-      top: -5px;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      border: 2px solid white;
-      background: #0051a8;
-      transform: translateX(-50%);
-      cursor: pointer;
-      box-shadow: 0 0 4px rgba(0,0,0,0.3);
-    }
-
-    #clock {
-      font-size: 14px;
-    }
-
-    #darkModeToggle {
-      display: flex;
-      align-items: center;
-      font-size: 14px;
-      gap: 8px;
-      margin-top: 8px;
-      font-weight: bold;
-    }
-
-    #darkCheckbox {
-      width: 18px;
-      height: 18px;
-      accent-color: #333;
-      cursor: pointer;
-    }
-
-    body.dark {
-      background: #000;
-    }
-
-    #controls.dark {
-      background: rgba(20,20,20,0.95);
-      color: white;
-    }
-
-    #header.dark {
-      background: #111;
-      color: white;
-      border-color: #444;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Jpfelix Tecnologia — Admin</title>
+<style>
+  :root{--gold:#c69c26;--gold-dark:#a17814;--bg:#fff;--muted:#666;--radius:12px;font-family:Inter,system-ui,Arial}
+  body{margin:0;background:linear-gradient(180deg,#fff,#fffaf0);min-height:100vh}
+  .wrap{max-width:1100px;margin:20px auto;padding:16px}
+  header{display:flex;align-items:center;justify-content:space-between}
+  header h1{margin:0;font-size:20px}
+  .controls{display:flex;gap:8px;align-items:center}
+  .btn{padding:10px 12px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--gold),var(--gold-dark));color:#fff;cursor:pointer}
+  .search{padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06)}
+  .list{margin-top:14px}
+  .shop{background:#fff;border-radius:10px;padding:12px;border:1px solid rgba(0,0,0,0.03);display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .shop .meta{display:flex;gap:12px;align-items:center}
+  .small-muted{font-size:13px;color:var(--muted)}
+  .modal{background:#fff;padding:20px;border-radius:12px;max-width:760px;box-shadow:0 20px 50px rgba(0,0,0,0.15)}
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);display:none;align-items:center;justify-content:center;padding:20px;z-index:60}
+</style>
 </head>
 <body>
+  <div class="wrap">
+    <header>
+      <h1>Administrativo</h1>
 
-  <!-- Header -->
-  <div id="header">
-    <div id="clock">--:--:--</div>
-    <button id="switchBtn">🔄 Trocar Câmera</button>
-  </div>
+      <div class="controls">
+        <input id="searchShop" class="search" placeholder="Pesquisar loja..." />
+        <button id="btnNew" class="btn">Cadastrar Loja</button>
+      </div>
+    </header>
 
-  <!-- Vídeo e Canvas -->
-  <video id="video" autoplay muted playsinline></video>
-  <canvas id="canvas"></canvas>
+    <div style="margin-top:12px" class="small-muted">JP FELIX TECNOLOGIA - DESDE 2018</div>
+    <div id="shopsList" class="list"></div>
 
-  <!-- Botão Iniciar -->
-  <button id="startBtn">Iniciar Monitoramento</button>
-
-  <!-- Rodapé de Controle -->
-  <div id="controls">
-    <div class="control">
-      <label for="esp">Espessura: <span id="espLabel">5x</span></label>
-      <input type="range" id="esp" min="0" max="13" value="5" class="slider">
-    </div>
-    <div class="control">
-      <label>Cor da Linha</label>
-      <div class="color-bar" id="colorBar">
-        <div class="color-indicator" id="colorIndicator"></div>
+    <!-- Modals -->
+    <div id="overlayNew" class="overlay">
+      <div class="modal">
+        <h3>Cadastrar Loja</h3>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <input id="newShopName" placeholder="Nome visível da loja" style="flex:1;padding:10px;border-radius:8px;border:1px solid #ddd"/>
+          <input id="newShopEmail" placeholder="E-mail (login)" style="flex:1;padding:10px;border-radius:8px;border:1px solid #ddd"/>
+          <input id="newShopPass" placeholder="Senha" style="width:160px;padding:10px;border-radius:8px;border:1px solid #ddd"/>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+          <button id="cancelNew" class="btn" style="background:#eee;color:#111">Cancelar</button>
+          <button id="createNew" class="btn">Criar loja</button>
+        </div>
       </div>
     </div>
-    <div class="control" id="darkModeToggle">
-      <input type="checkbox" id="darkCheckbox">
-      <label for="darkCheckbox">Modo Noturno Inteligente</label>
+
+    <div id="overlayDetail" class="overlay">
+      <div class="modal" id="detailModal"></div>
     </div>
+
   </div>
 
-  <!-- Script -->
-  <script>
-    const video = document.getElementById("video");
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-    const clock = document.getElementById("clock");
-    const switchBtn = document.getElementById("switchBtn");
-    const startBtn = document.getElementById("startBtn");
-    const espInput = document.getElementById("esp");
-    const espLabel = document.getElementById("espLabel");
-    const colorBar = document.getElementById("colorBar");
-    const colorIndicator = document.getElementById("colorIndicator");
-    const darkCheckbox = document.getElementById("darkCheckbox");
-    const controls = document.getElementById("controls");
-    const header = document.getElementById("header");
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-    let model, stream, usingFrontCamera = true;
-    let detecting = false;
-    let lineWidth = 5;
-    let lineColor = "#0051a8";
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBs2GrFPGib7Nz02F03Eeo5DTW-8OTJmFI",
+  authDomain: "san7-2b351.firebaseapp.com",
+  databaseURL: "https://san7-2b351-default-rtdb.firebaseio.com",
+  projectId: "san7-2b351",
+  storageBucket: "san7-2b351.appspot.com",
+  messagingSenderId: "511547914036",
+  appId: "1:511547914036:web:0595e39aef88258c649761"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
 
-    // Atualiza relógio
-    setInterval(() => {
-      const now = new Date();
-      clock.textContent = now.toLocaleTimeString("pt-BR");
-    }, 1000);
+/* UI refs */
+const shopsList = document.getElementById('shopsList');
+const searchShop = document.getElementById('searchShop');
+const btnNew = document.getElementById('btnNew');
+const overlayNew = document.getElementById('overlayNew');
+const cancelNew = document.getElementById('cancelNew');
+const createNew = document.getElementById('createNew');
+const newShopName = document.getElementById('newShopName');
+const newShopEmail = document.getElementById('newShopEmail');
+const newShopPass = document.getElementById('newShopPass');
+const overlayDetail = document.getElementById('overlayDetail');
+const detailModal = document.getElementById('detailModal');
 
-    async function startCamera(facing = "user") {
-      if (stream) stream.getTracks().forEach(track => track.stop());
+let shopsCache = {};
 
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: facing }
-        });
-        video.srcObject = stream;
+/* load shops (users data) from a 'shops' root (we'll maintain convenience listing there) */
+db.ref('shops').on('value', snap=>{
+  shopsCache = snap.val() || {};
+  renderShops();
+});
 
-        video.onloadedmetadata = () => {
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-        };
-      } catch (e) {
-        alert("Erro ao acessar câmera: " + e);
-      }
-    }
+/* render */
+function renderShops(){
+  shopsList.innerHTML = '';
+  const q = (searchShop.value||'').toLowerCase();
+  const keys = Object.keys(shopsCache);
+  if(keys.length===0){ shopsList.innerHTML = '<div class="small-muted">Nenhuma loja cadastrada</div>'; return;}
+  keys.forEach(k=>{
+    const s = shopsCache[k];
+    const label = (s.displayName || s.email || '');
+    if(q && !label.toLowerCase().includes(q)) return;
+    const el = document.createElement('div');
+    el.className = 'shop';
+    el.innerHTML = `<div class="meta"><div style="width:44px;height:44;border-radius:8px;background:linear-gradient(135deg,#c69c26,#a17814);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">${(s.displayName||'LO').slice(0,2).toUpperCase()}</div>
+                    <div>
+                      <div style="font-weight:700">${escapeHtml(s.displayName||'Sem nome')}</div>
+                      <div class="small-muted">${escapeHtml(s.email||'—')}</div>
+                    </div></div>
+                    <div style="display:flex;gap:8px;align-items:center">
+                      <div class="small-muted" id="balance-${k}">Saldo: —</div>
+                      <button class="btn" data-k="${k}" data-action="view">Abrir</button>
+                      <button class="btn" data-k="${k}" data-action="del" style="background:#ff6b6b">Excluir</button>
+                    </div>`;
+    shopsList.appendChild(el);
+    // attach realtime listener for currentBalance
+    db.ref('users/'+k+'/currentBalance').on('value', snap=>{
+      const elb = document.getElementById('balance-'+k);
+      if(elb) elb.textContent = 'Saldo: ' + formatCurrency(snap.val() || 0);
+    });
+  });
+}
 
-    switchBtn.onclick = () => {
-      usingFrontCamera = !usingFrontCamera;
-      startCamera(usingFrontCamera ? "user" : "environment");
-    };
+function formatCurrency(n){
+  return (Number(n || 0)).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+}
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[m]); }
 
-    function draw(preds) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      preds.forEach(p => {
-        const [x, y, w, h] = p.bbox;
-        ctx.lineWidth = lineWidth;
-        ctx.strokeStyle = lineColor;
-        ctx.strokeRect(x, y, w, h);
-        ctx.font = "14px Arial";
-        ctx.fillStyle = lineColor;
-        ctx.fillText(`${p.class} (${Math.round(p.score * 100)}%)`, x + 4, y - 8);
-      });
-    }
+/* New shop modal */
+btnNew.addEventListener('click', ()=> overlayNew.style.display='flex');
+cancelNew.addEventListener('click', ()=> overlayNew.style.display='none');
 
-    async function detectLoop() {
-      if (model && video.readyState === 4 && detecting) {
-        const preds = await model.detect(video);
-        draw(preds);
-      }
-      requestAnimationFrame(detectLoop);
-    }
+createNew.addEventListener('click', async ()=>{
+  const name = newShopName.value.trim();
+  const email = newShopEmail.value.trim();
+  const pass = newShopPass.value.trim();
+  if(!name || !email || !pass){ alert('Preencha nome, e-mail e senha'); return; }
+  // Create an auth user via Admin SDK would be ideal — but in-browser we can create user by signing in anonymously,
+  // creating user, then sign back. Workaround: use createUserWithEmailAndPassword (requires current app to have permissions).
+  try{
+    const userCred = await auth.createUserWithEmailAndPassword(email, pass);
+    const newUid = userCred.user.uid;
+    // create convenience shops index and user root
+    await db.ref('shops/'+newUid).set({
+      displayName: name,
+      email: email,
+      createdAt: Date.now()
+    });
+    // initialize user data
+    await db.ref('users/'+newUid).set({
+      currentBalance: 0,
+      products: {},
+      todaySales: {},
+      history: {}
+    });
+    alert('Loja criada com sucesso. Agora é possível fazer login com o e-mail criado.');
+    newShopName.value='';newShopEmail.value='';newShopPass.value='';
+    overlayNew.style.display='none';
+  } catch(err){
+    console.error(err);
+    alert('Erro ao criar loja. Talvez já exista este e-mail. Mensagem: ' + (err.message||err));
+  }
+});
 
-    startBtn.onclick = () => {
-      detecting = true;
-      startBtn.style.display = "none";
-    };
+/* Delegation for shop actions */
+shopsList.addEventListener('click', async (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  const k = btn.dataset.k;
+  const action = btn.dataset.action;
+  if(action === 'view'){
+    // fetch realtime details and show modal (with history)
+    const infoSnap = await db.ref('shops/'+k).once('value');
+    const info = infoSnap.val() || {};
+    const balanceSnap = await db.ref('users/'+k+'/currentBalance').once('value');
+    const balance = balanceSnap.val() || 0;
+    const histSnap = await db.ref('users/'+k+'/history').once('value');
+    const hist = histSnap.val() || {};
+    let html = `<h3>${escapeHtml(info.displayName || 'Loja')}</h3>
+                <div class="small-muted">E-mail: ${escapeHtml(info.email||'—')}</div>
+                <div style="margin-top:10px"><strong>Saldo atual:</strong> ${formatCurrency(balance)}</div>
+                <div style="margin-top:12px"><h4>Histórico finalizados</h4></div>`;
+    const days = Object.keys(hist || {}).sort((a,b)=>b.localeCompare(a));
+    if(days.length===0){ html += '<div class="small-muted">Nenhum dia finalizado</div>'; }
+    days.forEach(day=>{
+      const d = hist[day];
+      html += `<div style="padding:8px;border-bottom:1px dashed #eee;display:flex;justify-content:space-between"><div>${escapeHtml(day)}</div><div>${formatCurrency(d.total)}</div></div>`;
+    });
+    html += `<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button id="closeDetail" class="btn" style="background:#eee;color:#111">Fechar</button></div>`;
+    detailModal.innerHTML = html;
+    overlayDetail.style.display = 'flex';
+    document.getElementById('closeDetail').addEventListener('click', ()=> overlayDetail.style.display='none');
+  } else if(action === 'del'){
+    if(!confirm('Excluir loja e todo histórico? Esta ação é irreversível.')) return;
+    // remove from shops and users
+    await db.ref('shops/'+k).remove();
+    await db.ref('users/'+k).remove();
+    alert('Loja removida.');
+  }
+});
 
-    espInput.oninput = (e) => {
-      lineWidth = parseInt(e.target.value);
-      espLabel.textContent = `${lineWidth}x`;
-    };
+/* search */
+searchShop.addEventListener('input', ()=> renderShops());
 
-    colorBar.onclick = (e) => {
-      const rect = colorBar.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const percent = x / rect.width;
-
-      let color;
-      if (percent < 0.2) color = "yellow";
-      else if (percent < 0.4) color = "green";
-      else if (percent < 0.6) color = "blue";
-      else if (percent < 0.8) color = "red";
-      else color = "purple";
-
-      lineColor = color;
-      colorIndicator.style.left = `${x}px`;
-      colorIndicator.style.background = color;
-    };
-
-    darkCheckbox.onchange = () => {
-      const isDark = darkCheckbox.checked;
-      document.body.classList.toggle("dark", isDark);
-      controls.classList.toggle("dark", isDark);
-      header.classList.toggle("dark", isDark);
-
-      if (isDark) {
-        video.style.filter = "brightness(1.4) contrast(1.3)";
-        if (["#000", "black", "#002b5c", "blue"].includes(lineColor)) {
-          lineColor = "white"; // Troca cor se a atual for escura
-        }
-      } else {
-        video.style.filter = "none";
-      }
-    };
-
-    async function init() {
-      await startCamera();
-      model = await cocoSsd.load();
-      detectLoop();
-    }
-
-    init();
-  </script>
+/* close overlays clicking outside */
+document.querySelectorAll('.overlay').forEach(o=>{
+  o.addEventListener('click', e=>{ if(e.target===o) o.style.display='none'; });
+});
+</script>
 </body>
 </html>
