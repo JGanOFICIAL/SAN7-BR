@@ -24,7 +24,25 @@
 <body>
   <div class="wrap">
     <header>
-      <h1>Administrativo</h1>
+
+
+
+
+<style>
+  .mini-img {
+    display: inline-block;
+    width: 60px; /* ajuste o tamanho aqui */
+    height: auto;
+  }
+</style>
+
+<img class="mini-img" src="https://826d3d7dee.cbaul-cdnwnd.com/62fd26f239c381f07684529cff4b51b2/200000057-0b5110b513/450/AA04E86A-543C-453C-A626-30C72864BE27.webp" alt="Imagem Incorporada">
+
+
+
+
+
+      
 
       <div class="controls">
         <input id="searchShop" class="search" placeholder="Pesquisar loja..." />
@@ -215,3 +233,89 @@ document.querySelectorAll('.overlay').forEach(o=>{
 </script>
 </body>
 </html>
+
+
+<style>
+  #loadingOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255 255 255 / 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.6s ease;
+  }
+  #loadingOverlay.hide {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #d4af37;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+    box-shadow: 0 0 8px #d4af37aa;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg);}
+  }
+  #progressBarContainer {
+    width: 200px;
+    height: 10px;
+    background: #eee;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: inset 0 0 5px #aaa;
+  }
+  #progressBar {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #d4af37, #f9e79f);
+    border-radius: 5px;
+    transition: width 0.1s linear;
+  }
+</style>
+
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+  <div id="progressBarContainer">
+    <div id="progressBar"></div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    const overlay = document.getElementById('loadingOverlay');
+    const bar = document.getElementById('progressBar');
+
+    // Duration between 2000ms and 3000ms
+    const duration = 2000 + Math.random() * 1000;
+    const startTime = performance.now();
+
+    function update(){
+      const now = performance.now();
+      let elapsed = now - startTime;
+      if(elapsed > duration) elapsed = duration;
+
+      const progress = (elapsed / duration) * 100;
+      bar.style.width = progress + '%';
+
+      if(elapsed < duration){
+        requestAnimationFrame(update);
+      } else {
+        overlay.style.transition = 'opacity 0.8s ease';
+        overlay.classList.add('hide');
+        setTimeout(() => {
+          overlay.remove();
+        }, 800);
+      }
+    }
+    requestAnimationFrame(update);
+  })();
+</script>
