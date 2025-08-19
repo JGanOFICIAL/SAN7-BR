@@ -1,401 +1,344 @@
-<!doctype html>
+<!-- =========================
+perfil.html • Perfil do cidadão
+• Ver dados (somente leitura)
+• Editar endereço (com lápis) salvando em tempo real
+• Upload de foto de perfil (salva no Storage e atualiza Firestore)
+• Lista de 5 órgãos públicos (placeholders) + aviso "ainda serão cadastrados"
+========================= -->
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Jpfelix Tecnologia — Perfil</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prefeitura de João Câmara • Perfil</title>
+<link rel="icon" href="https://otimize-edoc.s3.amazonaws.com/edoc_1291/logo_joaocamara.png" />
 <style>
-  :root{
-    --gold:#c69c26;--gold-dark:#a17814;--bg:#fff;--muted:#666;--radius:12px;
-    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-  }
-  body{margin:0;background:linear-gradient(180deg,#fff,#fffaf0);min-height:100vh}
-  .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:#fff;border-bottom:1px solid rgba(0,0,0,0.04);box-shadow:0 6px 20px rgba(0,0,0,0.03)}
+  :root{--azul:#0B3B74;--amarelo:#FFCC00;--cinza:#e9eef4;--texto:#111;--ok:#0c8f4d;--erro:#b00020}
+  *{box-sizing:border-box} html,body{margin:0;background:#fff;color:var(--texto);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif}
+  header{background:var(--azul);color:#fff;padding:14px 16px;border-bottom:4px solid var(--amarelo);display:flex;align-items:center;justify-content:space-between}
   .brand{display:flex;align-items:center;gap:12px}
-  .brand .logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
-  .brand h2{margin:0;font-size:16px}
-  .btn-logout{padding:8px 12px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);background:#fff;cursor:pointer}
-  .container{padding:24px;max-width:1100px;margin:0 auto}
-  .balance-card{background:#fff;border-radius:16px;padding:22px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 10px 30px rgba(0,0,0,0.04);margin-bottom:18px}
-  .balance-big{text-align:center;flex:1}
-  .balance-big h3{margin:0;font-size:18px;color:var(--muted)}
-  .balance-big .value{font-size:48px;font-weight:700;color:var(--gold-dark);margin-top:6px}
-  .actions{display:flex;gap:12px}
-  .actions button{background:linear-gradient(90deg,var(--gold),var(--gold-dark));color:#fff;padding:10px 14px;border-radius:12px;border:0;cursor:pointer;font-weight:600}
-  .small{font-size:13px;color:var(--muted)}
-  .search-row{margin:16px 0;display:flex;gap:12px;align-items:center}
-  .search-row input{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,0.06)}
-  .products{display:block;background:#fff;border-radius:12px;padding:12px;border:1px solid rgba(0,0,0,0.03)}
-  .product{display:flex;align-items:center;justify-content:space-between;padding:10px;border-bottom:1px solid rgba(0,0,0,0.03)}
-  .product:last-child{border-bottom:0}
-  .product .meta{display:flex;gap:12px;align-items:center}
-  .product .meta img{width:44px;height:44;border-radius:8px;background:#fff;border:1px solid rgba(0,0,0,0.04)}
-  .product .name{font-weight:600}
-  .product .brand{font-size:12px;color:var(--muted)}
-  .product .opts{display:flex;gap:8px}
-  .opt-btn{padding:8px 10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);cursor:pointer;background:#fff}
-  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);display:none;align-items:center;justify-content:center;padding:20px;z-index:60}
-  .modal{width:100%;max-width:720px;background:#fff;padding:18px;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.2)}
-  .modal h3{margin:0 0 8px}
-  .row{display:flex;gap:12px}
-  .input{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06)}
-  .float-icon{width:56px;height:56px;border-radius:12px;background:#fff;border:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;cursor:pointer}
-  .history-list{margin-top:12px}
-  .history-item{padding:12px;border-radius:10px;background:#fff;border:1px solid rgba(0,0,0,0.03);margin-bottom:8px;display:flex;justify-content:space-between}
-  .small-muted{font-size:12px;color:var(--muted)}
+  .logo{width:44px;height:44px;background:#fff;border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .logo img{width:100%;height:100%;object-fit:cover}
+  .titulos h1{margin:0;font-size:16px}
+  .btnSair{border:1px solid #fff;background:#fff;color:var(--azul);padding:10px 12px;border-radius:6px;cursor:pointer}
+  main{max-width:920px;margin:18px auto;padding:0 16px}
+  .boas-vindas{margin:16px 0;background:#fff;border:1px solid var(--cinza);box-shadow:0 8px 22px rgba(0,0,0,.06);border-radius:10px;overflow:hidden}
+  .boas-vindas .foto{width:100%;height:160px;background:#f6f7fb url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_EkzeqLkVBeHrg5Jlsw-NuYV2pbh1G2T0MXalKxp98NtmAvMKl6zgqCkE&s=10') center/cover no-repeat}
+  .boas-vindas .txt{padding:14px 16px}
+  .card{background:#fff;border:1px solid var(--cinza);border-radius:10px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-top:16px}
+  .perfil{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+  .avatar{width:96px;height:96px;border-radius:8px;background:#f2f4f8;border:1px solid var(--cinza);overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .avatar img{width:100%;height:100%;object-fit:cover}
+  .btnMini{border:1px solid var(--azul);background:#fff;color:var(--azul);padding:8px 10px;border-radius:6px;cursor:pointer;font-size:12px}
+  .acoes{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{border:1px solid var(--azul);background:var(--azul);color:#fff;padding:10px 12px;border-radius:6px;cursor:pointer}
+  .lista{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px}
+  .orgao{border:1px solid var(--cinza);border-radius:8px;padding:12px}
+  .pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .pill{font-size:11px;border:1px solid var(--cinza);border-radius:999px;padding:4px 8px;background:#f8fafc}
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+  .overlay.mostrar{display:flex}
+  .modal{background:#fff;border:1px solid var(--cinza);border-radius:10px;max-width:560px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,.15);overflow:hidden}
+  .modal header{background:#f8fafc;color:#111;padding:12px 16px;border-bottom:1px solid var(--cinza)}
+  .modal .conteudo{padding:16px}
+  .modal .rodape{display:flex;gap:10px;padding:12px 16px;border-top:1px solid var(--cinza)}
+  label{display:block;font-size:13px;margin:10px 0 6px}
+  input{width:100%;padding:12px;border:1px solid var(--cinza);border-radius:6px;background:#fff;outline:none}
+  input:focus{background:#fafafa;outline:none;box-shadow:none}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;background:#111;color:#fff;padding:10px 14px;border-radius:8px;display:none;z-index:60}
+  .toast.ok{background:var(--ok)} .toast.erro{background:var(--erro)}
 </style>
 </head>
 <body>
-  <div class="topbar">
-    <div class="brand">
-      <div class="logo">♥️</div>
+<header>
+  <div class="brand">
+    <div class="logo"><img src="https://826d3d7dee.cbaul-cdnwnd.com/62fd26f239c381f07684529cff4b51b2/200000069-4a3354a336/700/A728F011-D3B0-4197-83F7-88EDFC2AF8A5.webp" alt="Logo"></div>
+    <div class="titulos"><h1>Perfil do Cidadão</h1><small>Prefeitura de João Câmara</small></div>
+  </div>
+  <button class="btnSair" id="btnSair">Sair</button>
+</header>
+
+<main>
+  <section class="boas-vindas">
+    <div class="foto" aria-hidden="true"></div>
+    <div class="txt">
+      <h2 id="ola">Olá!</h2>
+      <p>Gerencie seus dados e acesse serviços municipais.</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="perfil">
+      <div class="avatar" id="avatar"><img id="fotoPerfil" alt=""></div>
       <div>
-        <h2>Caixa Aberto</h2>
-        <div class="small-muted" id="userEmail">—</div>
+        <div style="font-weight:700;font-size:18px" id="nomeExib">—</div>
+        <div style="font-size:13px;color:#333" id="emailExib">—</div>
+        <div class="acoes" style="margin-top:10px">
+          <input type="file" id="inFoto" accept="image/*" capture="environment" hidden />
+          <button class="btnMini" onclick="document.getElementById('inFoto').click()">Atualizar foto do cidadão</button>
+          <button class="btn" id="btnVerDados">Ver dados</button>
+        </div>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:12px">
-      <div id="pencilWrap" class="float-icon" title="Ver vendas do dia"><span id="pencilImg">✏️</span></div>
-      <button id="btnLogout" class="btn-logout">Sair</button>
+  </section>
+
+  <section class="card">
+    <h3 style="margin:0 0 8px">Órgãos públicos</h3>
+    <p style="margin:0 0 10px">Órgãos públicos ainda serão adicionados.</p>
+    <div class="lista">
+      <div class="orgao"><strong>Secretaria de Saúde</strong><div class="pills"><span class="pill">Unidades</span><span class="pill">Serviços</span></div></div>
+      <div class="orgao"><strong>Secretaria de Educação</strong><div class="pills"><span class="pill">Matrículas</span><span class="pill">Transporte</span></div></div>
+      <div class="orgao"><strong>Tributação</strong><div class="pills"><span class="pill">IPTU</span><span class="pill">ISS</span></div></div>
+      <div class="orgao"><strong>Assistência Social</strong><div class="pills"><span class="pill">CRAS</span><span class="pill">Benefícios</span></div></div>
+      <div class="orgao"><strong>Infraestrutura</strong><div class="pills"><span class="pill">Obras</span><span class="pill">Manutenção</span></div></div>
     </div>
-  </div>
+  </section>
+</main>
 
-  <div class="container">
-    <div class="balance-card">
-      <div class="balance-big">
-        <h3>Saldo</h3>
-        <div class="value" id="balanceValue">R$ 0,00</div>
-        <div class="small-muted">Saldo atual (persistente até finalizar dia)</div>
-      </div>
-      <div class="actions">
-        <button id="btnAddProduct">Cadastrar Produto</button>
-        <button id="btnFinalize">Finalizar Dia</button>
-      </div>
+<!-- Modal Ver Dados -->
+<div class="overlay" id="ovlDados">
+  <div class="modal" role="dialog" aria-modal="true">
+    <header><h3 style="margin:0">Dados do cidadão</h3></header>
+    <div class="conteudo" id="conteudoDados">
+      <!-- Render dinâmico -->
     </div>
-
-    <div class="search-row">
-      <input id="searchBox" placeholder="Pesquisar por nome ou marca..." />
-      <div class="small-muted">Produtos cadastrados</div>
-    </div>
-
-    <div class="products" id="productsList"></div>
-
-    <h3 style="margin-top:18px">Histórico</h3>
-    <div class="history-list" id="historyList"></div>
-  </div>
-
-  <div id="overlayAdd" class="overlay">
-    <div class="modal">
-      <h3>Cadastrar Produto</h3>
-      <div style="margin-top:8px" class="row">
-        <input id="prodName" class="input" placeholder="Nome do produto (obrigatório)"/>
-        <input id="prodBrand" class="input" placeholder="Marca (opcional)"/>
-      </div>
-      <div style="margin-top:10px;display:flex;gap:8px;justify-content:flex-end">
-        <button id="closeAdd" class="opt-btn">Cancelar</button>
-        <button id="saveProd" class="opt-btn">Adicionar</button>
-      </div>
+    <div class="rodape">
+      <button class="btnSair" style="border-color:var(--azul);color:var(--azul);background:#fff" id="btnFecharDados">Fechar</button>
     </div>
   </div>
+</div>
 
-  <div id="overlaySell" class="overlay">
-    <div class="modal">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3>Vender Produto</h3>
-        <button id="minSell" class="opt-btn">X</button>
+<!-- Modal Editar Endereço -->
+<div class="overlay" id="ovlEnd">
+  <div class="modal" role="dialog" aria-modal="true">
+    <header><h3 style="margin:0">Editar endereço</h3></header>
+    <div class="conteudo">
+      <label>CEP</label><input id="eCEP" maxlength="9" />
+      <label>Rua</label><input id="eRua" />
+      <div style="display:flex;gap:10px">
+        <div style="flex:1"><label>Número</label><input id="eNum" /></div>
+        <div style="flex:1"><label>Referência</label><input id="eRef" /></div>
       </div>
-      <div style="margin-top:8px" class="row">
-        <input id="sellValue" class="input" placeholder="Valor da venda (ex: 25.90)"/>
-      </div>
-      <div style="margin-top:10px;display:flex;gap:8px;justify-content:flex-end">
-        <button id="cancelSell" class="opt-btn">Cancelar</button>
-        <button id="confirmSell" class="opt-btn">Concluir</button>
-      </div>
+      <label>Cidade</label><input id="eCid" />
+    </div>
+    <div class="rodape">
+      <button class="btnSair" style="border-color:var(--azul);color:var(--azul);background:#fff" id="btnFecharEnd">Fechar</button>
+      <button class="btn" id="btnSalvarEnd">Salvar</button>
     </div>
   </div>
+</div>
 
-  <div id="overlayPencil" class="overlay">
-    <div class="modal">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3>Vendas do Dia</h3>
-        <button id="minPencil" class="opt-btn">X</button>
-      </div>
-      <div id="vendasDiaList" style="margin-top:12px"></div>
-    </div>
-  </div>
+<div class="toast" id="toast"></div>
 
-  <div id="overlayFinalize" class="overlay">
-    <div class="modal">
-      <h3>Finalizar Dia</h3>
-      <div id="finalizeContent" style="margin-top:12px"></div>
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-        <button id="cancelFinalize" class="opt-btn">Cancelar</button>
-        <button id="doFinalize" class="opt-btn">Confirmar Finalizar</button>
-      </div>
-    </div>
-  </div>
-
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyBs2GrFPGib7Nz02F03Eeo5DTW-8OTJmFI",
-  authDomain: "san7-2b351.firebaseapp.com",
-  databaseURL: "https://san7-2b351-default-rtdb.firebaseio.com",
-  projectId: "san7-2b351",
-  storageBucket: "san7-2b351.appspot.com",
-  messagingSenderId: "511547914036",
-  appId: "1:511547914036:web:0595e39aef88258c649761"
+  apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+  authDomain: "login-you-see.firebaseapp.com",
+  databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+  projectId: "login-you-see",
+  storageBucket: "login-you-see.appspot.com",
+  messagingSenderId: "524877259374",
+  appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
+  measurementId: "G-K7E00VXYHG"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db = firebase.database();
+const db = firebase.firestore();
+const storage = firebase.storage();
 
-const userEmail = document.getElementById('userEmail');
-const balanceValue = document.getElementById('balanceValue');
-const btnAddProduct = document.getElementById('btnAddProduct');
-const overlayAdd = document.getElementById('overlayAdd');
-const closeAdd = document.getElementById('closeAdd');
-const saveProd = document.getElementById('saveProd');
-const prodName = document.getElementById('prodName');
-const prodBrand = document.getElementById('prodBrand');
-const productsList = document.getElementById('productsList');
-const searchBox = document.getElementById('searchBox');
-const btnLogout = document.getElementById('btnLogout');
-const btnFinalize = document.getElementById('btnFinalize');
-const overlaySell = document.getElementById('overlaySell');
-const sellValue = document.getElementById('sellValue');
-const confirmSell = document.getElementById('confirmSell');
-const cancelSell = document.getElementById('cancelSell');
-const minSell = document.getElementById('minSell');
-const pencilWrap = document.getElementById('pencilWrap');
-const overlayPencil = document.getElementById('overlayPencil');
-const minPencil = document.getElementById('minPencil');
-const vendasDiaList = document.getElementById('vendasDiaList');
-const overlayFinalize = document.getElementById('overlayFinalize');
-const finalizeContent = document.getElementById('finalizeContent');
-const cancelFinalize = document.getElementById('cancelFinalize');
-const doFinalize = document.getElementById('doFinalize');
-const historyList = document.getElementById('historyList');
+const qs = s=>document.querySelector(s);
+const toast=(m,t='ok')=>{const el=qs('#toast');el.textContent=m;el.className='toast '+t;el.style.display='block';setTimeout(()=>el.style.display='none',2800)}
+const maskCEP=v=>v.replace(/\D/g,'').slice(0,8).replace(/(\d{5})(\d)/,'$1-$2');
 
-let currentUser = null;
-let uid = null;
-let products = {};
-let sellingProductKey = null;
+let user, dados;
 
-auth.onAuthStateChanged(user=>{
-  if(!user){
-    location.href = 'login.html';
-    return;
-  }
-  currentUser = user;
-  uid = user.uid;
-  userEmail.textContent = user.email;
-  startRealtimeListeners();
+// Guard
+auth.onAuthStateChanged(async u=>{
+  if(!u){ location.href='login.html'; return; }
+  user=u;
+  qs('#emailExib').textContent = u.email||'—';
+  await carregarDados();
 });
 
-function startRealtimeListeners(){
-  db.ref('users/'+uid+'/products').on('value', snap=>{
-    products = snap.val() || {};
-    renderProducts();
-  });
-  db.ref('users/'+uid+'/currentBalance').on('value', snap=>{
-    const val = snap.val() || 0;
-    balanceValue.textContent = formatCurrency(val);
-  });
-  db.ref('users/'+uid+'/todaySales').on('value', snap=>{
-    renderVendasDia(snap.val() || {});
-  });
-  db.ref('users/'+uid+'/history').on('value', snap=>{
-    renderHistory(snap.val() || {});
-  });
+async function carregarDados(){
+  const ref = db.collection('cidadaos').doc(user.uid);
+  const snap = await ref.get();
+  dados = snap.data()||{};
+  qs('#nomeExib').textContent = dados.nome||'—';
+  qs('#ola').textContent = `Olá, ${dados.nome?dados.nome.split(' ')[0]:'cidadão'}!`;
+  if(dados.fotoPerfil){ qs('#fotoPerfil').src = dados.fotoPerfil; } else { qs('#fotoPerfil').src=''; }
 }
 
-function formatCurrency(n){
-  const num = Number(n || 0);
-  return num.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-}
-function renderProducts(filter=''){
-  productsList.innerHTML = '';
-  const keys = Object.keys(products || {});
-  if(keys.length === 0){ productsList.innerHTML = '<div style="padding:12px;color:#777">Nenhum produto cadastrado</div>'; return; }
-  keys.forEach(k=>{
-    const p = products[k];
-    const txt = (p.name + ' ' + (p.brand||'')).toLowerCase();
-    if(filter && !txt.includes(filter.toLowerCase())) return;
-    const div = document.createElement('div');
-    div.className = 'product';
-    div.innerHTML = `
-      <div class="meta">
-        <img alt="img" src="https://via.placeholder.com/60?text=PR"/>
-        <div>
-          <div class="name">${escapeHtml(p.name)}</div>
-          <div class="brand">${escapeHtml(p.brand||'')}</div>
-        </div>
-      </div>
-      <div class="opts">
-        <button class="opt-btn" data-k="${k}" data-action="sell">Vender</button>
-        <button class="opt-btn" data-k="${k}" data-action="del">Excluir</button>
-      </div>
-    `;
-    productsList.appendChild(div);
-  });
-}
-function renderVendasDia(list){
-  vendasDiaList.innerHTML = '';
-  const keys = Object.keys(list || {});
-  if(keys.length === 0){ vendasDiaList.innerHTML = '<div class="small-muted">Nenhuma venda hoje</div>'; return; }
-  keys.forEach(k=>{
-    const v = list[k];
-    const el = document.createElement('div');
-    el.style.padding = '8px 0';
-    el.innerHTML = `<div style="display:flex;justify-content:space-between"><div>${escapeHtml(v.productName)} ${v.brand?(' - '+escapeHtml(v.brand)) : ''}</div><div><strong>${formatCurrency(v.value)}</strong></div></div>
-    <div class="small-muted">${new Date(v.createdAt).toLocaleString()}</div>`;
-    vendasDiaList.appendChild(el);
-  });
-}
-function renderHistory(hist){
-  historyList.innerHTML = '';
-  const days = Object.keys(hist || {}).sort((a,b)=>b.localeCompare(a));
-  if(days.length === 0){ historyList.innerHTML = '<div class="small-muted">Nenhum dia finalizado</div>'; return; }
-  days.forEach(dateKey=>{
-    const item = hist[dateKey];
-    const el = document.createElement('div');
-    el.className = 'history-item';
-    el.innerHTML = `<div><div><strong>${escapeHtml(dateKey)}</strong></div><div class="small-muted">Total: ${formatCurrency(item.total)}</div></div>
-                    <div style="display:flex;gap:8px">
-                      <button class="opt-btn" data-day="${dateKey}" data-action="view">Info</button>
-                      <button class="opt-btn" data-day="${dateKey}" data-action="del">Excluir</button>
-                    </div>`;
-    historyList.appendChild(el);
-  });
-}
+qs('#btnSair').onclick=()=>auth.signOut().then(()=>location.href='login.html');
 
-function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[m]); }
+qs('#btnVerDados').onclick=()=>{
+  const d=dados||{};
+  const e=d.endereco||{};
+  const conteudo = `
+    <div><b>Nome:</b> ${d.nome||'—'}</div>
+    <div><b>CPF:</b> ${d.cpf||'—'}</div>
+    <div><b>Nascimento:</b> ${d.nasc||'—'}</div>
+    <div><b>CadÚnico:</b> ${d.cadunico||'—'}</div>
+    <div><b>Telefone:</b> ${d.tel||'—'}</div>
+    <hr style="border:none;border-top:1px dashed #cfd6e3;margin:10px 0">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div><b>Endereço:</b> ${e.rua||'—'}, ${e.numero||'—'} • CEP ${e.cep||'—'} • ${e.cidade||'—'} • Ref.: ${e.referencia||'—'}</div>
+      <button class="btn" id="btnEditarEnd" title="Editar endereço">✏️</button>
+    </div>
+    <hr style="border:none;border-top:1px dashed #cfd6e3;margin:10px 0">
+    <div><b>Documentos:</b> <a href="${(d.docs&&d.docs.frente)||'#'}" target="_blank">Frente</a> • <a href="${(d.docs&&d.docs.verso)||'#'}" target="_blank">Verso</a></div>
+  `;
+  qs('#conteudoDados').innerHTML = conteudo;
+  qs('#ovlDados').classList.add('mostrar');
 
-btnAddProduct.addEventListener('click', ()=>{ overlayAdd.style.display='flex'; });
-closeAdd.addEventListener('click', ()=>{ overlayAdd.style.display='none'; prodName.value=''; prodBrand.value=''; });
-saveProd.addEventListener('click', async ()=>{
-  const name = prodName.value.trim();
-  const brand = prodBrand.value.trim();
-  if(!name){ alert('Nome do produto obrigatório'); return; }
-  const newKey = db.ref('users/'+uid+'/products').push().key;
-  await db.ref('users/'+uid+'/products/'+newKey).set({
-    name, brand, createdAt: Date.now()
-  });
-  prodName.value='';prodBrand.value='';overlayAdd.style.display='none';
-});
+  // botão editar endereço dentro do modal
+  setTimeout(()=>{
+    const btn = document.getElementById('btnEditarEnd');
+    if(btn) btn.onclick=abrirEditarEndereco;
+  },0);
+};
+qs('#btnFecharDados').onclick=()=>qs('#ovlDados').classList.remove('mostrar');
 
-productsList.addEventListener('click', e=>{
-  const btn = e.target.closest('button');
-  if(!btn) return;
-  const key = btn.dataset.k;
-  const action = btn.dataset.action;
-  if(action === 'sell'){
-    sellingProductKey = key;
-    overlaySell.style.display='flex';
-    sellValue.value = '';
-  } else if(action === 'del'){
-    if(confirm('Excluir produto? Esta ação não pode ser desfeita.')){
-      db.ref('users/'+uid+'/products/'+key).remove();
-    }
-  }
-});
+function abrirEditarEndereco(){
+  const e = (dados.endereco)||{};
+  qs('#eCEP').value = e.cep||'';
+  qs('#eRua').value = e.rua||'';
+  qs('#eNum').value = e.numero||'';
+  qs('#eRef').value = e.referencia||'';
+  qs('#eCid').value = e.cidade||'';
+  qs('#ovlEnd').classList.add('mostrar');
+}
+qs('#btnFecharEnd').onclick=()=>qs('#ovlEnd').classList.remove('mostrar');
 
-confirmSell.addEventListener('click', async ()=>{
-  const val = parseFloat(String(sellValue.value).replace(',','.'));
-  if(isNaN(val) || val <= 0){ alert('Valor inválido'); return; }
-  const prod = products[sellingProductKey];
-  const saleRef = db.ref('users/'+uid+'/todaySales').push();
-  const saleObj = {
-    productKey: sellingProductKey,
-    productName: prod.name,
-    brand: prod.brand || '',
-    value: val,
-    createdAt: Date.now()
+qs('#eCEP').addEventListener('input',ev=>ev.target.value=maskCEP(ev.target.value));
+
+qs('#btnSalvarEnd').onclick=async ()=>{
+  const novo = {
+    cep: qs('#eCEP').value.trim(),
+    rua: qs('#eRua').value.trim(),
+    numero: qs('#eNum').value.trim(),
+    referencia: qs('#eRef').value.trim()||null,
+    cidade: qs('#eCid').value.trim()
   };
-  await saleRef.set(saleObj);
-  const balanceRef = db.ref('users/'+uid+'/currentBalance');
-  await balanceRef.transaction(curr => (Number(curr||0) + Number(val)));
-  overlaySell.style.display='none';
+  if(!novo.cep||!novo.rua||!novo.numero||!novo.cidade){ toast('Preencha CEP, rua, número e cidade.','erro'); return; }
+  try{
+    await db.collection('cidadaos').doc(user.uid).update({ endereco: novo });
+    dados.endereco = novo;
+    toast('Endereço atualizado.','ok');
+    qs('#ovlEnd').classList.remove('mostrar');
+    // Atualiza texto dentro do modal de dados se estiver aberto
+    if(qs('#ovlDados').classList.contains('mostrar')) qs('#btnVerDados').click();
+  }catch(e){ toast('Não foi possível salvar o endereço.','erro'); }
+};
+
+// Upload da foto de perfil (salva em tempo real)
+qs('#inFoto').addEventListener('change', async (e)=>{
+  const f=e.target.files[0]; if(!f) return;
+  try{
+    const ref = storage.ref(`fotos/${user.uid}.jpg`);
+    await ref.put(f);
+    const url = await ref.getDownloadURL();
+    await db.collection('cidadaos').doc(user.uid).update({ fotoPerfil:url });
+    qs('#fotoPerfil').src = url;
+    toast('Foto de perfil atualizada.','ok');
+  }catch(err){ toast('Falha ao enviar a foto.','erro'); }
 });
-cancelSell.addEventListener('click', ()=>{ overlaySell.style.display='none'; });
-minSell.addEventListener('click', ()=>{ overlaySell.style.display='none'; });
+</script>
 
-pencilWrap.addEventListener('click', ()=>{ overlayPencil.style.display='flex'; });
-minPencil.addEventListener('click', ()=>{ overlayPencil.style.display='none'; });
+<!-- VLIBRAS -->
+<div vw class="enabled"></div>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script> new window.VLibras.Widget('https://vlibras.gov.br/app'); </script>
+</body>
+</html>
 
-btnFinalize.addEventListener('click', async ()=>{
-  const snap = await db.ref('users/'+uid+'/todaySales').once('value');
-  const sales = snap.val() || {};
-  const arr = Object.values(sales || {});
-  let total = arr.reduce((s,x)=>s + Number(x.value || 0), 0);
-  let html = `<div class="small-muted">Vendas hoje: ${arr.length}</div>
-              <div style="margin-top:8px"><strong>Total: ${formatCurrency(total)}</strong></div>
-              <div style="margin-top:12px">Itens:</div>`;
-  arr.forEach(s=>{
-    html += `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #eee"><div>${escapeHtml(s.productName)} ${s.brand?(' - '+escapeHtml(s.brand)) : ''}</div><div>${formatCurrency(s.value)}</div></div>`;
-  });
-  finalizeContent.innerHTML = html;
-  overlayFinalize.style.display = 'flex';
-});
-cancelFinalize.addEventListener('click', ()=> overlayFinalize.style.display='none');
-doFinalize.addEventListener('click', async ()=>{
-  const snap = await db.ref('users/'+uid+'/todaySales').once('value');
-  const sales = snap.val() || {};
-  const arr = Object.values(sales || {});
-  let total = arr.reduce((s,x)=>s + Number(x.value || 0), 0);
-  const dateKey = new Date().toISOString().slice(0,10);
-  const historyRef = db.ref('users/'+uid+'/history/'+dateKey);
-  await historyRef.set({
-    total,
-    date: dateKey,
-    items: sales,
-    finalizedAt: Date.now()
-  });
-  await db.ref('users/'+uid+'/todaySales').remove();
-  await db.ref('users/'+uid+'/currentBalance').set(0);
-  overlayFinalize.style.display='none';
-});
 
-searchBox.addEventListener('input', (e)=> renderProducts(e.target.value));
 
-btnLogout.addEventListener('click', async ()=>{
-  await auth.signOut();
-  location.href = 'login.html';
-});
+<div id="notificacao">
+  <div class="conteudo">
+    <h3>⚠️ Atenção</h3>
+    <p>
+      Todas as páginas estão em fase <b>BETA – Versão 1.0.2</b>.<br><br>
+      O aplicativo está em fase de desenvolvimento para a <b>Prefeitura de João Câmara</b> e algumas funções estão em melhorias no momento.<br><br>
+      Sistema com <b>criptografia de ponta a ponta</b>.<br><br>
+      Desenvolvedor: <b>@eujpfelix</b>
+    </p>
+    <button id="okBtn">OK</button>
+  </div>
+</div>
 
-historyList.addEventListener('click', async (e)=>{
-  const btn = e.target.closest('button');
-  if(!btn) return;
-  const day = btn.dataset.day;
-  const action = btn.dataset.action;
-  if(action === 'view'){
-    const snap = await db.ref('users/'+uid+'/history/'+day).once('value');
-    const data = snap.val();
-    if(!data) { alert('Registro não encontrado'); return;}
-    overlayFinalize.style.display='flex';
-    let html = `<div><strong>${escapeHtml(day)}</strong> — Total: ${formatCurrency(data.total)}</div><div style="margin-top:10px">`;
-    const items = data.items || {};
-    Object.values(items).forEach(it=>{
-      html += `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #eee"><div>${escapeHtml(it.productName)}</div><div>${formatCurrency(it.value)}</div></div>`;
-    });
-    html += '</div>';
-    finalizeContent.innerHTML = html;
-  } else if(action === 'del'){
-    if(confirm('Excluir histórico deste dia?')){
-      await db.ref('users/'+uid+'/history/'+day).remove();
-    }
-  }
-});
+<style>
+#notificacao {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+  z-index: 9999;
+}
+#notificacao.ativo {
+  opacity: 1;
+  pointer-events: all;
+}
+#notificacao .conteudo {
+  background: #ffffff;
+  border: 2px solid #003366;
+  border-radius: 6px;
+  max-width: 500px;
+  width: 90%;
+  padding: 25px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  animation: subir 0.6s ease forwards;
+}
+#notificacao h3 {
+  margin: 0 0 15px;
+  color: #003366;
+  font-size: 20px;
+}
+#notificacao p {
+  font-size: 15px;
+  color: #333;
+  line-height: 1.5;
+}
+#notificacao button {
+  margin-top: 20px;
+  background: #003366;
+  color: #fff;
+  border: none;
+  padding: 10px 22px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 15px;
+}
+#notificacao button:hover {
+  background: #002244;
+}
+@keyframes subir {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+</style>
 
-document.querySelectorAll('.overlay').forEach(o=>{
-  o.addEventListener('click', e=>{
-    if(e.target === o) o.style.display='none';
+<script>
+window.addEventListener("load", () => {
+  const box = document.getElementById("notificacao");
+  const btn = document.getElementById("okBtn");
+  setTimeout(() => {
+    box.classList.add("ativo");
+  }, 500);
+  btn.addEventListener("click", () => {
+    box.classList.remove("ativo");
   });
 });
 </script>
-</body>
-</html>
