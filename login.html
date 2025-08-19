@@ -215,7 +215,7 @@ btnEntrar.onclick = async ()=>{
   try{
     await auth.signInWithEmailAndPassword(email,senha);
     toast('Acesso autorizado.','ok');
-    location.href='perfil.html';
+    location.href='info.html';
   }catch(err){
     toast('Falha no acesso. Verifique os dados.','erro');
   }finally{ setBusy(btnEntrar,false); }
@@ -245,7 +245,7 @@ btnShare.onclick=async ()=>{
 };
 
 // Se já estiver logado, vai pro perfil
-auth.onAuthStateChanged(u=>{ if(u) location.href='perfil.html'; });
+auth.onAuthStateChanged(u=>{ if(u) location.href='info.html'; });
 </script>
 
 <!-- VLIBRAS -->
