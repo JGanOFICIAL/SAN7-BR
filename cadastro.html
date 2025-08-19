@@ -1,164 +1,436 @@
+<!-- =========================
+cadastro.html • Fluxo multi-etapas (dados > endereço > documentos > conta)
+Estilo gov, máscaras automáticas, upload de frente/verso com opção de câmera/galeria
+========================= -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cadastro de Usuários - SAN7</title>
-  <style>
-    * {
-      margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif;
-    }
-    body {
-      background: #fff;
-      padding: 20px;
-    }
-    h2 {
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .input-line {
-      border: none;
-      border-bottom: 2px solid #ccc;
-      padding: 10px 5px;
-      font-size: 18px;
-      width: 100%;
-      background: transparent;
-      outline: none;
-      margin-bottom: 15px;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      font-size: 18px;
-      background: #000;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-bottom: 20px;
-    }
-    .user-block {
-      background: #f9f9f9;
-      border-left: 4px solid #000;
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 8px;
-    }
-    .user-block p {
-      margin: 5px 0;
-    }
-    .qr-container {
-      text-align: center;
-      margin-top: 10px;
-    }
-    .qr-container canvas {
-      margin-top: 5px;
-    }
-    .delete-btn {
-      margin-top: 10px;
-      background: #c00;
-      border: none;
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prefeitura de João Câmara • Cadastro</title>
+<link rel="icon" href="<!-- URL_DA_LOGO -->" />
+<style>
+  :root{--azul:#0B3B74;--amarelo:#FFCC00;--cinza:#e9eef4;--texto:#111;--ok:#0c8f4d;--erro:#b00020}
+  *{box-sizing:border-box} html,body{margin:0;background:#fff;color:var(--texto);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif}
+  header{background:var(--azul);color:#fff;padding:14px 16px;border-bottom:4px solid var(--amarelo);display:flex;align-items:center;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:44px;height:44px;background:#fff;border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .logo img{width:100%;height:100%;object-fit:cover}
+  .titulos h1{margin:0;font-size:16px}
+  .btnVoltar{border:1px solid #fff;background:#fff;color:var(--azul);padding:10px 12px;border-radius:6px;cursor:pointer}
+  main{max-width:760px;margin:18px auto;padding:0 16px}
+  .passos{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 18px}
+  .badge{padding:8px 10px;border:1px solid var(--cinza);border-radius:6px;background:#f8fafc;font-size:12px}
+  .badge.atv{border-color:var(--azul);outline:2px solid rgba(11,59,116,.15)}
+  .card{background:#fff;border:1px solid var(--cinza);border-radius:10px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+  label{display:block;font-size:13px;margin:12px 0 6px}
+  input,select{width:100%;padding:14px;border:1px solid var(--cinza);border-radius:6px;background:#fff;outline:none}
+  input:focus,select:focus{background:#fafafa;outline:none;box-shadow:none}
+  .linha{display:flex;gap:10px}
+  .linha>*{flex:1}
+  .acoes{display:flex;gap:10px;margin-top:16px}
+  button{border:1px solid var(--azul);background:var(--azul);color:#fff;padding:12px 14px;border-radius:6px;cursor:pointer;font-weight:600}
+  button.ghost{background:#fff;color:var(--azul)}
+  .spinner{width:16px;height:16px;border:2px solid #fff;border-right-color:transparent;border-radius:50%;display:inline-block;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .docSlot{border:1px dashed #cfd6e3;border-radius:8px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px}
+  .docSlot .preview{width:80px;height:52px;background:#f2f4f8;border:1px solid var(--cinza);border-radius:6px;overflow:hidden}
+  .docSlot img{width:100%;height:100%;object-fit:cover}
+  .docAcoes{display:flex;gap:8px}
+  .btnMini{border:1px solid var(--azul);background:#fff;color:var(--azul);padding:8px 10px;border-radius:6px;cursor:pointer;font-size:12px}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;background:#111;color:#fff;padding:10px 14px;border-radius:8px;display:none;z-index:60}
+  .toast.ok{background:var(--ok)} .toast.erro{background:var(--erro)}
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+  .overlay.mostrar{display:flex}
+  .modal{background:#fff;border:1px solid var(--cinza);border-radius:10px;max-width:520px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,.15);overflow:hidden}
+  .modal header{background:#f8fafc;color:#111;padding:12px 16px;border-bottom:1px solid var(--cinza)}
+  .modal .conteudo{padding:16px}
+  .modal .rodape{display:flex;gap:10px;padding:12px 16px;border-top:1px solid var(--cinza)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .previa{background:#fff;border:1px solid var(--cinza);border-radius:8px;padding:12px;margin-top:12px}
+</style>
 </head>
 <body>
-  <h2>Cadastrar Novo Usuário</h2>
+<header>
+  <div class="brand">
+    <div class="logo"><img src="https://826d3d7dee.cbaul-cdnwnd.com/62fd26f239c381f07684529cff4b51b2/200000069-4a3354a336/700/A728F011-D3B0-4197-83F7-88EDFC2AF8A5.webp" alt="Logo"></div>
+    <div class="titulos"><h1>Cadastro do Cidadão</h1><small>Prefeitura de João Câmara</small></div>
+  </div>
+  <button class="btnVoltar" onclick="history.back()">Voltar</button>
+</header>
 
-  <input type="email" id="novoEmail" class="input-line" placeholder="E-mail">
-  <input type="password" id="novaSenha" class="input-line" placeholder="Senha">
-  <button onclick="cadastrar()">Cadastrar</button>
+<main>
+  <div class="passos">
+    <div class="badge atv" id="b1">1. Dados pessoais</div>
+    <div class="badge" id="b2">2. Endereço</div>
+    <div class="badge" id="b3">3. Documentos</div>
+    <div class="badge" id="b4">4. Conta de acesso</div>
+  </div>
 
-  <h2>Usuários Cadastrados</h2>
-  <div id="listaUsuarios"></div>
+  <!-- Etapa 1 -->
+  <section class="card" id="step1">
+    <label>Nome completo</label>
+    <input id="nome" placeholder="Seu nome completo" />
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <!-- QR Code -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <div class="linha">
+      <div>
+        <label>CPF</label>
+        <input id="cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" />
+      </div>
+      <div>
+        <label>Data de nascimento</label>
+        <input id="nasc" inputmode="numeric" maxlength="10" placeholder="DD-MM-AAAA" />
+      </div>
+    </div>
 
-  <script>
-    const cfg = {
-      apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
-      authDomain: "login-you-see.firebaseapp.com",
-      databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
-      projectId: "login-you-see",
-      storageBucket: "login-you-see.appspot.com",
-      messagingSenderId: "524877259374",
-      appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f"
-    };
-    firebase.initializeApp(cfg);
-    const auth = firebase.auth();
-    const db = firebase.database();
+    <div class="linha">
+      <div>
+        <label>Nº do CadÚnico (opcional)</label>
+        <input id="cadu" inputmode="numeric" placeholder="Informe se tiver" />
+      </div>
+      <div>
+        <label>Telefone</label>
+        <input id="fone" inputmode="tel" placeholder="(84) 9 0000-0000" />
+      </div>
+    </div>
 
-    async function cadastrar() {
-      const email = document.getElementById("novoEmail").value.trim();
-      const senha = document.getElementById("novaSenha").value.trim();
+    <div class="acoes">
+      <button class="ghost" onclick="location.href='login.html'">Cancelar</button>
+      <button id="next1">Prosseguir</button>
+    </div>
+  </section>
 
-      if (!email || !senha) return alert("Preencha os campos.");
+  <!-- Etapa 2 -->
+  <section class="card" id="step2" style="display:none">
+    <div class="linha">
+      <div>
+        <label>CEP</label>
+        <input id="cep" inputmode="numeric" maxlength="9" placeholder="00000-000" />
+      </div>
+      <div>
+        <label>Número</label>
+        <input id="numero" inputmode="numeric" placeholder="Nº" />
+      </div>
+    </div>
 
-      try {
-        const userCred = await auth.createUserWithEmailAndPassword(email, senha);
-        const uid = userCred.user.uid;
-        const dataCriacao = new Date().toLocaleString("pt-BR");
-        await db.ref("usuarios/" + uid).set({
-          email,
-          criadoEm: dataCriacao,
-          status: "Não utilizado"
-        });
-        alert("Usuário criado com sucesso!");
-        document.getElementById("novoEmail").value = "";
-        document.getElementById("novaSenha").value = "";
-        listarUsuarios();
-      } catch (err) {
-        alert("Erro: " + err.message);
-      }
-    }
+    <label>Rua / Logradouro</label>
+    <input id="rua" placeholder="Ex.: Rua das Acácias" />
 
-    function listarUsuarios() {
-      db.ref("usuarios").once("value").then(snapshot => {
-        const lista = document.getElementById("listaUsuarios");
-        lista.innerHTML = "";
+    <label>Ponto de referência</label>
+    <input id="ref" placeholder="Próximo a..." />
 
-        snapshot.forEach(child => {
-          const data = child.val();
-          const uid = child.key;
+    <label>Cidade</label>
+    <input id="cidade" value="João Câmara - RN" />
 
-          const bloco = document.createElement("div");
-          bloco.className = "user-block";
-          bloco.innerHTML = `
-            <p><strong>Email:</strong> ${data.email || '---'}</p>
-            <p><strong>Status:</strong> ${data.bloqueado ? 'Utilizado' : 'Não utilizado'}</p>
-            <p><strong>Data:</strong> ${data.criadoEm || '---'}</p>
-            <div class="qr-container" id="qr-${uid}"></div>
-            <button class="delete-btn" onclick="excluir('${uid}')">Excluir</button>
-          `;
-          lista.appendChild(bloco);
+    <div class="acoes">
+      <button class="ghost" id="back2">Voltar</button>
+      <button id="next2">Próximo</button>
+    </div>
+  </section>
 
-          const qrDiv = document.getElementById("qr-" + uid);
-          QRCode.toCanvas(document.createElement("canvas"), https://jganoficial.github.io/SAN7-BR/info.html?uid=${uid}, {
-            width: 140
-          }, (err, canvas) => {
-            if (!err) qrDiv.appendChild(canvas);
-          });
-        });
-      });
-    }
+  <!-- Etapa 3 -->
+  <section class="card" id="step3" style="display:none">
+    <p>Envie fotos do documento (frente e verso). Você pode usar a câmera do celular ou escolher da galeria.</p>
 
-    function excluir(uid) {
-      if (!confirm("Deseja realmente excluir este usuário?")) return;
-      db.ref("usuarios/" + uid).remove().then(() => {
-        alert("Usuário excluído!");
-        listarUsuarios();
-      });
-    }
+    <div class="docSlot">
+      <div>
+        <strong>Frente do documento</strong>
+        <div class="docAcoes">
+          <button class="btnMini" onclick="abrirEscolha('frente')">Adicionar</button>
+          <input type="file" id="fileFrente" accept="image/*" capture="environment" hidden />
+        </div>
+      </div>
+      <div class="preview"><img id="prevFrente" alt=""></div>
+    </div>
 
-    window.onload = listarUsuarios;
-  </script>
+    <div class="docSlot">
+      <div>
+        <strong>Verso do documento</strong>
+        <div class="docAcoes">
+          <button class="btnMini" onclick="abrirEscolha('verso')">Adicionar</button>
+          <input type="file" id="fileVerso" accept="image/*" capture="environment" hidden />
+        </div>
+      </div>
+      <div class="preview"><img id="prevVerso" alt=""></div>
+    </div>
+
+    <div class="previa" id="boxPrevia" style="display:none"></div>
+
+    <div class="acoes">
+      <button class="ghost" id="back3">Voltar</button>
+      <button id="btnValidar">Validar</button>
+    </div>
+  </section>
+
+  <!-- Etapa 4 -->
+  <section class="card" id="step4" style="display:none">
+    <div class="grid2">
+      <div>
+        <label>E-mail</label>
+        <input id="email" inputmode="email" placeholder="seuemail@exemplo.com" />
+      </div>
+      <div>
+        <label>Crie uma senha</label>
+        <input id="senha" type="password" placeholder="Mínimo 6 caracteres" />
+      </div>
+    </div>
+    <div class="acoes">
+      <button class="ghost" id="back4">Voltar</button>
+      <button id="btnCadastrar"><span>Concluir cadastro</span></button>
+    </div>
+  </section>
+</main>
+
+<!-- Modal escolha de origem da imagem -->
+<div class="overlay" id="ovlEscolha">
+  <div class="modal" role="dialog" aria-modal="true">
+    <header><h3 style="margin:0;font-size:16px">Adicionar imagem</h3></header>
+    <div class="conteudo">
+      <p>Como deseja enviar a imagem?</p>
+    </div>
+    <div class="rodape">
+      <button class="ghost" id="btnFecharEscolha">Fechar</button>
+      <button id="btnCamera">Tirar foto</button>
+      <button id="btnGaleria">Escolher do telefone</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+  authDomain: "login-you-see.firebaseapp.com",
+  databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+  projectId: "login-you-see",
+  storageBucket: "login-you-see.appspot.com",
+  messagingSenderId: "524877259374",
+  appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
+  measurementId: "G-K7E00VXYHG"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const storage = firebase.storage();
+
+const qs = s=>document.querySelector(s);
+const toast=(m,t='ok')=>{const el=qs('#toast');el.textContent=m;el.className='toast '+t;el.style.display='block';setTimeout(()=>el.style.display='none',2800)}
+const passos = (n)=>{
+  ['b1','b2','b3','b4'].forEach((id,i)=>document.getElementById(id).classList.toggle('atv', i===n-1));
+  ['step1','step2','step3','step4'].forEach((id,i)=>document.getElementById(id).style.display = (i===n-1)?'block':'none');
+}
+
+const masks={
+  cpf(v){ v=v.replace(/\D/g,'').slice(0,11);
+    v=v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2'); return v; },
+  nasc(v){ v=v.replace(/\D/g,'').slice(0,8);
+    v=v.replace(/(\d{2})(\d)/,'$1-$2').replace(/(\d{2})(\d)/,'$1-$2'); return v; },
+  cep(v){ v=v.replace(/\D/g,'').slice(0,8); v=v.replace(/(\d{5})(\d)/,'$1-$2'); return v; }
+};
+['cpf','nasc','cep'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener('input',e=>{
+    e.target.value = masks[id](e.target.value);
+  });
+});
+
+qs('#next1').onclick=()=>{
+  const nome=qs('#nome').value.trim(), cpf=qs('#cpf').value.trim(), nasc=qs('#nasc').value.trim();
+  if(!nome||cpf.length<14||nasc.length<10){ toast('Preencha nome, CPF e data de nascimento válidos.','erro'); return; }
+  passos(2);
+};
+qs('#back2').onclick=()=>passos(1);
+qs('#next2').onclick=()=>{
+  const cep=qs('#cep').value.trim(), rua=qs('#rua').value.trim(), numero=qs('#numero').value.trim(), cidade=qs('#cidade').value.trim();
+  if(cep.length<9||!rua||!numero||!cidade){ toast('Complete o endereço.','erro'); return; }
+  passos(3);
+};
+qs('#back3').onclick=()=>passos(2);
+
+// Documento: escolha câmera/galeria
+let alvoDoc=null; // 'frente' ou 'verso'
+const ovl = qs('#ovlEscolha');
+function abrirEscolha(tipo){ alvoDoc=tipo; ovl.classList.add('mostrar'); }
+qs('#btnFecharEscolha').onclick=()=>ovl.classList.remove('mostrar');
+qs('#btnCamera').onclick=()=>{ ovl.classList.remove('mostrar'); (alvoDoc==='frente'?qs('#fileFrente'):qs('#fileVerso')).setAttribute('capture','environment'); (alvoDoc==='frente'?qs('#fileFrente'):qs('#fileVerso')).click(); };
+qs('#btnGaleria').onclick=()=>{ ovl.classList.remove('mostrar'); (alvoDoc==='frente'?qs('#fileFrente'):qs('#fileVerso')).removeAttribute('capture'); (alvoDoc==='frente'?qs('#fileFrente'):qs('#fileVerso')).click(); };
+
+function previewFile(input, imgId){
+  const f=input.files[0]; if(!f) return;
+  const reader=new FileReader();
+  reader.onload = e => { qs(imgId).src = e.target.result; };
+  reader.readAsDataURL(f);
+}
+qs('#fileFrente').addEventListener('change', e=>previewFile(e.target, '#prevFrente'));
+qs('#fileVerso').addEventListener('change', e=>previewFile(e.target, '#prevVerso'));
+
+qs('#btnValidar').onclick=()=>{
+  const frente=qs('#fileFrente').files[0], verso=qs('#fileVerso').files[0];
+  if(!frente||!verso){ toast('Envie frente e verso do documento.','erro'); return; }
+  // "Validação" local: apenas checagem básica de consistência com CPF e data
+  const cpf=qs('#cpf').value, nasc=qs('#nasc').value;
+  const okCpf=/\d{3}\.\d{3}\.\d{3}-\d{2}/.test(cpf), okNasc=/\d{2}-\d{2}-\d{4}/.test(nasc);
+  if(!okCpf||!okNasc){ toast('Dados pessoais inválidos.','erro'); return; }
+
+  const previa = qs('#boxPrevia');
+  previa.style.display='block';
+  previa.innerHTML = `
+    <strong>Prévia dos dados</strong>
+    <div style="margin-top:8px;font-size:14px">
+      <div><b>Nome:</b> ${qs('#nome').value}</div>
+      <div><b>CPF:</b> ${cpf}</div>
+      <div><b>Nasc.:</b> ${nasc}</div>
+      <div><b>CadÚnico:</b> ${qs('#cadu').value||'—'}</div>
+      <div><b>Telefone:</b> ${qs('#fone').value||'—'}</div>
+      <div style="margin-top:6px"><b>Endereço:</b> ${qs('#rua').value}, ${qs('#numero').value} • CEP ${qs('#cep').value} • ${qs('#cidade').value} • Ref.: ${qs('#ref').value||'—'}</div>
+    </div>
+  `;
+  toast('Dados pré-validados. Prossiga para criar a conta.','ok');
+  passos(4);
+};
+qs('#back4').onclick=()=>passos(3);
+
+// Cadastro final
+const setBusy=(btn,b)=>{
+  if(b){ btn.dataset.label=btn.innerHTML; btn.innerHTML='<span class="spinner"></span> Carregando'; btn.disabled=true; }
+  else{ btn.innerHTML=btn.dataset.label||'Concluir cadastro'; btn.disabled=false; }
+};
+qs('#btnCadastrar').onclick=async ()=>{
+  const email=qs('#email').value.trim(), senha=qs('#senha').value;
+  if(!email||!senha||senha.length<6){ toast('Informe e-mail e senha (mín. 6).','erro'); return; }
+  setBusy(qs('#btnCadastrar'),true);
+  try{
+    const cred = await auth.createUserWithEmailAndPassword(email,senha);
+
+    // Upload docs ao Storage
+    const uid = cred.user.uid;
+    const frente=qs('#fileFrente').files[0], verso=qs('#fileVerso').files[0];
+    const [frRef, vsRef] = [storage.ref(`docs/${uid}-frente.jpg`), storage.ref(`docs/${uid}-verso.jpg`)];
+    await frRef.put(frente); await vsRef.put(verso);
+    const [urlFrente, urlVerso] = [await frRef.getDownloadURL(), await vsRef.getDownloadURL()];
+
+    // Salvar perfil no Firestore
+    await db.collection('cidadaos').doc(uid).set({
+      nome: qs('#nome').value.trim(),
+      cpf: qs('#cpf').value.trim(),
+      nasc: qs('#nasc').value.trim(),
+      cadunico: qs('#cadu').value.trim()||null,
+      tel: qs('#fone').value.trim()||null,
+      endereco:{
+        cep: qs('#cep').value.trim(),
+        rua: qs('#rua').value.trim(),
+        numero: qs('#numero').value.trim(),
+        referencia: qs('#ref').value.trim()||null,
+        cidade: qs('#cidade').value.trim()
+      },
+      docs:{ frente:urlFrente, verso:urlVerso },
+      fotoPerfil:null,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    toast('Cadastro concluído com sucesso.','ok');
+    setTimeout(()=>location.href='login.html',900);
+  }catch(err){
+    console.error(err);
+    toast('Não foi possível cadastrar. Verifique os dados.','erro');
+  }finally{ setBusy(qs('#btnCadastrar'),false); }
+};
+</script>
+
+<!-- VLIBRAS -->
+<div vw class="enabled"></div>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script> new window.VLibras.Widget('https://vlibras.gov.br/app'); </script>
 </body>
 </html>
+
+
+<div id="notificacao">
+  <div class="conteudo">
+    <h3>⚠️ Atenção</h3>
+    <p>
+      Todas as páginas estão em fase <b>BETA – Versão 1.0.2</b>.<br><br>
+      O aplicativo está em fase de desenvolvimento para a <b>Prefeitura de João Câmara</b> e algumas funções estão em melhorias no momento.<br><br>
+      Sistema com <b>criptografia de ponta a ponta</b>.<br><br>
+      Desenvolvedor: <b>@eujpfelix</b>
+    </p>
+    <button id="okBtn">OK</button>
+  </div>
+</div>
+
+<style>
+#notificacao {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+  z-index: 9999;
+}
+#notificacao.ativo {
+  opacity: 1;
+  pointer-events: all;
+}
+#notificacao .conteudo {
+  background: #ffffff;
+  border: 2px solid #003366;
+  border-radius: 6px;
+  max-width: 500px;
+  width: 90%;
+  padding: 25px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  animation: subir 0.6s ease forwards;
+}
+#notificacao h3 {
+  margin: 0 0 15px;
+  color: #003366;
+  font-size: 20px;
+}
+#notificacao p {
+  font-size: 15px;
+  color: #333;
+  line-height: 1.5;
+}
+#notificacao button {
+  margin-top: 20px;
+  background: #003366;
+  color: #fff;
+  border: none;
+  padding: 10px 22px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 15px;
+}
+#notificacao button:hover {
+  background: #002244;
+}
+@keyframes subir {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+</style>
+
+<script>
+window.addEventListener("load", () => {
+  const box = document.getElementById("notificacao");
+  const btn = document.getElementById("okBtn");
+  setTimeout(() => {
+    box.classList.add("ativo");
+  }, 500);
+  btn.addEventListener("click", () => {
+    box.classList.remove("ativo");
+  });
+});
+</script>
