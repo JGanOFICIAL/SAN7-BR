@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prefeitura de João Câmara — Perfil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rawline:wght@400;600;700&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--gov-azul:#1351B4;--gov-amarelo:#FFCD00;--gov-branco:#fff;--gov-verde:#168821;--cinza:#f6f7f9;--sombra:0 10px 30px rgba(0,0,0,.08)}
+  body{margin:0;background:var(--cinza);color:#1f1f1f;font-family:"Public Sans","Rawline",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  header{position:sticky;top:0;background:var(--gov-azul);color:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sombra);z-index:10}
+  .esq{display:flex;align-items:center;gap:12px}
+  .logo{width:44px;height:44px;background:#fff;border-radius:6px}
+  .saud{display:flex;flex-direction:column}
+  .saud strong{font-size:18px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 14px;border:none;border-radius:12px;font-weight:700;cursor:pointer}
+  .btn-sair{background:#eaf1ff;color:#0b2b6b}
+</style>
+</head>
+<body>
+  <header>
+  <div class="esq">
+    <div class="logo">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpN6mG9JrV3AvmACLq0uOQb0OcGFLu4WW8sOckbZpA8ow2biqC-IxosxA&s=10" alt="Logomarca" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:6px;display:block;margin:auto;">
+    </div>
+    <div class="saud">
+      <small>Prefeitura de João Câmara/RN</small>
+      <strong id="saudacao">coleta de lixo</strong>
+    </div>
+  </div>
+  <a href="perfil.html" class="btn btn-sair">VOLTAR</a>
+</header>
+<div id="tela-inicial" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;background:#f9f9f9">
+  <button id="localizarBtn" style="padding:15px 25px;border:none;border-radius:8px;background:#2196f3;color:#fff;font-size:16px;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.2)">Localizar caminhão de coleta de lixo</button>
+<br>
+Desenvolvido por @eujpfelix
+</div>
+<div id="overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:1000">
+  <div style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 6px 15px rgba(0,0,0,0.3);width:90%;max-width:420px;height:80%;display:flex;flex-direction:column">
+    <div style="background:#2196f3;color:#fff;padding:10px;font-weight:bold;display:flex;justify-content:space-between;align-items:center">
+      <span>Localização da Coleta</span>
+<button id="fecharOverlay" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer">✕</button>
+    </div>
+    <div id="mapa" style="flex:1"></div>
+  </div>
+</div>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="script.js"></script>
+<script>
+const CAMINHAO_ICON_URL="https://826d3d7dee.cbaul-cdnwnd.com/62fd26f239c381f07684529cff4b51b2/200000085-2f8182f81a/700/41F1CC3F-FFEC-4FF1-BA5A-5D2D6E72C11C.webp";
+let mapa,markerPessoa,markerCaminhao,linha,watchId;
+document.getElementById('localizarBtn').onclick=()=>{
+  if(!navigator.geolocation){alert("Seu dispositivo não suporta geolocalização.");return;}
+  navigator.geolocation.getCurrentPosition(()=>{
+    document.getElementById('overlay').style.display="flex";
+    setTimeout(initMapa,200);
+  },()=>{alert("Permita acesso à localização para usar o sistema.");});
+};
+document.getElementById('fecharOverlay').onclick=()=>{document.getElementById('overlay').style.display="none";};
+
+function initMapa(){
+  mapa=L.map('mapa').setView([-5.783,-35.2],15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap'}).addTo(mapa);
+  watchId=navigator.geolocation.watchPosition(pos=>{
+    let lat=pos.coords.latitude,lng=pos.coords.longitude;
+    if(!markerPessoa){
+      markerPessoa=L.marker([lat,lng],{icon:L.icon({iconUrl:"https://826d3d7dee.cbaul-cdnwnd.com/62fd26f239c381f07684529cff4b51b2/200000087-491ab491ad/700/31D98EE8-D5D4-4693-AC68-2491C419E815.webp",iconSize:[28,28]})}).addTo(mapa).bindPopup("Você");
+    }else markerPessoa.setLatLng([lat,lng]);
+  });
+  const ref=firebase.database().ref("caminhao");
+  ref.on("value",snap=>{
+    if(snap.exists()){
+      let {lat,lng,ativo}=snap.val();
+      if(ativo){
+        if(!markerCaminhao){
+          markerCaminhao=L.marker([lat,lng],{icon:L.icon({iconUrl:CAMINHAO_ICON_URL,iconSize:[40,40]})}).addTo(mapa).bindPopup("Caminhão do lixo");
+        }else markerCaminhao.setLatLng([lat,lng]);
+        if(markerPessoa&&markerCaminhao){
+          if(linha) mapa.removeLayer(linha);
+          linha=L.polyline([markerPessoa.getLatLng(),markerCaminhao.getLatLng()],{color:"red",dashArray:"5,5"}).addTo(mapa);
+          mapa.fitBounds(linha.getBounds(),{padding:[40,40]});
+        }
+      }
+    }
+  });
+}
+</script>
+</header>
+</body>
+</html>
+<style>
+  /* Fundo mais desfocado e escuro */
+  #telaCarregamento {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(12px);
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Caixa vertical estilo GOV */
+  .carregandoBox {
+    width: 160px;
+    padding: 30px 20px;
+    background: #fff;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.25);
+    font-family: "Arial", sans-serif;
+  }
+
+  /* Bolinha girando mais profissional e suave */
+  .spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid #0072c6;
+    border-top: 5px solid transparent;
+    border-radius: 50%;
+    animation: girar 2.5s linear infinite; /* mais lenta e suave */
+    margin-bottom: 20px;
+  }
+
+  @keyframes girar {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Texto carregando */
+  .carregandoBox span {
+    font-size: 17px;
+    color: #0072c6;
+    font-weight: bold;
+    text-align: center;
+  }
+</style>
+
+<div id="telaCarregamento">
+  <div class="carregandoBox">
+    <div class="spinner"></div>
+    <span>carregando...</span>
+  </div>
+</div>
+
+<script>
+  setTimeout(() => {
+    const tela = document.getElementById('telaCarregamento');
+    tela.style.opacity = '0';
+    setTimeout(() => { tela.style.display = 'none'; }, 300);
+  }, 3000);
+</script>
