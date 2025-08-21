@@ -47,8 +47,6 @@
     <small>Crie sua conta e acesse vários serviços.</small>
   </div>
 </header>
-
-
   <main>
     <section class="card">
       <h2>Preencha seus dados</h2>
@@ -122,14 +120,10 @@
   </div>
   <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
   <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
-
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script src="script.js"></script>
-
-  <!-- Script da página -->
   <script>
     const form = document.getElementById('formCadastro');
     const btn = document.getElementById('btnCriar');
@@ -281,4 +275,88 @@
     tela.style.opacity = '0';
     setTimeout(() => { tela.style.display = 'none'; }, 300);
   }, 3000);
+</script>
+
+
+
+
+
+<style>
+#notificacao-gov-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  background-color: rgba(0,0,0,0.5);
+  display: none;
+  z-index: 9998;
+}
+
+#notificacao-gov {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  min-height: 220px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 30px 20px 20px 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #000;
+  text-align: left;
+  display: none;
+  z-index: 9999;
+  line-height: 1.5;
+}
+
+#notificacao-gov h2 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+#notificacao-gov p {
+  margin-bottom: 15px;
+}
+
+#notificacao-gov b {
+  font-weight: bold;
+}
+
+#notificacao-gov button {
+  display: block;
+  margin: 0 auto;
+  padding: 8px 25px;
+  border: 1px solid #000;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 4px;
+}
+</style>
+
+<div id="notificacao-gov-overlay"></div>
+
+<div id="notificacao-gov">
+  <h2>Atenção!</h2>
+  <p>
+    Se você está criando uma conta em nome de outra pessoa, seja familiar ou terceiro. 
+    É essencial que todas as informações fornecidas sejam <b>verdadeiras e precisas</b>. 
+    Fornecer dados <b>incorretos ou falsos</b> poderá resultar na <b>desativação imediata da conta</b>. 
+    Este procedimento garante a <b>segurança</b> e a <b>confiabilidade dos serviços</b> oferecidos à população. 
+    Confirme que os dados inseridos estão corretos antes de prosseguir.
+  </p>
+  <button onclick="document.getElementById('notificacao-gov').style.display='none'; document.getElementById('notificacao-gov-overlay').style.display='none';">Entendo</button>
+</div>
+
+<script>
+setTimeout(function(){
+  document.getElementById('notificacao-gov').style.display = 'block';
+  document.getElementById('notificacao-gov-overlay').style.display = 'block';
+}, 3000);
 </script>
