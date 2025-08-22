@@ -361,3 +361,94 @@
     setTimeout(() => { tela.style.display = 'none'; }, 300);
   }, 3000);
 </script>
+
+
+
+<div id="govAviso" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);z-index:9999;justify-content:center;align-items:center;">
+  <div style="background:#fff;border:1px solid #ccc;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,0.2);width:400px;max-width:90%;padding:20px;font-family:Arial, sans-serif;animation:fadein 1s;position:relative;">
+    <h2 style="margin:0 0 10px 0;padding-bottom:10px;border-bottom:1px solid #ddd;font-size:18px;color:#333;">Confirme que não é um robô</h2>
+    <p style="margin:15px 0;font-size:14px;color:#444;line-height:1.4;">Por favor, confirme que você é humano. Isso ajuda a reforçar a segurança contra ataques e acessos automáticos.</p>
+    
+    <div id="captchaArea" style="margin:15px 0;text-align:center;">
+      <div id="captchaCode" style="display:inline-block;font-size:20px;font-weight:bold;letter-spacing:3px;background:#f0f0f0;padding:8px 16px;border-radius:4px;margin-bottom:10px;"></div>
+      <br>
+      <input id="captchaInput" type="text" placeholder="Digite o código" style="padding:8px;width:80%;border:1px solid #ccc;border-radius:3px;font-size:14px;text-align:center;">
+      <div id="captchaError" style="margin-top:8px;font-size:13px;color:red;display:none;"></div>
+    </div>
+    
+    <div style="border-top:1px solid #ddd;padding-top:10px;text-align:right;">
+      <button id="captchaBtn" style="background:#004080;color:#fff;border:none;padding:8px 16px;border-radius:3px;cursor:pointer;font-size:14px;position:relative;">
+        Validar
+        <span id="loadingSpinner" style="display:none;margin-left:8px;width:14px;height:14px;border:2px solid #fff;border-top:2px solid transparent;border-radius:50%;animation:spin 1s linear infinite;vertical-align:middle;"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+function generateCaptcha() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let code = '';
+  for (let i = 0; i < 4; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  document.getElementById('captchaCode').textContent = code;
+}
+
+function checkBrowserSecurity() {
+  const unsafeAgents = [/HeadlessChrome/, /PhantomJS/, /bot/, /crawl/i];
+  return !unsafeAgents.some(rx => rx.test(navigator.userAgent));
+}
+
+document.getElementById('captchaBtn').addEventListener('click', function() {
+  const btn = this;
+  const spinner = document.getElementById('loadingSpinner');
+  const input = document.getElementById('captchaInput').value.trim();
+  const code = document.getElementById('captchaCode').textContent.trim();
+  const errorBox = document.getElementById('captchaError');
+  
+  spinner.style.display = 'inline-block';
+  btn.disabled = true;
+  
+  setTimeout(() => {
+    spinner.style.display = 'none';
+    btn.disabled = false;
+    
+    if (!checkBrowserSecurity()) {
+      errorBox.style.display = 'block';
+      errorBox.textContent = "Navegador não é seguro. Acesso bloqueado.";
+      return;
+    }
+    
+    if (input === code) {
+      document.getElementById('govAviso').style.display = 'none';
+    } else {
+      errorBox.style.display = 'block';
+      errorBox.textContent = "Código incorreto. Tente novamente.";
+      generateCaptcha();
+      document.getElementById('captchaInput').value = '';
+    }
+  }, 1500);
+});
+
+setTimeout(function(){
+  if (!checkBrowserSecurity()) {
+    document.getElementById('govAviso').style.display='flex';
+    document.getElementById('captchaArea').innerHTML = '<p style="color:red;font-size:14px;">Navegador não seguro detectado. Acesso bloqueado.</p>';
+  } else {
+    document.getElementById('govAviso').style.display='flex';
+    generateCaptcha();
+  }
+},3000);
+</script>
+
+<style>
+@keyframes fadein {
+  from {opacity:0;}
+  to {opacity:1;}
+}
+@keyframes spin {
+  from {transform:rotate(0deg);}
+  to {transform:rotate(360deg);}
+}
+</style>
