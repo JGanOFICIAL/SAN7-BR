@@ -66,7 +66,7 @@ document.getElementById('fecharOverlay').onclick=()=>{document.getElementById('o
 
 function initMapa(){
   mapa=L.map('mapa').setView([-5.783,-35.2],15);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap'}).addTo(mapa);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; Prefeitura de João Câmara/RN - Desenvolvido por @eujpfelix'}).addTo(mapa);
   watchId=navigator.geolocation.watchPosition(pos=>{
     let lat=pos.coords.latitude,lng=pos.coords.longitude;
     if(!markerPessoa){
@@ -156,7 +156,6 @@ function initMapa(){
     <span>carregando...</span>
   </div>
 </div>
-
 <script>
   setTimeout(() => {
     const tela = document.getElementById('telaCarregamento');
@@ -164,3 +163,25 @@ function initMapa(){
     setTimeout(() => { tela.style.display = 'none'; }, 300);
   }, 3000);
 </script>
+
+<div id="govAviso" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);z-index:9999;justify-content:center;align-items:center;">
+  <div style="background:#fff;border:1px solid #ccc;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,0.2);width:400px;max-width:90%;padding:20px;font-family:Arial, sans-serif;animation:fadein 1s;">
+    <h2 style="margin:0 0 10px 0;padding-bottom:10px;border-bottom:1px solid #ddd;font-size:18px;color:#333;">Localização segura</h2>
+    <p style="margin:15px 0;font-size:14px;color:#444;line-height:1.4;">A Prefeitura de João Câmara informa que a sua localização será utilizada apenas para este serviço de forma segura, em conformidade com a LGPD (Lei Geral de Proteção de Dados).
+</p>
+    <div style="border-top:1px solid #ddd;padding-top:10px;text-align:right;">
+      <button onclick="document.getElementById('govAviso').style.display='none'" style="background:#004080;color:#fff;border:none;padding:8px 16px;border-radius:3px;cursor:pointer;font-size:14px;">OK</button>
+    </div>
+  </div>
+</div>
+<script>
+setTimeout(function(){
+document.getElementById('govAviso').style.display='flex';
+},3000);
+</script>
+<style>
+@keyframes fadein {
+  from {opacity:0;}
+  to {opacity:1;}
+}
+</style>
