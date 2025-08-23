@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Administração — UBS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rawline:wght@400;600;700&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--gov-azul:#1351B4;--gov-amarelo:#FFCD00;--gov-branco:#fff;
+        --gov-verde:#168821;--gov-vermelho:#d93025;--cinza:#f6f7f9;--sombra:0 10px 30px rgba(0,0,0,.08)}
+  body{margin:0;background:var(--cinza);font-family:"Public Sans","Rawline",sans-serif}
+  header{position:sticky;top:0;background:var(--gov-azul);color:#fff;
+         padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
+         box-shadow:var(--sombra);z-index:10}
+  .logo{width:44px;height:44px;background:#fff;border-radius:6px;overflow:hidden}
+  main{max-width:1100px;margin:24px auto;padding:0 16px}
+  h2{margin:0 0 12px}
+  .btn{padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600;border:none}
+  .btn-prim{background:var(--gov-azul);color:#fff}
+  .btn-sec{background:#eaf1ff;color:#0b2b6b}
+  .lista{display:grid;gap:12px;margin-top:14px}
+  .ubs{background:#fff;padding:16px;border-radius:12px;box-shadow:var(--sombra)}
+  .ubs h3{margin:0 0 6px}
+  .acoes{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .btn-mini{padding:6px 10px;font-size:13px}
+  /* Overlay modal */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;
+           align-items:center;justify-content:center;padding:12px;z-index:50}
+  .modal{background:#fff;border-radius:14px;box-shadow:var(--sombra);
+         width:min(700px,100%);max-height:90vh;overflow:auto;padding:18px}
+  .mhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .mclose{border:none;background:#f1f3f5;border-radius:10px;padding:8px 12px;cursor:pointer}
+  label{font-weight:600;display:block;margin-top:8px}
+  input,select{width:100%;padding:10px;border:1px solid #dfe3eb;border-radius:10px}
+  .solic{background:#f6f7f9;padding:12px;border-radius:10px;margin-bottom:10px}
+  .solic strong{color:var(--gov-azul)}
+</style>
+</head>
+<body>
+<header>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="logo">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpN6mG9JrV3AvmACLq0uOQb0OcGFLu4WW8sOckbZpA8ow2biqC-IxosxA&s=10"
+           alt="Logo" style="max-width:100%;max-height:100%;object-fit:contain">
+    </div>
+    <div><strong>Administração UBS</strong></div>
+  </div>
+  <button id="btnNova" class="btn btn-sec">+ Nova UBS</button>
+</header>
+
+<main>
+  <h2>UBSs cadastradas</h2>
+  <div id="listaUbs" class="lista"></div>
+</main>
+<div id="overlayUbs" class="overlay">
+  <div class="modal">
+    <div class="mhead">
+      <h3 id="tituloUbs">Cadastrar UBS</h3>
+      <button class="mclose" onclick="fecharModal('overlayUbs')">✕</button>
+    </div>
+    <label>Nome</label><input id="ubsNome">
+    <label>Localização</label><input id="ubsLocal">
+    <label>Horário manhã</label><input id="ubsHorarioManha" placeholder="08:00 - 12:00">
+    <label>Horário tarde</label><input id="ubsHorarioTarde" placeholder="13:00 - 17:00">
+    <label>Fichas manhã</label><input id="ubsFichasManha" type="number" min="0">
+    <label>Fichas tarde</label><input id="ubsFichasTarde" type="number" min="0">
+    <label>Serviços (separar por vírgula)</label><input id="ubsServicos">
+    <div style="margin-top:12px"><button id="btnSalvarUbs" class="btn btn-prim">Salvar</button></div>
+  </div>
+</div>
+<div id="overlaySolic" class="overlay">
+  <div class="modal">
+    <div class="mhead">
+      <h3>Solicitações</h3>
+      <button class="mclose" onclick="fecharModal('overlaySolic')">✕</button>
+    </div>
+    <input id="buscaSolic" placeholder="Buscar por nome ou protocolo">
+    <div id="listaSolic" style="margin-top:12px"></div>
+  </div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="script.js"></script>
+<script src="consultas.js"></script>
+</body>
+</html>
+<a href="perfil.html" id="btnRodape">Voltar para o Perfil</a>
+
+<style>
+  #btnRodape{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:var(--gov-azul,#1351B4);
+    color:#fff;
+    font-weight:700;
+    font-size:18px;
+    text-align:center;
+    padding:16px;
+    text-decoration:none;
+    box-shadow:0 -3px 12px rgba(0,0,0,.2);
+    z-index:2000;
+    transition:background .25s ease;
+  }
+  #btnRodape:hover{
+    background:#0b2b6b;
+  }
+</style>
