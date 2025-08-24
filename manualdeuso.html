@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prefeitura de João Câmara — Perfil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rawline:wght@400;600;700&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--gov-azul:#1351B4;--gov-amarelo:#FFCD00;--gov-branco:#fff;--gov-verde:#168821;--cinza:#f6f7f9;--sombra:0 10px 30px rgba(0,0,0,.08)}
+  body{margin:0;background:var(--cinza);color:#1f1f1f;font-family:"Public Sans","Rawline",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  header{position:sticky;top:0;background:var(--gov-azul);color:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sombra);z-index:10}
+  .esq{display:flex;align-items:center;gap:12px}
+  .logo{width:44px;height:44px;background:#fff;border-radius:6px}
+  .saud{display:flex;flex-direction:column}
+  .saud strong{font-size:18px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 14px;border:none;border-radius:12px;font-weight:700;cursor:pointer}
+  .btn-sair{background:#eaf1ff;color:#0b2b6b}
+  main{max-width:1040px;margin:24px auto;padding:0 16px}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media (max-width:900px){.cards{grid-template-columns:1fr}}
+  .card{background:var(--gov-branco);border-radius:12px;box-shadow:var(--sombra);padding:20px}
+  .acoes{display:flex;gap:10px;flex-wrap:wrap}
+  .btn-acao{background:var(--gov-verde);color:#fff}
+  .btn-acao.sec{background:#fffae6;color:#584300;border:1px solid #ffe08a}
+  .link{display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+  /* Modal */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;padding:12px;z-index:50}
+  .modal{
+    width:min(720px,100%);max-height:80vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:var(--sombra);padding:18px 18px 22px
+  }
+  .mhead{display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:0;background:#fff}
+  .mclose{border:none;background:#f1f3f5;border-radius:10px;padding:10px;cursor:pointer;font-weight:700}
+  label{font-weight:600}
+  input{width:100%;padding:12px;border:1px solid #dfe3eb;border-radius:12px;font-size:16px;outline:none}
+  input:focus{border-color:#b9c6e2;box-shadow:0 0 0 4px rgba(19,81,180,.12)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:700px){.grid{grid-template-columns:1fr}}
+  .btn-save{background:var(--gov-azul);color:#fff}
+  .spinner{width:18px;height:18px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite;margin-right:8px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .chip{display:inline-block;background:#eaf1ff;color:#0b2b6b;border-radius:999px;padding:6px 10px;font-size:12px;border:1px solid #d6e4ff}
+</style>
+</head>
+<body>
+  <header>
+  <div class="esq">
+    <div class="logo">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpN6mG9JrV3AvmACLq0uOQb0OcGFLu4WW8sOckbZpA8ow2biqC-IxosxA&s=10" alt="Logomarca" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:6px;display:block;margin:auto;">
+    </div>
+    <div class="saud">
+      <small>Prefeitura de João Câmara/RN</small>
+      <strong id="saudacao">Olá, Cidadão!</strong>
+    </div>
+  </div>
+</header>
+<div id="manualUso" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;max-width:1200px;margin:0 auto;font-family:Arial,sans-serif;">
+
+  <div id="manualImagem" style="margin-bottom:20px;transition: transform 0.5s ease;">
+    <img src="https://826d3d7dee.cbaul-cdnwnd.com/62fd26f239c381f07684529cff4b51b2/200000099-4f6694f66b/700/CA9F5CC2-82DA-4651-B8E7-3BA9D95C287D.webp?ph=826d3d7dee" alt="Manual" style="max-width:200px;width:100%;height:auto;cursor:pointer;">
+  </div>
+
+  <h1 id="manualTitulo" style="font-size:2rem;text-align:center;margin-bottom:10px;color:#004c97;transition: color 0.5s;">Manual de uso e tecnologia do app</h1>
+
+  <p id="manualDescricao" style="font-size:1.1rem;text-align:center;max-width:800px;color:#333;transition: opacity 0.5s;">Clieque em no botão de + para ler de forma completa e em "ouvir" para melhor entendimento e acessibilidade.</p>
+
+  <div id="manualFuncoes" style="display:flex;flex-wrap:wrap;justify-content:center;margin-top:30px;gap:20px;width:100%;">
+    
+    <div class="funcao" style="background:#f7f7f7;border:1px solid #ccc;border-radius:8px;padding:15px;width:260px;position:relative;transition: transform 0.3s;">
+      <h2 class="funcaoTitulo" style="font-size:1.2rem;color:#004c97;margin-bottom:10px;">Segurança</h2>
+      <p class="funcaoTexto" style="font-size:0.95rem;color:#555;max-height:100px;overflow:hidden;">O aplicativo da Prefeitura de João Câmara, Rio Grande do Norte, foi desenvolvido com foco em tecnologia moderna e segurança de dados. Ele adota protocolos robustos de criptografia para proteger as informações dos usuários e garantir a confidencialidade. Segue rigorosamente a Lei Geral de Proteção de Dados (LGPD). O sistema impede o compartilhamento de documentos pessoais sem consentimento expresso, mantendo controle sobre acessos internos. Além disso, o aplicativo implementa autenticação segura para cada usuário, prevenindo acessos não autorizados. Todas as informações armazenadas são criptografadas em servidores confiáveis, com monitoramento constante. Há mecanismos de auditoria que registram cada operação, aumentando a transparência. A plataforma é constantemente atualizada para corrigir vulnerabilidades e reforçar a proteção.
+</p>
+      <button class="lerMais" style="position:absolute;top:10px;right:10px;background:#004c97;color:#fff;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-weight:bold;">+</button>
+      <button class="btnAudio" style="position:absolute;bottom:10px;right:10px;background:#fff;color:#004c97;border:1px solid #004c97;border-radius:4px;padding:5px 10px;cursor:pointer;">Ouvir</button>
+    </div>
+
+    <div class="funcao" style="background:#f7f7f7;border:1px solid #ccc;border-radius:8px;padding:15px;width:260px;position:relative;transition: transform 0.3s;">
+      <h2 class="funcaoTitulo" style="font-size:1.2rem;color:#004c97;margin-bottom:10px;">Criação de conta</h2>
+      <p class="funcaoTexto" style="font-size:0.95rem;color:#555;max-height:100px;overflow:hidden;">Para criar a conta no aplicativo da Prefeitura de João Câmara, é necessário preencher todos os campos exatamente como o formulário solicita. Cada informação deve ser inserida de forma correta e oficial para evitar problemas futuros. É fundamental utilizar um e-mail verdadeiro e principal, garantindo que seja possível recuperar a conta caso seja necessário. Todos os dados pessoais devem ser preenchidos de acordo com documentos oficiais. Caso terceiros estejam criando a conta, é obrigatório que também utilizem informações reais e comprováveis. Nunca compartilhe senhas ou dados de acesso com outras pessoas. O sistema valida os dados inseridos para manter a integridade da conta. Qualquer tentativa de falsificação pode resultar em bloqueio ou exclusão da conta. A Prefeitura reforça que a segurança da informação é prioridade. Manter os dados corretos garante acesso contínuo e seguro ao aplicativo.
+</p>
+      <button class="lerMais" style="position:absolute;top:10px;right:10px;background:#004c97;color:#fff;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-weight:bold;">+</button>
+      <button class="btnAudio" style="position:absolute;bottom:10px;right:10px;background:#fff;color:#004c97;border:1px solid #004c97;border-radius:4px;padding:5px 10px;cursor:pointer;">Ouvir</button>
+    </div>
+
+    <div class="funcao" style="background:#f7f7f7;border:1px solid #ccc;border-radius:8px;padding:15px;width:260px;position:relative;transition: transform 0.3s;">
+      <h2 class="funcaoTitulo" style="font-size:1.2rem;color:#004c97;margin-bottom:10px;">Importância do App, acessibilidade e desenvolvimento</h2>
+      <p class="funcaoTexto" style="font-size:0.95rem;color:#555;max-height:100px;overflow:hidden;">O desenvolvimento do aplicativo da Prefeitura de João Câmara reflete o compromisso com a modernização da gestão pública e a proximidade com a população. Ele permite que cidadãos acessem serviços essenciais de forma rápida e prática, reduzindo burocracias. A acessibilidade é garantida pelo cumprimento da Lei Brasileira de Inclusão (Lei nº 13.146/2015) e integração com o VLibras, facilitando o uso por pessoas com deficiência auditiva. Além disso, o app segue a Lei Geral de Proteção de Dados (Lei nº 13.709/2018), garantindo privacidade e segurança das informações. A ferramenta também fortalece a transparência, permitindo acompanhamento de serviços e processos administrativos. A existência de um aplicativo oficial da prefeitura facilita a comunicação direta e segura com a população. Ele promove inclusão digital, permitindo que todos tenham acesso a serviços públicos sem sair de casa. O app ainda contribui para eficiência administrativa e redução de custos com atendimentos presenciais. A importância de dados atualizados e confiáveis é destacada, reforçando a responsabilidade no uso do sistema. O desenvolvimento contínuo garante melhorias, correção de falhas e novas funcionalidades. A acessibilidade e segurança tornam o app uma referência de inovação municipal. A plataforma é, portanto, um instrumento essencial para aproximar a prefeitura do cidadão e promover cidadania digital.
+</p>
+      <button class="lerMais" style="position:absolute;top:10px;right:10px;background:#004c97;color:#fff;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-weight:bold;">+</button>
+      <button class="btnAudio" style="position:absolute;bottom:10px;right:10px;background:#fff;color:#004c97;border:1px solid #004c97;border-radius:4px;padding:5px 10px;cursor:pointer;">Ouvir</button>
+    </div>
+
+    <div class="funcao" style="background:#f7f7f7;border:1px solid #ccc;border-radius:8px;padding:15px;width:260px;position:relative;transition: transform 0.3s;">
+      <h2 class="funcaoTitulo" style="font-size:1.2rem;color:#004c97;margin-bottom:10px;">Ferramentas e mecanismos que ajudam a população de forma inovadora</h2>
+      <p class="funcaoTexto" style="font-size:0.95rem;color:#555;max-height:100px;overflow:hidden;">O aplicativo da Prefeitura de João Câmara representa inovação no acesso a serviços públicos, permitindo que a população evite filas em unidades de saúde municipal. Ele facilita agendamentos, consultas e informações de maneira prática e rápida. Além disso, promove organização e otimização dos atendimentos presenciais. A plataforma também integra a Biblioteca Digital, oferecendo acesso a livros, cordéis, biografias, poesias e outros conteúdos culturais. Com isso, cidadãos podem ler e estudar de qualquer lugar, estimulando a educação e a cultura local. O app fortalece a inclusão digital e aproxima o município de seus moradores. Ele se torna uma ferramenta moderna, eficiente e acessível para todos. Dessa forma, garante praticidade, conhecimento e inovação no serviço público.
+</p>
+      <button class="lerMais" style="position:absolute;top:10px;right:10px;background:#004c97;color:#fff;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-weight:bold;">+</button>
+      <button class="btnAudio" style="position:absolute;bottom:10px;right:10px;background:#fff;color:#004c97;border:1px solid #004c97;border-radius:4px;padding:5px 10px;cursor:pointer;">Ouvir</button>
+    </div>
+
+  </div>
+</div>
+
+<div vw class="enabled">
+  <div vw-access-button class="active"></div>
+  <div vw-plugin-wrapper></div>
+</div>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+
+<script>
+  document.querySelectorAll('.lerMais').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const texto = btn.parentElement.querySelector('.funcaoTexto');
+      texto.style.maxHeight = texto.style.maxHeight==='none'?'100px':'none';
+    });
+  });
+
+  let synth = window.speechSynthesis;
+  document.querySelectorAll('.btnAudio').forEach(btn=>{
+    let utter;
+    btn.addEventListener('click',()=>{
+      const texto = btn.parentElement.querySelector('.funcaoTexto').innerText;
+      if(!utter || synth.speaking===false){
+        utter = new SpeechSynthesisUtterance(texto);
+        synth.speak(utter);
+        btn.innerText='Pausar';
+        utter.onend = ()=>{btn.innerText='Ouvir';};
+      } else if(synth.speaking){
+        synth.cancel();
+        btn.innerText='Ouvir';
+      }
+    });
+  });
+
+  
+  const img = document.querySelector('#manualImagem img');
+  img.addEventListener('mouseenter',()=>{img.style.transform='scale(1.05)';});
+  img.addEventListener('mouseleave',()=>{img.style.transform='scale(1)';});
+</script>
+
+<style>
+  @media(min-width:900px){
+    #manualFuncoes{flex-wrap:nowrap;}
+  }
+</style>
+
+
+<br>
+<br>
+<br>
+<br>
+
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script>
+    // Protege a rota: se não logado, redireciona
+    protegerPagina();
+
+    // Preenche saudação + resumo quando auth pronta
+    onAuthReady(async (user)=>{
+      const perfil = await obterPerfil(user.uid);
+      const primeiroNome = (perfil?.nomeCompleto||'Cidadão').split(' ')[0];
+      document.getElementById('saudacao').textContent = `Olá, ${primeiroNome}!`;
+      document.getElementById('resumo').innerHTML = `
+        <div><strong>Nome:</strong> ${perfil?.nomeCompleto||'-'}</div>
+        <div><strong>CPF:</strong> ${perfil?.cpf||'-'}</div>
+        <div><strong>Nascimento:</strong> ${perfil?.nascimento||'-'}</div>
+        <div><strong>Telefone:</strong> ${perfil?.telefone||'-'}</div>
+        <div><strong>Endereço:</strong> ${formatEndereco(perfil?.endereco)}</div>
+      `;
+      // Eventos / Editais (apenas caminhos prontos)
+      document.getElementById('btnEventos').href = '#/eventos-municipais';
+      document.getElementById('btnEditais').href = '#/editais';
+    });
+
+    // Modal
+    const overlay = document.getElementById('overlay');
+    const btnDados = document.getElementById('btnDados');
+    const fecharModal = document.getElementById('fecharModal');
+    const modalMsg = document.getElementById('modalMsg');
+    btnDados.addEventListener('click', async ()=>{
+      overlay.style.display='flex';
+      modalMsg.textContent='';
+      const user = firebase.auth().currentUser;
+      const perfil = await obterPerfil(user.uid);
+      preencherModal(perfil);
+    });
+    fecharModal.addEventListener('click', ()=>{overlay.style.display='none'});
+
+    function preencherModal(p){
+      document.getElementById('m_nome').value = p?.nomeCompleto||'';
+      document.getElementById('m_cpf').value = p?.cpf||'';
+      document.getElementById('m_nasc').value = p?.nascimento||'';
+      document.getElementById('m_tel').value = p?.telefone||'';
+      document.getElementById('m_cep').value = p?.endereco?.cep||'';
+      document.getElementById('m_cidade').value = p?.endereco?.cidade||'';
+      document.getElementById('m_rua').value = p?.endereco?.rua||'';
+      document.getElementById('m_numero').value = p?.endereco?.numero||'';
+    }
+
+    function formatEndereco(e){
+      if(!e) return '-';
+      const partes = [e.rua, e.numero && 'Nº '+e.numero, e.cidade, e.cep].filter(Boolean);
+      return partes.join(', ');
+    }
+
+    // Salvar (somente telefone + endereço)
+    const btnSalvar = document.getElementById('btnSalvar');
+    function setSaving(is){
+      btnSalvar.disabled = is;
+      btnSalvar.innerHTML = is ? '<div class="spinner"></div><span>Salvando…</span>' : '<span>Salvar alterações</span>';
+    }
+    btnSalvar.addEventListener('click', async ()=>{
+      setSaving(true); modalMsg.textContent='';
+      const user = firebase.auth().currentUser;
+      const dados = {
+        telefone: document.getElementById('m_tel').value.trim(),
+        endereco:{
+          cep: document.getElementById('m_cep').value.trim(),
+          cidade: document.getElementById('m_cidade').value.trim(),
+          rua: document.getElementById('m_rua').value.trim(),
+          numero: document.getElementById('m_numero').value.trim(),
+        }
+      };
+      try{
+        await atualizarContatoEndereco(user.uid, dados);
+        modalMsg.textContent = 'Alterações salvas com sucesso.';
+        const perfil = await obterPerfil(user.uid);
+        document.getElementById('resumo').innerHTML = `
+          <div><strong>Nome:</strong> ${perfil?.nomeCompleto||'-'}</div>
+          <div><strong>CPF:</strong> ${perfil?.cpf||'-'}</div>
+          <div><strong>Nascimento:</strong> ${perfil?.nascimento||'-'}</div>
+          <div><strong>Telefone:</strong> ${perfil?.telefone||'-'}</div>
+          <div><strong>Endereço:</strong> ${formatEndereco(perfil?.endereco)}</div>
+        `;
+      }catch(err){
+        modalMsg.textContent = traduzErroAuth(err);
+      }finally{ setSaving(false); }
+    });
+  </script>
+</body>
+</html>
+<a href="login.html" id="btnRodape">← VOLTAR</a>
+<style>
+  #btnRodape{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:var(--gov-azul,#1351B4);
+    color:#fff;
+    font-weight:700;
+    font-size:18px;
+    text-align:center;
+    padding:16px;
+    text-decoration:none;
+    box-shadow:0 -3px 12px rgba(0,0,0,.2);
+    z-index:2000;
+    transition:background .25s ease;
+  }
+  #btnRodape:hover{
+    background:#0b2b6b;
+  }
+</style>
