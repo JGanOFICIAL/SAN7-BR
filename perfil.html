@@ -52,7 +52,8 @@
       <small>Prefeitura de João Câmara/RN</small>
       <strong id="saudacao">Olá!</strong>
     </div>
-  
+  </div>
+  <button id="btnSair" class="btn btn-sair">SAIR</button>
 </header>
   <main>
     <div class="cards">
@@ -373,8 +374,6 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-
-  /* Texto carregando */
   .carregandoBox span {
     font-size: 17px;
     color: #0072c6;
@@ -397,25 +396,3 @@
     setTimeout(() => { tela.style.display = 'none'; }, 300);
   }, 3000);
 </script>
-<a href="login.html" id="btnRodape">← SAIR DA CONTA</a>
-<style>
-  #btnRodape{
-    position:fixed;
-    bottom:0;
-    left:0;
-    right:0;
-    background:var(--gov-azul,#1351B4);
-    color:#fff;
-    font-weight:700;
-    font-size:18px;
-    text-align:center;
-    padding:16px;
-    text-decoration:none;
-    box-shadow:0 -3px 12px rgba(0,0,0,.2);
-    z-index:2000;
-    transition:background .25s ease;
-  }
-  #btnRodape:hover{
-    background:#0b2b6b;
-  }
-</style>
