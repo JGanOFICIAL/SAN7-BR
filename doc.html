@@ -53,7 +53,6 @@
       <strong id="saudacao">Olá, Cidadão!</strong>
     </div>
   </div>
-  <a href="login.html" class="btn btn-sair">VOLTAR</a>
 </header>
 <div id="reclamacao-form">
   <form id="formulario">
@@ -451,4 +450,26 @@ setTimeout(function(){
   from {transform:rotate(0deg);}
   to {transform:rotate(360deg);}
 }
+</style>
+<a href="perfil.html" id="btnRodape">← VOLTAR</a>
+<style>
+  #btnRodape{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:var(--gov-azul,#1351B4);
+    color:#fff;
+    font-weight:700;
+    font-size:18px;
+    text-align:center;
+    padding:16px;
+    text-decoration:none;
+    box-shadow:0 -3px 12px rgba(0,0,0,.2);
+    z-index:2000;
+    transition:background .25s ease;
+  }
+  #btnRodape:hover{
+    background:#0b2b6b;
+  }
 </style>
