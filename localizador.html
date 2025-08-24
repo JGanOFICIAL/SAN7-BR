@@ -29,7 +29,6 @@
       <strong id="saudacao">coleta de lixo</strong>
     </div>
   </div>
-  <a href="perfil.html" class="btn btn-sair">VOLTAR</a>
 </header>
 <div id="tela-inicial" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;background:#f9f9f9">
   <button id="localizarBtn" style="padding:15px 25px;border:none;border-radius:8px;background:#2196f3;color:#fff;font-size:16px;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.2)">Localizar caminhão de coleta de lixo</button>
@@ -66,7 +65,7 @@ document.getElementById('fecharOverlay').onclick=()=>{document.getElementById('o
 
 function initMapa(){
   mapa=L.map('mapa').setView([-5.783,-35.2],15);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; DESENVOLVIDO POR @EUJPFELIX'}).addTo(mapa);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; Prefeitura de João Câmara/RN - Desenvolvido por @eujpfelix'}).addTo(mapa);
   watchId=navigator.geolocation.watchPosition(pos=>{
     let lat=pos.coords.latitude,lng=pos.coords.longitude;
     if(!markerPessoa){
@@ -184,4 +183,26 @@ document.getElementById('govAviso').style.display='flex';
   from {opacity:0;}
   to {opacity:1;}
 }
+</style>
+<a href="perfil.html" id="btnRodape">← VOLTAR</a>
+<style>
+  #btnRodape{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:var(--gov-azul,#1351B4);
+    color:#fff;
+    font-weight:700;
+    font-size:18px;
+    text-align:center;
+    padding:16px;
+    text-decoration:none;
+    box-shadow:0 -3px 12px rgba(0,0,0,.2);
+    z-index:2000;
+    transition:background .25s ease;
+  }
+  #btnRodape:hover{
+    background:#0b2b6b;
+  }
 </style>
