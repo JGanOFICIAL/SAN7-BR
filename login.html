@@ -87,7 +87,7 @@ Com seu login, você consegue acessar vários serviços municiapais.
   <img src="https://826d3d7dee.cbaul-cdnwnd.com/62fd26f239c381f07684529cff4b51b2/200000099-4f6694f66b/700/CA9F5CC2-82DA-4651-B8E7-3BA9D95C287D.webp?ph=826d3d7dee" alt="Ícone" style="width:24px; height:24px;">
   <span>Como o app funciona?</span>
 </a>
-      </section>
+</section>
 <section class="card">
         <h2>Entrar no seu perfil</h2>
         <form id="formLogin">
@@ -117,16 +117,13 @@ Com seu login, você consegue acessar vários serviços municiapais.
   </div>
   <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
   <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
-
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script src="script.js"></script>
   <script>
     document.getElementById('ano').textContent = new Date().getFullYear();
-
-    const form = document.getElementById('formLogin');
+const form = document.getElementById('formLogin');
     const btn = document.getElementById('btnEntrar');
     const msg = document.getElementById('loginMsg');
     const linkReset = document.getElementById('linkReset');
@@ -161,7 +158,6 @@ Com seu login, você consegue acessar vários serviços municiapais.
   </script>
 </body>
 </html>
-
 <html<html>
 <head>
 <style>
@@ -179,21 +175,3 @@ Com seu login, você consegue acessar vários serviços municiapais.
 </style>
 </head>
 <body>
-
-<div id="telaBranca">
-  <img id="logo" src="https://otimize-edoc.s3.amazonaws.com/edoc_1291/logo_joaocamara.png" />
-</div>
-
-<script>
-  window.onload = function() {
-    var logo = document.getElementById('logo');
-    setTimeout(function(){logo.style.opacity = '0.7';},50);
-    setTimeout(function(){
-      document.getElementById('telaBranca').style.opacity = '0';
-      setTimeout(function(){document.getElementById('telaBranca').style.display='none';},1000);
-    },3500);
-  }
-</script>
-
-</body>
-</html>
