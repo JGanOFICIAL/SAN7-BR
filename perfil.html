@@ -51,7 +51,9 @@
       <small>Prefeitura de João Câmara/RN</small>
       <strong id="saudacao">Olá!</strong>    </div>
   </div>
-  <button id="btnSair" class="btn btn-sair">SAIR</button>
+  
+
+
 </header>
   <main>
     <div class="cards">
@@ -142,7 +144,7 @@
     <div class="item-content">
       <h3>JC +SAÚDE</h3>
       <p>Marque consultas na UBS mais próssima de você. Acessobilidade e desenvolvimento.</p>
-      <a href="paciente.html">Acessar</a>
+      <a href="consultas.html">Acessar</a>
     </div>
   </div>
   <div class="item">
@@ -160,8 +162,6 @@
       </section>
     </div>
   </main>
-
-  <!-- Modal Dados -->
   <div class="overlay" id="overlay">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloModal">
       <div class="mhead">
@@ -210,8 +210,6 @@
       </div>
     </div>
   </div>
-
-  <!-- VLibras -->
   <div vw class="enabled">
     <div vw-access-button class="active"></div>
     <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
@@ -219,13 +217,10 @@
   <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
   <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
 
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script src="script.js"></script>
-
-  <!-- Script da página -->
   <script>
     // Protege a rota: se não logado, redireciona
     protegerPagina();
@@ -375,14 +370,12 @@
     text-align: center;
   }
 </style>
-
 <div id="telaCarregamento">
   <div class="carregandoBox">
     <div class="spinner"></div>
     <span>carregando...</span>
   </div>
 </div>
-
 <script>
   setTimeout(() => {
     const tela = document.getElementById('telaCarregamento');
@@ -390,3 +383,25 @@
     setTimeout(() => { tela.style.display = 'none'; }, 300);
   }, 3000);
 </script>
+<a href="perfil.html" id="btnRodape">← SAIR DA CONTA</a>
+<style>
+  #btnRodape{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:var(--gov-azul,#1351B4);
+    color:#fff;
+    font-weight:700;
+    font-size:18px;
+    text-align:center;
+    padding:16px;
+    text-decoration:none;
+    box-shadow:0 -3px 12px rgba(0,0,0,.2);
+    z-index:2000;
+    transition:background .25s ease;
+  }
+  #btnRodape:hover{
+    background:#0b2b6b;
+  }
+</style>
