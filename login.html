@@ -161,3 +161,33 @@ Com seu login, você consegue acessar vários serviços municiapais.
   </script>
 </body>
 </html>
+
+<html>
+<head>
+<style>
+  body, html {margin:0;padding:0;height:100%;overflow:hidden;}
+  #telaBranca {
+    position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;
+    display:flex;justify-content:center;align-items:center;
+    opacity:1;transition:opacity 1s ease;z-index:9999;
+  }
+  #telaBranca img {width:150px;opacity:0.7;}
+</style>
+</head>
+<body>
+
+<div id="telaBranca">
+  <img src="https://otimize-edoc.s3.amazonaws.com/edoc_1291/logo_joaocamara.png" />
+</div>
+
+<script>
+  window.onload = function() {
+    setTimeout(function(){
+      document.getElementById('telaBranca').style.opacity = '0';
+      setTimeout(function(){document.getElementById('telaBranca').style.display='none';},1000);
+    },2000);
+  }
+</script>
+
+</body>
+</html>
