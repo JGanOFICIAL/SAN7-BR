@@ -111,6 +111,8 @@ Com seu login, você consegue acessar vários serviços municiapais.
       © Prefeitura de João Câmara - <span id="ano"></span>
     </div>
   </main>
+
+  <!-- Modal Código -->
   <div class="overlay" id="overlayCodigo">
     <div class="modal">
       <div class="mhead">
@@ -120,6 +122,9 @@ Com seu login, você consegue acessar vários serviços municiapais.
       <div id="codigoStep1">
         <label>Digite seu código de 4 dígitos</label>
         <input id="codigoInput" maxlength="4" inputmode="numeric" placeholder="••••" />
+        <div style="margin-top:10px">
+          <input id="nascimentoInput" type="date" />
+        </div>
         <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
           <button id="acessarCodigo" class="btn btn-prim">Acessar</button>
           <button id="criarCodigo" class="btn btn-sec">Criar meu código de acesso</button>
@@ -197,13 +202,14 @@ Com seu login, você consegue acessar vários serviços municiapais.
     }
     if((agora-data.time)>=30000){data.count=0;}
     const code=document.getElementById('codigoInput').value.trim();
-    if(code.length!==4){document.getElementById('msgCodigo').textContent='Digite 4 dígitos.';return;}
+    const nascimento=document.getElementById('nascimentoInput').value.trim();
+    if(code.length!==4 || !nascimento){document.getElementById('msgCodigo').textContent='Informe código e nascimento.';return;}
     try{
       const snap=await firebase.database().ref('codigos').get();
       if(!snap.exists()){throw new Error('Código inválido');}
       let found=null;
       snap.forEach(child=>{
-        if(child.val().codigo===code){found=child.val();}
+        if(child.val().codigo===code && child.val().nascimento===nascimento){found=child.val();}
       });
       if(!found){throw new Error('Código inválido');}
       await firebase.auth().signInWithEmailAndPassword(found.email,found.senha);
@@ -253,7 +259,7 @@ Com seu login, você consegue acessar vários serviços municiapais.
       const snap=await firebase.database().ref('usuarios/'+user.uid).get();
       const perfil=snap.val();
       await firebase.database().ref('codigos/'+user.uid).set({
-        uid:user.uid,email:user.email,senha:senhaConfirm.value,codigo:code
+        uid:user.uid,email:user.email,senha:senhaConfirm.value,codigo:code,nascimento:perfil.nascimento
       });
       alert('Código cadastrado com sucesso!');location.reload();
     }catch(err){msgNovoCodigo.textContent=traduzErroAuth(err);}
