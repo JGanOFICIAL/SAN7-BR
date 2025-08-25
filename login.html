@@ -123,7 +123,8 @@ Com seu login, você consegue acessar vários serviços municiapais.
         <label>Digite seu código de 4 dígitos</label>
         <input id="codigoInput" maxlength="4" inputmode="numeric" placeholder="••••" />
         <div style="margin-top:10px">
-          <input id="nascimentoInput" type="date" />
+          <label>Data de nascimento</label>
+          <input id="nascimentoInput" type="text" placeholder="dd/mm/aaaa" maxlength="10" />
         </div>
         <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
           <button id="acessarCodigo" class="btn btn-prim">Acessar</button>
@@ -193,6 +194,13 @@ Com seu login, você consegue acessar vários serviços municiapais.
     localStorage.setItem('tentativasCodigo',JSON.stringify(data));
   }
 
+  document.getElementById('nascimentoInput').addEventListener('input',(e)=>{
+    let v=e.target.value.replace(/\D/g,'').slice(0,8);
+    if(v.length>=5) v=v.replace(/(\d{2})(\d{2})(\d{1,4})/,'$1/$2/$3');
+    else if(v.length>=3) v=v.replace(/(\d{2})(\d{1,2})/,'$1/$2');
+    e.target.value=v;
+  });
+
   document.getElementById('acessarCodigo').addEventListener('click',async()=>{
     const data=getTentativas();
     const agora=Date.now();
@@ -203,7 +211,7 @@ Com seu login, você consegue acessar vários serviços municiapais.
     if((agora-data.time)>=30000){data.count=0;}
     const code=document.getElementById('codigoInput').value.trim();
     const nascimento=document.getElementById('nascimentoInput').value.trim();
-    if(code.length!==4 || !nascimento){document.getElementById('msgCodigo').textContent='Informe código e nascimento.';return;}
+    if(code.length!==4 || nascimento.length!==10){document.getElementById('msgCodigo').textContent='Informe código e nascimento.';return;}
     try{
       const snap=await firebase.database().ref('codigos').get();
       if(!snap.exists()){throw new Error('Código inválido');}
