@@ -217,12 +217,26 @@ Com seu login, você consegue acessar vários serviços municiapais.
       if(!snap.exists()){throw new Error('Código inválido');}
       let found=null;
       snap.forEach(child=>{
-        if(child.val().codigo===code && child.val().nascimento===nascimento){found=child.val();}
+        if(child.val().codigo===code){
+          if(child.val().uid){
+            firebase.database().ref('usuarios/'+child.val().uid).get().then(userSnap=>{
+              if(userSnap.exists() && userSnap.val().nascimento===nascimento){
+                found={...child.val(),...userSnap.val()};
+                firebase.auth().signInWithEmailAndPassword(found.email,found.senha).then(()=>{
+                  setTentativas({count:0,time:0});
+                  location.href='perfil.html';
+                }).catch(err=>{
+                  data.count++;
+                  data.time=Date.now();
+                  setTentativas(data);
+                  document.getElementById('msgCodigo').textContent=traduzErroAuth(err);
+                });
+              }
+            });
+          }
+        }
       });
       if(!found){throw new Error('Código inválido');}
-      await firebase.auth().signInWithEmailAndPassword(found.email,found.senha);
-      setTentativas({count:0,time:0});
-      location.href='perfil.html';
     }catch(err){
       data.count++;
       data.time=Date.now();
@@ -267,7 +281,7 @@ Com seu login, você consegue acessar vários serviços municiapais.
       const snap=await firebase.database().ref('usuarios/'+user.uid).get();
       const perfil=snap.val();
       await firebase.database().ref('codigos/'+user.uid).set({
-        uid:user.uid,email:user.email,senha:senhaConfirm.value,codigo:code,nascimento:perfil.nascimento
+        uid:user.uid,email:user.email,senha:senhaConfirm.value,codigo:code
       });
       alert('Código cadastrado com sucesso!');location.reload();
     }catch(err){msgNovoCodigo.textContent=traduzErroAuth(err);}
