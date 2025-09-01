@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Livros — Biblioteca</title>
+  <style>
+    *{box-sizing:border-box}*:focus{outline:none}
+    html,body{margin:0;padding:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f5f7fb;color:#0a1733}
+    header{position:sticky;top:0;z-index:1000;background:#0a2a66;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+    .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+    .bar{display:flex;align-items:center;gap:12px;min-height:64px;flex-wrap:wrap;padding:10px 0}
+    .title{color:#fff;font-weight:700;font-size:18px;letter-spacing:.3px;flex:1}
+    .search-wrap{width:100%;margin:10px 0}
+    .search{width:100%;display:flex;align-items:center;gap:10px;background:#fff;border:0;box-shadow:0 8px 24px rgba(0,0,0,.15);padding:10px 14px;border-radius:12px}
+    .search input{flex:1;border:0;font-size:16px;padding:8px}
+    .search .badge{font-size:12px;padding:5px 9px;border-radius:8px;background:#0a2a66;color:#fff;font-weight:600}
+    .hero{position:relative;margin:16px 0;border-radius:16px;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.12)}
+    .hero .bg{width:100%;height:180px;background:#0a1733 center/cover no-repeat;filter:brightness(.9)}
+    .hero .overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.35) 100%)}
+    .hero .txt{position:absolute;left:16px;bottom:14px;color:#fff;text-shadow:0 2px 10px #0008}
+    .hero .txt h1{margin:0;font-size:22px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;padding:22px 0}
+    .card{background:#fff;border:1px solid #e7ecf5;box-shadow:0 4px 12px rgba(10,42,102,.08);border-radius:14px;display:flex;flex-direction:column;overflow:hidden;transition:.2s}
+    .card:hover{transform:translateY(-3px);box-shadow:0 10px 20px rgba(0,0,0,.18)}
+    .card figure{margin:0;aspect-ratio:16/9;overflow:hidden;background:#f0f2f9}
+    .card img{width:100%;height:100%;object-fit:cover;display:block}
+    .card .cx{padding:14px;display:flex;flex-direction:column;gap:8px}
+    .tit{font-weight:800;font-size:17px;color:#0a1733}
+    .meta{font-size:14px;color:#41557a}
+    .loading{position:fixed;inset:0;background:#0a1733cc;backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:2000}
+    .spinner{width:64px;height:64px;border:6px solid #ffffff33;border-top-color:#fff;border-radius:50%;animation:spin .9s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .toast{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:10px;z-index:3000}
+    .toast .item{background:#0a2a66;color:#fff;padding:12px 14px;border:1px solid #0e387f;box-shadow:0 10px 24px rgba(0,0,0,.25);border-radius:8px}
+    .sr-only{position:absolute;left:-10000px}
+    @media(max-width:600px){
+      .title{font-size:16px}
+      .search input{font-size:15px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="bar">
+        <div class="title">Biblioteca Virtual</div>
+      </div>
+      <div class="search-wrap">
+        <div class="search">
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79L20 21.5 21.5 20l-6-6zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input id="busca" type="search" placeholder="Pesquise publicações por título…" autocomplete="off"/>
+          <span id="count" class="badge">0</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div id="heroBg" class="bg"></div>
+      <div class="overlay"></div>
+      <div class="txt"><h1 id="heroTitle">Publicações</h1>Explore os livros e documentos disponíveis em nossa biblioteca digital.</div>
+    </section>
+    <section class="grid" id="lista"></section>
+  </main>
+
+  <div class="loading" id="loading"><div class="spinner" role="status" aria-live="polite" aria-label="Carregando"></div></div>
+  <div class="toast" id="toast"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
+    const $=s=>document.querySelector(s);
+    const showLoad=(v=true)=>$("#loading").style.display=v?"flex":"none";
+    const toast=m=>{const el=document.createElement("div");el.className="item";el.textContent=m;$("#toast").appendChild(el);setTimeout(()=>el.remove(),3800)};
+    const state={livros:[],filtros:""};
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+      authDomain: "login-you-see.firebaseapp.com",
+      databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+      projectId: "login-you-see",
+      storageBucket: "login-you-see.firebasestorage.app",
+      messagingSenderId: "524877259374",
+      appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
+      measurementId: "G-K7E00VXYHG"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db=firebase.database();
+
+    const shuffle=(arr)=>{for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr;}
+
+    const render=()=>{
+      const term=state.filtros.toLowerCase();
+      let data=state.livros.filter(v=>(v.title||"").toLowerCase().includes(term)||(v.text||"").toLowerCase().includes(term));
+      if(!term)data=shuffle([...data]);
+      $("#count").textContent=data.length;
+      $("#lista").innerHTML=data.map(p=>`
+        <article class="card" onclick="ir('${p.id}')" role="button" tabindex="0">
+          <figure><img src="${p.image1||p.image2||'https://picsum.photos/800/450'}" alt="Capa do livro ${p.title||''}" onerror="this.src='https://picsum.photos/800/450'"></figure>
+          <div class="cx">
+            <div class="tit">${p.title||'Sem título'}</div>
+            ${p.author?`<div class="meta">Autor: ${p.author}</div>`:''}
+          </div>
+        </article>`).join("");
+    };
+
+    $("#busca").addEventListener("input",e=>{state.filtros=e.target.value;render()});
+    function ir(id){window.location.href=`artigo.html?id=${encodeURIComponent(id)}`}
+
+    showLoad(true);
+    db.ref('posts').on('value', snap=>{
+      const val=snap.val()||{};
+      state.livros=Object.keys(val).map(id=>({id,...val[id]}));
+      render();showLoad(false);toast("Lista de livros atualizada.");
+    },err=>{showLoad(false);toast("Falha ao carregar livros.");console.error(err)});
+  </script>
+</body>
+</html>
+<a href="perfil.html" id="btnRodape">← VOLTAR</a>
+<style>
+  #btnRodape{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:#0a2a66; /* mesmo tom de azul dos projetos */
+    color:#fff;
+    font-weight:700;
+    font-size:18px;
+    text-align:center;
+    padding:16px;
+    text-decoration:none;
+    box-shadow:0 -3px 12px rgba(0,0,0,.2);
+    z-index:3001; /* acima das notificações */
+    transition:background .25s ease;
+  }
+  #btnRodape:hover{
+    background:#133b8c;
+  }
+</style>
