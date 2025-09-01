@@ -48,3 +48,196 @@ input:focus{border-color:#0a2a66;box-shadow:0 0 0 3px rgba(10,42,102,.18)}
 .carregandoBox span{font-size:17px;color:#0a2a66;font-weight:bold;text-align:center}
 </style></head><body><header><div class="esq"><div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpN6mG9JrV3AvmACLq0uOQb0OcGFLu4WW8sOckbZpA8ow2biqC-IxosxA&s=10" alt="Logomarca"></div><div class="saud"><small>Câmara Municipal de João Câmara</small><strong id="saudacao">Olá!</strong></div></div><button id="btnSair" class="btn btn-sair">SAIR</button></header><main><div class="cards"><section class="card"><h2 style="margin:0 0 6px">Minha área</h2><div class="acoes" style="margin-top:8px"><button id="btnDados" class="btn btn-acao">Editar dados</button><a class="btn btn-acao sec link" href="https://joaocamara.rn.gov.br" id="btnEventos">Eventos municipais</a><a class="btn btn-acao sec link" href="https://joaocamara.rn.gov.br/?s=Editais" id="btnEditais">Editais</a><a class="btn btn-acao sec link" href="https://joaocamara.rn.gov.br/" target="_blank" rel="noopener">Site oficial da Prefeitura</a></div><div style="margin-top:10px"></div></section></div><div class="colecao-container"><div class="item"><img src="https://826d3d7dee.cbaul-cdnwnd.com/62fd26f239c381f07684529cff4b51b2/200000107-e15d4e15d6/3C97C41F-B39C-4A81-B44C-567375BD5383.webp" alt="Imagem 1"><div class="item-content"><h3>Biblioteca Virtual</h3><p>A biblioteca virtual oferece acesso rápido e seguro a livros, artigos e conteúdos digitais, permitindo consultas de qualquer lugar e facilitando estudos e pesquisas.</p><a href="livros.html">Acessar</a></div></div><div class="item"><img src="https://826d3d7dee.cbaul-cdnwnd.com/62fd26f239c381f07684529cff4b51b2/200000105-26be326be5/700/D1C9A504-B5D1-48AB-A9C0-063E766D086A.webp" alt="Imagem 2"><div class="item-content"><h3>Vereador conectado</h3><p>Veja tudo que se passa no mandato do seu vereador, de forma segura e transparente.</p><a href="vereador.html">Acessar</a></div></div><div class="item"><img src="https://us.123rf.com/450wm/bilahstudio/bilahstudio2103/bilahstudio210300554/165645817-ilustra%C3%A7%C3%A3o-vetorial-do-conceito-de-neg%C3%B3cio-erro-404-congelar-da-internet-indispon%C3%ADvel-irritado-e.jpg?ver=6" alt="Imagem 3"><div class="item-content"><h3>Em desenvolvimento.</h3><p>Em desenvolvimento.</p><a href="biblioteca.html">Acessar</a></div></div><div class="item"><img src="https://us.123rf.com/450wm/bilahstudio/bilahstudio2103/bilahstudio210300554/165645817-ilustra%C3%A7%C3%A3o-vetorial-do-conceito-de-neg%C3%B3cio-erro-404-congelar-da-internet-indispon%C3%ADvel-irritado-e.jpg?ver=6" alt="Imagem 4"><div class="item-content"><h3>Em desenvolvimento.</h3><p>Em desenvolvimento.</p><a href="biblioteca.html">Acessar</a></div></div></div><section class="card"><h2 style="margin:0 0 6px">Meus dados</h2><div id="resumo"></div></section></main><div class="overlay" id="overlay"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloModal"><div class="mhead"><h3 id="tituloModal">Meus dados</h3><button class="mclose" id="fecharModal" aria-label="Fechar">✕</button></div><div style="display:grid;gap:10px;margin-top:10px"><div class="grid"><div><label>Nome completo</label><input id="m_nome" disabled/></div><div><label>CPF</label><input id="m_cpf" disabled/></div><div><label>Data de nascimento</label><input id="m_nasc" disabled/></div><div><label>Telefone (editável)</label><input id="m_tel"/></div><div><label>CEP (editável)</label><input id="m_cep" maxlength="9"/></div><div><label>Cidade (editável)</label><input id="m_cidade"/></div><div><label>Rua (editável)</label><input id="m_rua"/></div><div><label>Número (editável)</label><input id="m_numero"/></div></div><div style="display:flex;gap:10px;flex-wrap:wrap"><button id="btnSalvar" class="btn btn-save"><span>Salvar alterações</span></button></div><div id="modalMsg" style="font-size:14px;color:#5b6270"></div></div></div></div><div vw class="enabled"><div vw-access-button class="active"></div><div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div></div><script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script><script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script><script src="script.js"></script><script>
 protegerPagina();const btnSair=document.getElementById("btnSair");btnSair.addEventListener("click",async()=>{await sair();location.href="login.html"});onAuthReady(async e=>{const t=await obterPerfil(e.uid),n=(t?.nomeCompleto||"Cidadão").split(" ")[0];document.getElementById("saudacao").textContent=`Olá, ${n}!`,document.getElementById("resumo").innerHTML=`<div><strong>Nome:</strong> ${t?.nomeCompleto||"-"}</div><div><strong>CPF:</strong> ${t?.cpf||"-"}</div><div><strong>Nascimento:</strong> ${t?.nascimento||"-"}</div><div><strong>Telefone:</strong> ${t?.telefone||"-"}</div><div><strong>Endereço:</strong> ${formatEndereco(t?.endereco)}</div>`,document.getElementById("btnEventos").href="#/eventos-municipais",document.getElementById("btnEditais").href="#/editais"});const overlay=document.getElementById("overlay"),btnDados=document.getElementById("btnDados"),fecharModal=document.getElementById("fecharModal"),modalMsg=document.getElementById("modalMsg");function preencherModal(e){document.getElementById("m_nome").value=e?.nomeCompleto||"",document.getElementById("m_cpf").value=e?.cpf||"",document.getElementById("m_nasc").value=e?.nascimento||"",document.getElementById("m_tel").value=e?.telefone||"",document.getElementById("m_cep").value=e?.endereco?.cep||"",document.getElementById("m_cidade").value=e?.endereco?.cidade||"",document.getElementById("m_rua").value=e?.endereco?.rua||"",document.getElementById("m_numero").value=e?.endereco?.numero||""}function formatEndereco(e){if(!e)return"-";const t=[e.rua,e.numero&&"Nº "+e.numero,e.cidade,e.cep].filter(Boolean);return t.join(", ")}btnDados.addEventListener("click",async()=>{overlay.style.display="flex",modalMsg.textContent="";const e=firebase.auth().currentUser,t=await obterPerfil(e.uid);preencherModal(t)}),fecharModal.addEventListener("click",()=>{overlay.style.display="none"});const btnSalvar=document.getElementById("btnSalvar");function setSaving(e){btnSalvar.disabled=e,btnSalvar.innerHTML=e?'<div class="spinner"></div><span>Salvando…</span>':"<span>Salvar alterações</span>"}btnSalvar.addEventListener("click",async()=>{setSaving(!0),modalMsg.textContent="";const e=firebase.auth().currentUser,t={telefone:document.getElementById("m_tel").value.trim(),endereco:{cep:document.getElementById("m_cep").value.trim(),cidade:document.getElementById("m_cidade").value.trim(),rua:document.getElementById("m_rua").value.trim(),numero:document.getElementById("m_numero").value.trim()}};try{await atualizarContatoEndereco(e.uid,t),modalMsg.textContent="Alterações salvas com sucesso.";const n=await obterPerfil(e.uid);document.getElementById("resumo").innerHTML=`<div><strong>Nome:</strong> ${n?.nomeCompleto||"-"}</div><div><strong>CPF:</strong> ${n?.cpf||"-"}</div><div><strong>Nascimento:</strong> ${n?.nascimento||"-"}</div><div><strong>Telefone:</strong> ${n?.telefone||"-"}</div><div><strong>Endereço:</strong> ${formatEndereco(n?.endereco)}</div>`}catch(e){modalMsg.textContent=traduzErroAuth(e)}finally{setSaving(!1)}});</script><div id="telaCarregamento"><div class="carregandoBox"><div class="spinner"></div><span>carregando...</span></div></div><script>setTimeout(()=>{const e=document.getElementById("telaCarregamento");e.style.opacity="0",setTimeout(()=>{e.style.display="none"},300)},3000);</script></body></html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  font-family: Arial, sans-serif;
+}
+#floatBtn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: #fff url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfVepHYKeWvQ91i099qasVS234Nm241AWdLcj_Uc2bSIA96p-yofejKPI&s=10') no-repeat center center;
+  background-size: contain;
+  border: 2px solid #001f3f;
+  color: #001f3f;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 24px;
+  transition: transform 0.2s ease;
+  z-index: 9999;
+}
+#floatBtn:active {
+  transform: scale(0.9);
+}
+#menuBox {
+  position: fixed;
+  bottom: -100%;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
+  padding: 30px 20px 20px;
+  transition: bottom 0.6s ease;
+  z-index: 9998;
+}
+#menuBox .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #001f3f;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+}
+#menuBox .header h2 {
+  margin: 0;
+  color: #001f3f;
+}
+#menuBox .header span {
+  cursor: pointer;
+  font-size: 24px;
+  color: #001f3f;
+}
+#viewBtn {
+  width: 100%;
+  padding: 15px;
+  background: #001f3f;
+  color: #fff;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  position: relative;
+}
+#viewBtn.loading {
+  pointer-events: none;
+  color: transparent;
+}
+#viewBtn.loading::after {
+  content: "";
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #fff;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -12px;
+  margin-left: -12px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+#termsBox {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  max-height: 70%;
+  background: #fff;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
+  padding: 20px;
+  overflow: hidden;
+  z-index: 9997;
+}
+#termsBox .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #001f3f;
+  padding-bottom: 10px;
+}
+#termsBox .header h2 {
+  margin: 0;
+  color: #001f3f;
+}
+#termsBox .header span {
+  cursor: pointer;
+  font-size: 24px;
+  color: #001f3f;
+}
+#termsContent {
+  margin-top: 15px;
+  max-height: calc(70vh - 80px);
+  overflow-y: auto;
+}
+</style>
+</head>
+<body>
+<div id="floatBtn"></div>
+
+<div id="menuBox">
+  <div class="header">
+    <h2>Opções</h2>
+    <span id="closeMenu">&times;</span>
+  </div>
+  <button id="viewBtn">Acessibilidade e segurança</button>
+</div>
+
+<div id="termsBox">
+  <div class="header">
+    <h2>Acessibilidade e segurança</h2>
+    <span id="closeTerms">&times;</span>
+  </div>
+  <div id="termsContent">
+    <p>Este site da Câmara Municipal de João Câmara, RN, segue padrões de acessibilidade, garantindo navegação clara e funcional para todos os usuários; não compartilha dados pessoais com terceiros, mantendo privacidade e segurança; a interface é responsiva e adaptável a dispositivos móveis e desktops; oferece compatibilidade com leitores de tela e tecnologias assistivas; prioriza transparência, confiabilidade e atualização constante das informações institucionais e serviços públicos.
+</p>
+    <p></p>
+    <p></p>
+  </div>
+</div>
+
+<script>
+const floatBtn = document.getElementById('floatBtn');
+const menuBox = document.getElementById('menuBox');
+const closeMenu = document.getElementById('closeMenu');
+const viewBtn = document.getElementById('viewBtn');
+const termsBox = document.getElementById('termsBox');
+const closeTerms = document.getElementById('closeTerms');
+
+floatBtn.addEventListener('click', () => {
+  menuBox.style.bottom = "0";
+  floatBtn.style.display = "none";
+});
+
+closeMenu.addEventListener('click', () => {
+  menuBox.style.bottom = "-100%";
+  setTimeout(() => { floatBtn.style.display = "flex"; }, 600);
+});
+
+viewBtn.addEventListener('click', () => {
+  viewBtn.classList.add("loading");
+  setTimeout(() => {
+    viewBtn.classList.remove("loading");
+    menuBox.style.bottom = "-100%";
+    termsBox.style.display = "block";
+  }, 2000);
+});
+
+closeTerms.addEventListener('click', () => {
+  termsBox.style.bottom = "0";
+  termsBox.style.transition = "bottom 0.6s ease";
+  termsBox.style.bottom = "-100%";
+  setTimeout(() => { termsBox.style.display = "none"; floatBtn.style.display = "flex"; }, 600);
+});
+</script>
+</body>
+</html>
