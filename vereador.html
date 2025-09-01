@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Vereadores</title>
+  <style>
+    *{box-sizing:border-box}*:focus{outline:none}
+    html,body{margin:0;padding:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:#f4f6fa;color:#0a1733}
+    header{position:sticky;top:0;z-index:1000;background:#002f6c;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+    .bar{display:flex;align-items:center;gap:12px;min-height:70px;flex-wrap:wrap;padding:10px 0}
+    .logo{width:48px;height:48px;background:#fff;border:2px solid #fff3;box-shadow:0 2px 6px #0003;object-fit:contain;border-radius:8px}
+    .title{color:#fff;font-weight:700;font-size:20px;letter-spacing:.3px;flex:1}
+    .search-wrap{width:100%;margin:0} /* colado no topo */
+    .search{width:100%;display:flex;align-items:center;gap:12px;background:#fff;border:0;box-shadow:0 6px 20px rgba(0,0,0,.12);padding:12px 16px;border-radius:14px}
+    .search input{flex:1;border:0;font-size:16px;padding:8px}
+    .search .badge{font-size:12px;padding:6px 10px;border-radius:8px;background:#002f6c;color:#fff;font-weight:600}
+    .hero{position:relative;margin:18px 0;border-radius:18px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+    .hero .bg{width:100%;height:200px;background:#0a1733 center/cover no-repeat;filter:brightness(.9)}
+    .hero .overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.45) 100%)}
+    .hero .txt{position:absolute;left:20px;bottom:16px;color:#fff;text-shadow:0 2px 12px #0009;max-width:85%}
+    .hero .txt h1{margin:0;font-size:24px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px;padding:24px 0}
+    .card{background:#fff;border:1px solid #e7ecf5;box-shadow:0 6px 14px rgba(10,42,102,.1);padding:22px;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;transition:transform .2s,box-shadow .2s}
+    .card:hover{transform:translateY(-4px);box-shadow:0 10px 20px rgba(0,0,0,.15)}
+    .avatar{width:92px;height:92px;border-radius:50%;object-fit:cover;box-shadow:0 4px 10px rgba(0,0,0,.2);border:3px solid #f4f6fa}
+    .name{font-weight:800;font-size:18px;color:#0a1733}
+    .meta{font-size:14px;color:#41557a}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:auto}
+    .btn{border:1px solid #d3dbea;background:#f2f6ff;padding:10px 14px;font-weight:700;letter-spacing:.2px;cursor:pointer;border-radius:8px;text-decoration:none;color:#002f6c;transition:.2s}
+    .btn:hover{background:#e6edff}
+    .loading{position:fixed;inset:0;background:#0a1733cc;backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:2000}
+    .spinner{width:64px;height:64px;border:6px solid #ffffff33;border-top-color:#fff;border-radius:50%;animation:spin .9s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .toast{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:10px;z-index:3000}
+    .toast .item{background:#002f6c;color:#fff;padding:12px 16px;border:1px solid #0e387f;box-shadow:0 8px 20px rgba(0,0,0,.3);border-radius:8px}
+    #fw-widget{display:flex;gap:12px;margin:16px 0}
+    .fw-btn{flex:1;min-width:100px;padding:12px;border:2px solid #002f6c;background:#fff;color:#002f6c;font-weight:bold;cursor:pointer;text-align:center;font-size:14px;border-radius:8px;transition:.2s}
+    .fw-btn:hover{background:#002f6c;color:#fff}
+    #fw-view{position:fixed;left:0;right:0;bottom:-100%;height:80%;background:#fff;box-shadow:0 -4px 12px rgba(0,0,0,.2);transition:bottom .4s ease;z-index:10000;display:flex;flex-direction:column;border-radius:16px 16px 0 0;overflow:hidden}
+    #fw-view.active{bottom:0}
+    .fw-head{display:flex;justify-content:space-between;align-items:center;background:#f5f5f5;padding:12px 16px;border-bottom:1px solid #ddd;font-size:14px}
+    #fw-close{background:#002f6c;border:none;color:#fff;font-size:16px;line-height:1;padding:6px 12px;border-radius:6px;cursor:pointer;transition:.2s}
+    #fw-close:hover{background:#001b40}
+    #fw-frame{flex:1;width:100%;border:none;display:none}
+    .fw-load{flex:1;display:flex;align-items:center;justify-content:center;font-size:14px;color:#333}
+    @media(max-width:600px){
+      .title{font-size:18px}
+      .search input{font-size:15px}
+      .hero .txt h1{font-size:20px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="search-wrap">
+      <div class="search">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79L20 21.5 21.5 20l-6-6zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <input id="q" type="search" placeholder="Pesquise vereadores por nome…"/>
+        <span id="count" class="badge">0</span>
+      </div>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="hero">
+      <div id="heroBg" class="bg"></div>
+      <div class="overlay"></div>
+      <div class="txt"><h1 id="heroTitle">Bem-vindos!</h1>
+Após a fundação da cidade como Baixa Verde, a Câmara Municipal foi estabelecida, tornando-se o centro do poder legislativo local e o órgão responsável pela administração da nova cidade.
+      </div>
+    </section>
+
+    <div id="fw-widget">
+      <button class="fw-btn" data-url="https://www.camaramunicipaljc.com.br/enviar-ideia.php">Enviar ideia</button>
+      <button class="fw-btn" data-url="https://www.camaramunicipaljc.com.br/ouvidoria.php">Ouvidoria</button>
+      <button class="fw-btn" data-url="https://www.camaramunicipaljc.com.br/e-sic.php">E-SIC</button>
+    </div>
+
+    <div id="fw-view">
+      <div class="fw-head">
+        <span id="fw-url"></span>
+        <button id="fw-close">✖</button>
+      </div>
+      <div class="fw-load">Carregando...</div>
+      <iframe id="fw-frame" src="" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+    </div>
+
+    <section class="grid" id="lista"></section>
+  </main>
+  <div class="loading" id="loading"><div class="spinner" role="status" aria-live="polite" aria-label="Carregando"></div></div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const btns=document.querySelectorAll('.fw-btn');
+    const view=document.getElementById('fw-view');
+    const frame=document.getElementById('fw-frame');
+    const urlSpan=document.getElementById('fw-url');
+    const close=document.getElementById('fw-close');
+    const load=document.querySelector('.fw-load');
+
+    btns.forEach(b=>{
+      b.addEventListener('click',()=>{
+        urlSpan.textContent=b.dataset.url;
+        frame.style.display='none';
+        load.style.display='flex';
+        frame.src=b.dataset.url;
+        view.classList.add('active');
+      });
+    });
+    frame.addEventListener('load',()=>{
+      load.style.display='none';
+      frame.style.display='block';
+    });
+    close.addEventListener('click',()=>{
+      view.classList.remove('active');
+      frame.src='';
+    });
+  </script>
+
+  <script>
+    const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
+    const showLoad=(v=true)=>$("#loading").style.display=v?"flex":"none";
+    const toast=m=>{const el=document.createElement("div");el.className="item";el.textContent=m;$("#toast").appendChild(el);setTimeout(()=>el.remove(),3800)};
+    const state={vereadores:[],filtros:""};
+    const render=()=>{
+      const term=state.filtros.toLowerCase();
+      const data=state.vereadores.filter(v=>v.nome?.toLowerCase().includes(term));
+      $("#count").textContent=data.length;
+      $("#lista").innerHTML=data.map(v=>`
+        <article class="card">
+          <img class="avatar" src="${v.fotoUrl||''}" alt="Foto de ${v.nome||''}" onerror="this.src=''"/>
+          <div class="name">${v.nome||''}</div>
+          <div class="meta">${v.partido?`Partido: ${v.partido}`:''}</div>
+          <div class="actions">
+            <a class="btn" href="arquivo.html?id=${encodeURIComponent(v.id)}">Ver perfil</a>
+            ${v.insta?`<a class="btn" target="_blank" href="https://instagram.com/${v.insta.replace('@','')}">@Insta</a>`:''}
+          </div>
+        </article>`).join("");
+    };
+    $("#q").addEventListener("input",e=>{state.filtros=e.target.value;render()});
+    showLoad(true);
+    window.addEventListener("load",()=>{
+      try{
+        const db=firebase.database();
+        const cfgRef=db.ref("/config");
+        cfgRef.on("value",snap=>{
+          const c=snap.val()||{};
+          $("#logoHeader").src=c.logoUrl||"";
+          $("#heroTitle").textContent=c.heroTitle||"Bem-vindos!";
+          $("#heroBg").style.backgroundImage=c.heroUrl?`url('${c.heroUrl}')`:"";
+        });
+        const ref=db.ref("/vereadores");
+        ref.on("value",snap=>{
+          const val=snap.val()||{};
+          state.vereadores=Object.keys(val).map(id=>({id,...val[id]})).sort((a,b)=>(a.nome||"").localeCompare(b.nome||""));
+          render();showLoad(false);toast("Lista de vereadores atualizada.");
+        },err=>{showLoad(false);toast("Falha ao carregar vereadores.");console.error(err)});
+      }catch(e){showLoad(false);toast("Erro de inicialização Firebase.");console.error(e)}
+    });
+  </script>
+
+  <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
+<a href="perfil.html" id="btnRodape">← VOLTAR</a>
+<style>
+  #btnRodape{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:#0a2a66; /* mesmo tom de azul dos projetos */
+    color:#fff;
+    font-weight:700;
+    font-size:18px;
+    text-align:center;
+    padding:16px;
+    text-decoration:none;
+    box-shadow:0 -3px 12px rgba(0,0,0,.2);
+    z-index:3001; /* acima das notificações */
+    transition:background .25s ease;
+  }
+  #btnRodape:hover{
+    background:#133b8c;
+  }
+</style>
