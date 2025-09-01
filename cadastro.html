@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prefeitura de João Câmara — Cadastro do Cidadão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rawline:wght@400;600;700&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gov-azul:#0b2b6b; --gov-amarelo:#FFCD00; --gov-branco:#FFFFFF; --gov-verde:#168821;
+    --txt:#1F1F1F; --sombra:0 10px 30px rgba(0,0,0,.08); --radius:10px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Public Sans","Rawline",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f6f7f9;color:var(--txt)}
+  header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;background:var(--gov-azul);color:#fff;padding:14px 18px;box-shadow:var(--sombra)}
+  header .logo{width:44px;height:44px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center}
+  header small{opacity:.9}
+  main{max-width:1040px;margin:24px auto;padding:0 16px}
+  .card{background:var(--gov-branco);border-radius:var(--radius);box-shadow:var(--sombra);padding:24px}
+  h2{margin:0 0 16px}
+  form{display:grid;gap:14px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  label{font-weight:600;display:block;margin-bottom:6px}
+  input,select{
+    width:100%;padding:14px 12px;border:1px solid #dfe3eb;border-radius:12px;
+    background:#fff;font-size:16px;outline:none;transition:box-shadow .15s,border-color .15s;
+    -webkit-appearance:none;appearance:none;
+  }
+  input:focus,select:focus{border-color:#b9c6e2;box-shadow:0 0 0 4px rgba(19,81,180,.12)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border:none;border-radius:12px;font-weight:700;cursor:pointer;font-size:16px;transition:transform .03s ease,opacity .2s}
+  .btn:active{transform:translateY(1px)}
+  .btn-prim{background:var(--gov-verde);color:#fff}
+  .btn-sec{background:#eaf1ff;color:var(--gov-azul)}
+  .spinner{width:18px;height:18px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .alert{padding:12px 14px;border-radius:12px;background:#e7f5ee;border:1px solid #c3ecd8;color:#0f5132;margin-top:10px}
+  .avisos{font-size:14px;color:#5b6270;margin-top:4px}
+  [vw]{z-index:1000}
+</style>
+</head>
+<body>
+  <header>
+  <div class="logo">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpN6mG9JrV3AvmACLq0uOQb0OcGFLu4WW8sOckbZpA8ow2biqC-IxosxA&s=10" alt="Logomarca" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:6px;display:block;margin:auto;">
+  </div>
+  <div>
+    <div style="font-weight:700">Cadastro do Cidadão</div>
+    <small>Crie sua conta e acesse vários serviços.</small>
+  </div>
+</header>
+  <main>
+    <section class="card">
+      <h2>Preencha seus dados</h2>
+      <form id="formCadastro" autocomplete="off">
+        <div class="grid">
+          <div><label for="nomeCompleto">Nome completo</label><input id="nomeCompleto" required placeholder="Nome e sobrenome" /></div>
+          <div><label for="cpf">CPF</label><input id="cpf" required inputmode="numeric" maxlength="14" placeholder="000.000.000-00" /></div>
+          <div><label for="nascimento">Data de nascimento</label><input id="nascimento" required inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" /></div>
+          <div><label for="telefone">Telefone</label><input id="telefone" inputmode="tel" placeholder="(84) 90000-0000" /></div>
+          <div><label for="cep">CEP</label><input id="cep" inputmode="numeric" maxlength="9" placeholder="00000-000" /></div>
+          <div><label for="cidade">Cidade</label><input id="cidade" placeholder="João Câmara" /></div>
+          <div><label for="rua">Rua</label><input id="rua" placeholder="Nome da rua/avenida" /></div>
+          <div><label for="numero">Número</label><input id="numero" inputmode="numeric" placeholder="123" /></div>
+          <div><label for="cadunico">Cadastro Único (opcional)</label><input id="cadunico" placeholder="NIS/PIS (se tiver)" /></div>
+          <div><label for="email">E-mail</label><input id="email" type="email" required placeholder="seuemail@exemplo.com" autocomplete="email"/></div>
+          <div><label for="senha">Crie uma senha</label><input id="senha" type="password" required placeholder="Mínimo 6 caracteres" autocomplete="new-password"/></div>
+          <div><label for="senha2">Confirme a senha</label><input id="senha2" type="password" required placeholder="Repita a senha" autocomplete="new-password"/></div>
+        </div>
+
+        <div class="alert">Garanta que este é seu <strong>e-mail principal</strong> — ele será usado para recuperar o acesso.</div>
+        <div class="avisos" id="cadMsg"></div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
+          <button id="btnCriar" class="btn btn-prim" type="submit"><span class="txt">Criar conta</span></button>
+          <a class="btn btn-sec" href="login.html">Voltar ao login</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <!-- VLibras -->
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="script.js"></script>
+  <script>
+    const form = document.getElementById('formCadastro');
+    const btn = document.getElementById('btnCriar');
+    const msg = document.getElementById('cadMsg');
+
+    const campoCPF = document.getElementById('cpf');
+    const campoNasc = document.getElementById('nascimento');
+    const campoCEP = document.getElementById('cep');
+    const campoTel = document.getElementById('telefone');
+
+    function maskCPF(v){return v.replace(/\D/g,'').slice(0,11).replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2')}
+    function maskDate(v){return v.replace(/\D/g,'').slice(0,8).replace(/(\d{2})(\d)/,'$1/$2').replace(/(\d{2})(\d)/,'$1/$2')}
+    function maskCEP(v){return v.replace(/\D/g,'').slice(0,8).replace(/(\d{5})(\d{1,3})$/,'$1-$2')}
+    function maskTel(v){const d=v.replace(/\D/g,'').slice(0,11);if(d.length<=10)return d.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');return d.replace(/(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3')}
+
+    [campoCPF,campoNasc,campoCEP,campoTel].forEach(el=>{
+      if(!el) return;
+      el.addEventListener('input',()=>{
+        if(el===campoCPF) el.value=maskCPF(el.value);
+        if(el===campoNasc) el.value=maskDate(el.value);
+        if(el===campoCEP) el.value=maskCEP(el.value);
+        if(el===campoTel) el.value=maskTel(el.value);
+      });
+    });
+
+    function setLoading(is){
+      btn.disabled=is;
+      btn.innerHTML=is?'<div class="spinner"></div><span>Criando…</span>':'<span class="txt">Criar conta</span>';
+    }
+
+    form.addEventListener('submit',async e=>{
+      e.preventDefault();msg.textContent='';
+      const nome=document.getElementById('nomeCompleto').value.trim();
+      const cpf=campoCPF.value.trim();
+      const nasc=campoNasc.value.trim();
+      const tel=campoTel.value.trim();
+      const cep=campoCEP.value.trim();
+      const cidade=document.getElementById('cidade').value.trim();
+      const rua=document.getElementById('rua').value.trim();
+      const numero=document.getElementById('numero').value.trim();
+      const cadunico=document.getElementById('cadunico').value.trim();
+      const email=document.getElementById('email').value.trim();
+      const senha=document.getElementById('senha').value;
+      const senha2=document.getElementById('senha2').value;
+
+      if(senha!==senha2){msg.textContent='As senhas não conferem.';return;}
+      if(cpf.replace(/\D/g,'').length!==11){msg.textContent='CPF inválido.';return;}
+      if(nasc.length!==10){msg.textContent='Data de nascimento inválida.';return;}
+
+      setLoading(true);
+      try{
+        await registrarCidadao({nomeCompleto:nome,cpf,nascimento:nasc,telefone:tel,endereco:{cep,cidade,rua,numero},cadunico: cadunico||null,email},senha);
+        alert('Conta criada com sucesso!');
+        location.href='perfil.html';
+      }catch(err){msg.textContent=traduzErroAuth(err);}finally{setLoading(false);}
+    });
+  </script>
+</body>
+</html>
+
+
+<style>
+  /* Fundo mais desfocado e escuro */
+  #telaCarregamento {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(12px);
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Caixa vertical estilo GOV */
+  .carregandoBox {
+    width: 160px;
+    padding: 30px 20px;
+    background: #fff;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.25);
+    font-family: "Arial", sans-serif;
+  }
+
+  /* Bolinha girando mais profissional e suave */
+  .spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid #0072c6;
+    border-top: 5px solid transparent;
+    border-radius: 50%;
+    animation: girar 2.5s linear infinite; /* mais lenta e suave */
+    margin-bottom: 20px;
+  }
+
+  @keyframes girar {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Texto carregando */
+  .carregandoBox span {
+    font-size: 17px;
+    color: #0072c6;
+    font-weight: bold;
+    text-align: center;
+  }
+</style>
+<div id="telaCarregamento">
+  <div class="carregandoBox">
+    <div class="spinner"></div>
+    <span>carregando...</span>
+  </div>
+</div>
+<script>
+  setTimeout(() => {
+    const tela = document.getElementById('telaCarregamento');
+    tela.style.opacity = '0';
+    setTimeout(() => { tela.style.display = 'none'; }, 300);
+  }, 3000);
+</script>
