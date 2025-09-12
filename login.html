@@ -59,6 +59,7 @@
       </div>
     </div>
 
+
     <h2>Para começar, informe seu e-mail</h2>
     <p>Somente endereços válidos</p>
 
@@ -75,38 +76,13 @@
     </form>
 
 
-<style>
-#fonezinho {
-  width: 132px;   
-  height: auto;  
-  cursor: pointer;
-  display: block;
-  margin: 50px auto;
-}
-</style>
 
-<img id="fonezinho" src="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBhWpurDFiEzKiFZ655EwgTrV6YwyYZStd672pxCBcxZg-4VVvOqsuu-8pO016jKDGe75Kh8BuU3rE8YzFCR_a6kaeuUbyac_R6uA0IKwQhtXhNNMEiWHN9Qt3pusgUQqZ0vJ88uZVGfOQPUGRiysnmBscOIcMg31usyg?key=rgGrow1iu4frhnE-FgQLyQ" alt="Fonezinho">
-
-<script>
-const textoParaFalar = "Digite as informações de acesso para acessar sua conta. Caso ainda não tenha uma conta, clique em criar minha conta e você será levado até a área de cadastro. Lembre-se de não compartilhar seus dados com terceiros.";
-
-const fone = document.getElementById("fonezinho");
-
-fone.addEventListener("click", () => {
-  if ('speechSynthesis' in window) {
-    speechSynthesis.cancel();
-    let utterance = new SpeechSynthesisUtterance(textoParaFalar);
-    utterance.lang = 'pt-BR';
-    speechSynthesis.speak(utterance);
-  }
-});
-</script>
+<center>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfgqPcqGWPGT6tEeYvYZTuetCal_r2ClEqYyFMm_jfkeQCwdDE9wchsrtolgCIRSZQTYLuvRmwnv5V_J-K3y10CmY6CNmpVZ-JaMLprrxOsX26ZQuiNqOTXHsb-9mvI5a8mvVfV2BNTnYaesPzOM0aN5Nvf8aIRHbnvs-aH1EgnyauTN6efoqgrpM2xHQ/s593/8A092B0F-4211-4DFA-9238-7E1F039C323E.png" width="350">
+</center>
 
 
-    <div class="rodape">© Câmara Municipal de João Câmata/RN - <span id="ano"></span></div>
-  </div>
 
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
