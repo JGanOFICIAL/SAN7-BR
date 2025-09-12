@@ -9,40 +9,18 @@
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   body,html{height:100%;width:100%;font-family:"Public Sans",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-  body{
-    background:#0b2b6b;
-  }
-  header{
-    position:fixed;top:0;left:0;right:0;z-index:30;
-    background:#fff;color:#333;
-    display:flex;align-items:center;justify-content:space-between;
-    padding:12px 18px;box-shadow:0 2px 6px rgba(0,0,0,.08);
-  }
+  body{background:#0b2b6b}
+  header{position:fixed;top:0;left:0;right:0;z-index:30;background:#fff;color:#333;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
   header .logo{display:flex;align-items:center;gap:10px}
   header .logo img{width:40px;height:40px;object-fit:contain;border-radius:6px}
   header .logo div{display:flex;flex-direction:column}
   header strong{font-size:15px}
   header small{font-size:13px;color:#444}
-  .btn-back{
-    background:#0b2b6b;color:#fff;
-    width:38px;height:38px;
-    display:flex;align-items:center;justify-content:center;
-    text-decoration:none;font-size:20px;
-    border:none;border-radius:0;
-  }
-  .perfil-container{
-    background:linear-gradient(180deg,#0b2b6b 0%,#041739 100%);
-    color:#fff;width:100%;max-width:480px;
-    padding:80px 28px 40px;min-height:100vh;
-    display:flex;flex-direction:column;justify-content:flex-start;
-    overflow-y:auto;margin:0 auto;
-  }
+  .btn-back{background:#0b2b6b;color:#fff;width:38px;height:38px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:20px;border:none;border-radius:0}
+  .perfil-container{background:linear-gradient(180deg,#0b2b6b 0%,#041739 100%);color:#fff;width:100%;max-width:480px;padding:80px 28px 40px;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;overflow-y:auto;margin:0 auto}
   h2{font-size:22px;font-weight:700;margin-bottom:6px}
   p{font-size:15px;margin-bottom:20px}
-  .btn{
-    width:100%;padding:16px;border:none;border-radius:30px;
-    font-weight:700;font-size:16px;cursor:pointer;transition:.2s;
-  }
+  .btn{width:100%;padding:16px;border:none;border-radius:30px;font-weight:700;font-size:16px;cursor:pointer;transition:.2s}
   .btn-prim{background:#bfbfbf;color:#333}
   .btn-prim:enabled{background:#fff;color:#0b2b6b}
   .rodape{margin-top:30px;text-align:center;font-size:14px;color:rgba(255,255,255,.85)}
@@ -58,41 +36,12 @@
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media(max-width:500px){.grid{grid-template-columns:1fr}}
   .btn-save{background:#0b2b6b;color:#fff;width:100%;margin-top:15px;border-radius:30px}
-  #fonezinho {
-    width: 180px;
-    height: auto;
-    cursor: pointer;
-    display: block;
-    margin: 50px auto;
-  }
-  .funcoes-container{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
-    gap:16px;
-    margin-top:30px;
-  }
-  .funcao{
-    background:#fff;color:#0b2b6b;
-    border-radius:12px;
-    text-align:center;
-    padding:12px;
-    text-decoration:none;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    font-size:14px;
-    font-weight:600;
-    transition:.2s;
-  }
-  .funcao img{
-    width:60px;
-    height:60px;
-    object-fit:cover;
-    border-radius:8px;
-    margin-bottom:8px;
-  }
+  #fonezinho{width:180px;height:auto;cursor:pointer;display:block;margin:50px auto}
+  .funcoes-container{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:16px;margin-top:30px}
+  .funcao{background:#fff;color:#0b2b6b;border-radius:12px;text-align:center;padding:12px;text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14px;font-weight:600;transition:.2s}
+  .funcao img{width:60px;height:60px;object-fit:cover;border-radius:8px;margin-bottom:8px}
   .funcao:hover{transform:translateY(-3px);box-shadow:0 4px 12px rgba(0,0,0,.25)}
+  #imgAbaixoBtn{width:350px;height:auto;display:block;margin:20px auto}
 </style>
 </head>
 <body>
@@ -112,22 +61,12 @@
     <p id="saudacao">Olá!</p>
     <button id="btnDados" class="btn btn-prim">Editar dados</button>
 
-<br>
+    <img id="imgAbaixoBtn" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhmgrLGNZKuoqUEOStgDX6JSYZ1M8_TFcIPY9Y0wF00kg7v3sX0E64yT7r8mLb_X1_PtuF2WZgixvZDDv7UiOInYsTYeumaOCndu-FT4GkqF6xgnsV2T3l8xDk1EvSqc0c8IP0T4x6H_7CDBvcP5ch9kLzshePfe_POzGQMFYhj_MYLwLsf5_jelTZv7Fo/s640/5501051C-5967-4354-AFA9-01C7EC8BB615.png" alt="Imagem abaixo do botão">
 
-<center>
-  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhmgrLGNZKuoqUEOStgDX6JSYZ1M8_TFcIPY9Y0wF00kg7v3sX0E64yT7r8mLb_X1_PtuF2WZgixvZDDv7UiOInYsTYeumaOCndu-FT4GkqF6xgnsV2T3l8xDk1EvSqc0c8IP0T4x6H_7CDBvcP5ch9kLzshePfe_POzGQMFYhj_MYLwLsf5_jelTZv7Fo/s640/5501051C-5967-4354-AFA9-01C7EC8BB615.png" width="350">
-</center>
+    <hr><br>
 
-
-
-<hr>
-
-<br>
-
-<h2> Busque oque procura </h2>
-<hp> Diversas opções que você pode explorar. Todas as telas contam com funções de acessibilidade para garantir que todos tenham acesso.</p>
-
-
+    <h2> Busque oque procura </h2>
+    <p>Diversas opções que você pode explorar. Todas as telas contam com funções de acessibilidade para garantir que todos tenham acesso.</p>
 
     <div class="funcoes-container">
       <a href="ouvidoria.html" class="funcao"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLsc7UjlyY37cN5dNx8aTJxX-eMkCd5sF-IA&s" alt=""><span>Ouvidoria</span></a>
@@ -140,16 +79,13 @@
       <a href="blog.html" class="funcao"><img src="img8.png" alt=""><span>Título 8</span></a>
     </div>
 
-<br><br>
+    <br><br>
 
-<div style="text-align: center;">
-  <a href="livros.html">
-    <img src="https://lh7-rt.googleusercontent.com/formsz/AN7BsVB4FLMclKGOvC_mygcJLPZHrk-ZhmSAKrXgBrLf1FqWpxHKKeNLHHJlps1clHXKDKvm5SoourI6rcb1ccqV19moRYQKsmHcEr1O7ybYAJgeJZGpRo4dM2x3Vh7XmIK8XItqD4uDaqRFQ_gBbsMQcyvOWiBxVcPEKPeYAw?key=9vjZLptG2aFFXGOft1V9vA" 
-         alt="Descrição da imagem" 
-         style="width:355px; height:auto;">
-  </a>
-</div>
-
+    <div style="text-align:center;">
+      <a href="livros.html">
+        <img src="https://lh7-rt.googleusercontent.com/formsz/AN7BsVB4FLMclKGOvC_mygcJLPZHrk-ZhmSAKrXgBrLf1FqWpxHKKeNLHHJlps1clHXKDKvm5SoourI6rcb1ccqV19moRYQKsmHcEr1O7ybYAJgeJZGpRo4dM2x3Vh7XmIK8XItqD4uDaqRFQ_gBbsMQcyvOWiBxVcPEKPeYAw?key=9vjZLptG2aFFXGOft1V9vA" alt="Descrição da imagem" style="width:355px;height:auto;">
+      </a>
+    </div>
 
     <div class="rodape">© Câmara Municipal de João Câmara - <span id="ano"></span></div>
   </div>
@@ -185,18 +121,11 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script src="script.js"></script>
   <script>
-const textoParaFalar = "Busque abaixo a função que procura. Caso nescessite editar dados endereço, cliquem editar dados, somente dados de endereço podem ser editados e serão atualizados em tempo real. Ao lado direito da tela, você encontra a função de libras para acessibilidade. Para falar diretamente com a câmara, cliquem em ouvidoria, e será levado até o portal oficial."; 
-const fone = document.getElementById("fonezinho");
-fone.addEventListener("click", () => {
-  if ('speechSynthesis' in window) {
-    speechSynthesis.cancel();
-    let utterance = new SpeechSynthesisUtterance(textoParaFalar);
-    utterance.lang = 'pt-BR';
-    speechSynthesis.speak(utterance);
-  }
-});
+    const textoParaFalar="Busque abaixo a função que procura. Caso nescessite editar dados endereço, cliquem editar dados, somente dados de endereço podem ser editados e serão atualizados em tempo real. Ao lado direito da tela, você encontra a função de libras para acessibilidade. Para falar diretamente com a câmara, cliquem em ouvidoria, e será levado até o portal oficial."; 
+    const fone=document.getElementById("fonezinho");
+    if(fone){fone.addEventListener("click",()=>{if('speechSynthesis'in window){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(textoParaFalar);u.lang='pt-BR';speechSynthesis.speak(u)}})}
 
-    document.getElementById('ano').textContent = new Date().getFullYear();
+    document.getElementById('ano').textContent=new Date().getFullYear();
     protegerPagina();
 
     const btnSair=document.getElementById("btnSair");
