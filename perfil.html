@@ -42,6 +42,22 @@
   .funcao img{width:60px;height:60px;object-fit:cover;border-radius:8px;margin-bottom:8px}
   .funcao:hover{transform:translateY(-3px);box-shadow:0 4px 12px rgba(0,0,0,.25)}
   #imgAbaixoBtn{width:350px;height:auto;display:block;margin:20px auto}
+
+  /* ========== ADIÇÕES PARA FOTO DE PERFIL ========== */
+  .perfil-foto-wrap{display:flex;align-items:center;gap:14px;margin:14px 0}
+  #perfilFoto{width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.12);cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.28)}
+  #perfilFoto:focus{outline:3px solid rgba(255,255,255,.12)}
+  .overlay-foto{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,0.02);backdrop-filter:blur(8px);z-index:90;padding:20px}
+  .modal-foto{width:min(720px,95%);max-height:86vh;overflow:auto;background:#fff;border-radius:6px;padding:18px;color:#000;box-shadow:0 8px 32px rgba(0,0,0,.32);border:1px solid rgba(0,0,0,.06)}
+  .mhead-foto{display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:0;background:#fff;padding-bottom:8px;margin-bottom:10px}
+  .grid-fotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:12px}
+  .thumb{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;cursor:pointer;border:3px solid transparent;box-sizing:border-box}
+  .thumb.sel{border-color:#0b2b6b;border-radius:8px;transform:scale(1.02)}
+  .thumb.default{border-radius:50%}
+  .foto-actions{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:12px}
+  .btn-ghost{background:#f1f3f5;border:none;padding:10px 12px;border-radius:8px;cursor:pointer;font-weight:700}
+  .save-spinner{width:18px;height:18px;border:3px solid rgba(0,0,0,.08);border-top-color:#0b2b6b;border-radius:50%;animation:spin 1s linear infinite}
+  /* fim adições */
 </style>
 </head>
 <body>
@@ -59,6 +75,18 @@
   <div class="perfil-container">
     <h2>Bem-vindo ao seu perfil</h2>
     <p id="saudacao">Olá!</p>
+
+    <!-- ========== ADIÇÃO: foto de perfil redondinha (não remove nada existente) ========== -->
+    <div class="perfil-foto-wrap" aria-hidden="false">
+      <!-- Substitua o valor de DEFAULT_AVATAR no script abaixo para trocar o avatar padrão -->
+      <img id="perfilFoto" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><rect width='100%' height='100%' fill='%230b2b6b'/><g fill='%23fff'><circle cx='120' cy='84' r='44' /><rect x='40' y='146' width='160' height='56' rx='28'/></g></svg>" alt="Foto de perfil (clique para trocar)" tabindex="0" title="Clique para trocar a foto de perfil">
+      <div style="display:flex;flex-direction:column">
+        <small style="opacity:.9">Clique na foto para escolher outra</small>
+        <button id="btnTrocarFoto" class="btn-prim" style="width:160px;margin-top:8px;border-radius:12px;padding:10px;font-weight:600">Escolher foto</button>
+      </div>
+    </div>
+    <!-- ============================================================== -->
+
     <button id="btnDados" class="btn btn-prim">Editar dados</button>
 
     <img id="imgAbaixoBtn" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhmgrLGNZKuoqUEOStgDX6JSYZ1M8_TFcIPY9Y0wF00kg7v3sX0E64yT7r8mLb_X1_PtuF2WZgixvZDDv7UiOInYsTYeumaOCndu-FT4GkqF6xgnsV2T3l8xDk1EvSqc0c8IP0T4x6H_7CDBvcP5ch9kLzshePfe_POzGQMFYhj_MYLwLsf5_jelTZv7Fo/s640/5501051C-5967-4354-AFA9-01C7EC8BB615.png" alt="Imagem abaixo do botão">
@@ -112,6 +140,30 @@
       </div>
     </div>
   </div>
+
+  <!-- ========== ADIÇÃO: overlay / modal de escolha de foto ========== -->
+  <div class="overlay-foto" id="overlayFoto" aria-hidden="true">
+    <div class="modal-foto" role="dialog" aria-modal="true" aria-labelledby="tituloModalFoto">
+      <div class="mhead-foto">
+        <h3 id="tituloModalFoto">Escolher foto de perfil</h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="mclose" id="fecharModalFoto" aria-label="Fechar">✕</button>
+        </div>
+      </div>
+
+      <div id="msgFotoInfo" style="font-size:14px;color:#555;margin-bottom:10px">Escolha uma das imagens abaixo — a alteração será salva em tempo real.</div>
+
+      <div class="grid-fotos" id="gridFotos" aria-live="polite" aria-busy="false">
+        <!-- fotos geradas por JS -->
+      </div>
+
+      <div class="foto-actions">
+        <button id="btnCancelarFoto" class="btn-ghost">Cancelar</button>
+        <button id="btnSalvarFoto" class="btn btn-save" style="border-radius:10px">Salvar seleção</button>
+      </div>
+    </div>
+  </div>
+  <!-- ============================================================== -->
 
   <div vw class="enabled"><div vw-access-button class="active"></div><div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div></div>
   <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
@@ -186,5 +238,212 @@
       finally{setSaving(false)}
     });
   </script>
+
+  <!-- =================== SCRIPT ADICIONADO: gerenciamento de fotos de perfil =================== -->
+  <script>
+    (function(){
+      // ==================== CONFIGURE AQUI as 10 URLs e o avatar padrão ====================
+      // Substitua as strings abaixo pelas URLs reais das imagens que você quer disponibilizar.
+      // Deixe exatamente 10 itens (pode ser "" para placeholder vazio).
+      const PERFIL_PALETTE = [
+        "https://img.freepik.com/fotos-gratis/avatar-androgino-de-pessoa-queer-nao-binaria_23-2151100224.jpg?semt=ais_hybrid&w=740",
+        "https://img.freepik.com/psd-gratuitas/renderizacao-3d-do-estilo-de-cabelo-para-o-design-do-avatar_23-2151869123.jpg?semt=ais_hybrid&w=740",
+        "https://img.freepik.com/fotos-gratis/avatar-androgino-de-pessoa-queer-nao-binaria_23-2151100270.jpg",
+        "https://pub-static.fotor.com/assets/projects/pages/d5bdd0513a0740a8a38752dbc32586d0/fotor-03d1a91a0cec4542927f53c87e0599f6.jpg",
+        "https://img.freepik.com/psd-gratuitas/ilustracao-3d-de-avatar-ou-perfil-humano_23-2150671116.jpg?w=360",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFcyq3K9I_N5uVhryn_0KwBb8ObXsbDF7k42cV9VnIq6aa0WfaZRnr-umA&s=10",
+        "https://img.freepik.com/vetores-gratis/punho-forte-e-bandeira-lgbt_23-2148510374.jpg",
+        "https://img.freepik.com/fotos-gratis/personagem-de-desenho-animado-em-3d_23-2151034029.jpg",
+        "https://img.freepik.com/vetores-premium/um-menino-com-uma-camisa-que-diz-e-um-personagem_1230457-37903.jpg?semt=ais_hybrid&w=740&q=80",
+        "https://i.pinimg.com/736x/1c/30/c2/1c30c25fc1b09887cbdd92413bceca1b.jpg"
+      ];
+
+      // URL do avatar padrão (quando o usuário NÃO TIVER foto)
+      // Substitua essa URL pelo avatar padrão que você preferir.
+      const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><rect width='100%' height='100%' fill='%230b2b6b'/><g fill='%23fff'><circle cx='120' cy='84' r='44' /><rect x='40' y='146' width='160' height='56' rx='28'/></g></svg>";
+
+
+      const perfilFotoEl = document.getElementById('perfilFoto');
+      const btnTrocarFoto = document.getElementById('btnTrocarFoto');
+      const overlayFoto = document.getElementById('overlayFoto');
+      const fecharModalFoto = document.getElementById('fecharModalFoto');
+      const gridFotos = document.getElementById('gridFotos');
+      const btnSalvarFoto = document.getElementById('btnSalvarFoto');
+      const btnCancelarFoto = document.getElementById('btnCancelarFoto');
+      const msgFotoInfo = document.getElementById('msgFotoInfo');
+
+      let selectedUrl = null;
+      let currentUid = null;
+      let salvando = false;
+      let thumbs = [];
+
+      // Monta a grade com as thumbnails (executa uma vez)
+      function renderPalette(){
+        gridFotos.innerHTML = '';
+        thumbs = [];
+
+        // opção "sem foto" (avatar padrão)
+        const btnDefault = document.createElement('img');
+        btnDefault.className = 'thumb default';
+        btnDefault.alt = 'Sem foto (padrão)';
+        btnDefault.src = DEFAULT_AVATAR;
+        btnDefault.title = 'Usar avatar padrão (sem foto)';
+        btnDefault.addEventListener('click', ()=> {
+          highlightThumb(btnDefault);
+          selectUrlAndMaybeSave(DEFAULT_AVATAR);
+        });
+        gridFotos.appendChild(btnDefault);
+        thumbs.push(btnDefault);
+
+        // as 10 imagens
+        PERFIL_PALETTE.forEach((u, idx) => {
+          const img = document.createElement('img');
+          img.className = 'thumb';
+          img.alt = 'Foto ' + (idx+1);
+          img.title = 'Foto ' + (idx+1);
+          img.src = u || DEFAULT_AVATAR;
+          img.dataset.url = u || DEFAULT_AVATAR;
+          img.addEventListener('click', ()=>{
+            highlightThumb(img);
+            selectUrlAndMaybeSave(img.dataset.url);
+          });
+          gridFotos.appendChild(img);
+          thumbs.push(img);
+        });
+      }
+
+      function highlightThumb(el){
+        thumbs.forEach(t=>t.classList.remove('sel'));
+        el.classList.add('sel');
+      }
+
+      // Ao selecionar: atualiza a variável e (opcional) salva automaticamente
+      function selectUrlAndMaybeSave(url){
+        selectedUrl = url || DEFAULT_AVATAR;
+        // Save automatically in real-time when user clicks a thumb:
+        // se preferir só salvar com o botão, comente a próxima linha.
+        salvarFotoPerfilRealTime(currentUid, selectedUrl);
+      }
+
+      // Abre modal
+      function openModalFoto(){
+        overlayFoto.style.display = 'flex';
+        overlayFoto.setAttribute('aria-hidden','false');
+        gridFotos.focus?.();
+      }
+
+      // Fecha modal
+      function closeModalFoto(){
+        overlayFoto.style.display = 'none';
+        overlayFoto.setAttribute('aria-hidden','true');
+        // limpa seleção temporária
+        selectedUrl = null;
+        thumbs.forEach(t=>t.classList.remove('sel'));
+      }
+
+      // Salva foto no Auth (photoURL) e no Realtime Database em caminhos comuns.
+      async function salvarFotoPerfilRealTime(uid, url){
+        if(!uid) {
+          alert('Usuário não identificado. Faça login novamente.');
+          return;
+        }
+        if(salvando) return;
+        salvando = true;
+        msgFotoInfo.textContent = 'Salvando...';
+        try {
+          // 1) tenta atualizar o profile do Firebase Auth (photoURL)
+          const user = firebase.auth().currentUser;
+          if(user && user.uid === uid) {
+            try{ await user.updateProfile({ photoURL: url }); } catch(e) { console.warn('Não foi possível atualizar auth.photoURL:', e); }
+          }
+          // 2) escreve em múltiplos caminhos do Realtime Database (para cobrir diferentes estruturas)
+          const updates = {};
+          updates[`/users/${uid}/fotoURL`] = url;
+          updates[`/usuarios/${uid}/fotoURL`] = url;
+          updates[`/perfis/${uid}/fotoURL`] = url;
+          updates[`/users/${uid}/perfilFoto`] = url;
+          // Se você tiver um caminho específico, inclua aqui, por exemplo:
+          // updates[`/meus_perfis/${uid}/foto`] = url;
+          await firebase.database().ref().update(updates);
+
+          // 3) atualiza imediatamente a imagem da UI
+          perfilFotoEl.src = url || DEFAULT_AVATAR;
+          msgFotoInfo.textContent = 'Foto salva em tempo real.';
+        } catch(err){
+          console.error('Erro ao salvar foto de perfil', err);
+          msgFotoInfo.textContent = 'Erro ao salvar. Tente novamente.';
+        } finally {
+          salvando = false;
+          // limpa mensagem depois de 1.5s
+          setTimeout(()=>{ if(!salvando) msgFotoInfo.textContent = 'Escolha uma das imagens abaixo — a alteração será salva em tempo real.'; }, 1500);
+        }
+      }
+
+      // Quando usuário clica "Salvar seleção" — garante salvar a seleção atual
+      btnSalvarFoto.addEventListener('click', async ()=>{
+        if(!selectedUrl){
+          alert('Selecione uma imagem antes de salvar.');
+          return;
+        }
+        await salvarFotoPerfilRealTime(currentUid, selectedUrl);
+        closeModalFoto();
+      });
+      btnCancelarFoto.addEventListener('click', ()=> closeModalFoto());
+      fecharModalFoto.addEventListener('click', ()=> closeModalFoto());
+
+      // Abre modal ao clicar na imagem ou no botão
+      perfilFotoEl.addEventListener('click', ()=> { renderPalette(); openModalFoto(); });
+      perfilFotoEl.addEventListener('keypress', (e)=> { if(e.key === 'Enter' || e.key === ' ') { renderPalette(); openModalFoto(); }});
+      btnTrocarFoto.addEventListener('click', ()=> { renderPalette(); openModalFoto(); });
+
+      // Fechar com ESC
+      document.addEventListener('keydown', (e)=> { if(e.key === 'Escape') closeModalFoto(); });
+
+      // ========== sincronização em tempo real: quando o usuário fizer login, escutar os possíveis caminhos de foto ==========
+      onAuthReady(async (user) => {
+        if(!user) return;
+        currentUid = user.uid;
+
+        // 1) primeiro, tenta obter foto pelo Auth (se existir)
+        try {
+          const authPhoto = firebase.auth().currentUser?.photoURL;
+          if(authPhoto) {
+            perfilFotoEl.src = authPhoto;
+          }
+        } catch(e){ /* ignora */ }
+
+        // 2) tenta obter perfil via sua função obterPerfil (se existir)
+        try {
+          const perfil = await obterPerfil(currentUid);
+          if(perfil){
+            // tenta vários campos comuns
+            const possible = perfil?.fotoURL || perfil?.photoURL || perfil?.foto || perfil?.avatar;
+            if(possible) perfilFotoEl.src = possible;
+          }
+        } catch(e){ /* ignora se a função não existir ou falhar */ }
+
+        // 3) adiciona listeners em caminhos comuns do Realtime Database para atualizar em tempo real
+        const caminhos = [
+          `/users/${currentUid}/fotoURL`,
+          `/usuarios/${currentUid}/fotoURL`,
+          `/perfis/${currentUid}/fotoURL`,
+          `/users/${currentUid}/perfilFoto`,
+          `/usuarios/${currentUid}/perfilFoto`
+        ];
+        caminhos.forEach(path => {
+          try {
+            firebase.database().ref(path).on('value', snap => {
+              const v = snap.val();
+              if(v) perfilFotoEl.src = v;
+            });
+          } catch(e){ console.warn('Erro ao escutar caminho', path, e); }
+        });
+
+        // fallback: se nada, usa avatar padrão
+        if(!perfilFotoEl.src || perfilFotoEl.src.trim()==='') perfilFotoEl.src = DEFAULT_AVATAR;
+      });
+    })();
+  </script>
+
 </body>
 </html>
