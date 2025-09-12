@@ -1,50 +1,255 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Prefeitura de João Câmara — Perfil</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Rawline:wght@400;600;700&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet"><style>
-:root{--gov-azul:#0a2a66;--gov-amarelo:#FFCD00;--gov-branco:#fff;--gov-verde:#168821;--cinza:#f4f6fa;--sombra:0 6px 24px rgba(0,0,0,.08)}
-body{margin:0;background:var(--cinza);color:#1f1f1f;font-family:"Public Sans","Rawline",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-header{position:sticky;top:0;background:var(--gov-azul);color:#fff;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sombra);z-index:10;border-bottom:2px solid rgba(255,255,255,.15)}
-.esq{display:flex;align-items:center;gap:14px}
-.logo{width:48px;height:48px;background:#fff;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.logo img{width:100%;height:100%;object-fit:contain}
-.saud{display:flex;flex-direction:column}
-.saud strong{font-size:19px}
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border:none;border-radius:12px;font-weight:700;cursor:pointer;transition:.25s}
-.btn:hover{opacity:.9;transform:translateY(-1px)}
-.btn-sair{background:#eaf1ff;color:#0b2b6b}
-main{max-width:1080px;margin:28px auto;padding:0 18px}
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media(max-width:900px){.cards{grid-template-columns:1fr}}
-.card{background:var(--gov-branco);border-radius:14px;box-shadow:var(--sombra);padding:22px;transition:.25s}
-.card:hover{transform:translateY(-3px)}
-.acoes{display:flex;gap:10px;flex-wrap:wrap}
-.btn-acao{background:var(--gov-verde);color:#fff}
-.btn-acao.sec{background:#fffae6;color:#584300;border:1px solid #ffe08a}
-.link{display:inline-flex;align-items:center;gap:8px;text-decoration:none}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;padding:12px;z-index:50}
-.modal{width:min(720px,100%);max-height:80vh;overflow:auto;background:#fff;border-radius:18px;box-shadow:var(--sombra);padding:20px}
-.mhead{display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:0;background:#fff}
-.mclose{border:none;background:#f1f3f5;border-radius:10px;padding:10px;cursor:pointer;font-weight:700}
-label{font-weight:600}
-input{width:100%;padding:12px;border:1px solid #dfe3eb;border-radius:12px;font-size:16px;outline:none;transition:.25s}
-input:focus{border-color:#0a2a66;box-shadow:0 0 0 3px rgba(10,42,102,.18)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:700px){.grid{grid-template-columns:1fr}}
-.btn-save{background:var(--gov-azul);color:#fff}
-.spinner{width:18px;height:18px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite;margin-right:8px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.chip{display:inline-block;background:#eaf1ff;color:#0b2b6b;border-radius:999px;padding:6px 10px;font-size:12px;border:1px solid #d6e4ff}
-.colecao-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;padding:20px;font-family:Arial,sans-serif}
-.item{background:#fff;border:1px solid #dcdcdc;border-radius:10px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.08);transition:.25s}
-.item:hover{transform:translateY(-5px)}
-.item img{width:100%;height:160px;object-fit:cover}
-.item-content{padding:15px}
-.item h3{font-size:18px;margin:0 0 8px;color:#0a2a66}
-.item p{font-size:14px;color:#555;margin-bottom:15px}
-.item a{display:inline-block;padding:9px 16px;background:#0a2a66;color:#fff;border-radius:6px;text-decoration:none;font-size:14px;transition:.25s}
-.item a:hover{background:#071f4c}
-#telaCarregamento{position:fixed;top:0;left:0;width:100%;height:100%;backdrop-filter:blur(12px);background:rgba(0,0,0,.55);display:flex;justify-content:center;align-items:center;z-index:9999;transition:opacity .3s ease}
-.carregandoBox{width:170px;padding:32px 22px;background:#fff;border-radius:12px;display:flex;flex-direction:column;justify-content:center;align-items:center;box-shadow:0 6px 25px rgba(0,0,0,.25);font-family:"Arial",sans-serif}
-.carregandoBox .spinner{width:62px;height:62px;border:6px solid #0a2a66;border-top:6px solid transparent;border-radius:50%;animation:girar 2.5s linear infinite;margin-bottom:20px}
-@keyframes girar{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-.carregandoBox span{font-size:17px;color:#0a2a66;font-weight:bold;text-align:center}
-</style></head><body><header><div class="esq"><div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpN6mG9JrV3AvmACLq0uOQb0OcGFLu4WW8sOckbZpA8ow2biqC-IxosxA&s=10" alt="Logomarca"></div><div class="saud"><small>Câmara Municipal de João Câmara</small><strong id="saudacao">Olá!</strong></div></div><button id="btnSair" class="btn btn-sair">SAIR</button></header><main><div class="cards"><section class="card"><h2 style="margin:0 0 6px">Minha área</h2><div class="acoes" style="margin-top:8px"><button id="btnDados" class="btn btn-acao">Editar dados</button><a class="btn btn-acao sec link" href="https://joaocamara.rn.gov.br" id="btnEventos">Eventos municipais</a><a class="btn btn-acao sec link" href="https://joaocamara.rn.gov.br/?s=Editais" id="btnEditais">Editais</a><a class="btn btn-acao sec link" href="https://joaocamara.rn.gov.br/" target="_blank" rel="noopener">Site oficial da Prefeitura</a></div><div style="margin-top:10px"></div></section></div><div class="colecao-container"><div class="item"><img src="https://826d3d7dee.cbaul-cdnwnd.com/62fd26f239c381f07684529cff4b51b2/200000107-e15d4e15d6/3C97C41F-B39C-4A81-B44C-567375BD5383.webp" alt="Imagem 1"><div class="item-content"><h3>Biblioteca Virtual</h3><p>A biblioteca virtual oferece acesso rápido e seguro a livros, artigos e conteúdos digitais, permitindo consultas de qualquer lugar e facilitando estudos e pesquisas.</p><a href="livros.html">Acessar</a></div></div><div class="item"><img src="https://826d3d7dee.cbaul-cdnwnd.com/62fd26f239c381f07684529cff4b51b2/200000105-26be326be5/700/D1C9A504-B5D1-48AB-A9C0-063E766D086A.webp" alt="Imagem 2"><div class="item-content"><h3>Vereador conectado</h3><p>Veja tudo que se passa no mandato do seu vereador, de forma segura e transparente.</p><a href="vereador.html">Acessar</a></div></div><div class="item"><img src="https://us.123rf.com/450wm/bilahstudio/bilahstudio2103/bilahstudio210300554/165645817-ilustra%C3%A7%C3%A3o-vetorial-do-conceito-de-neg%C3%B3cio-erro-404-congelar-da-internet-indispon%C3%ADvel-irritado-e.jpg?ver=6" alt="Imagem 3"><div class="item-content"><h3>Em desenvolvimento.</h3><p>Em desenvolvimento.</p><a href="biblioteca.html">Acessar</a></div></div><div class="item"><img src="https://us.123rf.com/450wm/bilahstudio/bilahstudio2103/bilahstudio210300554/165645817-ilustra%C3%A7%C3%A3o-vetorial-do-conceito-de-neg%C3%B3cio-erro-404-congelar-da-internet-indispon%C3%ADvel-irritado-e.jpg?ver=6" alt="Imagem 4"><div class="item-content"><h3>Em desenvolvimento.</h3><p>Em desenvolvimento.</p><a href="biblioteca.html">Acessar</a></div></div></div><section class="card"><h2 style="margin:0 0 6px">Meus dados</h2><div id="resumo"></div></section></main><div class="overlay" id="overlay"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloModal"><div class="mhead"><h3 id="tituloModal">Meus dados</h3><button class="mclose" id="fecharModal" aria-label="Fechar">✕</button></div><div style="display:grid;gap:10px;margin-top:10px"><div class="grid"><div><label>Nome completo</label><input id="m_nome" disabled/></div><div><label>CPF</label><input id="m_cpf" disabled/></div><div><label>Data de nascimento</label><input id="m_nasc" disabled/></div><div><label>Telefone (editável)</label><input id="m_tel"/></div><div><label>CEP (editável)</label><input id="m_cep" maxlength="9"/></div><div><label>Cidade (editável)</label><input id="m_cidade"/></div><div><label>Rua (editável)</label><input id="m_rua"/></div><div><label>Número (editável)</label><input id="m_numero"/></div></div><div style="display:flex;gap:10px;flex-wrap:wrap"><button id="btnSalvar" class="btn btn-save"><span>Salvar alterações</span></button></div><div id="modalMsg" style="font-size:14px;color:#5b6270"></div></div></div></div><div vw class="enabled"><div vw-access-button class="active"></div><div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div></div><script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script><script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script><script src="script.js"></script><script>
-protegerPagina();const btnSair=document.getElementById("btnSair");btnSair.addEventListener("click",async()=>{await sair();location.href="login.html"});onAuthReady(async e=>{const t=await obterPerfil(e.uid),n=(t?.nomeCompleto||"Cidadão").split(" ")[0];document.getElementById("saudacao").textContent=`Olá, ${n}!`,document.getElementById("resumo").innerHTML=`<div><strong>Nome:</strong> ${t?.nomeCompleto||"-"}</div><div><strong>CPF:</strong> ${t?.cpf||"-"}</div><div><strong>Nascimento:</strong> ${t?.nascimento||"-"}</div><div><strong>Telefone:</strong> ${t?.telefone||"-"}</div><div><strong>Endereço:</strong> ${formatEndereco(t?.endereco)}</div>`,document.getElementById("btnEventos").href="#/eventos-municipais",document.getElementById("btnEditais").href="#/editais"});const overlay=document.getElementById("overlay"),btnDados=document.getElementById("btnDados"),fecharModal=document.getElementById("fecharModal"),modalMsg=document.getElementById("modalMsg");function preencherModal(e){document.getElementById("m_nome").value=e?.nomeCompleto||"",document.getElementById("m_cpf").value=e?.cpf||"",document.getElementById("m_nasc").value=e?.nascimento||"",document.getElementById("m_tel").value=e?.telefone||"",document.getElementById("m_cep").value=e?.endereco?.cep||"",document.getElementById("m_cidade").value=e?.endereco?.cidade||"",document.getElementById("m_rua").value=e?.endereco?.rua||"",document.getElementById("m_numero").value=e?.endereco?.numero||""}function formatEndereco(e){if(!e)return"-";const t=[e.rua,e.numero&&"Nº "+e.numero,e.cidade,e.cep].filter(Boolean);return t.join(", ")}btnDados.addEventListener("click",async()=>{overlay.style.display="flex",modalMsg.textContent="";const e=firebase.auth().currentUser,t=await obterPerfil(e.uid);preencherModal(t)}),fecharModal.addEventListener("click",()=>{overlay.style.display="none"});const btnSalvar=document.getElementById("btnSalvar");function setSaving(e){btnSalvar.disabled=e,btnSalvar.innerHTML=e?'<div class="spinner"></div><span>Salvando…</span>':"<span>Salvar alterações</span>"}btnSalvar.addEventListener("click",async()=>{setSaving(!0),modalMsg.textContent="";const e=firebase.auth().currentUser,t={telefone:document.getElementById("m_tel").value.trim(),endereco:{cep:document.getElementById("m_cep").value.trim(),cidade:document.getElementById("m_cidade").value.trim(),rua:document.getElementById("m_rua").value.trim(),numero:document.getElementById("m_numero").value.trim()}};try{await atualizarContatoEndereco(e.uid,t),modalMsg.textContent="Alterações salvas com sucesso.";const n=await obterPerfil(e.uid);document.getElementById("resumo").innerHTML=`<div><strong>Nome:</strong> ${n?.nomeCompleto||"-"}</div><div><strong>CPF:</strong> ${n?.cpf||"-"}</div><div><strong>Nascimento:</strong> ${n?.nascimento||"-"}</div><div><strong>Telefone:</strong> ${n?.telefone||"-"}</div><div><strong>Endereço:</strong> ${formatEndereco(n?.endereco)}</div>`}catch(e){modalMsg.textContent=traduzErroAuth(e)}finally{setSaving(!1)}});</script><div id="telaCarregamento"><div class="carregandoBox"><div class="spinner"></div><span>carregando...</span></div></div><script>setTimeout(()=>{const e=document.getElementById("telaCarregamento");e.style.opacity="0",setTimeout(()=>{e.style.display="none"},300)},3000);</script></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Prefeitura de João Câmara — Perfil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body,html{height:100%;width:100%;font-family:"Public Sans",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  body{
+    background:#0b2b6b;
+  }
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:30;
+    background:#fff;color:#333;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 18px;box-shadow:0 2px 6px rgba(0,0,0,.08);
+  }
+  header .logo{display:flex;align-items:center;gap:10px}
+  header .logo img{width:40px;height:40px;object-fit:contain;border-radius:6px}
+  header .logo div{display:flex;flex-direction:column}
+  header strong{font-size:15px}
+  header small{font-size:13px;color:#444}
+  .btn-back{
+    background:#0b2b6b;color:#fff;
+    width:38px;height:38px;
+    display:flex;align-items:center;justify-content:center;
+    text-decoration:none;font-size:20px;
+    border:none;border-radius:0;
+  }
+  .perfil-container{
+    background:linear-gradient(180deg,#0b2b6b 0%,#041739 100%);
+    color:#fff;width:100%;max-width:480px;
+    padding:80px 28px 40px;min-height:100vh;
+    display:flex;flex-direction:column;justify-content:flex-start;
+    overflow-y:auto;margin:0 auto;
+  }
+  h2{font-size:22px;font-weight:700;margin-bottom:6px}
+  p{font-size:15px;margin-bottom:20px}
+  .btn{
+    width:100%;padding:16px;border:none;border-radius:30px;
+    font-weight:700;font-size:16px;cursor:pointer;transition:.2s;
+  }
+  .btn-prim{background:#bfbfbf;color:#333}
+  .btn-prim:enabled{background:#fff;color:#0b2b6b}
+  .rodape{margin-top:30px;text-align:center;font-size:14px;color:rgba(255,255,255,.85)}
+  .spinner{width:18px;height:18px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;padding:12px;z-index:50}
+  .modal{width:min(420px,90%);max-height:80vh;overflow:auto;background:#fff;border-radius:18px;box-shadow:0 6px 24px rgba(0,0,0,.25);padding:20px;color:#000}
+  .mhead{display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:0;background:#fff}
+  .mclose{border:none;background:#f1f3f5;border-radius:10px;padding:8px;cursor:pointer;font-weight:700}
+  label{font-weight:600;font-size:14px}
+  input{width:100%;padding:12px;border:1px solid #dfe3eb;border-radius:12px;font-size:16px;outline:none;transition:.25s}
+  input:focus{border-color:#0a2a66;box-shadow:0 0 0 3px rgba(10,42,102,.18)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:500px){.grid{grid-template-columns:1fr}}
+  .btn-save{background:#0b2b6b;color:#fff;width:100%;margin-top:15px;border-radius:30px}
+  #fonezinho {
+    width: 180px;
+    height: auto;
+    cursor: pointer;
+    display: block;
+    margin: 50px auto;
+  }
+  .funcoes-container{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+    gap:16px;
+    margin-top:30px;
+  }
+  .funcao{
+    background:#fff;color:#0b2b6b;
+    border-radius:12px;
+    text-align:center;
+    padding:12px;
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    font-weight:600;
+    transition:.2s;
+  }
+  .funcao img{
+    width:60px;
+    height:60px;
+    object-fit:cover;
+    border-radius:8px;
+    margin-bottom:8px;
+  }
+  .funcao:hover{transform:translateY(-3px);box-shadow:0 4px 12px rgba(0,0,0,.25)}
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcf-AtSCrU4sQ8PORTd7uRTwMwR1mzoxn5NMWhhAKbE2dsKY6Uiu17i5U7&s=10" alt="Logo">
+      <div>
+        <strong>Área do Cidadão</strong>
+        <small>Câmara Municipal de João Câmara</small>
+      </div>
+    </div>
+    <a href="login.html" id="btnSair" class="btn-back">←</a>
+  </header>
+
+  <div class="perfil-container">
+    <h2>Bem-vindo ao seu perfil</h2>
+    <p id="saudacao">Olá!</p>
+    <button id="btnDados" class="btn btn-prim">Editar dados</button>
+
+    <img id="fonezinho" src="https://lh7-rt.googleusercontent.com/formsz/AN7BsVBhWpurDFiEzKiFZ655EwgTrV6YwyYZStd672pxCBcxZg-4VVvOqsuu-8pO016jKDGe75Kh8BuU3rE8YzFCR_a6kaeuUbyac_R6uA0IKwQhtXhNNMEiWHN9Qt3pusgUQqZ0vJ88uZVGfOQPUGRiysnmBscOIcMg31usyg?key=rgGrow1iu4frhnE-FgQLyQ" alt="Fonezinho">
+
+<hr>
+
+<br>
+
+<h2> Busque oque procura </h2>
+<hp> Diversas opções que você pode explorar. Todas as telas contam com funções de acessibilidade para garantir que todos tenham acesso.</p>
+
+
+
+    <div class="funcoes-container">
+      <a href="ouvidoria.html" class="funcao"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLsc7UjlyY37cN5dNx8aTJxX-eMkCd5sF-IA&s" alt=""><span>Ouvidoria</span></a>
+      <a href="vereador.html" class="funcao"><img src="https://caminhosevidas.wordpress.com/wp-content/uploads/2011/09/vereador.png" alt=""><span>Vereadores</span></a>
+      <a href="e-sic.html" class="funcao"><img src="https://www.gov.br/sri/pt-br/backup-secretaria-de-governo/portalfederativo/arquivos-privados/seminario/noticias/e-sic-federal-e-e-sic-livre-auxilia-municipios-a-cumprirem-demandas-da-lei-de-acesso-a-informacao/lai.png/@@images/7bbaf9b8-b5c1-48f0-b1e7-493ff2c7ab28.png" alt=""><span>E-SIC</span></a>
+      <a href="livros.html" class="funcao"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHoflG8MzlBmucoxIxF_Hssvyg1IrCih2dG7kpOphn-CRoTqDRmAN-cRU&s=10" alt=""><span>Biblioteca Virtual</span></a>
+      <a href="videos.html" class="funcao"><img src="https://static.vecteezy.com/system/resources/previews/001/186/943/non_2x/green-play-button-png.png" alt=""><span>Videos e trasmissões</span></a>
+      <a href="meu-vereador.html" class="funcao"><img src="https://cdn-icons-png.flaticon.com/512/15200/15200296.png" alt=""><span>Gabinete do seu vereador</span></a>
+      <a href="blog.html" class="funcao"><img src="https://cdn-icons-png.flaticon.com/512/9623/9623631.png" alt=""><span>Blog Câmara</span></a>
+      <a href="blog.html" class="funcao"><img src="img8.png" alt=""><span>Título 8</span></a>
+    </div>
+
+<br><br>
+
+<div style="text-align: center;">
+  <a href="livros.html">
+    <img src="https://lh7-rt.googleusercontent.com/formsz/AN7BsVB4FLMclKGOvC_mygcJLPZHrk-ZhmSAKrXgBrLf1FqWpxHKKeNLHHJlps1clHXKDKvm5SoourI6rcb1ccqV19moRYQKsmHcEr1O7ybYAJgeJZGpRo4dM2x3Vh7XmIK8XItqD4uDaqRFQ_gBbsMQcyvOWiBxVcPEKPeYAw?key=9vjZLptG2aFFXGOft1V9vA" 
+         alt="Descrição da imagem" 
+         style="width:355px; height:auto;">
+  </a>
+</div>
+
+
+    <div class="rodape">© Câmara Municipal de João Câmara - <span id="ano"></span></div>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloModal">
+      <div class="mhead">
+        <h3 id="tituloModal">Meus dados</h3>
+        <button class="mclose" id="fecharModal" aria-label="Fechar">✕</button>
+      </div>
+      <div style="display:grid;gap:10px;margin-top:10px">
+        <div class="grid">
+          <div><label>Nome completo</label><input id="m_nome" disabled/></div>
+          <div><label>CPF</label><input id="m_cpf" disabled/></div>
+          <div><label>Data de nascimento</label><input id="m_nasc" disabled/></div>
+          <div><label>Telefone</label><input id="m_tel"/></div>
+          <div><label>CEP</label><input id="m_cep" maxlength="9"/></div>
+          <div><label>Cidade</label><input id="m_cidade"/></div>
+          <div><label>Rua</label><input id="m_rua"/></div>
+          <div><label>Número</label><input id="m_numero"/></div>
+        </div>
+        <button id="btnSalvar" class="btn btn-save"><span>Salvar alterações</span></button>
+        <div id="modalMsg" style="font-size:14px;color:#5b6270;margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+
+  <div vw class="enabled"><div vw-access-button class="active"></div><div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div></div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="script.js"></script>
+  <script>
+const textoParaFalar = "Busque abaixo a função que procura. Caso nescessite editar dados endereço, cliquem editar dados, somente dados de endereço podem ser editados e serão atualizados em tempo real. Ao lado direito da tela, você encontra a função de libras para acessibilidade. Para falar diretamente com a câmara, cliquem em ouvidoria, e será levado até o portal oficial."; 
+const fone = document.getElementById("fonezinho");
+fone.addEventListener("click", () => {
+  if ('speechSynthesis' in window) {
+    speechSynthesis.cancel();
+    let utterance = new SpeechSynthesisUtterance(textoParaFalar);
+    utterance.lang = 'pt-BR';
+    speechSynthesis.speak(utterance);
+  }
+});
+
+    document.getElementById('ano').textContent = new Date().getFullYear();
+    protegerPagina();
+
+    const btnSair=document.getElementById("btnSair");
+    btnSair.addEventListener("click",async()=>{await sair();location.href="login.html"});
+
+    onAuthReady(async user=>{
+      const perfil=await obterPerfil(user.uid);
+      const nome=(perfil?.nomeCompleto||"Cidadão").split(" ")[0];
+      document.getElementById("saudacao").textContent=`Olá, ${nome}!`;
+    });
+
+    const overlay=document.getElementById("overlay"),
+          btnDados=document.getElementById("btnDados"),
+          fecharModal=document.getElementById("fecharModal"),
+          modalMsg=document.getElementById("modalMsg"),
+          btnSalvar=document.getElementById("btnSalvar");
+
+    function preencherModal(d){
+      document.getElementById("m_nome").value=d?.nomeCompleto||"";
+      document.getElementById("m_cpf").value=d?.cpf||"";
+      document.getElementById("m_nasc").value=d?.nascimento||"";
+      document.getElementById("m_tel").value=d?.telefone||"";
+      document.getElementById("m_cep").value=d?.endereco?.cep||"";
+      document.getElementById("m_cidade").value=d?.endereco?.cidade||"";
+      document.getElementById("m_rua").value=d?.endereco?.rua||"";
+      document.getElementById("m_numero").value=d?.endereco?.numero||"";
+    }
+
+    btnDados.addEventListener("click",async()=>{
+      overlay.style.display="flex";modalMsg.textContent="";
+      const u=firebase.auth().currentUser;
+      const perfil=await obterPerfil(u.uid);
+      preencherModal(perfil);
+    });
+    fecharModal.addEventListener("click",()=>{overlay.style.display="none"});
+
+    function setSaving(s){
+      btnSalvar.disabled=s;
+      btnSalvar.innerHTML=s?'<div class="spinner"></div><span>Salvando…</span>':'<span>Salvar alterações</span>';
+    }
+
+    btnSalvar.addEventListener("click",async()=>{
+      setSaving(true);modalMsg.textContent="";
+      const u=firebase.auth().currentUser;
+      const dados={
+        telefone:document.getElementById("m_tel").value.trim(),
+        endereco:{
+          cep:document.getElementById("m_cep").value.trim(),
+          cidade:document.getElementById("m_cidade").value.trim(),
+          rua:document.getElementById("m_rua").value.trim(),
+          numero:document.getElementById("m_numero").value.trim()
+        }
+      };
+      try{
+        await atualizarContatoEndereco(u.uid,dados);
+        modalMsg.textContent="Alterações salvas com sucesso.";
+      }catch(e){modalMsg.textContent=traduzErroAuth(e)}
+      finally{setSaving(false)}
+    });
+  </script>
+</body>
+</html>
