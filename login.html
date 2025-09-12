@@ -47,6 +47,20 @@
     .login-container{padding:30px 20px}
     h2{font-size:20px}
   }
+
+  .salvar-wrap{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;margin-top:4px;margin-bottom:6px}
+  .salvar-wrap input[type="checkbox"]{display:none}
+  .salvar-box{
+    width:44px;height:28px;border-radius:999px;background:rgba(255,255,255,0.12);position:relative;flex:0 0 auto;
+    display:flex;align-items:center;padding:4px;transition:all .22s;
+  }
+  .salvar-thumb{
+    width:20px;height:20px;border-radius:50%;background:#fff;transform:translateX(0);transition:transform .22s;
+    box-shadow:0 4px 10px rgba(0,0,0,.18);
+  }
+  .salvar-wrap input[type="checkbox"]:checked + .salvar-box{background:#fff}
+  .salvar-wrap input[type="checkbox"]:checked + .salvar-box .salvar-thumb{transform:translateX(16px);background:#0b2b6b}
+  .salvar-label{font-size:14px;color:rgba(255,255,255,.9)}
 </style>
 </head>
 <body>
@@ -65,6 +79,13 @@
     <form id="formLogin">
       <input id="email" type="email" autocomplete="email" required placeholder="Seu e-mail" />
       <input id="senha" type="password" autocomplete="current-password" required placeholder="Sua senha" />
+
+      <label class="salvar-wrap" title="Salvar apenas o e-mail para facilitar futuros acessos">
+        <input type="checkbox" id="salvarLogin" />
+        <span class="salvar-box" aria-hidden="true"><span class="salvar-thumb"></span></span>
+        <span class="salvar-label">Salvar acesso neste dispositivo</span>
+      </label>
+
       <button id="btnEntrar" class="btn btn-prim" type="submit" disabled>
         <span>Continuar</span>
       </button>
@@ -89,6 +110,8 @@
     const msg = document.getElementById('loginMsg');
     const emailInput = document.getElementById('email');
     const senhaInput = document.getElementById('senha');
+    const salvarCheckbox = document.getElementById('salvarLogin');
+    const LS_KEY = 'emailSalvo_jcamararn';
 
     function toggleButton(){
       btn.disabled = !(emailInput.value.trim() && senhaInput.value);
@@ -101,6 +124,18 @@
       btn.innerHTML = is ? '<div class="spinner"></div><span style="margin-left:8px">Entrando…</span>' : '<span>Continuar</span>';
     }
 
+    window.addEventListener('DOMContentLoaded', ()=>{
+      try{
+        const saved = localStorage.getItem(LS_KEY);
+        if(saved){
+          emailInput.value = saved;
+          salvarCheckbox.checked = true;
+          senhaInput.value = '';
+          toggleButton();
+        }
+      }catch(e){console.warn(e);}
+    });
+
     form.addEventListener('submit', async (e)=>{
       e.preventDefault();
       setLoading(true); msg.textContent = '';
@@ -108,9 +143,14 @@
       const senha = senhaInput.value;
       try{
         await loginComEmail(email, senha);
+        if(salvarCheckbox.checked){
+          localStorage.setItem(LS_KEY, email);
+        }else{
+          localStorage.removeItem(LS_KEY);
+        }
         location.href = 'perfil.html';
       }catch(err){
-        msg.textContent = traduzErroAuth(err);
+        msg.textContent = typeof traduzErroAuth === 'function' ? traduzErroAuth(err) : 'Erro ao entrar';
       }finally{ setLoading(false); }
     });
   </script>
