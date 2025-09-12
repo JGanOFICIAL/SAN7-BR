@@ -12,7 +12,7 @@
   body{
     display:flex;justify-content:center;align-items:center;
     background:#fff;
-    background-image:url("https://otimize-edoc.s3.amazonaws.com/edoc_1291/logo_joaocamara.png"); /* <-- coloque aqui a URL da imagem de fundo */
+    background-image:url("https://otimize-edoc.s3.amazonaws.com/edoc_1291/logo_joaocamara.png");
     background-size:cover;background-position:center;
   }
   .login-container{
@@ -59,7 +59,6 @@
       </div>
     </div>
 
-
     <h2>Para começar, informe seu e-mail</h2>
     <p>Somente endereços válidos</p>
 
@@ -75,21 +74,16 @@
       <div id="loginMsg" class="rodape"></div>
     </form>
 
-
-
-<center>
-  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfgqPcqGWPGT6tEeYvYZTuetCal_r2ClEqYyFMm_jfkeQCwdDE9wchsrtolgCIRSZQTYLuvRmwnv5V_J-K3y10CmY6CNmpVZ-JaMLprrxOsX26ZQuiNqOTXHsb-9mvI5a8mvVfV2BNTnYaesPzOM0aN5Nvf8aIRHbnvs-aH1EgnyauTN6efoqgrpM2xHQ/s593/8A092B0F-4211-4DFA-9238-7E1F039C323E.png" width="350">
-</center>
-
-
+    <center>
+      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfgqPcqGWPGT6tEeYvYZTuetCal_r2ClEqYyFMm_jfkeQCwdDE9wchsrtolgCIRSZQTYLuvRmwnv5V_J-K3y10CmY6CNmpVZ-JaMLprrxOsX26ZQuiNqOTXHsb-9mvI5a8mvVfV2BNTnYaesPzOM0aN5Nvf8aIRHbnvs-aH1EgnyauTN6efoqgrpM2xHQ/s593/8A092B0F-4211-4DFA-9238-7E1F039C323E.png" width="350">
+    </center>
+  </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script src="script.js"></script>
   <script>
-    document.getElementById('ano').textContent = new Date().getFullYear();
-
     const form = document.getElementById('formLogin');
     const btn = document.getElementById('btnEntrar');
     const msg = document.getElementById('loginMsg');
