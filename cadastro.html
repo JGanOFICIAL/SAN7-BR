@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prefeitura de João Câmara — Cadastro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body,html{height:100%;width:100%;font-family:"Public Sans",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  body{
+    display:flex;justify-content:center;align-items:center;
+    background:#fff;
+    background-image:url("bg.png");
+    background-size:cover;background-position:center;
+  }
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:30;
+    background:#fff;color:#333;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 18px;box-shadow:0 2px 6px rgba(0,0,0,.08);
+  }
+  header .logo{display:flex;align-items:center;gap:10px}
+  header .logo img{width:40px;height:40px;object-fit:contain;border-radius:6px}
+  header .logo div{display:flex;flex-direction:column}
+  header strong{font-size:15px}
+  header small{font-size:13px;color:#444}
+  .btn-back{
+    background:#0b2b6b;color:#fff;
+    width:38px;height:38px;
+    display:flex;align-items:center;justify-content:center;
+    text-decoration:none;font-size:20px;
+    border:none;border-radius:0;
+  }
+  .cadastro-container{
+    background:linear-gradient(180deg,#0b2b6b 0%,#041739 100%);
+    color:#fff;width:100%;max-width:480px;
+    padding:80px 28px 40px;min-height:100vh;
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  h2{font-size:22px;font-weight:700;margin-bottom:6px}
+  p{font-size:15px;margin-bottom:28px}
+  form{display:flex;flex-direction:column;gap:20px}
+  input{
+    width:100%;padding:14px 12px;font-size:17px;color:#fff;
+    border:none;border-bottom:1px solid rgba(255,255,255,.7);
+    background:transparent;outline:none;
+  }
+  input::placeholder{color:rgba(255,255,255,.6)}
+  .btn{
+    width:100%;padding:16px;border:none;border-radius:30px;
+    font-weight:700;font-size:16px;cursor:pointer;transition:.2s;
+  }
+  .btn-prim{background:#bfbfbf;color:#333}
+  .btn-prim:enabled{background:#fff;color:#0b2b6b}
+  .rodape{margin-top:30px;text-align:center;font-size:14px;color:rgba(255,255,255,.85)}
+  .spinner{width:18px;height:18px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @media(max-width:500px){
+    .cadastro-container{padding:70px 20px 30px}
+    h2{font-size:20px}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcf-AtSCrU4sQ8PORTd7uRTwMwR1mzoxn5NMWhhAKbE2dsKY6Uiu17i5U7&s=10" alt="Logo">
+      <div>
+        <strong>Cadastro do Cidadão</strong>
+        <small>Prefeitura de João Câmara/RN</small>
+      </div>
+    </div>
+    <a href="login.html" class="btn-back">←</a>
+  </header>
+
+  <div class="cadastro-container">
+    <h2>Crie sua conta</h2>
+    <p>Preencha todos os campos obrigatórios</p>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+
+
+<center>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi724mBUzAzx1IgtPgZKoRdjVpkb63iesPKD1jP_mOiSX5_N3THNJg6__lxevX1TF7pAtMFB7-HrouZiUAVa8V_2aLXrzYoEzq5TxyaA5xMqfb4nJFZXzxlFbbSh-YdcH9NMKSAmCAcmIjGOAFcU1Ci74P4TujUqkzDZ30PVOwnB2TWjtfAukWcgT1fInM/s734/E063E384-5B4E-47CF-A02B-46A90C39BA32.png" width="380">
+</center>
+
+
+
+
+    <form id="formCadastro">
+      <input id="nomeCompleto" required placeholder="Nome completo" />
+      <input id="cpf" required inputmode="numeric" maxlength="14" placeholder="CPF" />
+      <input id="nascimento" required inputmode="numeric" maxlength="10" placeholder="Data de nascimento" />
+      <input id="telefone" inputmode="tel" placeholder="Telefone" />
+      <input id="cep" inputmode="numeric" maxlength="9" placeholder="CEP" />
+      <input id="cidade" placeholder="Cidade" />
+      <input id="rua" placeholder="Rua" />
+      <input id="numero" inputmode="numeric" placeholder="Número" />
+      <input id="cadunico" placeholder="Cadastro Único (opcional)" />
+      <input id="email" type="email" required placeholder="E-mail" autocomplete="email"/>
+      <input id="senha" type="password" required placeholder="Senha" autocomplete="new-password"/>
+      <input id="senha2" type="password" required placeholder="Confirmar senha" autocomplete="new-password"/>
+      <button id="btnCriar" class="btn btn-prim" type="submit" disabled>
+        <span>Criar conta</span>
+      </button>
+      <div id="cadMsg" class="rodape"></div>
+    </form>
+
+    <div class="rodape">© Prefeitura de João Câmara - <span id="ano"></span></div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="script.js"></script>
+  <script>
+    document.getElementById('ano').textContent = new Date().getFullYear();
+
+    const form = document.getElementById('formCadastro');
+    const btn = document.getElementById('btnCriar');
+    const msg = document.getElementById('cadMsg');
+    const emailInput = document.getElementById('email');
+    const senhaInput = document.getElementById('senha');
+    const senha2Input = document.getElementById('senha2');
+
+    function toggleButton(){
+      btn.disabled = !(emailInput.value.trim() && senhaInput.value && senha2Input.value);
+    }
+    [emailInput,senhaInput,senha2Input].forEach(el=>el.addEventListener('input',toggleButton));
+
+    function setLoading(is){
+      btn.disabled = is;
+      btn.innerHTML = is ? '<div class="spinner"></div><span style="margin-left:8px">Criando…</span>' : '<span>Criar conta</span>';
+    }
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      msg.textContent = '';
+      const nome = document.getElementById('nomeCompleto').value.trim();
+      const cpf = document.getElementById('cpf').value.trim();
+      const nasc = document.getElementById('nascimento').value.trim();
+      const tel = document.getElementById('telefone').value.trim();
+      const cep = document.getElementById('cep').value.trim();
+      const cidade = document.getElementById('cidade').value.trim();
+      const rua = document.getElementById('rua').value.trim();
+      const numero = document.getElementById('numero').value.trim();
+      const cadunico = document.getElementById('cadunico').value.trim();
+      const email = emailInput.value.trim();
+      const senha = senhaInput.value;
+      const senha2 = senha2Input.value;
+
+      if(senha !== senha2){ msg.textContent = 'As senhas não conferem.'; return; }
+
+      setLoading(true);
+      try{
+        await registrarCidadao({nomeCompleto:nome,cpf,nascimento:nasc,telefone:tel,endereco:{cep,cidade,rua,numero},cadunico: cadunico||null,email},senha);
+        alert('Conta criada com sucesso!');
+        location.href='perfil.html';
+      }catch(err){ msg.textContent = traduzErroAuth(err); }
+      finally{ setLoading(false); }
+    });
+  </script>
+</body>
+</html>
