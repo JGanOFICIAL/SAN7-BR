@@ -1,8 +1,7 @@
-// script.js (versão com WebRTC + suas funções preservadas)
+// script.js
+// ========= Básico Firebase (compat) e suas funções já existentes (preservadas + pequenas integrações) =========
 
-/* -----------------------
-   Firebase (Compat) — Config
-   ----------------------- */
+// ===== Firebase (Compat) — Config =====
 const firebaseConfig = {
   apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
   authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
@@ -19,11 +18,7 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 const db = firebase.database();
 
-/* ======================
-   Suas funções já dadas
-   (mantive conforme você enviou)
-   ====================== */
-
+// ===== Util =====
 function onlyDigits(str){ return (str||'').replace(/\D/g,''); }
 
 function traduzErroAuth(err){
@@ -73,19 +68,16 @@ async function sair(){
 async function registrarCidadao(perfil, senha){
   const cpfNum = onlyDigits(perfil.cpf);
   const refIdx = db.ref('cpf_to_uid/'+cpfNum);
-  const uidReservado = await refIdx.transaction(current=>{
+  const res = await refIdx.transaction(current=>{
     if(current === null){ return 'PENDING'; }
     return;
-  }, undefined, false).then(res=>res.committed ? res.snapshot.val() : null);
-
-  if(uidReservado === null){
+  }, undefined, false);
+  if(!res.committed){
     throw {code:'cpf/duplicado', message:'CPF já cadastrado.'};
   }
-
   try{
     const cred = await auth.createUserWithEmailAndPassword(perfil.email, senha);
     const uid = cred.user.uid;
-
     const dados = {
       uid,
       nomeCompleto: perfil.nomeCompleto,
@@ -106,7 +98,6 @@ async function registrarCidadao(perfil, senha){
   }
 }
 
-// ===== Perfil =====
 async function obterPerfil(uid){
   const snap = await db.ref('users/'+uid).get();
   return snap.exists() ? snap.val() : null;
@@ -128,377 +119,404 @@ async function atualizarContatoEndereco(uid, {telefone, endereco}){
   return novo;
 }
 
-/* ===========================
-   WebRTC + Call management
-   via Firebase Realtime DB
-   =========================== */
+// =====================================================================================
+// ================================ LAYER: CALLS (WebRTC via Realtime DB) ==============
+// =====================================================================================
 
-/*
-Data model (Realtime DB):
-
-/calls/{protocol} = {
-  meta: {
-    protocol: string,
-    nomeCompleto: string,
-    cpf: string,
-    status: 'waiting'|'accepted'|'not_answered'|'ended'|'cancelled',
-    createdAt: number,
-    acceptedAt?: number,
-    supportUid?: string
-  },
-  offer: { type, sdp }        // criado pelo suporte ao aceitar
-  answer: { type, sdp }       // criado pelo cliente em resposta
-  callerCandidates: { pushId: cand }
-  supportCandidates: { pushId: cand }
+/**
+Structure in DB (calls):
+/calls/{protocol}: {
+  protocol, nomeCompleto, cpf, status: waiting|in_call|ended|rejected|cancelled|no_answer,
+  createdAt, startedAt, callerDeviceId, offer?, answer?, heartbeat:{client:ts, support:ts}, ping:{...}
 }
-
-Regras:
-- createCall cria /calls/{protocol}
-- adminAccept cria pc (getUserMedia), cria offer e grava /calls/{protocol}/offer
-- client escuta offer, cria answer e grava /calls/{protocol}/answer
-- Ambos trocam ICE candidates em seus nós respectivos
-- Ao hangup/decline -> remove /calls/{protocol}
-- Se waiting > 10 minutos -> marca not_answered e remove depois (1 min)
+Candidates:
+ /callCandidates/{protocol}/{role}/{autoId} = {candidate, type, sdpMid, sdpMLineIndex}
 */
 
-const CALLS_ROOT = 'calls';
+const Calls = (function(){
+  // config
+  const CALLS_NODE = 'calls';
+  const CAND_NODE = 'callCandidates';
+  const WAITING_INDEX = 'waiting_index';
 
-// helpers de caminho
-function callRef(protocol){ return db.ref(`${CALLS_ROOT}/${protocol}`); }
-function callMetaRef(protocol){ return db.ref(`${CALLS_ROOT}/${protocol}/meta`); }
-function callOfferRef(protocol){ return db.ref(`${CALLS_ROOT}/${protocol}/offer`); }
-function callAnswerRef(protocol){ return db.ref(`${CALLS_ROOT}/${protocol}/answer`); }
-function callCallerCandidatesRef(protocol){ return db.ref(`${CALLS_ROOT}/${protocol}/callerCandidates`); }
-function callSupportCandidatesRef(protocol){ return db.ref(`${CALLS_ROOT}/${protocol}/supportCandidates`); }
-
-/* UTIL: gerar protocolo (caso queira gerar aqui) */
-function genProtocol12(){
-  return ('' + Math.floor(100000000000 + Math.random()*900000000000));
-}
-
-/* Cria chamado (diretamente usado pelo widget) */
-async function createCall({protocol, nomeCompleto, cpf}){
-  const now = Date.now();
-  const meta = {
-    protocol,
-    nomeCompleto,
-    cpf,
-    status: 'waiting',
-    createdAt: now
-  };
-  await callRef(protocol).set({ meta });
-  // agenda expiração not_answered em 10 minutos (rodará no cliente)
-  scheduleNotAnswered(protocol, 10*60*1000);
-}
-
-/* Cancela pelo cidadão antes de atendimento */
-async function cancelCall(protocol){
-  // se existir, remove o nó
-  try{
-    await callRef(protocol).remove();
-  }catch(e){
-    console.warn('Erro ao cancelar', e);
-  }
-}
-
-/* Hangup (invocado por cliente ou admin durante a chamada) */
-async function hangupCall(protocol){
-  try{
-    await callRef(protocol).remove();
-  }catch(e){
-    console.warn('Erro ao hangup', e);
-  }
-}
-
-/* Remove e limpa candidate listeners — internal helpers */
-function safeRemove(ref){ if(!ref) return; try{ ref.off(); }catch(e){} }
-
-/* SUBSCRIBE para cliente (widget) — escuta offer/answer/status/removal */
-function subscribeToCall(protocol, handlers = {}){
-  const r = callRef(protocol);
-  const offerRef = callOfferRef(protocol);
-  const metaRef = callMetaRef(protocol);
-  const removalListener = r.on('value', (snap)=>{
-    if(!snap.exists()){
-      handlers.onRemoved && handlers.onRemoved();
-      // remove listeners
-      safeRemove(r); safeRemove(offerRef); safeRemove(metaRef);
-      return;
-    }
-    const val = snap.val();
-    const meta = val.meta || {};
-    // status change
-    handlers.onStatusChange && handlers.onStatusChange(meta.status);
-    // if offer exists, forward to handler
-    if(val.offer && handlers.onOffer){
-      handlers.onOffer(val.offer);
-    }
-  });
-  return {
-    unsubscribe: ()=>{ r.off(); offerRef.off(); metaRef.off(); }
-  };
-}
-
-/* Quando o cliente recebe offer -> responder (callees) */
-async function handleIncomingOfferAsCallee(protocol, offer, hooks = {}){
-  // cria PeerConnection local
-  const pc = new RTCPeerConnection({
-    iceServers: [{urls:'stun:stun.l.google.com:19302'}]
-  });
-
-  // local mic
+  // local runtime
+  let clientPc = null;
+  let adminPc = null;
   let localStream = null;
-  try{
-    localStream = await navigator.mediaDevices.getUserMedia({ audio:true });
-    localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-  }catch(e){
-    console.warn('Sem microfone no cliente', e);
-    throw e;
+  let remoteStream = null;
+  let localRole = null; // 'client' or 'support'
+  let currentProtocol = null;
+  let listeners = {};
+  let waitingCallback = null;
+  let waitingRef = db.ref(CALLS_NODE);
+
+  // helper to generate 12-digit protocol
+  function generateProtocol(){
+    let s = '';
+    for(let i=0;i<12;i++) s += String(Math.floor(Math.random()*10));
+    return s;
   }
 
-  // Players/handlers - para simplicidade não adicionamos elementos visuais de <audio>.
-  // Mas para ouvir o suporte, criamos um <audio> element dinamicamente.
-  const remoteAudio = document.createElement('audio');
-  remoteAudio.autoplay = true;
-  remoteAudio.playsInline = true;
-  document.body.appendChild(remoteAudio);
-
-  pc.ontrack = (ev)=>{
-    // ev.streams[0] pode ter o áudio do suporte
-    if(ev.streams && ev.streams[0]){
-      remoteAudio.srcObject = ev.streams[0];
-    }else{
-      // combinar tracks manual
-      const s = new MediaStream();
-      ev.streams && ev.streams.forEach(st => st.getAudioTracks().forEach(t => s.addTrack(t)));
-      remoteAudio.srcObject = s;
+  // prevent multiple calls from same CPF/device
+  async function hasActiveCallForCpf(cpfDigits){
+    const snap = await db.ref(CALLS_NODE).orderByChild('cpfDigits').equalTo(cpfDigits).get();
+    if(!snap.exists()) return false;
+    const data = snap.val();
+    for(const k in data){
+      const st = data[k].status;
+      if(st==='waiting' || st==='in_call') return true;
     }
-  };
-
-  // ICE candidates: quando local gera, envia para supportCandidates
-  pc.onicecandidate = (event)=>{
-    if(!event.candidate) return;
-    const c = event.candidate.toJSON();
-    callCallerCandidatesRef(protocol).push(c).catch(()=>{});
-  };
-
-  // set remote offer
-  await pc.setRemoteDescription(new RTCSessionDescription(offer));
-
-  // create answer
-  const answer = await pc.createAnswer();
-  await pc.setLocalDescription(answer);
-  // grava answer no DB
-  await callAnswerRef(protocol).set(pc.localDescription.toJSON());
-
-  // escuta suporte candidates (supportCandidates) e adiciona
-  const supportCandidatesRef = callSupportCandidatesRef(protocol);
-  const supportListener = supportCandidatesRef.on('child_added', (snap)=>{
-    const cand = snap.val();
-    if(!cand) return;
-    pc.addIceCandidate(new RTCIceCandidate(cand)).catch(e=>console.warn(e));
-  });
-
-  // Escuta remoção do nó para encerrar
-  const rootRef = callRef(protocol);
-  const onRemoved = rootRef.on('value', (s)=>{
-    if(!s.exists()){
-      // encerrar peer
-      try{
-        pc.getSenders().forEach(s=>{ try{s.track && s.track.stop();}catch(e){} });
-      }catch(e){}
-      try{ pc.close(); }catch(e){}
-      hooks.onEnded && hooks.onEnded();
-      // cleanup
-      rootRef.off();
-      supportCandidatesRef.off();
-      if(remoteAudio && remoteAudio.parentNode) remoteAudio.remove();
-    }
-  });
-
-  // Informa o hook que conexão começou
-  hooks.onStartCall && hooks.onStartCall();
-
-  return {
-    pc,
-    localStream,
-    remoteAudio,
-    stop: async ()=>{
-      try{ localStream && localStream.getTracks().forEach(t=>t.stop()); }catch(e){}
-      try{ pc.close(); }catch(e){}
-      try{ await callRef(protocol).remove(); }catch(e){}
-    }
-  };
-}
-
-/* ADMIN (suporte) functions:
-   - listenForCalls: função que avisa quando chamadas chegam / mudam / removem
-   - adminAccept(protocol): cria offer (suporte como offerer), grava offer no DB e aguarda answer
-   - adminDecline(protocol): remove node
-   - adminHangup(protocol): remove node
-*/
-
-function listenForCalls(handlers = {}){
-  const root = db.ref(CALLS_ROOT);
-  // Query: apenas nós onde meta.status === 'waiting' (ou outros se quiser)
-  root.on('child_added', (snap)=>{
-    const val = snap.val();
-    const meta = val.meta || {};
-    // informar apenas se waiting
-    if(meta.status === 'waiting' || meta.status === 'accepted'){
-      handlers.onCallAdded && handlers.onCallAdded(Object.assign({}, meta));
-    }
-  });
-  root.on('child_removed', (snap)=>{
-    const val = snap.val();
-    const meta = val?.meta || {};
-    handlers.onCallRemoved && handlers.onCallRemoved(meta.protocol);
-  });
-  root.on('child_changed', (snap)=>{
-    const val = snap.val();
-    const meta = val?.meta || {};
-    handlers.onCallChanged && handlers.onCallChanged(meta);
-  });
-  return {
-    unsubscribe: ()=> root.off()
-  };
-}
-
-/* adminAccept: suporte aceita e cria offer */
-async function adminAccept(protocol, hooks = {}){
-  const pc = new RTCPeerConnection({ iceServers:[{urls:'stun:stun.l.google.com:19302'}] });
-
-  // get mic
-  let localStream = null;
-  try{
-    localStream = await navigator.mediaDevices.getUserMedia({ audio:true });
-    localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-  }catch(e){
-    console.warn('Sem microfone (admin)', e);
-    throw e;
+    return false;
   }
 
-  // prepare audio playback for incoming tracks (do cliente)
-  const remoteAudio = document.createElement('audio');
-  remoteAudio.autoplay = true;
-  remoteAudio.playsInline = true;
-  document.body.appendChild(remoteAudio);
+  // create call (client)
+  async function createCall({nomeCompleto, cpf}){
+    const cpfDigits = onlyDigits(cpf);
+    // check duplicates
+    const already = await hasActiveCallForCpf(cpfDigits);
+    if(already) throw {message:'Já existe uma solicitação ativa para esse CPF no momento.'};
+    // generate protocol
+    const protocol = generateProtocol();
+    const now = Date.now();
+    const deviceId = (navigator.userAgent || '') + '|' + Math.random().toString(36).slice(2,8);
+    const payload = {
+      protocol,
+      nomeCompleto,
+      cpf,
+      cpfDigits,
+      status: 'waiting',
+      createdAt: now,
+      callerDeviceId: deviceId,
+      // placeholders for signaling
+      offer: null,
+      answer: null,
+      startedAt: null,
+      heartbeat: {},
+    };
+    await db.ref(`${CALLS_NODE}/${protocol}`).set(payload);
 
-  pc.ontrack = (ev)=>{
-    if(ev.streams && ev.streams[0]){
-      remoteAudio.srcObject = ev.streams[0];
-    }else{
-      const s = new MediaStream();
-      ev.streams && ev.streams.forEach(st => st.getAudioTracks().forEach(t => s.addTrack(t)));
-      remoteAudio.srcObject = s;
-    }
-  };
-
-  // ICE -> gravar em supportCandidates
-  pc.onicecandidate = (event)=>{
-    if(!event.candidate) return;
-    const c = event.candidate.toJSON();
-    callSupportCandidatesRef(protocol).push(c).catch(()=>{});
-  };
-
-  // grava no meta: mark accepted
-  const acceptedAt = Date.now();
-  await callMetaRef(protocol).update({ status:'accepted', acceptedAt, supportUid:'SUPPORT' });
-
-  // cria offer
-  const offer = await pc.createOffer();
-  await pc.setLocalDescription(offer);
-  await callOfferRef(protocol).set(pc.localDescription.toJSON());
-
-  // escuta answer
-  const answerRef = callAnswerRef(protocol);
-  const answerListener = answerRef.on('value', async (snap)=>{
-    const val = snap.val();
-    if(val && val.sdp){
-      try{
-        await pc.setRemoteDescription(new RTCSessionDescription(val));
-        // conexão estabelecida
-        hooks.onConnected && hooks.onConnected();
-      }catch(e){ console.warn('setRemoteDescription failed', e); }
-    }
-  });
-
-  // escuta callerCandidates e adiciona
-  const callerCandidatesRef = callCallerCandidatesRef(protocol);
-  const callerListener = callerCandidatesRef.on('child_added', (snap)=>{
-    const cand = snap.val();
-    if(!cand) return;
-    pc.addIceCandidate(new RTCIceCandidate(cand)).catch(e=>console.warn(e));
-  });
-
-  // escuta remoção do call (hangup)
-  const rootRef = callRef(protocol);
-  const removedListener = rootRef.on('value', (s)=>{
-    if(!s.exists()){
-      try{ localStream && localStream.getTracks().forEach(t=>t.stop()); }catch(e){}
-      try{ pc.close(); }catch(e){}
-      hooks.onEnded && hooks.onEnded();
-      rootRef.off(); callerCandidatesRef.off(); answerRef.off();
-      if(remoteAudio && remoteAudio.parentNode) remoteAudio.remove();
-    }
-  });
-
-  return {
-    pc, localStream, remoteAudio,
-    stop: async ()=>{
-      try{ localStream && localStream.getTracks().forEach(t=>t.stop()); }catch(e){}
-      try{ pc.close(); }catch(e){}
-      try{ await callRef(protocol).remove(); }catch(e){}
-    }
-  };
-}
-
-/* adminDecline: remove pedido */
-async function adminDecline(protocol){
-  try{
-    await callRef(protocol).remove();
-  }catch(e){
-    console.warn(e);
-  }
-}
-
-/* adminHangup: remove pedido (encerrar) */
-async function adminHangup(protocol){
-  try{
-    await callRef(protocol).remove();
-  }catch(e){ console.warn(e); }
-}
-
-/* agendamento de not_answered no cliente (local timer) */
-const notAnsweredTimers = {};
-function scheduleNotAnswered(protocol, ms){
-  if(notAnsweredTimers[protocol]) clearTimeout(notAnsweredTimers[protocol]);
-  notAnsweredTimers[protocol] = setTimeout(async ()=>{
-    // verifica se ainda waiting
-    const snap = await callMetaRef(protocol).get();
-    if(snap.exists()){
-      const meta = snap.val();
-      if(meta.status === 'waiting'){
-        // marca not_answered
-        await callMetaRef(protocol).update({ status:'not_answered' });
-        // remove o pedido após 60s
-        setTimeout(async ()=> { try{ await callRef(protocol).remove(); }catch(e){} }, 60*1000);
+    // set up listener for status changes
+    listenCall(protocol, (data)=>{
+      // show browser notification for certain transitions
+      if(data && data.status && data.status === 'in_call'){
+        if(window.Notification && Notification.permission === "granted"){
+          new Notification(`Atendimento iniciado - protocolo ${protocol}`, {body:`${data.nomeCompleto}`});
+        }
+      }else if(data && data.status && data.status === 'rejected'){
+        if(window.Notification && Notification.permission === "granted"){
+          new Notification(`Atendimento recusado - protocolo ${protocol}`);
+        }
       }
+    });
+
+    // schedule "not answered" after 10min if still waiting
+    setTimeout(async ()=>{
+      const snap = await db.ref(`${CALLS_NODE}/${protocol}/status`).get();
+      if(snap.exists() && snap.val()==='waiting'){
+        await db.ref(`${CALLS_NODE}/${protocol}`).update({status:'no_answer', finishedAt:Date.now()});
+        // keep short trace then remove after 10s
+        setTimeout(()=> db.ref(`${CALLS_NODE}/${protocol}`).remove(), 10000);
+      }
+    }, 10*60*1000);
+
+    // heartbeats (client)
+    startHeartbeat(protocol,'client');
+
+    return {protocol, status:'waiting'};
+  }
+
+  // listen single call updates
+  function listenCall(protocol, cb){
+    const ref = db.ref(`${CALLS_NODE}/${protocol}`);
+    const onValue = ref.on('value', snap=>{
+      const val = snap.exists() ? snap.val() : null;
+      cb(val);
+      // if ended -> cleanup
+      if(val === null) {
+        ref.off();
+      }
+    });
+    return () => ref.off('value', onValue);
+  }
+
+  // fetch single call (once)
+  async function getCall(protocol){
+    const snap = await db.ref(`${CALLS_NODE}/${protocol}`).get();
+    return snap.exists() ? snap.val() : null;
+  }
+
+  // cancel call (before answered) - by client
+  async function cancelCall(protocol, reason='cancelled'){
+    await db.ref(`${CALLS_NODE}/${protocol}`).update({status:'cancelled', finishedAt:Date.now(), reason});
+    // remove after short delay
+    setTimeout(()=> db.ref(`${CALLS_NODE}/${protocol}`).remove(), 4000);
+  }
+
+  // reject call (support)
+  async function rejectCall(protocol){
+    await db.ref(`${CALLS_NODE}/${protocol}`).update({status:'rejected', finishedAt:Date.now()});
+    setTimeout(()=> db.ref(`${CALLS_NODE}/${protocol}`).remove(), 4000);
+  }
+
+  // end call (either side)
+  async function endCall(protocol, reason='ended'){
+    // set status -> will trigger cleanup
+    await db.ref(`${CALLS_NODE}/${protocol}`).update({status:'ended', finishedAt:Date.now(), reason});
+    // close peer connections & streams
+    cleanupRTC();
+    // remove after short time
+    setTimeout(()=> db.ref(`${CALLS_NODE}/${protocol}`).remove(), 6000);
+  }
+
+  // fetch waiting calls list snapshot
+  async function fetchWaiting(){
+    const snap = await db.ref(CALLS_NODE).orderByChild('status').equalTo('waiting').get();
+    if(!snap.exists()) return [];
+    const arr = Object.values(snap.val());
+    // sort by createdAt
+    arr.sort((a,b)=>a.createdAt - b.createdAt);
+    return arr;
+  }
+
+  // listen waiting calls live
+  function listenWaiting(cb){
+    waitingCallback = cb;
+    const ref = db.ref(CALLS_NODE);
+    ref.on('value', snap=>{
+      const list = [];
+      if(snap.exists()){
+        const all = snap.val();
+        for(const id in all){
+          const item = all[id];
+          if(item.status === 'waiting') list.push(item);
+        }
+      }
+      list.sort((a,b)=>a.createdAt - b.createdAt);
+      if(waitingCallback) waitingCallback(list);
+      // show Notification for new calls
+      if(window.Notification && Notification.permission === "granted"){
+        // naive: notify when list length increases (could be improved)
+      }
+    });
+  }
+
+  // ============ WebRTC signaling helpers =============
+  function candidatesRef(protocol, role){
+    return db.ref(`${CAND_NODE}/${protocol}/${role}`);
+  }
+
+  async function pushCandidate(protocol, role, candidate){
+    await candidatesRef(protocol, role).push(candidate.toJSON());
+  }
+
+  // set up candidate listeners for a role
+  function listenCandidates(protocol, role, onCandidate){
+    const other = role === 'client' ? 'support' : 'client';
+    const ref = candidatesRef(protocol, other);
+    ref.on('child_added', snap=>{
+      const cand = snap.val();
+      if(!cand) return;
+      try{
+        onCandidate(new RTCIceCandidate(cand));
+      }catch(e){
+        console.warn('candidate parse fail', e);
+      }
+    });
+    return ()=> ref.off();
+  }
+
+  // heartbeat for ping / connectivity
+  function startHeartbeat(protocol, role){
+    const hbRef = db.ref(`${CALLS_NODE}/${protocol}/heartbeat/${role}`);
+    const tick = ()=> hbRef.set(Date.now());
+    tick();
+    const iv = setInterval(tick, 3000);
+    // return stop function
+    return ()=> clearInterval(iv);
+  }
+
+  // ========== CLIENT-SIDE (cidadão) — responde offer with answer ==========
+  async function clientListenForOfferAndAnswer(protocol){
+    currentProtocol = protocol;
+    localRole = 'client';
+    // subscribe to call node
+    const callRef = db.ref(`${CALLS_NODE}/${protocol}`);
+    callRef.on('value', async snap=>{
+      const data = snap.exists()?snap.val():null;
+      if(!data) return;
+      // if there's an offer and we haven't created PC yet -> answer
+      if(data.offer && !data.answer && (!clientPc)){
+        try{
+          await createClientPeerAndAnswer(protocol, data.offer);
+        }catch(e){
+          console.error('Fail answer', e);
+        }
+      }
+      // if support set to in_call -> start timers etc
+      if(data.status === 'in_call'){
+        // launched by admin when accepted
+      }
+      if(['ended','cancelled','rejected','no_answer'].includes(data.status)){
+        // cleanup local
+        cleanupRTC();
+        // remove listener
+        callRef.off();
+      }
+    });
+  }
+
+  // create client peer, set remote offer, create answer, push answer & candidates
+  async function createClientPeerAndAnswer(protocol, offer){
+    clientPc = new RTCPeerConnection();
+    remoteStream = new MediaStream();
+
+    // get user audio
+    try{
+      localStream = await navigator.mediaDevices.getUserMedia({audio:true});
+    }catch(e){
+      console.error('mic denied',e);
+      throw e;
     }
-  }, ms);
+
+    localStream.getTracks().forEach(track => clientPc.addTrack(track, localStream));
+
+    // when remote track arrives
+    clientPc.ontrack = (ev)=>{
+      ev.streams.forEach(s => {
+        remoteStream = s;
+      });
+    };
+
+    clientPc.onicecandidate = (ev)=>{
+      if(ev.candidate){
+        pushCandidate(protocol,'client', ev.candidate).catch(console.error);
+      }
+    };
+
+    // set remote and create answer
+    await clientPc.setRemoteDescription(new RTCSessionDescription(offer));
+    const answer = await clientPc.createAnswer();
+    await clientPc.setLocalDescription(answer);
+
+    // push answer
+    await db.ref(`${CALLS_NODE}/${protocol}/answer`).set(clientPc.localDescription.toJSON());
+    // update status -> support will detect
+    await db.ref(`${CALLS_NODE}/${protocol}`).update({status:'in_call', startedAt:Date.now()});
+    // start listening other candidates
+    listenCandidates(protocol,'client',(cand)=> clientPc.addIceCandidate(cand).catch(()=>{}));
+    // heartbeat
+    startHeartbeat(protocol,'client');
+  }
+
+  // ========== ADMIN-SIDE (support) — create offer ==========
+  async function adminAccept(protocol, supportStream, onUpdateCb){
+    currentProtocol = protocol;
+    localRole = 'support';
+    // attach local stream
+    localStream = supportStream;
+    // create peer
+    adminPc = new RTCPeerConnection();
+    remoteStream = new MediaStream();
+
+    // add local tracks
+    localStream.getTracks().forEach(t => adminPc.addTrack(t, localStream));
+
+    adminPc.ontrack = (ev)=> {
+      ev.streams.forEach(s => remoteStream = s);
+    };
+
+    adminPc.onicecandidate = (ev)=>{
+      if(ev.candidate){
+        pushCandidate(protocol,'support', ev.candidate).catch(console.error);
+      }
+    };
+
+    // create offer
+    const offer = await adminPc.createOffer();
+    await adminPc.setLocalDescription(offer);
+
+    // store offer in DB
+    await db.ref(`${CALLS_NODE}/${protocol}/offer`).set(adminPc.localDescription.toJSON());
+    // listen for answer
+    const answerRef = db.ref(`${CALLS_NODE}/${protocol}/answer`);
+    const answerListener = answerRef.on('value', async snap=>{
+      if(!snap.exists()) return;
+      const answer = snap.val();
+      if(answer && adminPc){
+        await adminPc.setRemoteDescription(new RTCSessionDescription(answer));
+      }
+    });
+
+    // listen for candidates from client
+    listenCandidates(protocol,'support',(cand)=> adminPc.addIceCandidate(cand).catch(()=>{}));
+
+    // set status to in_call once answer arrived is handled above.
+    // also make sure call status becomes in_call (client sets it, but admin can set fallback)
+    await db.ref(`${CALLS_NODE}/${protocol}`).update({status:'in_call', startedAt:Date.now()});
+
+    // subscribe to call changes to update admin UI
+    const ref = db.ref(`${CALLS_NODE}/${protocol}`);
+    ref.on('value', snap=>{
+      const val = snap.exists()?snap.val():null;
+      if(onUpdateCb) onUpdateCb(val);
+      if(!val) ref.off();
+    });
+
+    // start heartbeat
+    startHeartbeat(protocol,'support');
+
+    // expose remote stream via getter
+    return;
+  }
+
+  function getRemoteStream(){ return remoteStream; }
+
+  // cleanup RTC state
+  function cleanupRTC(){
+    try{
+      if(clientPc){ clientPc.close(); clientPc = null; }
+      if(adminPc){ adminPc.close(); adminPc = null; }
+      if(localStream){ localStream.getTracks().forEach(t=>t.stop()); localStream=null;}
+      remoteStream = null;
+      currentProtocol = null;
+      localRole = null;
+    }catch(e){ console.warn('cleanup fail', e); }
+  }
+
+  // ===================================================================
+  // Expose API
+  // ===================================================================
+
+  return {
+    // call management
+    createCall,
+    cancelCall,
+    rejectCall,
+    endCall,
+    getCall,
+    listenCall,
+    fetchWaiting,
+    listenWaiting,
+    // rtc admin actions
+    adminAccept,
+    // streaming helpers
+    getRemoteStream,
+  };
+})();
+
+// expose global
+window.Calls = Calls;
+
+// ===================================================================
+// Small util: ask permission for Notification API
+// ===================================================================
+if(window.Notification && Notification.permission !== "granted" && Notification.permission !== "denied"){
+  Notification.requestPermission().then(()=>{ /* ok */ });
 }
 
-/* utility: quando admin aceita, chamador recebe offer -> a função handleIncomingOfferAsCallee trata isso.
-   Exportar as funções para uso direto pelos HTMLs (global namespace)
-*/
-window.createCall = createCall;
-window.cancelCall = cancelCall;
-window.subscribeToCall = subscribeToCall;
-window.handleIncomingOfferAsCallee = handleIncomingOfferAsCallee;
-window.listenForCalls = listenForCalls;
-window.adminAccept = adminAccept;
-window.adminDecline = adminDecline;
-window.adminHangup = adminHangup;
-window.hangupCall = hangupCall;
+// ===================================================================
+// Optional: small ping monitor (global) - reports to console and DB (keeps UI informed)
+// ===================================================================
+// This can be expanded; currently heartbeats are created per-call by Calls.startHeartbeat.
 
-/* FIM script.js */
+// End of script.js
