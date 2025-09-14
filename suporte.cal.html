@@ -1,378 +1,59 @@
-<!-- admincall.html (sem doctype) -->
+<!-- admincall.html -->
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Painel Administrativo - Suporte</title>
+<title>Painel Suporte</title>
 <style>
-  :root{
-    --bg:#ffffff;--muted:#6c6f73;--accent:#052f6a;--success:#2ea44f;--danger:#d9534f;--shadow: 0 10px 30px rgba(2, 40, 80, 0.06);
-    font-family: Inter, Roboto, "Segoe UI", Arial, sans-serif;
-  }
-  html,body{height:100%;margin:0;background:#f5f7fb;color:#111}
-  .wrap{max-width:1100px;margin:20px auto;padding:20px}
-  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
-  .brand{display:flex;gap:12px;align-items:center}
-  .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#f0f7ff,#e6f0ff);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--accent)}
-  h1{margin:0;font-size:20px}
-  .main{display:flex;gap:18px}
-  .left{flex:1;background:#fff;padding:14px;border-radius:12px;box-shadow:var(--shadow)}
-  .right{width:360px;background:#fff;padding:14px;border-radius:12px;box-shadow:var(--shadow)}
-  .list-item{padding:12px;border-radius:8px;border:1px solid #eef3fb;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
-  .meta{font-size:13px;color:var(--muted)}
-  .btn{padding:8px 12px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer}
-  .btn.ghost{background:transparent;border:1px solid rgba(5,47,106,0.06);color:var(--accent)}
-  .btn.danger{background:var(--danger)}
-  .callpanel{margin-top:12px}
-  .call-actions{display:flex;gap:8px;margin-top:8px}
-  .call-audio{display:flex;gap:8px;align-items:center}
-  table{width:100%;border-collapse:collapse;font-size:13px}
-  td,th{padding:8px;border-bottom:1px solid #f4f6fb}
-  .status-wait{color:#0b72d8;font-weight:700}
-  .status-in{color:var(--success);font-weight:700}
-  .status-finished{color:var(--muted)}
-  .center{display:flex;align-items:center;justify-content:center}
+  body{margin:0;font-family:Inter,Roboto,sans-serif;background:#f6f7fb}
+  .wrap{max-width:900px;margin:20px auto;padding:20px;background:#fff;border-radius:12px;box-shadow:0 4px 18px rgba(0,0,0,0.1)}
+  h1{margin-top:0}
+  .item{padding:10px;border-bottom:1px solid #eee}
+  .btn{padding:6px 12px;margin:4px;border:0;border-radius:6px;background:#0b4a9b;color:#fff;cursor:pointer}
+  .btn.danger{background:#d9534f}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo">ADM</div>
-        <div>
-          <h1>Painel de Atendimento</h1>
-          <div class="meta">Acompanhe solicitações em tempo real</div>
-        </div>
-      </div>
-      <div>
-        <button id="reqMic" class="btn ghost">Pedir microfone</button>
-      </div>
-    </header>
+<div class="wrap">
+  <h1>Solicitações</h1>
+  <div id="list"></div>
+  <div id="detail"></div>
+</div>
 
-    <div class="main">
-      <div class="left">
-        <h3>Solicitações pendentes</h3>
-        <div id="callsList">
-          <div class="meta">Nenhuma solicitação por enquanto.</div>
-        </div>
-      </div>
-
-      <div class="right">
-        <h3>Detalhes da chamada</h3>
-        <div id="detailArea">
-          <div class="meta">Selecione uma solicitação à esquerda</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-<!-- Firebase compat + script.js (do usuário) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="script.js"></script>
-
 <script>
-/*
-  admincall.html script:
-  - lista em tempo real /calls ordenando por createdAt
-  - permite aceitar (set status=in_call), recusar (declined)
-  - quando aceitar: inicia WebRTC como "callee" (espera offer do cliente), troca answer e ICE via DB
-  - painel mostra nome, cpf, protocolo, tempo de espera e tempo da ligação
-  - quando terminar, define status=finished e remove interface de chamada (a spec: chamadas atendidas não ficam salvas depois -> aqui será removida do DB ao finalizar)
-*/
-
-(function(){
-  const db = firebase.database();
-  const callsRef = db.ref('calls');
-  const callsList = document.getElementById('callsList');
-  const detailArea = document.getElementById('detailArea');
-  const reqMic = document.getElementById('reqMic');
-
-  let localStream = null;
-  let pc = null;
-  let selectedCall = null;
-  let callTimerInterval = null;
-  let callStartTS = null;
-
-  // request mic
-  reqMic.addEventListener('click', async ()=>{
-    try{
-      localStream = await navigator.mediaDevices.getUserMedia({ audio:true });
-      alert('Microfone pronto.');
-    }catch(e){
-      alert('Permissão de microfone negada.');
-    }
-  });
-
-  // listen for all calls
-  callsRef.orderByChild('createdAt').on('value', snap=>{
-    const data = snap.val() || {};
-    // filter to present recent first (reverse chronological)
-    const arr = Object.keys(data).map(k => data[k]).sort((a,b)=>b.createdAt - a.createdAt);
-    renderCalls(arr);
-  });
-
-  function renderCalls(arr){
-    callsList.innerHTML = '';
-    if (arr.length === 0){
-      callsList.innerHTML = '<div class="meta">Nenhuma solicitação por enquanto.</div>';
-      return;
-    }
-    arr.forEach(call=>{
-      const div = document.createElement('div');
-      div.className = 'list-item';
-      const left = document.createElement('div');
-      left.innerHTML = `<div><strong>${call.name}</strong></div><div class="meta">CPF: ${call.cpf} • Protocolo: ${call.protocol}</div>`;
-      const right = document.createElement('div');
-      const statusSpan = document.createElement('div');
-      statusSpan.className = call.status === 'waiting' ? 'status-wait' : call.status === 'in_call' ? 'status-in' : 'status-finished';
-      statusSpan.textContent = call.status;
-      const btn = document.createElement('button');
-      btn.className = 'btn';
-      btn.textContent = 'Abrir';
-      btn.onclick = ()=> openDetail(call);
-      right.appendChild(statusSpan);
-      right.appendChild(document.createElement('br'));
-      right.appendChild(btn);
-      div.appendChild(left);
-      div.appendChild(right);
-      callsList.appendChild(div);
-    });
-  }
-
-  function openDetail(call){
-    selectedCall = call;
-    detailArea.innerHTML = '';
-    const info = document.createElement('div');
-    info.innerHTML = `
-      <table>
-        <tr><th>Protocolo</th><td>${call.protocol}</td></tr>
-        <tr><th>Nome</th><td>${call.name}</td></tr>
-        <tr><th>CPF</th><td>${call.cpf}</td></tr>
-        <tr><th>Criado em</th><td>${new Date(call.createdAt).toLocaleString()}</td></tr>
-        <tr><th>Status</th><td id="detailStatus">${call.status}</td></tr>
-      </table>
-    `;
-    detailArea.appendChild(info);
-
-    const actions = document.createElement('div');
-    actions.className = 'call-actions';
-
-    const acceptBtn = document.createElement('button');
-    acceptBtn.className = 'btn';
-    acceptBtn.textContent = 'Atender';
-    acceptBtn.onclick = ()=> acceptCall(call);
-
-    const declineBtn = document.createElement('button');
-    declineBtn.className = 'btn ghost';
-    declineBtn.textContent = 'Recusar';
-    declineBtn.onclick = ()=> declineCall(call);
-
-    actions.appendChild(acceptBtn);
-    actions.appendChild(declineBtn);
-
-    detailArea.appendChild(actions);
-
-    // if call already in call show controls
-    if (call.status === 'in_call'){
-      showInCallUI(call);
-    }
-  }
-
-  async function declineCall(call){
-    const r = confirm('Recusar esta solicitação?');
-    if (!r) return;
-    await db.ref('calls/' + call.protocol).transaction(curr=>{
-      if (!curr) return curr;
-      if (curr.status === 'waiting') { curr.status = 'declined'; curr.updatedAt = Date.now(); }
-      return curr;
-    });
-    detailArea.innerHTML = '<div class="meta">Solicitação recusada.</div>';
-  }
-
-  async function acceptCall(call){
-    // claim call: set status=in_call only if still waiting
-    const callRef = db.ref('calls/' + call.protocol);
-    const res = await callRef.transaction(current=>{
-      if (!current) return current;
-      if (current.status === 'waiting'){
-        current.status = 'in_call';
-        current.callee = { agent: 'admin', ts: Date.now() };
-        current.updatedAt = Date.now();
-      }
-      return current;
-    });
-    if (!res || !res.snapshot || !res.snapshot.val()) {
-      alert('Não foi possível aceitar — talvez já tenha sido atendida.');
-      return;
-    }
-
-    // refresh selectedCall info
-    const snap = await callRef.once('value');
-    selectedCall = snap.val();
-    showInCallUI(selectedCall);
-
-    // ensure microphone
-    if (!localStream){
-      try{ localStream = await navigator.mediaDevices.getUserMedia({audio:true}); }catch(e){ alert('Permissão de microfone necessária.'); return; }
-    }
-
-    // Start WebRTC as callee: wait for offer from caller
-    startAsCallee(callRef);
-  }
-
-  function showInCallUI(call){
-    // update status text
-    const detailStatus = document.getElementById('detailStatus');
-    if (detailStatus) detailStatus.textContent = 'in_call';
-    // add in-call UI: timer, hangup, mute
-    const panel = document.createElement('div');
-    panel.className = 'callpanel';
-    panel.innerHTML = `
-      <div class="meta">Você está em atendimento com <strong>${call.name}</strong></div>
-      <div style="margin-top:8px" class="call-audio">
-        <div><strong>Tempo:</strong> <span id="agentTimer">00:00</span></div>
-      </div>
-    `;
-    const hangBtn = document.createElement('button');
-    hangBtn.className = 'btn danger';
-    hangBtn.textContent = 'Encerrar';
-    hangBtn.onclick = ()=> endCall(call);
-
-    const muteBtn = document.createElement('button');
-    muteBtn.className = 'btn ghost';
-    muteBtn.textContent = 'Mudo';
-    muteBtn.onclick = ()=>{
-      if (!localStream) return;
-      const t = localStream.getAudioTracks()[0];
-      if (!t) return;
-      t.enabled = !t.enabled;
-      muteBtn.textContent = t.enabled ? 'Mudo' : 'Ligar';
-    };
-
-    panel.appendChild(document.createElement('br'));
-    panel.appendChild(hangBtn);
-    panel.appendChild(muteBtn);
-
-    // clear previous
-    const existing = detailArea.querySelector('.callpanel');
-    if (existing) existing.remove();
-    detailArea.appendChild(panel);
-
-    // start timer
-    callStartTS = Date.now();
-    if (callTimerInterval) clearInterval(callTimerInterval);
-    const agentTimerEl = document.getElementById('agentTimer');
-    agentTimerEl.textContent = '00:00';
-    callTimerInterval = setInterval(()=>{
-      const sec = Math.floor((Date.now() - callStartTS)/1000);
-      const mm = String(Math.floor(sec/60)).padStart(2,'0');
-      const ss = String(sec%60).padStart(2,'0');
-      agentTimerEl.textContent = `${mm}:${ss}`;
-    },1000);
-  }
-
-  async function endCall(call){
-    const callRef = db.ref('calls/' + call.protocol);
-    await callRef.update({ status:'finished', updatedAt: Date.now() });
-    // per your spec: chamadas atendidas não ficam salvas depois -> remove node
-    await callRef.remove();
-    cleanupPC();
-    detailArea.innerHTML = '<div class="meta">Atendimento encerrado.</div>';
-  }
-
-  function cleanupPC(){
-    if (pc){
-      try{ pc.close(); }catch(e){}
-      pc = null;
-    }
-    if (callTimerInterval) { clearInterval(callTimerInterval); callTimerInterval = null; }
-  }
-
-  // --- WebRTC: callee side ---
-  async function startAsCallee(callRef){
-    pc = new RTCPeerConnection();
-
-    // add local audio
-    if (localStream) localStream.getTracks().forEach(t=>pc.addTrack(t, localStream));
-
-    // when remote track arrives (audio from caller)
-    const remoteAudio = new Audio();
-    remoteAudio.autoplay = true;
-    pc.ontrack = (evt)=>{
-      try{
-        remoteAudio.srcObject = evt.streams[0];
-      }catch(e){
-        remoteAudio.srcObject = new MediaStream(evt.track ? [evt.track] : []);
-      }
-    };
-
-    // listen for caller ICE candidates and add them
-    const callerCandidatesRef = callRef.child('callerCandidates');
-    callerCandidatesRef.on('child_added', snap=>{
-      const c = snap.val();
-      pc.addIceCandidate(new RTCIceCandidate(c)).catch(e=>console.warn(e));
-    });
-
-    // send own ICE candidates to DB
-    const calleeCandidatesRef = callRef.child('calleeCandidates');
-    pc.onicecandidate = event=>{
-      if (event.candidate){
-        calleeCandidatesRef.push(event.candidate.toJSON());
-      }
-    };
-
-    // get offer from DB
-    const offerSnap = await callRef.child('offer').once('value');
-    const offer = offerSnap.val();
-    if (!offer) {
-      console.error('Offer não encontrado.');
-      return;
-    }
-    await pc.setRemoteDescription(new RTCSessionDescription(offer));
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
-    // write answer to DB
-    await callRef.child('answer').set({ type: answer.type, sdp: answer.sdp });
-
-    // When status becomes finished or removed -> cleanup handled elsewhere
-    callRef.on('value', snap=>{
-      const v = snap.val();
-      if (!v) return;
-      if (v.status && v.status !== 'in_call' && v.status !== 'waiting'){
-        // ended/changed
-        cleanupPC();
-      }
-    });
-
-    // also handle remote hangup by listening for status=finished or removed
-    callRef.on('child_removed', ()=>{
-      cleanupPC();
-      detailArea.innerHTML = '<div class="meta">Chamada removida pelo sistema.</div>';
-    });
-  }
-
-  // also ensure that calls older than 10 minutes become 'nao_atendido' if still waiting
-  // This can be handled by clients; admin will see status update from whoever sets it.
-  // For redundancy, admin can also set it locally:
-  setInterval(async ()=>{
-    const snap = await callsRef.once('value');
-    const data = snap.val() || {};
-    const TENMIN = 10 * 60 * 1000;
-    const now = Date.now();
-    for (const k of Object.keys(data)){
-      const c = data[k];
-      if (c.status === 'waiting' && now - c.createdAt > TENMIN){
-        await callsRef.child(k).update({ status:'nao_atendido', updatedAt: now });
-      }
-    }
-  }, 60*1000);
-
-  // ask mic on load for convenience
-  (async ()=>{ try{ await navigator.mediaDevices.getUserMedia({audio:true}); }catch(e){} })();
-
-})();
+const db=firebase.database();let pc,localStream,currentRef;
+const list=document.getElementById('list'),detail=document.getElementById('detail');
+db.ref('calls').on('value',snap=>{
+  list.innerHTML='';const data=snap.val()||{};
+  Object.values(data).forEach(c=>{
+    const d=document.createElement('div');d.className='item';
+    d.textContent=c.protocol+' - '+c.name+' ('+c.status+') ';
+    const b=document.createElement('button');b.className='btn';b.textContent='Abrir';
+    b.onclick=()=>open(c.protocol);d.appendChild(b);list.appendChild(d);
+  })
+});
+async function open(id){
+  currentRef=db.ref('calls/'+id);const snap=await currentRef.once('value');const c=snap.val();
+  detail.innerHTML='<h3>'+c.name+'</h3><p>CPF: '+c.cpf+'</p><p>Protocolo: '+c.protocol+'</p>';
+  if(c.status==='waiting'){const b=document.createElement('button');b.className='btn';b.textContent='Atender';b.onclick=()=>accept();detail.appendChild(b)}
+}
+async function accept(){
+  localStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  await currentRef.update({status:'in_call'});
+  pc=new RTCPeerConnection();localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));
+  const remote=new Audio();remote.autoplay=true;pc.ontrack=e=>remote.srcObject=e.streams[0];
+  pc.onicecandidate=e=>{if(e.candidate)currentRef.child('calleeCandidates').push(e.candidate.toJSON())};
+  const offerSnap=await currentRef.child('offer').once('value');const offer=offerSnap.val();
+  await pc.setRemoteDescription(new RTCSessionDescription(offer));
+  const ans=await pc.createAnswer();await pc.setLocalDescription(ans);
+  await currentRef.child('answer').set({type:ans.type,sdp:ans.sdp});
+  currentRef.child('callerCandidates').on('child_added',snap=>pc.addIceCandidate(new RTCIceCandidate(snap.val())));
+  const hang=document.createElement('button');hang.className='btn danger';hang.textContent='Encerrar';
+  hang.onclick=()=>{currentRef.update({status:'finished'});pc.close()};detail.appendChild(hang);
+}
 </script>
 </body>
 </html>
