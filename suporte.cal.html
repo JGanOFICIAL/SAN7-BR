@@ -1,328 +1,315 @@
-<!doctype html>
+<!-- admincall.html -->
+<! — admin panel moderno —>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Admin Call - Central de Atendimento</title>
-<link rel="stylesheet" href="admincall.css"/>
+<title>Central de Atendimento — Suporte</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f4f7fb;--card:#fff;--accent:#0366d6;--danger:#e24141;--muted:#667085}
+  body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#0b2636}
+  header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:linear-gradient(90deg,#fff,#f6fbff);box-shadow:0 6px 20px rgba(11,38,54,0.05)}
+  h1{margin:0;font-size:18px}
+  .wrap{display:flex;gap:18px;padding:18px;align-items:flex-start}
+  .left{flex:1;max-width:420px}
+  .right{flex:2}
+  .card{background:var(--card);border-radius:12px;padding:14px;box-shadow:0 8px 30px rgba(2,10,23,0.04)}
+  .list-item{display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:10px;margin-bottom:8px;border:1px solid #eef6ff}
+  .meta{font-size:13px}
+  .actions{display:flex;gap:8px}
+  .btn{padding:8px 12px;border-radius:8px;border:0;background:var(--accent);color:white;cursor:pointer}
+  .btn.ghost{background:transparent;border:1px solid rgba(3,102,214,0.12);color:var(--accent)}
+  .btn.red{background:var(--danger)}
+  .muted{color:var(--muted);font-size:13px}
+  .call-panel{margin-top:14px}
+  video,audio{width:100%;border-radius:8px;background:#000}
+  .tutorialBtn{margin-left:8px}
+  .overlay{position:fixed;inset:0;background:rgba(4,8,20,0.6);display:flex;align-items:center;justify-content:center;z-index:80}
+  .overlay .tutorialBox{background:white;padding:18px;border-radius:12px;max-width:720px;width:92%}
+  .status-badge{font-weight:700;color:var(--accent)}
+  .ping{font-size:12px;color:var(--muted)}
+  .controls{display:flex;gap:8px;margin-top:10px}
+  .hidden{display:none}
+</style>
 </head>
 <body>
-<div class="admin-shell">
-  <aside class="sidebar">
-    <div class="brand">Admin Call</div>
-    <div class="info">Painel de suporte</div>
-    <button id="tutorialBtn" class="btn">Como atender</button>
-    <div id="pingStatus" class="ping">Ping: —</div>
-  </aside>
+<header>
+  <h1>Painel de Suporte — Central</h1>
+  <div>
+    <button class="btn ghost" id="tutorialOpen">Como atender</button>
+    <button class="btn" id="refreshBtn">Atualizar</button>
+    <button class="btn red" id="logoutBtn">Sair</button>
+  </div>
+</header>
 
-  <main class="main">
-    <header class="main-head">
-      <h1>Chamadas em tempo real</h1>
-      <div class="controls">
-        <button id="refreshBtn" class="btn">Atualizar</button>
+<div class="wrap">
+  <div class="left">
+    <div class="card">
+      <h3>Fila de solicitações</h3>
+      <p class="muted">Novas solicitações aparecem em tempo real. Clique em Atender para iniciar.</p>
+      <div id="requestsList" style="margin-top:12px"></div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="card">
+      <h3>Visor da chamada</h3>
+      <div id="callInfo" style="margin-top:10px">
+        <div class="muted">Sem chamada selecionada</div>
       </div>
-    </header>
 
-    <section class="calls-area">
-      <div id="callsList" class="calls-list"></div>
-      <div id="noCalls" class="no-calls">Nenhuma solicitação no momento.</div>
-    </section>
-  </main>
+      <div class="call-panel hidden" id="callPanel">
+        <div class="muted-line">Protocolo: <strong id="callProtocol"></strong></div>
+        <div class="muted-line">Nome: <strong id="callNome"></strong></div>
+        <div class="muted-line">CPF: <strong id="callCPF"></strong></div>
+        <div class="muted-line">Conexão: <span id="connPing" class="ping">—</span></div>
+
+        <audio id="localAudio" autoplay controls></audio>
+        <audio id="clientAudio" autoplay></audio>
+
+        <div class="controls">
+          <button class="btn" id="acceptBtn">Atender</button>
+          <button class="btn ghost" id="rejectBtn">Recusar</button>
+          <button class="btn red" id="endBtn">Desligar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- tutorial overlay -->
+<div id="tutorialOverlay" class="overlay hidden">
+  <div class="tutorialBox">
+    <h3>Como atender</h3>
+    <p class="muted">Siga estas boas práticas: cumprimente sempre falando o nome do solicitante, verifique CPF, confirme identidade, mantenha tom calmo, ofereça solução passo a passo. Use o botão "Desligar" para encerrar. Sempre documente no sistema se necessário.</p>
+    <div style="text-align:right;margin-top:10px"><button class="btn" id="closeTut">Fechar</button></div>
+  </div>
+</div>
 
+<!-- Firebase + script.js -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="script.js"></script>
+
 <script>
-/* admin UI logic */
+/*
+ Admin panel logic.
+ - Monitora /calls/requests
+ - Permite Atender (cria room + answer flow), Recusar, Desligar
+ - Requer microfone acesso na entrada
+*/
+
 (function(){
-  const $ = id => document.getElementById(id);
-  const callsList = $('callsList'), noCalls = $('noCalls');
-  const tutorialBtn = $('tutorialBtn'), tutorialOverlay = $('tutorialOverlay');
-  const closeTutorial = $('closeTutorial'), ttNome = $('ttNome'), ttCpf = $('ttCpf');
-  const pingStatus = $('pingStatus');
+  // elementos
+  const requestsList = document.getElementById('requestsList');
+  const tutorialOpen = document.getElementById('tutorialOpen');
+  const tutorialOverlay = document.getElementById('tutorialOverlay');
+  const closeTut = document.getElementById('closeTut');
+  const callPanel = document.getElementById('callPanel');
+  const callProtocol = document.getElementById('callProtocol');
+  const callNome = document.getElementById('callNome');
+  const callCPF = document.getElementById('callCPF');
+  const connPing = document.getElementById('connPing');
+  const acceptBtn = document.getElementById('acceptBtn');
+  const rejectBtn = document.getElementById('rejectBtn');
+  const endBtn = document.getElementById('endBtn');
+  const clientAudio = document.getElementById('clientAudio');
+  const localAudio = document.getElementById('localAudio');
 
   let localStream = null;
-  let currentPc = null;
-  let currentProtocol = null;
-  let supportPeerId = null;
-  let callListeners = {};
+  let pc = null;
+  let selectedProtocol = null;
+  let roomId = null;
+  let queryRef = null;
+  let candidateListenerRefs = [];
+  let requestListener = null;
 
-  function onlyDigits(s){ return (s||'').replace(/\D/g,''); }
-  function formatTime(ts){ const d = new Date(ts); return d.toLocaleString(); }
+  // request mic on enter
+  (async ()=>{ await navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{ localStream = s; localAudio.srcObject = s; localAudio.play().catch(()=>{}); }).catch(()=>{}); })();
 
-  async function requestMic(){
-    try{
-      localStream = await navigator.mediaDevices.getUserMedia({audio:true});
-      return true;
-    }catch(e){
-      alert('Permita o microfone para atender chamadas.');
-      return false;
-    }
-  }
-
-  function renderCallItem(proto, data){
+  // monitor requests
+  function renderRequestItem(proto, data){
     const el = document.createElement('div');
-    el.className = 'call-item';
+    el.className = 'list-item';
     el.innerHTML = `
-      <div class="call-main">
-        <div class="info">
-          <div class="name">${data.nome || '—'}</div>
-          <div class="cpf">${data.cpf || '—'}</div>
-          <div class="meta">Criado: ${formatTime(data.createdAt || Date.now())}</div>
-        </div>
-        <div class="actions">
-          <button class="btn-accept" data-proto="${proto}">Atender</button>
-          <button class="btn-reject" data-proto="${proto}">Recusar</button>
-        </div>
+      <div>
+        <div style="font-weight:700">${data.nome}</div>
+        <div class="muted">${proto} • ${new Date(data.criadoEm).toLocaleString()}</div>
+      </div>
+      <div class="actions">
+        <button class="btn ghost" data-proto="${proto}" data-act="view">Ver</button>
+        <button class="btn" data-proto="${proto}" data-act="att">Atender</button>
       </div>
     `;
     return el;
   }
 
-  async function refreshCalls(){
-    const snap = await firebase.database().ref('calls').orderByChild('createdAt').get();
-    callsList.innerHTML = '';
-    let count = 0;
-    if(snap.exists()){
-      const data = snap.val();
-      Object.keys(data).reverse().forEach(proto=>{
-        count++;
-        const item = renderCallItem(proto, data[proto]);
-        callsList.appendChild(item);
-      });
-    }
-    noCalls.style.display = count ? 'none' : 'block';
-    attachButtons();
+  function listenRequests(){
+    const ref = db.ref('calls/requests');
+    // clean previous
+    if(requestListener) ref.off('value', requestListener);
+    requestListener = ref.on('value', snap=>{
+      const v = snap.val() || {};
+      requestsList.innerHTML = '';
+      // order by created time (asc)
+      const items = Object.keys(v).map(k=>({k,v:v[k]})).sort((a,b)=>a.v.criadoEm - b.v.criadoEm);
+      for(const it of items){
+        const item = renderRequestItem(it.k,it.v);
+        requestsList.appendChild(item);
+      }
+    });
   }
 
-  function attachButtons(){
-    document.querySelectorAll('.btn-accept').forEach(btn=>{
-      btn.onclick = (e)=> acceptCall(e.target.dataset.proto);
+  requestsList.addEventListener('click', async (e)=>{
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    const proto = btn.dataset.proto;
+    const act = btn.dataset.act;
+    if(act === 'view'){
+      const snap = await db.ref('calls/requests/'+proto).get();
+      const d = snap.val();
+      if(!d) return alert('Solicitação removida');
+      callProtocol.textContent = proto;
+      callNome.textContent = d.nome;
+      callCPF.textContent = d.cpf;
+      selectedProtocol = proto;
+      callPanel.classList.remove('hidden');
+    } else if(act === 'att'){
+      // auto open view then accept
+      const snap = await db.ref('calls/requests/'+proto).get();
+      const d = snap.val();
+      if(!d) return alert('Solicitação removida');
+      callProtocol.textContent = proto;
+      callNome.textContent = d.nome;
+      callCPF.textContent = d.cpf;
+      selectedProtocol = proto;
+      callPanel.classList.remove('hidden');
+      // programmatic accept
+      await acceptCall(proto);
+    }
+  });
+
+  tutorialOpen.addEventListener('click', ()=>{ tutorialOverlay.classList.remove('hidden'); });
+  closeTut.addEventListener('click', ()=>{ tutorialOverlay.classList.add('hidden'); });
+
+  async function acceptCall(proto){
+    try{
+      acceptBtn.disabled=true;
+      // create room id
+      const roomIdLocal = 'room-'+proto;
+      roomId = roomIdLocal;
+      // set room id into request
+      await db.ref('calls/requests/'+proto+'/roomId').set(roomId);
+      await db.ref('calls/requests/'+proto+'/estado').set('atendido');
+      await db.ref('calls/rooms/'+roomId).set({createdBy:'support', createdAt:Date.now()});
+      // create peer connection and answer incoming offer
+      await joinRoomAsCallee(proto, roomId);
+    }catch(e){ console.error(e); alert('Falha ao aceitar: '+(e.message||e)); acceptBtn.disabled=false; }
+  }
+
+  async function joinRoomAsCallee(proto, roomId){
+    pc = new RTCPeerConnection({iceServers:[{urls:['stun:stun.l.google.com:19302']}]});
+    // attach local mic tracks to pc
+    if(!localStream){
+      try{ localStream = await navigator.mediaDevices.getUserMedia({audio:true}); localAudio.srcObject = localStream; }catch(e){}
+    }
+    localStream.getTracks().forEach(t=>pc.addTrack(t, localStream));
+
+    const roomRef = db.ref('calls/rooms/'+roomId);
+    const offerSnap = await roomRef.child('offer').get();
+    if(!offerSnap.exists()) { alert('Offer não encontrado'); return; }
+    const offer = offerSnap.val();
+    await pc.setRemoteDescription({type:offer.type, sdp:offer.sdp});
+
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+    await roomRef.child('answer').set({type:answer.type, sdp:answer.sdp});
+
+    // candidate exchange
+    const callerCandidatesRef = roomRef.child('callerCandidates');
+    const calleeCandidatesRef = roomRef.child('calleeCandidates');
+
+    pc.onicecandidate = (ev)=>{
+      if(ev.candidate){
+        calleeCandidatesRef.push(ev.candidate.toJSON()).catch(()=>{});
+      }
+    };
+
+    callerCandidatesRef.on('child_added', snap=>{
+      const c = snap.val();
+      pc.addIceCandidate(new RTCIceCandidate(c)).catch(e=>console.warn(e));
     });
-    document.querySelectorAll('.btn-reject').forEach(btn=>{
-      btn.onclick = (e)=> rejectCall(e.target.dataset.proto);
+
+    pc.ontrack = (ev)=>{
+      clientAudio.srcObject = ev.streams[0];
+      clientAudio.play().catch(()=>{});
+    };
+
+    pc.onconnectionstatechange = ()=>{
+      if(pc.connectionState === 'connected'){
+        // mark startedAt
+        db.ref('calls/requests/'+proto+'/startedAt').set(Date.now());
+      } else if(pc.connectionState === 'disconnected' || pc.connectionState==='failed'){
+        // end
+      }
+    };
+
+    // update ping UI by reading client's lastPing
+    db.ref('calls/requests/'+proto+'/lastPing').on('value', snap=>{
+      const v = snap.val();
+      if(v) connPing.textContent = `${Date.now()-v} ms`;
     });
+
+    // store active room under support id (optional)
+    await db.ref('calls/active_support/'+proto).set({support:'me', roomId, startedAt:Date.now()});
   }
 
   async function rejectCall(proto){
-    await firebase.database().ref('calls/'+proto+'/status').set('rejected');
-    // remove active_by_cpf entry if exists
-    const snap = await firebase.database().ref('calls/'+proto).get();
-    if(snap.exists()){
-      const c = snap.val();
-      if(c.cpf) firebase.database().ref('active_by_cpf/'+onlyDigits(c.cpf)).remove();
-    }
-    // remove call entry
-    setTimeout(()=> firebase.database().ref('calls/'+proto).remove(), 2000);
-    refreshCalls();
+    await db.ref('calls/requests/'+proto+'/estado').set('recusado');
+    const cpf = (await db.ref('calls/requests/'+proto+'/cpf').get()).val();
+    if(cpf) await db.ref('calls/active_by_cpf/'+cpf).remove();
+    await db.ref('calls/requests/'+proto).remove();
+    callPanel.classList.add('hidden');
   }
 
-  async function acceptCall(proto){
-    if(currentProtocol) { alert('Já está em atendimento. Encerrar antes de aceitar outra.'); return; }
-    const micOk = await requestMic();
-    if(!micOk) return;
-
-    const snap = await firebase.database().ref('calls/'+proto).get();
-    if(!snap.exists()){ alert('Chamada já encerrada.'); refreshCalls(); return; }
-    const data = snap.val();
-    ttNome.textContent = data.nome || '—';
-    ttCpf.textContent = data.cpf || '—';
-    tutorialOverlay.classList.remove('hidden');
-
-    // set status accepted
-    await firebase.database().ref('calls/'+proto+'/status').set('accepted');
-    // record support and start answer
-    supportPeerId = 'support-'+Date.now();
-    currentProtocol = proto;
-
-    // show admin controls in UI (replace item with ongoing)
-    startAnswerView(proto, data);
+  async function endCall(proto){
+    if(!proto) return;
+    await db.ref('calls/requests/'+proto+'/estado').set('desligado');
+    const cpf = (await db.ref('calls/requests/'+proto+'/cpf').get()).val();
+    if(cpf) await db.ref('calls/active_by_cpf/'+cpf).remove();
+    // remove room
+    if(roomId) await db.ref('calls/rooms/'+roomId).remove();
+    await db.ref('calls/requests/'+proto).remove();
+    // cleanup local pc
+    try{ if(pc){ pc.getSenders().forEach(s=>s.track && s.track.stop()); pc.close(); pc=null; } }catch(e){}
+    callPanel.classList.add('hidden');
   }
 
-  async function startAnswerView(proto, data){
-    // create PC and answer logic
-    currentPc = new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
-    if(localStream) localStream.getTracks().forEach(t=> currentPc.addTrack(t, localStream));
-    const audio = document.createElement('audio'); audio.autoplay = true; audio.playsInline = true;
-    currentPc.ontrack = (ev) => { audio.srcObject = ev.streams[0]; };
+  acceptBtn.addEventListener('click', async ()=>{ if(selectedProtocol) await acceptCall(selectedProtocol); });
+  rejectBtn.addEventListener('click', async ()=>{ if(selectedProtocol) await rejectCall(selectedProtocol); });
+  endBtn.addEventListener('click', async ()=>{ if(selectedProtocol) await endCall(selectedProtocol); });
 
-    const candRef = firebase.database().ref(`calls/${proto}/candidates/support-branch-${Date.now()}`);
-    currentPc.onicecandidate = (ev)=>{
-      if(ev.candidate) candRef.push(JSON.stringify(ev.candidate));
-    };
+  // initial listeners
+  listenRequests();
 
-    // get offer
-    const offerSnap = await firebase.database().ref('calls/'+proto+'/offer').get();
-    if(!offerSnap.exists()){ alert('Offer não encontrada'); return; }
-    const offer = offerSnap.val();
-    await currentPc.setRemoteDescription(new RTCSessionDescription({type: offer.type, sdp: offer.sdp}));
+  // refresh button
+  document.getElementById('refreshBtn').addEventListener('click', ()=>listenRequests());
 
-    const answer = await currentPc.createAnswer();
-    await currentPc.setLocalDescription(answer);
-
-    await firebase.database().ref('calls/'+proto+'/answer').set({sdp:answer.sdp, type:answer.type, createdAt:Date.now(), supportPeerId: supportPeerId});
-
-    // listen for remote candidates
-    firebase.database().ref(`calls/${proto}/candidates`).on('child_added', snap=>{
-      const key = snap.key;
-      if(key.indexOf('support-')===0) return; // ignore support branch
-      const val = snap.val();
-      if(typeof val === 'string'){
-        try{ currentPc.addIceCandidate(new RTCIceCandidate(JSON.parse(val))); }catch(e){}
-      }else if(typeof val === 'object'){
-        Object.values(val).forEach(v=>{
-          try{ currentPc.addIceCandidate(new RTCIceCandidate(JSON.parse(v))); }catch(e){}
-        });
-      }
-    });
-
-    // listen for call end
-    firebase.database().ref('calls/'+proto+'/status').on('value', snap=>{
-      const val = snap.val();
-      if(val === 'ended' || val === 'cancelled' || val === 'rejected' || val === 'not_answered'){
-        endCurrentCall();
-      }
-    });
-
-    // UI: replace calls list area with active call controls
-    callsList.innerHTML = '';
-    const activeCard = document.createElement('div');
-    activeCard.className = 'active-call';
-    activeCard.innerHTML = `
-      <div class="act-left">
-        <div><strong>Protocolo:</strong> ${proto}</div>
-        <div><strong>Nome:</strong> ${data.nome}</div>
-        <div><strong>CPF:</strong> ${data.cpf}</div>
-        <div><strong>Iniciado:</strong> ${new Date(data.createdAt).toLocaleString()}</div>
-        <div id="adminCallTimer">Tempo: 00:00</div>
-      </div>
-      <div class="act-right">
-        <div id="adminAudioHolder"></div>
-        <div class="act-actions">
-          <button id="adminHang" class="btn-danger">Desligar</button>
-        </div>
-      </div>
-    `;
-    callsList.appendChild(activeCard);
-    $('adminAudioHolder').appendChild(audio);
-
-    // hangup button
-    $('adminHang').onclick = async ()=>{
-      await firebase.database().ref('calls/'+proto+'/status').set('ended');
-      // remove active_by_cpf
-      if(data.cpf) firebase.database().ref('active_by_cpf/'+onlyDigits(data.cpf)).remove();
-      setTimeout(()=> firebase.database().ref('calls/'+proto).remove(), 3000);
-      endCurrentCall();
-    };
-
-    // timer
-    let seconds = 0;
-    const timerId = setInterval(()=>{
-      seconds++;
-      const mm = String(Math.floor(seconds/60)).padStart(2,'0');
-      const ss = String(seconds%60).padStart(2,'0');
-      const tEl = $('adminCallTimer');
-      if(tEl) tEl.textContent = `Tempo: ${mm}:${ss}`;
-    },1000);
-
-    // store listeners to cleanup
-    callListeners[proto] = {timerId};
-
-  }
-
-  async function endCurrentCall(){
-    if(currentProtocol){
-      const proto = currentProtocol;
-      // cleanup pc
-      try{ currentPc && currentPc.close(); }catch(e){}
-      currentPc = null;
-      currentProtocol = null;
-      // stop local stream
-      try{ localStream && localStream.getTracks().forEach(t=>t.stop()); }catch(e){}
-      localStream = null;
-      // cleanup listeners
-      if(callListeners[proto]){
-        clearInterval(callListeners[proto].timerId);
-        delete callListeners[proto];
-      }
-      refreshCalls();
-    }
-  }
-
-  // tutorial overlay handlers
-  tutorialBtn.onclick = ()=> tutorialOverlay.classList.remove('hidden');
-  closeTutorial.onclick = ()=> tutorialOverlay.classList.add('hidden');
-
-  // ping measurement (simple)
-  setInterval(async ()=>{
-    try{
-      const t0 = Date.now();
-      await firebase.database().ref('/admin_ping/time').set({t:t0});
-      const snap = await firebase.database().ref('/admin_ping/time').get();
-      const t1 = Date.now();
-      if(snap.exists()){
-        const ping = Math.abs(t1 - t0);
-        pingStatus.textContent = 'Ping: '+ping+'ms';
-      }else pingStatus.textContent = 'Ping: —';
-    }catch(e){
-      pingStatus.textContent = 'Ping: offline';
-    }
-  },4000);
-
-  // live update: listen to calls node
-  firebase.database().ref('calls').on('value', snap=>{
-    const val = snap.val();
-    callsList.innerHTML = '';
-    if(!val){ noCalls.style.display='block'; return; }
-    noCalls.style.display='none';
-    Object.keys(val).reverse().forEach(proto=>{
-      const itemData = val[proto];
-      const item = renderCallItem(proto, itemData);
-      callsList.appendChild(item);
-    });
-    attachButtons();
+  // logout (uses script.js auth)
+  document.getElementById('logoutBtn').addEventListener('click', async ()=>{
+    await sair();
+    location.href='login.html';
   });
 
-  // init
-  window.addEventListener('load', ()=>{
-    // request permission early
-    navigator.permissions && navigator.permissions.query({name:'microphone'}).catch(()=>{});
-  });
+  // tutorial overlay close behavior
+  document.getElementById('closeTut').addEventListener('click', ()=>{ tutorialOverlay.classList.add('hidden'); });
+
+  // ask for mic permission on load
+  (async ()=>{ await navigator.mediaDevices.getUserMedia({audio:true}).catch(()=>{}); })();
 
 })();
 </script>
-
-<style>
-/* admincall.css */
-:root{--bg:#f5f7fb;--card:#fff;--accent:#0b63d6;--danger:#e04b4b;--text:#111;--muted:#6b7280;font-family:Inter,system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text)}
-.admin-shell{display:flex;min-height:100vh}
-.sidebar{width:240px;background:linear-gradient(180deg,#0b63d6,#094bb0);color:#fff;padding:20px;display:flex;flex-direction:column;gap:12px}
-.brand{font-weight:700;font-size:20px}
-.info{font-size:13px;color:rgba(255,255,255,0.85)}
-.btn{background:rgba(255,255,255,0.1);border:0;padding:8px;border-radius:8px;color:#fff;cursor:pointer}
-.ping{font-size:13px;margin-top:auto;color:rgba(255,255,255,0.9)}
-.main{flex:1;padding:20px}
-.main-head{display:flex;justify-content:space-between;align-items:center}
-.calls-area{margin-top:16px}
-.call-item{background:var(--card);padding:12px;border-radius:10px;margin-bottom:10px;box-shadow:0 6px 18px rgba(18,38,63,0.06);display:flex;justify-content:space-between;align-items:center}
-.call-item .info .name{font-weight:700}
-.call-item .info .cpf{color:var(--muted);font-size:13px}
-.call-item .actions{display:flex;gap:8px}
-.btn-accept{background:var(--accent);color:#fff;border:0;padding:8px;border-radius:8px;cursor:pointer}
-.btn-reject{background:var(--danger);color:#fff;border:0;padding:8px;border-radius:8px;cursor:pointer}
-.no-calls{color:var(--muted);margin-top:20px}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999}
-.overlay-card{background:#fff;padding:20px;border-radius:12px;max-width:560px;width:94%}
-.active-call{background:var(--card);padding:16px;border-radius:10px;display:flex;justify-content:space-between;align-items:flex-start}
-.act-left{font-size:14px}
-.act-right{display:flex;flex-direction:column;gap:8px}
-.act-actions{display:flex;gap:8px}
-.btn-danger{background:var(--danger);color:#fff;border:0;padding:8px;border-radius:8px;cursor:pointer}
-</style>
 </body>
 </html>
