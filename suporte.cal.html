@@ -1,361 +1,182 @@
-<!doctype html>
+<!-- admincall.html -->
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Painel de Suporte — Admin Call</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <style>
-    :root{
-      --bg:#f4f7fb;
-      --card:#ffffff;
-      --accent:#0b6cff;
-      --muted:#6b7280;
-      --success:#10b981;
-      --danger:#ef4444;
-      --glass: rgba(11,108,255,0.06);
-      --radius:14px;
-      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
-    }
-    body{margin:0;background:linear-gradient(180deg,var(--bg),#eef4ff);min-height:100vh;color:#071033;}
-    .wrap{max-width:1200px;margin:28px auto;padding:20px;display:grid;grid-template-columns:360px 1fr;gap:20px;}
-    .panel{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:0 10px 30px rgba(11,24,40,0.05);}
-    .left .title{font-size:18px;font-weight:800;}
-    .list{margin-top:12px;display:flex;flex-direction:column;gap:10px;max-height:72vh;overflow:auto;padding-right:6px;}
-    .call-item{padding:12px;border-radius:10px;border:1px solid rgba(11,23,40,0.04);display:flex;flex-direction:column;gap:6px;}
-    .row{display:flex;gap:8px;align-items:center;justify-content:space-between;}
-    .muted{color:var(--muted);font-size:13px;}
-    .btn{padding:10px 12px;border-radius:10px;border:0;background:var(--accent);color:white;cursor:pointer;font-weight:700;}
-    .btn.ghost{background:transparent;border:1px solid rgba(11,108,255,0.12);color:var(--accent);}
-    .btn.danger{background:var(--danger);}
-    .right .title{font-size:20px;font-weight:900;}
-    .detail{margin-top:12px;display:flex;flex-direction:column;gap:10px;}
-    .big{font-size:16px;font-weight:800;}
-    .controls{display:flex;gap:8px;}
-    .tutorialOverlay{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center;padding:20px;}
-    .tutorialCard{background:var(--card);padding:18px;border-radius:12px;max-width:720px;box-shadow:0 18px 40px rgba(2,6,23,0.3);}
-    .audioRow{display:flex;gap:8px;align-items:center;}
-    audio{width:100%;border-radius:8px;}
-    .statusBadge{padding:6px 8px;border-radius:8px;font-weight:700;font-size:12px;}
-    .status-wait{background:#fff4e5;color:#b45309;border:1px solid rgba(180,83,9,0.06);}
-    .status-incall{background:#e6fffa;color:#065f46;border:1px solid rgba(6,95,70,0.06);}
-    .status-ended{background:#fff0f3;color:#9f1239;border:1px solid rgba(159,18,57,0.06);}
-    @media(max-width:900px){ .wrap{grid-template-columns:1fr; padding:12px;} .left{order:2} .right{order:1} }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <div class="panel left">
-      <div class="title">Solicitações em espera</div>
-      <div class="muted">Lista em tempo real — atualiza automaticamente</div>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Painel Suporte — Central de Atendimento</title>
 
-      <div style="margin-top:12px;">
-        <button id="howAttendBtn" class="btn ghost">Como atender</button>
-        <button id="refreshBtn" class="btn" style="margin-left:8px">Atualizar</button>
-      </div>
-
-      <div class="list" id="callsList" aria-live="polite"></div>
-    </div>
-
-    <div class="panel right">
-      <div class="title">Detalhes da chamada</div>
-      <div class="detail" id="detailArea">
-        <div class="muted">Selecione uma solicitação à esquerda para ver os detalhes.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="tutorialOverlay" id="tutorialOverlay" role="dialog" aria-modal="true">
-    <div class="tutorialCard">
-      <h3>Como atender — Tutorial rápido</h3>
-      <p class="muted">Siga estas etapas para oferecer o melhor atendimento. Sempre trate a pessoa pelo nome.</p>
-      <ol>
-        <li>Confirme o CPF e o nome exibidos.</li>
-        <li>Ao aceitar, a conexão de áudio será estabelecida — fale claramente e peça para a pessoa repetir quando necessário.</li>
-        <li>Evite ruídos e use fone quando possível. Sempre use o nome do solicitante.</li>
-        <li>Ao encerrar, clique em "Encerrar" para remover a solicitação — chamadas não ficam salvas.</li>
-      </ol>
-      <div style="text-align:right;margin-top:12px">
-        <button id="closeTutorial" class="btn ghost">Fechar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- firebase + script.js -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="script.js"></script>
 
+  <link rel="stylesheet" href="admincall.css">
+</head>
+<body>
+  <div class="wrap">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="logo.png" alt="logo" />
+        <h2>Painel Suporte</h2>
+      </div>
+      <div class="controls">
+        <button id="btn-how" class="btn ghost">Como atender</button>
+        <button id="btn-refresh" class="btn">Atualizar</button>
+      </div>
+
+      <div class="connection">
+        <strong>Conexão</strong>
+        <div id="admin-conn">—</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="top">
+        <h1>Solicitações em tempo real</h1>
+        <div class="search">
+          <input id="search" placeholder="Buscar por protocolo, nome ou CPF" />
+        </div>
+      </header>
+
+      <section class="timeline" id="calls-list">
+        <!-- items injected here -->
+      </section>
+    </main>
+  </div>
+
+  <!-- overlay tutorial -->
+  <div id="how-modal" class="overlay hidden">
+    <div class="overlay-card">
+      <h2>Como atender</h2>
+      <p>1. Saudações — fale pelo nome da pessoa: "Olá <span id="how-name"></span>, eu sou o suporte..."</p>
+      <p>2. Verificar dados pessoais e objetivo.</p>
+      <p>3. Resolver com calma, confirmar entendimento, encerrar educadamente.</p>
+      <div class="actions">
+        <button id="how-close" class="btn primary">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
   <script>
     (function(){
-      const callsList = document.getElementById('callsList');
-      const detailArea = document.getElementById('detailArea');
-      const tutorialOverlay = document.getElementById('tutorialOverlay');
-      const howAttendBtn = document.getElementById('howAttendBtn');
-      const closeTutorial = document.getElementById('closeTutorial');
-      const refreshBtn = document.getElementById('refreshBtn');
+      const callsList = document.getElementById('calls-list');
+      const adminConn = document.getElementById('admin-conn');
+      const btnHow = document.getElementById('btn-how');
+      const howModal = document.getElementById('how-modal');
+      const howClose = document.getElementById('how-close');
+      const searchInput = document.getElementById('search');
 
-      let selectedCall = null;
-      let adminLocalStream = null;
-      let adminPC = null;
-      let listeningHandles = {};
-      let callTimers = {};
+      // show tutorial
+      btnHow.addEventListener('click', ()=> howModal.classList.remove('hidden'));
+      howClose.addEventListener('click', ()=> howModal.classList.add('hidden'));
 
-      function timeAgo(ts){
-        if(!ts) return '-';
-        const d=new Date(ts); return d.toLocaleString();
-      }
-      function secToHHMMSS(s){
-        const mm = String(Math.floor(s/60)).padStart(2,'0');
-        const ss = String(s%60).padStart(2,'0');
-        return `${mm}:${ss}`;
-      }
+      // monitor connection
+      window.onConnectionStateChanged = (state)=>{
+        adminConn.textContent = state ? 'ONLINE' : 'OFFLINE';
+      };
 
-      // request mic on enter
-      async function ensureMic(){
-        if(adminLocalStream) return true;
-        try{
-          adminLocalStream = await navigator.mediaDevices.getUserMedia({audio:true});
-          return true;
-        }catch(e){
-          alert('Permissão de microfone necessária para atender chamadas.');
-          return false;
-        }
-      }
-
-      // render list item
-      function renderCallItem(pid, data){
-        const el = document.createElement('div');
-        el.className='call-item';
-        el.id = 'call_'+pid;
-        el.innerHTML = `
-          <div class="row">
-            <div>
-              <div class="big">${data.nome}</div>
-              <div class="muted">CPF: ${data.cpf} · Protocolo: <strong>${pid}</strong></div>
+      // listen for incoming calls (script.js provides 'onIncomingCalls' subscription)
+      window.onIncomingCalls(async (snapshot) => {
+        // snapshot is a map of callId -> callData
+        callsList.innerHTML = '';
+        const calls = Object.entries(snapshot || {}).sort((a,b)=> (b[1].createdAt||0) - (a[1].createdAt||0));
+        for(const [callId, call] of calls){
+          const el = document.createElement('div');
+          el.className = 'callcard';
+          el.innerHTML = `
+            <div class="meta">
+              <div><strong>${call.nomeCompleto}</strong></div>
+              <div>CPF: ${call.cpf}</div>
+              <div>Protocolo: ${call.protocol}</div>
+              <div>Status: <span class="st">${call.status}</span></div>
+              <div>Gerado: ${new Date(call.createdAt).toLocaleString()}</div>
             </div>
-            <div style="text-align:right">
-              <div class="muted">${timeAgo(data.createdAt)}</div>
-              <div style="margin-top:6px">${data.status === 'waiting' ? '<span class="statusBadge status-wait">Aguardando</span>' : ''}</div>
+            <div class="actions">
+              <button data-action="view" class="btn ghost">Ver</button>
+              <button data-action="accept" class="btn primary">Atender</button>
+              <button data-action="reject" class="btn warn">Recusar</button>
             </div>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button class="btn acceptBtn">Atender</button>
-            <button class="btn ghost rejectBtn">Recusar</button>
-          </div>
-        `;
-        // attach events
-        el.querySelector('.acceptBtn').addEventListener('click', ()=>acceptCall(pid,data));
-        el.querySelector('.rejectBtn').addEventListener('click', ()=>rejectCall(pid));
-        return el;
-      }
-
-      // listen for calls (realtime)
-      function listenCalls(){
-        const ref = db.ref('calls');
-        ref.on('child_added', snap=>{
-          const pid = snap.key;
-          const data = snap.val();
-          if(data.status === 'waiting'){
-            const node = renderCallItem(pid,data);
-            callsList.prepend(node);
-          }
-        });
-        ref.on('child_changed', snap=>{
-          const pid = snap.key; const data = snap.val();
-          const node = document.getElementById('call_'+pid);
-          if(node){
-            if(data.status !== 'waiting') node.remove();
-          }else{
-            if(data.status === 'waiting'){
-              const node2 = renderCallItem(pid,data);
-              callsList.prepend(node2);
+          `;
+          // bind actions
+          el.querySelector('[data-action="view"]').addEventListener('click', ()=> {
+            window.showModal(`Protocolo ${call.protocol}`, `Nome: ${call.nomeCompleto}\nCPF: ${call.cpf}\nCriado em: ${new Date(call.createdAt).toLocaleString()}`);
+          });
+          el.querySelector('[data-action="reject"]').addEventListener('click', async ()=>{
+            await window.rejectCall(callId, {reason:'recusado_pelo_suporte'});
+          });
+          el.querySelector('[data-action="accept"]').addEventListener('click', async ()=>{
+            // Accept and start WebRTC from admin side
+            try{
+              const pc = await window.acceptCall(callId, {agentName: 'Suporte'});
+              // open small call panel
+              openCallPanel(callId, call, pc);
+            }catch(e){
+              console.error(e);
+              window.showModal('Erro', 'Falha ao aceitar a chamada: '+(e.message||e));
             }
-          }
-          // if selected and updated
-          if(selectedCall && selectedCall.protocol === pid){
-            showDetail(pid,data);
-          }
-        });
-        ref.on('child_removed', snap=>{
-          const pid = snap.key;
-          const node = document.getElementById('call_'+pid);
-          if(node) node.remove();
-          if(selectedCall && selectedCall.protocol === pid){
-            detailArea.innerHTML = '<div class="muted">Solicitação removida.</div>';
-          }
-        });
-      }
+          });
 
-      // show detail
-      function showDetail(pid, data){
-        selectedCall = Object.assign({protocol: pid}, data);
-        // build UI
-        detailArea.innerHTML = `
-          <div class="big">${data.nome}</div>
-          <div class="muted">CPF: ${data.cpf}</div>
-          <div class="muted">Protocolo: ${pid}</div>
-          <div class="muted">Criado em: ${timeAgo(data.createdAt)}</div>
-          <div style="margin-top:8px" id="detailStatus"><span class="statusBadge ${data.status==='waiting'?'status-wait':''}">${data.status}</span></div>
+          callsList.appendChild(el);
+        }
+      });
 
-          <div style="margin-top:12px" class="audioRow">
-            <audio id="remoteInAdmin" autoplay playsinline></audio>
+      // open small in-page call panel for active call
+      function openCallPanel(callId, callData, pc){
+        const panel = document.createElement('div');
+        panel.className = 'in-call-panel';
+        panel.innerHTML = `
+          <div><strong>Atendendo:</strong> ${callData.nomeCompleto} — ${callData.protocol}</div>
+          <div class="in-actions">
+            <button class="btn hangup">Desligar</button>
+            <button class="btn ghost mute">Mudo</button>
           </div>
-
-          <div style="margin-top:12px" class="controls">
-            <button id="acceptBtn" class="btn">Atender</button>
-            <button id="rejectBtn" class="btn ghost">Recusar</button>
-            <button id="endBtn" class="btn danger" style="display:none">Encerrar</button>
-          </div>
-
-          <div style="margin-top:12px" class="muted">Logs: <span id="logArea">—</span></div>
         `;
-        // attach
-        document.getElementById('acceptBtn').addEventListener('click', ()=>acceptCall(pid,data));
-        document.getElementById('rejectBtn').addEventListener('click', ()=>rejectCall(pid));
-        document.getElementById('endBtn').addEventListener('click', ()=>endCall(pid));
-      }
-
-      // accept call -> admin creates answer flow (waits for offer)
-      async function acceptCall(pid, data){
-        // ensure mic
-        const ok = await ensureMic();
-        if(!ok) return;
-
-        const callRef = db.ref('calls/' + pid);
-        const snapshot = await callRef.get();
-        if(!snapshot.exists()) { alert('Solicitação não existe mais.'); return; }
-        const current = snapshot.val();
-        if(current.status !== 'waiting'){ alert('Esta solicitação já não está disponível.'); return; }
-
-        // mark accepted
-        await callRef.update({status:'accepted', adminId: 'admin_' + (Math.floor(Math.random()*9000)+1000), adminName: 'Suporte', acceptedAt: Date.now()});
-
-        // setup pc and answer
-        startAdminWebRTC(pid, callRef, adminLocalStream);
-
-        // update UI
-        showDetail(pid, Object.assign({}, current, {status:'accepted', adminName:'Suporte'}));
-      }
-
-      async function rejectCall(pid){
-        if(!confirm('Deseja recusar esta solicitação?')) return;
-        const callRef = db.ref('calls/'+pid);
-        await callRef.update({status:'rejected', endedAt: Date.now()});
-        // remove node after short delay
-        setTimeout(()=>callRef.remove(), 1000);
-        // cleanup active_by_cpf entry
-        const snap = await callRef.get();
-        if(snap.exists()){
-          const cpf = snap.val().cpf;
-          if(cpf) db.ref('active_by_cpf/'+onlyDigits(cpf)).set(null);
-        }
-      }
-
-      async function endCall(pid){
-        const callRef = db.ref('calls/'+pid);
-        await callRef.update({status:'ended', endedAt: Date.now()});
-        // stop pc, streams
-        if(adminPC){ adminPC.close(); adminPC=null; }
-        if(adminLocalStream){ adminLocalStream.getTracks().forEach(t=>t.stop()); adminLocalStream=null; }
-        // remove node
-        setTimeout(()=>callRef.remove(), 800);
-      }
-
-      // Admin WebRTC: waits for offer, sets remote desc, creates answer
-      async function startAdminWebRTC(pid, callRef, localStream){
-        const offerRef = callRef.child('offer');
-        const answerRef = callRef.child('answer');
-        const callerIceRef = callRef.child('callerIce');
-        const adminIceRef = callRef.child('adminIce');
-
-        adminPC = new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
-
-        // add local audio
-        for(const t of localStream.getTracks()) adminPC.addTrack(t, localStream);
-
-        // remote track -> play
-        const remoteAudioEl = document.getElementById('remoteInAdmin');
-        adminPC.addEventListener('track', ev=>{
-          remoteAudioEl.srcObject = ev.streams[0];
-          remoteAudioEl.play().catch(()=>{});
+        panel.querySelector('.hangup').addEventListener('click', async ()=>{
+          await window.endCall(callId, {reason:'desligado_pelo_suporte'});
+          panel.remove();
         });
-
-        // ICE gather from admin -> push to adminIceRef
-        adminPC.onicecandidate = (e)=>{
-          if(e.candidate) adminIceRef.push(e.candidate.toJSON());
-        };
-
-        // listen for existing offer
-        const offerSnap = await offerRef.get();
-        if(!offerSnap.exists()){
-          console.error('Sem offer do caller — abortando');
-          return;
-        }
-        const offer = offerSnap.val();
-        const offerDesc = {type: offer.type || 'offer', sdp: offer.sdp};
-        await adminPC.setRemoteDescription(offerDesc);
-
-        const answer = await adminPC.createAnswer();
-        await adminPC.setLocalDescription(answer);
-        await answerRef.set({sdp: answer.sdp, type: answer.type});
-
-        // listen for caller ICE and add
-        callerIceRef.on('child_added', snap=>{
-          const cand = snap.val();
-          adminPC.addIceCandidate(new RTCIceCandidate(cand)).catch(()=>{});
+        panel.querySelector('.mute').addEventListener('click', ()=> {
+          // toggle local mute for admin audio
+          window.toggleAdminMute();
         });
-
-        // UI: enable end button
-        const endBtn = document.getElementById('endBtn');
-        if(endBtn) endBtn.style.display='inline-block';
-
-        // track call time
-        const acceptedAt = Date.now();
-        const timerKey = pid;
-        if(callTimers[timerKey]) clearInterval(callTimers[timerKey]);
-        let started = Date.now();
-        callTimers[timerKey] = setInterval(async ()=>{
-          // update a small heartbeat
-          await callRef.update({adminPing: Date.now()});
-        },3000);
+        document.body.appendChild(panel);
       }
 
-      // initial load
-      listenCalls();
-
-      // tutorial overlay
-      howAttendBtn.addEventListener('click', ()=> tutorialOverlay.style.display='flex');
-      closeTutorial.addEventListener('click', ()=> tutorialOverlay.style.display='none');
-      refreshBtn.addEventListener('click', ()=> {
-        callsList.innerHTML='';
-        listenCalls();
-      });
-
-      // when select a call from list -> show detail (event delegation)
-      callsList.addEventListener('click', (ev)=>{
-        const callEl = ev.target.closest('.call-item');
-        if(!callEl) return;
-        const pid = callEl.id.replace('call_','');
-        db.ref('calls/'+pid).get().then(snap=>{
-          if(snap.exists()) showDetail(pid, snap.val());
+      // search
+      searchInput.addEventListener('input', (e)=>{
+        const q = e.target.value.toLowerCase().trim();
+        // naive filter by hiding cards that don't match
+        document.querySelectorAll('.callcard').forEach(card=>{
+          const text = card.textContent.toLowerCase();
+          card.style.display = text.includes(q) ? '' : 'none';
         });
-      });
-
-      // detect removed nodes and cleanup timers
-      db.ref('calls').on('child_removed', snap=>{
-        const pid = snap.key;
-        if(callTimers[pid]){ clearInterval(callTimers[pid]); delete callTimers[pid]; }
-      });
-
-      // request microphone on page load (admin)
-      window.addEventListener('load', ()=> {
-        // prompt once politely
-        navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{ adminLocalStream=s; }).catch(()=>{ /* user may allow later */ });
       });
 
     })();
   </script>
+
+  <style>
+    /* Admin inline CSS for portability */
+    :root{--bg:#f7fafc;--accent:#0b5cff;--muted:#6b7280;--danger:#ff4d4f}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Roboto,Arial;background:var(--bg);color:#0b1320}
+    .wrap{display:flex;min-height:100vh}
+    .sidebar{width:300px;background:#fff;border-right:1px solid #edf2f7;padding:20px}
+    .brand img{width:48px;height:48px}
+    .brand h2{margin:8px 0 16px}
+    .controls{display:flex;gap:8px;margin-bottom:12px}
+    .btn{padding:8px 12px;border-radius:8px;border:0;background:#eef4ff;color:var(--accent);cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid #e6eef8;color:var(--muted)}
+    .btn.warn{background:#ffedd5;color:#7a3700}
+    .main{flex:1;padding:20px}
+    .top{display:flex;justify-content:space-between;align-items:center}
+    .search input{padding:8px;border-radius:8px;border:1px solid #e6eef8}
+    .timeline{margin-top:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+    .callcard{background:#fff;padding:12px;border-radius:10px;border:1px solid #eef4ff;display:flex;justify-content:space-between;align-items:center}
+    .in-call-panel{position:fixed;right:20px;bottom:20px;background:#fff;padding:12px;border-radius:12px;box-shadow:0 12px 40px rgba(2,6,23,0.12)}
+    .overlay{position:fixed;inset:0;background:rgba(2,6,23,0.45);display:flex;align-items:center;justify-content:center}
+    .overlay-card{background:#fff;padding:18px;border-radius:12px;max-width:720px}
+  </style>
 </body>
 </html>
