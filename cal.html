@@ -1,441 +1,401 @@
-<!-- call_widget.html -->
+<!-- call-widget.html -->
+<!-- Layout branco, moderno, sem doctype conforme pedido (mas recomendo DOCTYPE em produção) -->
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Central de Atendimento</title>
-<link rel="stylesheet" href="call_widget.css"/>
+<title>Central de Atendimento — Cliente</title>
+
+<!-- Fonte -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#ffffff; --card:#f7f9fb; --accent:#0b63d6; --muted:#7b8794; --danger:#e05050;
+  }
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#0b2636}
+  .center-wrap{display:flex;align-items:center;justify-content:center;height:100vh;padding:20px}
+  .card{width:100%;max-width:420px;background:var(--card);border-radius:14px;box-shadow:0 8px 30px rgba(11,38,54,0.08);padding:20px}
+  h1{margin:0;font-size:20px}
+  p.lead{color:var(--muted);margin:8px 0 18px;font-size:13px}
+  label{font-size:12px;color:var(--muted);display:block;margin-top:12px}
+  input[type="text"]{width:100%;padding:12px;border-radius:10px;border:1px solid #e6eef6;background:#fff;font-size:14px}
+  .row{display:flex;gap:10px;margin-top:16px}
+  .btn{flex:1;padding:12px;border-radius:10px;border:0;background:var(--accent);color:white;font-weight:600;cursor:pointer}
+  .btn.ghost{background:transparent;color:var(--accent);border:1px solid rgba(11,99,214,0.12)}
+  .small{font-size:12px;color:var(--muted);margin-top:10px}
+  .status{margin-top:14px;padding:12px;border-radius:10px;background:#fff;border:1px solid #e6eef6;font-size:13px}
+  .protocol{font-weight:700;color:var(--accent);font-size:16px}
+  .controls{display:flex;gap:10px;margin-top:12px}
+  .btn-red{background:var(--danger)}
+  .muted-line{font-size:12px;color:var(--muted);margin-top:6px}
+  .tutorial-overlay{position:fixed;inset:0;background:rgba(3,10,18,0.6);display:flex;align-items:center;justify-content:center;z-index:60}
+  .tutorial{background:white;padding:18px;border-radius:12px;max-width:720px;width:92%;box-shadow:0 12px 40px rgba(2,8,23,0.4)}
+  .ping{font-size:12px;color:var(--muted);margin-top:8px}
+  .hidden{display:none}
+  audio{display:none}
+</style>
+
 </head>
 <body>
-<div id="call-widget" class="cw-container">
-  <div class="cw-card">
-    <div class="cw-header">
-      <div class="cw-title">Central de Atendimento</div>
-      <div id="cw-connection" class="cw-connection">Conexão: —</div>
+<div class="center-wrap">
+  <div class="card" id="callCard">
+    <h1>Central de Atendimento</h1>
+    <p class="lead">Insira seu nome completo e CPF para gerar um protocolo e aguardar um atendente.</p>
+
+    <label for="nome">Nome completo</label>
+    <input id="nome" type="text" placeholder="Seu nome completo">
+
+    <label for="cpf">CPF</label>
+    <input id="cpf" type="text" placeholder="000.000.000-00">
+
+    <div class="row">
+      <button class="btn" id="callBtn">Solicitar atendimento</button>
+      <button class="btn ghost" id="cancelBtn" disabled>Cancelar</button>
     </div>
 
-    <div id="cw-form" class="cw-form">
-      <label>Nome completo
-        <input id="cw-nome" type="text" placeholder="Seu nome completo" autocomplete="name"/>
-      </label>
-      <label>CPF
-        <input id="cw-cpf" type="text" placeholder="000.000.000-00" inputmode="numeric"/>
-      </label>
-      <div class="cw-actions">
-        <button id="cw-start" class="btn-primary">Solicitar Atendimento</button>
+    <div id="statusBox" class="status hidden">
+      <div id="statusText">Aguardando...</div>
+      <div class="muted-line">Protocolo: <span class="protocol" id="protocolText"></span></div>
+      <div class="ping" id="pingText">Ping: —</div>
+      <div class="controls" id="callControls" style="margin-top:8px">
+        <button class="btn red btn-red" id="hangupBtn">Desligar</button>
       </div>
+      <div class="small" id="sessionTimer">Tempo: 00:00</div>
+      <audio id="remoteAudio" autoplay></audio>
     </div>
 
-    <div id="cw-wait" class="cw-wait hidden">
-      <div class="cw-protocol">Protocolo: <span id="cw-proto">—</span></div>
-      <div class="cw-status" id="cw-status">Aguardando atendente. Por favor aguarde! Pode levar alguns minutos.</div>
-      <div class="cw-timer"><span id="cw-wait-time">00:00</span></div>
-      <div class="cw-actions">
-        <button id="cw-cancel" class="btn-danger">Cancelar Solicitação</button>
-      </div>
-    </div>
-
-    <div id="cw-call" class="cw-call hidden">
-      <div class="cw-call-header">Em chamada com o suporte — <span id="cw-call-time">00:00</span></div>
-      <audio id="cw-remote-audio" autoplay playsinline></audio>
-      <div class="cw-actions">
-        <button id="cw-hangup" class="btn-danger">Desligar</button>
-      </div>
-    </div>
-
-    <div id="cw-notif" class="cw-notif hidden"></div>
+    <div id="messageBox" class="small muted-line">Status da chamada aparecerá aqui.</div>
   </div>
 </div>
 
+<!-- Firebase (compat) e script principal -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="script.js"></script>
 <script>
-/* widget initialization */
+/*
+  Client-side widget logic.
+  Usa funções do script.js para auth/db util. Trabalha com /calls/requests no RTDB.
+*/
+
 (function(){
-  const $ = id => document.getElementById(id);
-  const nomeEl = $('cw-nome'), cpfEl = $('cw-cpf');
-  const startBtn = $('cw-start'), cancelBtn = $('cw-cancel');
-  const hangupBtn = $('cw-hangup');
-  const protoEl = $('cw-proto'), statusEl = $('cw-status');
-  const waitBox = $('cw-wait'), formBox = $('cw-form'), callBox = $('cw-call');
-  const remoteAudio = $('cw-remote-audio');
-  const waitTimeEl = $('cw-wait-time'), callTimeEl = $('cw-call-time');
-  const connEl = $('cw-connection'), notif = $('cw-notif');
+  // elementos
+  const nomeEl = document.getElementById('nome');
+  const cpfEl = document.getElementById('cpf');
+  const callBtn = document.getElementById('callBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const statusBox = document.getElementById('statusBox');
+  const statusText = document.getElementById('statusText');
+  const protocolText = document.getElementById('protocolText');
+  const messageBox = document.getElementById('messageBox');
+  const remoteAudio = document.getElementById('remoteAudio');
+  const hangupBtn = document.getElementById('hangupBtn');
+  const pingText = document.getElementById('pingText');
+  const sessionTimer = document.getElementById('sessionTimer');
 
   let localStream = null;
-  let callProtocol = null;
-  let peerId = null;
+  let currentProtocol = null;
+  let callRef = null;
   let pc = null;
-  let waitTimer = null;
-  let callTimer = null;
-  let waitSeconds = 0, callSeconds = 0;
+  let sessionInterval = null;
+  let sessionStart = null;
   let pingInterval = null;
+  let answeringSupportId = null;
 
-  function show(el){ el.classList.remove('hidden'); }
-  function hide(el){ el.classList.add('hidden'); }
-  function onlyDigits(s){ return (s||'').replace(/\D/g,''); }
-  function formatProto(n){ return n.toString().padStart(12,'0'); }
-  function showNotif(text, time=3000){
-    notif.textContent = text;
-    notif.classList.remove('hidden');
-    setTimeout(()=> notif.classList.add('hidden'), time);
+  // gera protocolo
+  function genProtocol(){
+    const digits = '0123456789';
+    let s='';
+    for(let i=0;i<12;i++) s+=digits[Math.floor(Math.random()*10)];
+    return s;
   }
 
-  async function requestMic(){
+  function formatTime(sec){
+    const m = String(Math.floor(sec/60)).padStart(2,'0');
+    const s = String(sec%60).padStart(2,'0');
+    return `${m}:${s}`;
+  }
+
+  async function requestMicrophone(){
     try{
       localStream = await navigator.mediaDevices.getUserMedia({audio:true});
+      // não reproduz local aqui
       return true;
-    }catch(e){
-      showNotif('Microfone negado. Para usar o atendimento, permita o microfone.');
+    }catch(err){
+      console.warn('microphone denied',err);
       return false;
     }
   }
 
-  function updateConnStatus(status){
-    connEl.textContent = 'Conexão: '+status;
-  }
-
-  function startWaitTimer(){
-    waitSeconds = 0;
-    waitTimeEl.textContent = '00:00';
-    clearInterval(waitTimer);
-    waitTimer = setInterval(()=>{
-      waitSeconds++;
-      const m = String(Math.floor(waitSeconds/60)).padStart(2,'0');
-      const s = String(waitSeconds%60).padStart(2,'0');
-      waitTimeEl.textContent = `${m}:${s}`;
-    },1000);
-  }
-  function stopWaitTimer(){ clearInterval(waitTimer); }
-
-  function startCallTimer(){
-    callSeconds = 0;
-    callTimeEl.textContent = '00:00';
-    clearInterval(callTimer);
-    callTimer = setInterval(()=>{
-      callSeconds++;
-      const m = String(Math.floor(callSeconds/60)).padStart(2,'0');
-      const s = String(callSeconds%60).padStart(2,'0');
-      callTimeEl.textContent = `${m}:${s}`;
-    },1000);
-  }
-  function stopCallTimer(){ clearInterval(callTimer); }
-
-  function genProtocol(){
-    // 12 digit random
-    return formatProto(Math.floor(Math.random()*1e12));
-  }
-
-  async function createCallInDb(proto, payload){
-    const p = firebase.database().ref('calls/'+proto);
-    await p.set(payload);
-    return p;
-  }
-
-  function removeCallFromDb(proto){
-    firebase.database().ref('calls/'+proto).remove().catch(()=>{});
-  }
-
-  async function startOffer(proto, profile){
-    // create peer connection and offer, put SDP into DB
-    peerId = 'caller-'+Date.now();
-    pc = new RTCPeerConnection({
-      iceServers: [{urls:'stun:stun.l.google.com:19302'}]
-    });
-    // add tracks
-    if(localStream) localStream.getTracks().forEach(t=>pc.addTrack(t, localStream));
-
-    // collect local candidates
-    const candRef = firebase.database().ref(`calls/${proto}/candidates/${peerId}`);
-    pc.onicecandidate = (ev)=>{
-      if(ev.candidate) candRef.push(JSON.stringify(ev.candidate));
-    };
-
-    // remote audio
-    pc.ontrack = (ev)=>{
-      if(remoteAudio) remoteAudio.srcObject = ev.streams[0];
-    };
-
-    // create offer
-    const offer = await pc.createOffer();
-    await pc.setLocalDescription(offer);
-
-    // push offer to DB
-    await firebase.database().ref('calls/'+proto+'/offer').set({
-      sdp: offer.sdp,
-      type: offer.type,
-      createdAt: Date.now(),
-      callerPeerId: peerId
-    });
-
-    // listen for answer
-    firebase.database().ref('calls/'+proto+'/answer').on('value', async snap=>{
-      const val = snap.val();
-      if(val && val.sdp){
-        try{
-          await pc.setRemoteDescription(new RTCSessionDescription({type: val.type, sdp: val.sdp}));
-        }catch(e){}
-      }
-    });
-
-    // listen remote candidates
-    firebase.database().ref(`calls/${proto}/candidates`).on('child_added', snap=>{
-      const branch = snap.key;
-      const val = snap.val();
-      if(branch === peerId) return; // ignore our own
-      // for each pushed candidate in this branch
-      if(typeof val === 'string'){
-        try{
-          const cand = JSON.parse(val);
-          pc.addIceCandidate(new RTCIceCandidate(cand)).catch(()=>{});
-        }catch(e){}
-      }else if(typeof val === 'object'){
-        // val may be auto key->candidate map
-        Object.values(val).forEach(v=>{
-          try{
-            const cand = JSON.parse(v);
-            pc.addIceCandidate(new RTCIceCandidate(cand)).catch(()=>{});
-          }catch(e){}
-        });
-      }
-    });
-  }
-
-  async function startAnswerAsSupport(proto){
-    // admin will read offer from DB and create answer
-    peerId = 'support-'+Date.now();
-    pc = new RTCPeerConnection({
-      iceServers: [{urls:'stun:stun.l.google.com:19302'}]
-    });
-    if(localStream) localStream.getTracks().forEach(t=>pc.addTrack(t, localStream));
-
-    const candRef = firebase.database().ref(`calls/${proto}/candidates/${peerId}`);
-    pc.onicecandidate = (ev)=>{
-      if(ev.candidate) candRef.push(JSON.stringify(ev.candidate));
-    };
-
-    pc.ontrack = (ev)=>{
-      if(remoteAudio) remoteAudio.srcObject = ev.streams[0];
-    };
-
-    const offerSnap = await firebase.database().ref('calls/'+proto+'/offer').get();
-    if(!offerSnap.exists()) throw new Error('Offer não encontrada');
-
-    const offer = offerSnap.val();
-    await pc.setRemoteDescription(new RTCSessionDescription({type: offer.type, sdp: offer.sdp}));
-
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
-
-    await firebase.database().ref('calls/'+proto+'/answer').set({
-      sdp: answer.sdp, type: answer.type, createdAt: Date.now(), supportPeerId: peerId
-    });
-
-    // listen for remote candidates from caller
-    firebase.database().ref(`calls/${proto}/candidates`).on('child_added', snap=>{
-      const branch = snap.key;
-      if(branch === peerId) return;
-      const val = snap.val();
-      if(typeof val === 'string'){
-        try{
-          const cand = JSON.parse(val);
-          pc.addIceCandidate(new RTCIceCandidate(cand)).catch(()=>{});
-        }catch(e){}
-      }else if(typeof val === 'object'){
-        Object.values(val).forEach(v=>{
-          try{
-            const cand = JSON.parse(v);
-            pc.addIceCandidate(new RTCIceCandidate(cand)).catch(()=>{});
-          }catch(e){}
-        });
-      }
-    });
-  }
-
-  /* main actions */
-  async function doStart(){
-    const nome = nomeEl.value && nomeEl.value.trim();
-    const cpf = onlyDigits(cpfEl.value || '');
-    if(!nome || cpf.length < 11){ showNotif('Preencha nome e CPF válido'); return; }
-
-    // prevent double caller by CPF active check
-    const activeCallSnap = await firebase.database().ref('active_by_cpf/'+cpf).get();
-    if(activeCallSnap.exists()){
-      showNotif('Já existe uma chamada ativa para esse CPF.');
-      return;
+  // colocar pedido no Firebase
+  async function createRequest(nome, cpf){
+    if(!nome || !cpf) throw new Error('Dados incompletos');
+    const proto = genProtocol();
+    const now = Date.now();
+    const cpfDigits = onlyDigits(cpf);
+    // bloqueia se já houver ligação ativa para mesmo cpf
+    const activeCheck = await db.ref('calls/active_by_cpf/'+cpfDigits).get();
+    if(activeCheck.exists()){
+      throw new Error('Existe uma ligação ativa com este CPF.');
     }
 
-    const micOk = await requestMic();
-    if(!micOk) return;
-
-    startBtn.disabled = true;
-    callProtocol = genProtocol();
-    protoEl.textContent = callProtocol;
-
-    show(formBox); hide(formBox);
-    hide(formBox);
-    show(waitBox);
-    statusEl.textContent = 'Aguardando atendente. Por favor aguarde! Pode levar alguns minutos.';
-    startWaitTimer();
-
-    // write to DB
-    const payload = {
-      protocol: callProtocol,
-      nome: nome,
-      cpf: cpf,
-      status: 'waiting',
-      createdAt: Date.now(),
-      device: navigator.userAgent || 'web',
-      callerPeerId: null
+    const req = {
+      protocol: proto,
+      nome,
+      cpf: cpfDigits,
+      estado: 'aguardando',
+      criadoEm: now,
+      lastPing: now,
+      deviceHint: navigator.userAgent || 'web',
+      // place for future notification/icon
+      notifyIcon: null
     };
+    const ref = db.ref('calls/requests/'+proto);
+    await ref.set(req);
+    // index by cpf to prevent duplicate new calls
+    await db.ref('calls/active_by_cpf/'+cpfDigits).set(proto);
+    return proto;
+  }
 
-    // mark active_by_cpf to prevent duplicates
-    await firebase.database().ref('active_by_cpf/'+cpf).set({protocol:callProtocol, createdAt: Date.now()});
+  // update ping (client)
+  function startPing(proto){
+    if(!proto) return;
+    const ref = db.ref('calls/requests/'+proto+'/lastPing');
+    pingInterval = setInterval(()=>{
+      const t = Date.now();
+      ref.set(t);
+      // optionally measure roundtrip using server timestamp -> approximate
+    },5000);
+  }
 
-    await createCallInDb(callProtocol, payload);
+  function stopPing(){ if(pingInterval) clearInterval(pingInterval); pingInterval=null; }
 
-    // create offer and push SDP
-    await startOffer(callProtocol, payload);
-
-    // listen for status changes
-    firebase.database().ref('calls/'+callProtocol+'/status').on('value', snap=>{
-      const val = snap.val();
-      if(!val) return;
-      if(val === 'accepted'){
-        // start call UI
-        statusEl.textContent = 'Conexão estabelecida. Chamando suporte...';
-        hide(waitBox);
-        show(callBox);
-        stopWaitTimer();
-        startCallTimer();
-      }else if(val === 'rejected'){
-        showNotif('Atendimento recusado pelo suporte.');
-        cleanupAfterEnd();
-      }else if(val === 'ended'){
-        showNotif('Chamada encerrada.');
-        cleanupAfterEnd();
-      }else if(val === 'not_answered'){
-        statusEl.textContent = 'Não atendido.';
-        showNotif('Não atendido.');
-        cleanupAfterEnd();
+  // listen for status changes
+  function watchRequest(proto){
+    callRef = db.ref('calls/requests/'+proto);
+    callRef.on('value', async snap=>{
+      const v = snap.val();
+      if(!v){
+        // removed/finished
+        cleanupSession('removido');
+        return;
+      }
+      // estado
+      const st = v.estado || 'aguardando';
+      statusText.textContent = stateTextFor(st);
+      protocolText.textContent = proto;
+      document.getElementById('statusBox').classList.remove('hidden');
+      messageBox.textContent = `Estado: ${st}`;
+      if(st === 'atendido' && v.roomId){
+        // iniciar WebRTC handshake ou conectar se já iniciado
+        if(!pc) await joinRoom(proto, v.roomId, /*isCaller*/ true);
+      }
+      if(st === 'recusado' || st === 'desligado' || st==='nao_atendido'){
+        cleanupSession(st);
+      }
+      // calc ping approximate:
+      if(v.lastPing){
+        const rtt = Date.now() - v.lastPing;
+        pingText.textContent = `Ping estimado: ${rtt} ms`;
+      }
+      // session time if present
+      if(v.startedAt){
+        const seconds = Math.floor((Date.now() - v.startedAt)/1000);
+        sessionTimer.textContent = 'Tempo: '+formatTime(seconds);
       }
     });
+  }
 
-    // auto mark not answered after 10 minutes (600000 ms)
-    setTimeout(async ()=>{
-      const stSnap = await firebase.database().ref('calls/'+callProtocol+'/status').get();
-      if(!stSnap.exists() || stSnap.val() === 'waiting'){
-        await firebase.database().ref('calls/'+callProtocol+'/status').set('not_answered');
-        // remove active_by_cpf
-        await firebase.database().ref('active_by_cpf/'+cpf).remove();
-        // cleanup DB entry after a short delay
-        setTimeout(()=> removeCallFromDb(callProtocol), 5000);
+  function stateTextFor(s){ 
+    switch(s){
+      case 'aguardando': return 'Aguardando atendente. Por favor aguarde! Pode levar alguns minutos.';
+      case 'atendido': return 'Atendido — conectando...';
+      case 'desligado': return 'Desligado';
+      case 'recusado': return 'Recusado pelo suporte';
+      case 'nao_atendido': return 'Não atendido (tempo excedido)';
+      default: return s;
+    }
+  }
+
+  // criar/join room WebRTC
+  async function joinRoom(proto, roomId, isCaller){
+    // create RTCPeerConnection
+    pc = new RTCPeerConnection({iceServers:[{urls:['stun:stun.l.google.com:19302']}]});
+    // handle remote audio
+    pc.ontrack = (ev)=> {
+      remoteAudio.srcObject = ev.streams[0];
+      remoteAudio.play().catch(()=>{});
+    };
+    // add local tracks
+    if(!localStream){
+      try{ localStream = await navigator.mediaDevices.getUserMedia({audio:true}); }
+      catch(e){ console.error('microphone failed',e); }
+    }
+    localStream.getTracks().forEach(t=>pc.addTrack(t, localStream));
+
+    // ICE candidates exchange via DB
+    const roomRef = db.ref('calls/rooms/'+roomId);
+    const callerCandidatesRef = roomRef.child(isCaller? 'callerCandidates':'calleeCandidates');
+    const calleeCandidatesRef = roomRef.child(isCaller? 'calleeCandidates':'callerCandidates');
+
+    pc.onicecandidate = (event)=>{
+      if(event.candidate){
+        const c = event.candidate.toJSON();
+        callerCandidatesRef.push(c).catch(()=>{});
       }
-    }, 600000);
-  }
+    };
 
-  async function doCancel(){
-    if(!callProtocol) return;
-    // set status cancelled and remove
-    await firebase.database().ref('calls/'+callProtocol+'/status').set('cancelled');
-    // remove active_by_cpf
-    const cpf = onlyDigits(cpfEl.value||'');
-    if(cpf) firebase.database().ref('active_by_cpf/'+cpf).remove();
-    removeCallFromDb(callProtocol);
-    cleanupAfterEnd();
-  }
-
-  async function doHangup(){
-    if(!callProtocol) return;
-    await firebase.database().ref('calls/'+callProtocol+'/status').set('ended');
-    // remove active_by_cpf
-    const cpf = onlyDigits(cpfEl.value||'');
-    if(cpf) firebase.database().ref('active_by_cpf/'+cpf).remove();
-    removeCallFromDb(callProtocol);
-    cleanupAfterEnd();
-  }
-
-  function cleanupAfterEnd(){
-    stopWaitTimer();
-    stopCallTimer();
-    if(pc){
-      try{ pc.close(); }catch(e){}
-      pc = null;
-    }
-    if(localStream){
-      localStream.getTracks().forEach(t=>t.stop());
-      localStream = null;
-    }
-    callProtocol = null;
-    peerId = null;
-    hide(callBox);
-    hide(waitBox);
-    show(formBox);
-    startBtn.disabled = false;
-  }
-
-  // monitor connection ping via active_by_cpf ping field (simple)
-  function startPingLoop(){
-    updateConnStatus('Verificando...');
-    pingInterval = setInterval(async ()=>{
-      try{
-        const t0 = Date.now();
-        await firebase.database().ref('/ping_test/time').set({ts:t0});
-        const snap = await firebase.database().ref('/ping_test/time').get();
-        const t1 = Date.now();
-        if(snap.exists()){
-          const remote = snap.val().ts || t1;
-          const ping = Math.max(0, t1 - t0);
-          updateConnStatus(`${ping}ms`);
-        }else{
-          updateConnStatus('—');
+    if(isCaller){
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      await roomRef.child('offer').set({sdp:offer.sdp, type:offer.type});
+      // wait for answer
+      roomRef.child('answer').on('value', async snap=>{
+        const ans = snap.val();
+        if(ans && !pc.currentRemoteDescription){
+          const desc = {type:ans.type, sdp:ans.sdp};
+          await pc.setRemoteDescription(new RTCSessionDescription(desc));
         }
-      }catch(e){
-        updateConnStatus('Offline');
+      });
+    } else {
+      // callee path (admin) handled in admin file; code symmetrical there
+    }
+
+    // candidate listeners
+    calleeCandidatesRef.on('child_added', snap=>{
+      const c = snap.val();
+      pc.addIceCandidate(new RTCIceCandidate(c)).catch(e=>console.warn(e));
+    });
+
+    // mark session start once connected
+    pc.onconnectionstatechange = ()=>{
+      if(pc.connectionState === 'connected'){
+        // set startedAt timestamp
+        db.ref('calls/requests/'+proto+'/startedAt').set(Date.now());
+        sessionStart = Date.now();
+        sessionInterval = setInterval(()=>{
+          const sec = Math.floor((Date.now()-sessionStart)/1000);
+          sessionTimer.textContent = 'Tempo: '+formatTime(sec);
+        },1000);
       }
-    }, 5000);
+      if(pc.connectionState === 'disconnected' || pc.connectionState==='failed' || pc.connectionState==='closed'){
+        // end call
+      }
+    };
   }
 
-  // events
-  startBtn.addEventListener('click', doStart);
-  cancelBtn.addEventListener('click', doCancel);
-  hangupBtn.addEventListener('click', doHangup);
+  // hangup: notify db and cleanup
+  async function hangup(proto, reason='desligado'){
+    try{
+      if(!proto) return;
+      await db.ref('calls/requests/'+proto+'/estado').set(reason);
+      // clear room and active_by_cpf
+      const reqsnap = await db.ref('calls/requests/'+proto).get();
+      if(reqsnap.exists()){
+        const cpf = reqsnap.val().cpf;
+        if(cpf) await db.ref('calls/active_by_cpf/'+cpf).remove();
+      }
+      await db.ref('calls/rooms/'+(reqsnap.val()?.roomId || '')).remove().catch(()=>{});
+      await db.ref('calls/requests/'+proto).remove();
+    }catch(e){ console.warn(e); }
+    cleanupSession(reason);
+  }
 
-  // request mic on load
-  window.addEventListener('load', ()=>{
-    // ask permission proactively
-    navigator.permissions && navigator.permissions.query({name:'microphone'}).catch(()=>{});
-    startPingLoop();
+  function cleanupSession(reason){
+    // stop ping/intervals
+    stopPing();
+    if(callRef) callRef.off();
+    if(pingInterval) clearInterval(pingInterval);
+    if(sessionInterval) clearInterval(sessionInterval);
+    if(pc){
+      try{ pc.getSenders().forEach(s=>s.track && s.track.stop()); }catch{}
+      try{ pc.close(); }catch{}
+      pc=null;
+    }
+    if(localStream){ localStream.getTracks().forEach(t=>t.stop()); localStream=null; }
+    currentProtocol=null;
+    callRef=null;
+    answeringSupportId=null;
+    document.getElementById('statusBox').classList.add('hidden');
+    cancelBtn.disabled=true;
+    callBtn.disabled=false;
+    messageBox.textContent = `Chamado finalizado (${reason}).`;
+  }
+
+  // Cancel before answered
+  async function cancelRequest(){
+    if(!currentProtocol) return;
+    await hangup(currentProtocol,'cancelado');
+  }
+
+  // auto-timeout 10 minutes
+  async function startAutoTimeout(proto){
+    const start = Date.now();
+    const timeoutMs = 10 * 60 * 1000;
+    const tId = setTimeout(async ()=>{
+      // mark nao_atendido if still waiting
+      const snap = await db.ref('calls/requests/'+proto+'/estado').get();
+      if(snap.exists() && snap.val() === 'aguardando'){
+        await db.ref('calls/requests/'+proto+'/estado').set('nao_atendido');
+        const cpf = (await db.ref('calls/requests/'+proto+'/cpf').get()).val();
+        if(cpf) await db.ref('calls/active_by_cpf/'+cpf).remove();
+        // remove request after marking
+        await db.ref('calls/requests/'+proto).remove();
+      }
+    }, timeoutMs);
+    return tId;
+  }
+
+  // UI handlers
+  callBtn.addEventListener('click', async ()=>{
+    try{
+      callBtn.disabled = true;
+      const nome = nomeEl.value.trim();
+      const cpf = cpfEl.value.trim();
+      if(!nome || !cpf){ alert('Preencha nome e CPF'); callBtn.disabled=false; return; }
+      const micOk = await requestMicrophone();
+      if(!micOk){ alert('Permita acesso ao microfone para prosseguir.'); callBtn.disabled=false; return; }
+      const proto = await createRequest(nome, cpf);
+      currentProtocol = proto;
+      protocolText.textContent = proto;
+      statusBox.classList.remove('hidden');
+      statusText.textContent = stateTextFor('aguardando');
+      cancelBtn.disabled=false;
+      // watch for changes
+      watchRequest(proto);
+      startPing(proto);
+      // auto-timeout handled server/client
+      startAutoTimeout(proto);
+      messageBox.textContent = 'Solicitação enviada. Aguardando atendente...';
+    }catch(err){
+      alert('Erro: '+(err.message||err));
+      callBtn.disabled=false;
+    }
   });
 
-  // listen for remote status 'accepted' to play remote audio automatically
-  // (handled by change listener above)
+  cancelBtn.addEventListener('click', async ()=>{
+    if(!currentProtocol) return;
+    await cancelRequest();
+  });
+
+  hangupBtn.addEventListener('click', async ()=>{
+    if(!currentProtocol) return;
+    await hangup(currentProtocol,'desligado');
+  });
+
+  // expose small API for admin to trigger
+  window._clientCallWidget = {
+    joinRoom,
+    hangup,
+    currentProtocol: ()=>currentProtocol
+  };
+
+  // request mic permission on load as asked
+  (async ()=>{ await navigator.mediaDevices.getUserMedia({audio:true}).catch(()=>{}); })();
 
 })();
 </script>
-
-<style>
-/* call_widget.css (embedded minimal style) */
-:root{ --bg:#ffffff; --card:#fbfbfb; --accent:#0b63d6; --danger:#e04b4b; --text:#1a1a1a; --muted:#777; font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
-body{margin:0;padding:0;background:transparent;color:var(--text);}
-.cw-container{max-width:420px;margin:10px auto;padding:10px;}
-.cw-card{background:var(--card);border-radius:12px;box-shadow:0 6px 24px rgba(10,10,10,0.08);padding:16px;}
-.cw-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.cw-title{font-weight:700;font-size:18px;}
-.cw-connection{font-size:12px;color:var(--muted);}
-label{display:block;font-size:13px;margin:8px 0;color:var(--muted);}
-input{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e6;font-size:14px;box-sizing:border-box;}
-.cw-actions{display:flex;gap:8px;margin-top:12px;}
-.btn-primary{flex:1;padding:10px;border-radius:8px;border:0;background:var(--accent);color:#fff;font-weight:600;cursor:pointer;}
-.btn-danger{flex:1;padding:10px;border-radius:8px;border:0;background:var(--danger);color:#fff;font-weight:600;cursor:pointer;}
-.hidden{display:none!important;}
-.cw-protocol{font-weight:700;margin:8px 0;}
-.cw-status{color:var(--muted);margin-bottom:6px;}
-.cw-timer{font-family:monospace;margin-bottom:8px;color:var(--muted);}
-.cw-call-header{font-weight:600;margin-bottom:12px;}
-.cw-notif{position:relative;margin-top:10px;padding:10px;background:#fffbe6;border-radius:8px;border:1px solid #ffe58f;color:#664d03;}
-</style>
 </body>
 </html>
