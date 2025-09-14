@@ -1,6 +1,10 @@
-// script.js
-// Firebase config + inicialização (mantive o seu bloco)
-// ===== Firebase (Compat) — Config =====
+// script.js — completo (mantive suas funções e adicionei WebRTC + sinalização)
+
+/* ===========================================================
+   ====== Seu código original (Firebase compat + utilidades) =
+   ===========================================================
+*/
+ // ===== Firebase (Compat) — Config =====
 const firebaseConfig = {
   apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
   authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
@@ -17,7 +21,7 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 const db = firebase.database();
 
-// ===== Util (mantive as suas) =====
+// ===== Util =====
 function onlyDigits(str){ return (str||'').replace(/\D/g,''); }
 
 function traduzErroAuth(err){
@@ -35,6 +39,7 @@ function traduzErroAuth(err){
 }
 
 function onAuthReady(callback){
+  // Chama callback quando estado de auth estiver resolvido
   const unsub = auth.onAuthStateChanged((user)=>{
     callback(user);
     unsub();
@@ -50,6 +55,7 @@ async function protegerPagina(){
   });
 }
 
+// ===== Auth =====
 async function loginComEmail(email, senha){
   return auth.signInWithEmailAndPassword(email, senha);
 }
@@ -62,13 +68,21 @@ async function sair(){
   return auth.signOut();
 }
 
-// cadastro etc (mantive as suas funções de exemplo)
+// ===== Cadastro com CPF único =====
+/**
+ * Regras:
+ * - Ninguém pode ter mais de uma conta com o mesmo CPF.
+ * - Usamos nó índice: /cpf_to_uid/{cpfNumerico} = uid
+ * - Salvamos perfil em /users/{uid}
+ * - "Transação" garante exclusividade contra corrida
+ */
 async function registrarCidadao(perfil, senha){
   const cpfNum = onlyDigits(perfil.cpf);
+  // 1) Verifica/Reserva CPF via transação
   const refIdx = db.ref('cpf_to_uid/'+cpfNum);
   const uidReservado = await refIdx.transaction(current=>{
-    if(current === null){ return 'PENDING'; }
-    return;
+    if(current === null){ return 'PENDING'; } // reserva
+    return; // abortar
   }, undefined, false).then(res=>res.committed ? res.snapshot.val() : null);
 
   if(uidReservado === null){
@@ -76,12 +90,15 @@ async function registrarCidadao(perfil, senha){
   }
 
   try{
+    // 2) Cria usuário
     const cred = await auth.createUserWithEmailAndPassword(perfil.email, senha);
     const uid = cred.user.uid;
+
+    // 3) Salva perfil
     const dados = {
       uid,
       nomeCompleto: perfil.nomeCompleto,
-      cpf: perfil.cpf,
+      cpf: perfil.cpf, // formatado
       nascimento: perfil.nascimento,
       telefone: perfil.telefone || '',
       endereco: perfil.endereco || {cep:'',cidade:'',rua:'',numero:''},
@@ -90,19 +107,28 @@ async function registrarCidadao(perfil, senha){
       criadoEm: Date.now()
     };
     await db.ref('users/'+uid).set(dados);
+
+    // 4) Confirma índice CPF -> UID
     await refIdx.set(uid);
+
     return uid;
   }catch(err){
+    // rollback índice se falhar após reserva
     await db.ref('cpf_to_uid/'+cpfNum).set(null);
     throw err;
   }
 }
 
+// ===== Perfil =====
 async function obterPerfil(uid){
   const snap = await db.ref('users/'+uid).get();
   return snap.exists() ? snap.val() : null;
 }
 
+/**
+ * Atualiza somente telefone + endereço.
+ * Persistência imediata; retorna perfil atualizado.
+ */
 async function atualizarContatoEndereco(uid, {telefone, endereco}){
   const updates = {};
   if(typeof telefone === 'string') updates['users/'+uid+'/telefone'] = telefone;
@@ -119,399 +145,662 @@ async function atualizarContatoEndereco(uid, {telefone, endereco}){
   return novo;
 }
 
-/* ===========================
-   Início — Sistema de chamadas (WebRTC + Firebase)
-   NÓS NO DB:
-   /calls/{protocol} = {
-     protocol, nomeCompleto, cpf, status: aguardando|em_chamada|desligado|nao_atendido, createdAt, agentId, agentName
-     sdp/offer, sdp/answer, candidates/{uid}/...
-   }
-   =========================== */
+/* ===========================================================
+   ====== FIM do código original / INÍCIO da extensão WebRTC =
+   ===========================================================
+*/
 
-const ICE_CONFIG = { iceServers: [{urls:['stun:stun.l.google.com:19302']}] };
+/**
+ * Estrutura no Realtime DB:
+ * /calls/{protocol} = {
+ *   protocol: '123456789012',
+ *   nomeCompleto, cpf, createdAt, status: 'waiting'|'accepted'|'in_call'|'ended'|'missed'|'rejected',
+ *   deviceId, notification:{title,body,icon}, offer: {...}, answer: {...}, candidates: {support:[], user:[]}, lastPing...
+ * }
+ *
+ * Quando o cidadão cria:
+ *  - cria o nó /calls/{protocol} com status 'waiting'
+ *  - cria subnós: offers/candidates serão preenchidos
+ *
+ * Quando suporte aceitar:
+ *  - muda status para 'accepted' e cria answer/sets via offer/answer
+ *
+ * Timeout:
+ *  - se ficar > 10 minutos em waiting => status 'missed' (não atendido)
+ *
+ * Observações:
+ *  - todas as remoções são feitas ao desligar/recusar (call é removida)
+ *  - chamadas atendidas NÃO ficam salvas (apagar após final)
+ */
 
-// Mapas locais
-const localClients = {}; // protocolo -> clientState
-const adminPeers = {}; // protocolo -> peer object for admin side
-const clientPeers = {}; // protocol -> peer object for client side
-
-// Ping probe (simple RTT): writes timestamps and compute roundtrip via db
-function startPingProbe(){
-  const pingRef = db.ref('pingProbe/__server__'); // use serverless timestamp loop
-  setInterval(()=>{
-    const t = Date.now();
-    pingRef.set({ts:t});
-  }, 5000);
-  // Listen
-  db.ref('pingProbe/__server__').on('value', snap=>{
-    const val = snap.val();
-    if(!val) return;
-    // measure diff
-    const ms = Math.max(0, Date.now() - val.ts);
-    // expose to UI (client)
-    if(typeof window.__onPingUpdate === 'function') window.__onPingUpdate(ms);
-    if(typeof window.__onAdminPing === 'function') window.__onAdminPing(ms);
-  });
-  // connection state
-  window.addEventListener('online', ()=>{ if(window.__onConnState) window.__onConnState('online'); if(window.__onAdminConn) window.__onAdminConn('online');});
-  window.addEventListener('offline', ()=>{ if(window.__onConnState) window.__onConnState('offline'); if(window.__onAdminConn) window.__onAdminConn('offline');});
-}
-startPingProbe();
-
-// Helper: notification
-async function showLocalNotification(title, body){
-  try{
-    if("Notification" in window){
-      if(Notification.permission === 'granted'){ new Notification(title, {body}); }
-      else if(Notification.permission !== 'denied'){ 
-        const p = await Notification.requestPermission();
-        if(p === 'granted') new Notification(title, {body});
-      }
-    }
-  }catch(e){}
+// helpers
+function generateProtocol12(){
+  // Gera número de 12 dígitos (base em timestamp + random)
+  const t = String(Date.now()).slice(-9); // 9 dígitos
+  const r = String(Math.floor(Math.random()*1e3)).padStart(3,'0'); // 3 dígitos
+  return (t + r).slice(0,12);
 }
 
-// Create client call (called by client UI)
-async function appStartClientCall({protocol, nome, cpf}){
-  // prevent duplicate by cpf if active
-  const existingSnap = await db.ref('calls').orderByChild('cpf').equalTo(cpf).once('value');
-  const existing = existingSnap.val();
+function now(){ return Date.now(); }
+
+function deviceId(){
+  // simples id pra dispositivo (localStorage)
+  let id = localStorage.getItem('deviceId_v1');
+  if(!id){ id = 'd-'+Math.random().toString(36).slice(2,12); localStorage.setItem('deviceId_v1', id); }
+  return id;
+}
+
+/* ========================
+   Criação de chamada (usuário)
+   ======================== */
+async function createCallUser({ nomeCompleto, cpf, notification }){
+  // evita múltiplas chamadas com mesmo CPF ativas
+  const cpfNum = onlyDigits(cpf);
+  const activeSnap = await db.ref('calls').orderByChild('cpf').equalTo(cpfNum).once('value');
+  const existing = activeSnap.val();
   if(existing){
-    // check statuses
-    for(const [k,v] of Object.entries(existing)){
-      if(v.status === 'aguardando' || v.status === 'em_chamada'){
-        throw new Error('Já existe uma solicitação ativa para esse CPF.');
+    // verificar se algum ativo
+    const keys = Object.keys(existing);
+    for(const k of keys){
+      const st = existing[k].status;
+      if(['waiting','accepted','in_call'].includes(st)){
+        throw new Error('Já existe uma solicitação ativa para esse CPF neste dispositivo/conta.');
       }
     }
   }
-  // create call node
-  const callRef = db.ref('calls/' + protocol);
-  const now = Date.now();
-  await callRef.set({
-    protocol, nomeCompleto: nome, cpf, status: 'aguardando', createdAt: now,
-    sdp: null, answer: null
-  });
-  // set onDisconnect cleanup (in case client disappears)
-  callRef.onDisconnect().update({status: 'desligado', disconnectedAt: Date.now()});
-  // start monitoring state locally
-  monitorClientCall(protocol);
-  // show notification to admins
-  showLocalNotification('Nova solicitação', `Protocolo ${protocol} — ${nome}`);
-  return protocol;
+
+  const protocol = generateProtocol12();
+  const callRef = db.ref('calls/'+protocol);
+  const payload = {
+    protocol,
+    nomeCompleto,
+    cpf: cpfNum,
+    createdAt: now(),
+    status: 'waiting',
+    deviceId: deviceId(),
+    notification: notification || { title: 'Novo atendimento', body: 'Novo cidadão aguardando', icon: '' },
+    lastPing: { user: now() }
+  };
+
+  await callRef.set(payload);
+
+  // criar timeout para não atendido (10 min)
+  setTimeout(async ()=>{
+    const snap = await db.ref('calls/'+protocol+'/status').get();
+    if(!snap.exists()) return; // já removido
+    const status = snap.val();
+    if(status === 'waiting'){
+      await db.ref('calls/'+protocol).update({ status:'missed', missedAt: now(), lastAction:'timeout' });
+      // mantém por 1 minuto e remove
+      setTimeout(()=> db.ref('calls/'+protocol).remove(), 60*1000);
+    }
+  }, 10 * 60 * 1000);
+
+  // return protocol info
+  return { protocol, createdAt: payload.createdAt };
 }
 
-// Monitor a client call node to reflect state to UI (client side)
-function monitorClientCall(protocol){
-  const ref = db.ref('calls/' + protocol);
-  ref.on('value', snap=>{
-    const data = snap.val();
-    if(!data){
-      // cleared
-      if(typeof window.__onClientCallUpdate === 'function') window.__onClientCallUpdate({protocol:null});
-      return;
-    }
-    // map statuses
-    let status = data.status || 'aguardando';
-    if(status === 'nao_atendido' || status === 'desligado' || status === 'desconhecido') {
-      // ended
-      if(typeof window.__onClientCallUpdate === 'function') window.__onClientCallUpdate({protocol:null});
-      // remove node
-      db.ref('calls/' + protocol).remove().catch(()=>{});
-      return;
-    }
-    // if accepted & agent assigned and sdp exchange finished, start WebRTC flow (client creates answer on offer)
-    if(status === 'em_chamada' && data.sdp && !data.answer){
-      // client should create peer, set remote description = offer, create answer, push answer
-      if(!clientPeers[protocol]) clientCreateAnswer(protocol, data.sdp);
-    }
-    // notify UI
-    if(typeof window.__onClientCallUpdate === 'function') window.__onClientCallUpdate({
-      protocol: protocol,
-      status: status==='aguardando' ? 'aguardando' : (status==='em_chamada'?'em chamada':'finalizado'),
-      startedAt: data.createdAt,
-      agent: data.agentName || null
-    });
+/* ========================
+   Listen status for user side
+   ======================== */
+function listenCallStatus(protocol, onChange){
+  const ref = db.ref('calls/'+protocol+'/status');
+  const cb = ref.on('value', snap=>{
+    const val = snap.exists() ? snap.val() : null;
+    if(val === 'waiting') onChange('Aguardando');
+    else if(val === 'accepted') onChange('Aceito');
+    else if(val === 'in_call') onChange('Em chamada');
+    else if(val === 'missed') onChange('Não atendido');
+    else if(val === 'ended') onChange('Desligado');
+    else if(val === 'rejected') onChange('Recusado');
+    else onChange(val);
   });
-
-  // Watch for timeout >10mins to mark nao_atendido
-  const createdAtRef = db.ref('calls/' + protocol + '/createdAt');
-  createdAtRef.once('value').then(snap=>{
-    const created = snap.val() || Date.now();
-    setTimeout(async ()=>{
-      const node = (await db.ref('calls/' + protocol).get()).val();
-      if(node && node.status === 'aguardando'){
-        await db.ref('calls/' + protocol).update({status:'nao_atendido', finishedAt: Date.now()});
-        showLocalNotification('Solicitação não atendida', `Protocolo ${protocol} não foi atendido em 10 minutos.`);
-        // remove after short delay
-        setTimeout(()=>db.ref('calls/' + protocol).remove().catch(()=>{}), 30*1000);
-      }
-    }, 10*60*1000 + 1000);
-  }).catch(()=>{});
+  return ()=> ref.off('value', cb);
 }
 
-// Client cancels call
-async function appClientCancel(protocol){
-  await db.ref('calls/' + protocol).transaction(curr=>{
-    if(!curr) return null;
-    curr.status = 'desligado';
-    curr.finishedAt = Date.now();
-    return curr;
+/* ========================
+   Monitor ping: usuário escreve timestamp, suporte responde
+   ======================== */
+function monitorPing(protocol, onPing){
+  // usuário updates lastPing.user with timestamp periodically
+  const pingRef = db.ref('calls/'+protocol+'/lastPing');
+  let interval = setInterval(()=> {
+    pingRef.update({ user: now() });
+  }, 5000);
+  // suporte pode escrever lastPing.support and we measure diff
+  const cb = pingRef.on('value', snap=>{
+    const v = snap.val();
+    if(!v) return;
+    if(v.support && v.user) {
+      const ping = Math.abs(v.support - v.user);
+      onPing(Math.round(ping));
+    }
   });
-  // cleanup
-  db.ref('calls/' + protocol).remove().catch(()=>{});
-  // close any peer
-  if(clientPeers[protocol] && clientPeers[protocol].pc){ clientPeers[protocol].pc.close(); delete clientPeers[protocol]; }
+  return ()=> { clearInterval(interval); pingRef.off('value', cb); };
 }
 
-// Client side: create answer when admin set sdp offer
-async function clientCreateAnswer(protocol, offerSdp){
-  try{
-    const pc = new RTCPeerConnection(ICE_CONFIG);
-    clientPeers[protocol] = {pc, remoteStream: new MediaStream()};
-    // attach remote tracks
-    pc.ontrack = (ev)=>{
-      clientPeers[protocol].remoteStream.addTrack(ev.track);
-      if(typeof window.__attachRemoteAudio === 'function'){
-        window.__attachRemoteAudio(clientPeers[protocol].remoteStream);
-      }else{
-        // fallback: create audio element
-        const a = document.createElement('audio'); a.autoplay = true; a.srcObject = clientPeers[protocol].remoteStream;
-        document.body.appendChild(a);
-      }
-    };
-    // gather candidates
-    pc.onicecandidate = (event)=>{
-      if(event.candidate){
-        const candRef = db.ref(`calls/${protocol}/candidates/client`).push();
-        candRef.set(event.candidate.toJSON());
-      }
-    };
-    // add local audio
-    const localStream = await navigator.mediaDevices.getUserMedia({audio:true});
-    localStream.getTracks().forEach(t=>pc.addTrack(t, localStream));
-    // set remote offer
-    await pc.setRemoteDescription(new RTCSessionDescription({type:'offer', sdp:offerSdp}));
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
-    // push answer to db
-    await db.ref(`calls/${protocol}/answer`).set({sdp: answer.sdp, createdAt: Date.now()});
-    // listen for admin candidates
-    db.ref(`calls/${protocol}/candidates/admin`).on('child_added', snap=>{
-      const c = snap.val();
-      try{ pc.addIceCandidate(new RTCIceCandidate(c)); }catch(e){}
-    });
-    // store
-    clientPeers[protocol].pc = pc;
-    // update state
-    await db.ref('calls/' + protocol).update({status:'em_chamada', answeredAt: Date.now()});
-  }catch(e){
-    console.error('clientCreateAnswer error', e);
+/* ========================
+   Cancelar/Cancelar antes de atender (usuário)
+   ======================== */
+async function cancelCall(protocol){
+  const ref = db.ref('calls/'+protocol);
+  const snap = await ref.get();
+  if(!snap.exists()) return;
+  const data = snap.val();
+  if(['waiting'].includes(data.status)){
+    await ref.remove(); // remove pedido
+  }else{
+    // se já in_call ou accepted, pedir hangup
+    await hangupCall(protocol, 'Cancelado pelo usuário');
   }
 }
 
-// Admin side: fetch queue and listen
-function appAdminInitUI(){
-  // subscribe to calls
-  db.ref('calls').on('value', snap=>{
-    const calls = snap.val() || {};
-    if(typeof window.__renderQueue === 'function') window.__renderQueue(calls);
-    // if selected call exists, update detail UI as well
-    if(typeof window.__selectedAdminProtocol !== 'undefined'){
-      const sel = window.__selectedAdminProtocol;
-      if(calls[sel]) {
-        // nothing here; selection handled by admin UI
-      }else{
-        // cleared
-      }
+/* ========================
+   Hangup: finaliza chamada e remove entry
+   ======================== */
+async function hangupCall(protocol, reason){
+  const ref = db.ref('calls/'+protocol);
+  const snap = await ref.get();
+  if(!snap.exists()) return;
+  const data = snap.val();
+
+  // marcar ended para informar
+  await ref.update({ status:'ended', endedAt: now(), lastAction: reason });
+  // apagar a entry após 3 segundos para permitir listeners
+  setTimeout(()=> ref.remove(), 3000);
+
+  // fechar peerconn local se existir (mantenho um mapa)
+  if(window._pcMap && window._pcMap[protocol]){
+    try{ window._pcMap[protocol].close(); }catch(e){}
+    delete window._pcMap[protocol];
+  }
+}
+
+/* ========================
+   Suporte: listar chamadas waiting em tempo real
+   ======================== */
+function listenWaitingCalls(onList){
+  const ref = db.ref('calls').orderByChild('status').equalTo('waiting');
+  const cb = ref.on('value', snap=>{
+    const val = snap.val();
+    const arr = [];
+    if(val){
+      Object.keys(val).forEach(k=>{
+        arr.push(val[k]);
+      });
+      // ordenar por createdAt
+      arr.sort((a,b)=>a.createdAt - b.createdAt);
     }
+    onList(arr);
   });
-  // initial fetch
-  appAdminFetchQueue();
+  return ()=> ref.off('value', cb);
 }
 
-async function appAdminFetchQueue(){
-  const snap = await db.ref('calls').get();
-  const calls = snap.val() || {};
-  if(typeof window.__renderQueue === 'function') window.__renderQueue(calls);
-  return calls;
+/* ========================
+   Suporte: aceitar chamada
+   - muda status para accepted
+   - inicia processo WebRTC via startSupportCall
+   ======================== */
+async function acceptCall(protocol){
+  const ref = db.ref('calls/'+protocol);
+  const snap = await ref.get();
+  if(!snap.exists()) return false;
+  const data = snap.val();
+  if(!data || data.status!=='waiting') return false;
+
+  // marca accepted (race condition: transaction to avoid double accept)
+  const committed = await db.ref('calls/'+protocol+'/status').transaction(current=>{
+    if(current === 'waiting') return 'accepted';
+    return; // abort
+  }).then(r=>r.committed);
+
+  return committed;
 }
 
-async function appAdminReject(protocol){
-  // mark as desligado + remove node
-  await db.ref('calls/' + protocol).transaction(curr=>{
-    if(!curr) return null;
-    curr.status = 'desligado';
-    curr.finishedAt = Date.now();
-    return curr;
-  });
-  await db.ref('calls/' + protocol).remove().catch(()=>{});
-  return true;
+/* ========================
+   Suporte: recusar chamada
+   ======================== */
+async function rejectCall(protocol, reason='Recusado pelo suporte'){
+  const ref = db.ref('calls/'+protocol);
+  const snap = await ref.get();
+  if(!snap.exists()) return;
+  await ref.update({ status:'rejected', rejectedAt: now(), lastAction: reason });
+  setTimeout(()=> ref.remove(), 2500);
 }
 
-// Admin answer flow: create offer and push SDP
-async function appAdminAnswer(protocol){
-  try{
-    // ensure node exists and status is aguardando
-    const snap = await db.ref('calls/' + protocol).get();
-    const node = snap.val();
-    if(!node) throw new Error('Solicitação não encontrada.');
-    // prevent double-answer: use transaction to claim agent
-    const agentClaim = await db.ref('calls/' + protocol + '/agentId').transaction(curr=>{
-      if(curr) return; // someone already claimed
-      return 'AGENT-' + (Math.random()*1e6|0);
-    });
-    if(!agentClaim.committed) throw new Error('Outra sessão já está atendendo.');
-    // Now create peer
-    const pc = new RTCPeerConnection(ICE_CONFIG);
-    adminPeers[protocol] = {pc, localStream: null};
-    // get local audio
-    const localStream = await navigator.mediaDevices.getUserMedia({audio:true});
-    adminPeers[protocol].localStream = localStream;
-    localStream.getTracks().forEach(t=> pc.addTrack(t, localStream));
-    // remote stream
-    const remoteStream = new MediaStream();
-    pc.ontrack = (ev)=> {
-      ev.streams && ev.streams[0] && (remoteStream.addTrack(ev.track));
-      // attach to admin UI
-      const el = document.getElementById('remotePreview');
-      if(el){ el.srcObject = remoteStream; try{ el.play().catch(()=>{}); }catch(e){} }
-    };
-    // candidates from admin -> push to db
-    pc.onicecandidate = (event)=>{
-      if(event.candidate){
-        db.ref(`calls/${protocol}/candidates/admin`).push().set(event.candidate.toJSON());
-      }
-    };
-    // Listen for client candidates
-    db.ref(`calls/${protocol}/candidates/client`).on('child_added', snap=>{
-      const c = snap.val();
-      try{ pc.addIceCandidate(new RTCIceCandidate(c)); }catch(e){}
-    });
+/* ========================
+   Suporte: obter detalhes da chamada
+   ======================== */
+async function getCallDetails(protocol){
+  const snap = await db.ref('calls/'+protocol).get();
+  return snap.exists() ? snap.val() : null;
+}
 
-    // create offer
-    const offer = await pc.createOffer();
-    await pc.setLocalDescription(offer);
+/* ======================================================
+   ====== WebRTC signaling using Firebase Realtime DB =====
+   - We keep a global map window._pcMap to manage connections
+   - user side creates offer and writes under /calls/{protocol}/offer
+   - support reads offer, creates answer and writes under /calls/{protocol}/answer
+   - both push ICE candidates under /calls/{protocol}/candidates/user and /candidates/support
+   ====================================================== */
 
-    // store offer in db
-    await db.ref('calls/' + protocol).update({
-      sdp: offer.sdp,
-      status: 'em_chamada',
-      agentName: (auth.currentUser && auth.currentUser.displayName) ? auth.currentUser.displayName : 'Atendente',
-      agentId: agentClaim.snapshot.val() || 'agent-unknown',
-      answeredAt: Date.now()
-    });
+window._pcMap = window._pcMap || {}; // protocol -> RTCPeerConnection container
+window._localStreamMap = window._localStreamMap || {}; // protocol -> local MediaStream
 
-    // listen for answer
-    db.ref(`calls/${protocol}/answer`).on('value', async snap=>{
-      const ans = snap.val();
-      if(ans && ans.sdp){
-        try{
-          await pc.setRemoteDescription(new RTCSessionDescription({type:'answer', sdp: ans.sdp}));
-        }catch(e){
-          console.error('setRemoteDescription error', e);
+const RTC_CONFIG = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    // pode adicionar TURN se tiver
+  ]
+};
+
+// UTIL: create peer connection and hook events
+function createPeerConnection(protocol, role, onRemoteStream, onStats){
+  const pc = new RTCPeerConnection(RTC_CONFIG);
+
+  // keep
+  window._pcMap[protocol] = pc;
+
+  // remote stream
+  const remoteStream = new MediaStream();
+  pc.ontrack = (evt) => {
+    evt.streams && evt.streams[0] && evt.streams[0].getAudioTracks().length && onRemoteStream(evt.streams[0]);
+  };
+
+  // icecandidate -> push to firebase
+  pc.onicecandidate = (e)=>{
+    if(!e.candidate) return;
+    const node = 'calls/'+protocol+'/candidates/'+(role==='user' ? 'user' : 'support');
+    db.ref(node).push(e.candidate.toJSON());
+  };
+
+  // connection state
+  pc.onconnectionstatechange = ()=>{
+    // console.log('pc state', protocol, pc.connectionState);
+  };
+
+  // periodic stats/ping
+  if(onStats){
+    let last = Date.now();
+    const t = setInterval(async ()=>{
+      try{
+        // basic ping from DB timestamps
+        const pingSnap = await db.ref('calls/'+protocol+'/lastPing').get();
+        if(pingSnap.exists()){
+          const v = pingSnap.val();
+          if(v.support && v.user) onStats(Math.abs(v.support - v.user));
         }
-      }
-    });
-
-    // store handle
-    adminPeers[protocol].pc = pc;
-
-    // attach local preview to admin UI
-    const lp = document.getElementById('localPreview');
-    if(lp){ lp.srcObject = localStream; try{ lp.play().catch(()=>{});}catch(e){} }
-
-    // when connection closes, cleanup
-    pc.onconnectionstatechange = ()=>{
-      const state = pc.connectionState;
-      if(state === 'disconnected' || state === 'failed' || state === 'closed'){
-        // mark finished
-        db.ref('calls/' + protocol).update({status:'desligado', finishedAt: Date.now()});
-        // remove after short delay
-        setTimeout(()=> db.ref('calls/' + protocol).remove().catch(()=>{}), 2000);
-        // close pc
-        try{ pc.close(); }catch(e){}
-        delete adminPeers[protocol];
-      }
-    };
-
-    // show admin UI update
-    if(typeof window.__onAdminCallStarted === 'function') window.__onAdminCallStarted(protocol);
-
-    return true;
-  }catch(e){
-    console.error('appAdminAnswer error', e);
-    throw e;
+      }catch(e){}
+    }, 3000);
+    pc._statsInterval = t;
   }
+
+  return pc;
 }
 
-// Admin end call
-async function appAdminEnd(protocol){
-  // update node and remove
-  await db.ref('calls/' + protocol).update({status:'desligado', finishedAt: Date.now()});
-  await db.ref('calls/' + protocol).remove().catch(()=>{});
-  // close peer
-  if(adminPeers[protocol] && adminPeers[protocol].pc){ try{ adminPeers[protocol].pc.close(); }catch(e){} delete adminPeers[protocol]; }
+/* ========================
+   Usuário: inicia oferta (quando cria chamada) e aguarda answer
+   - Esta função é chamada automaticamente pelo UI (index.html) quando criar a solicitação
+   ======================== */
+async function startUserCall(protocol){
+  const callRef = db.ref('calls/'+protocol);
+  // pegar microfone
+  const stream = await navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:true, noiseSuppression:true }});
+  window._localStreamMap[protocol] = stream;
+  const pc = createPeerConnection(protocol, 'user', (remoteStream)=>{
+    // tocar audio remoto
+    const audio = document.createElement('audio');
+    audio.autoplay = true;
+    audio.srcObject = remoteStream;
+    audio.play().catch(()=>{});
+  }, (p)=> { /* ping handler user side */ });
+
+  // add tracks
+  stream.getTracks().forEach(t=> pc.addTrack(t, stream));
+
+  // create data for candidates
+  const candidatesUserRef = db.ref('calls/'+protocol+'/candidates/user');
+  // cleanup old candidates
+  await db.ref('calls/'+protocol+'/candidates').remove();
+
+  // create offer
+  const offer = await pc.createOffer();
+  await pc.setLocalDescription(offer);
+
+  await callRef.update({ offer: offer.toJSON(), lastAction:'offer' });
+
+  // listen for answer
+  const ansRef = db.ref('calls/'+protocol+'/answer');
+  const ansCb = ansRef.on('value', async snap=>{
+    if(!snap.exists()) return;
+    const ans = snap.val();
+    if(ans && ans.sdp){
+      const remoteDesc = new RTCSessionDescription(ans);
+      await pc.setRemoteDescription(remoteDesc);
+      // mark as in_call
+      await callRef.update({ status:'in_call', connectedAt: now() });
+    }
+  });
+
+  // listen for support candidates
+  const supportCandRef = db.ref('calls/'+protocol+'/candidates/support');
+  const candCb = supportCandRef.on('child_added', snap=>{
+    const c = snap.val();
+    if(c){
+      try{ pc.addIceCandidate(new RTCIceCandidate(c)); }catch(e){ console.warn(e); }
+    }
+  });
+
+  // handle status changes (ended -> cleanup)
+  const statusRef = db.ref('calls/'+protocol+'/status');
+  const statusCb = statusRef.on('value', snap=>{
+    const v = snap.val();
+    if(v === 'ended' || v === 'rejected' || v === 'missed'){
+      // cleanup
+      try{ pc.close(); }catch(e){}
+      try{ stream.getTracks().forEach(t=>t.stop()); }catch(e){}
+      if(window._pcMap[protocol]) delete window._pcMap[protocol];
+      if(window._localStreamMap[protocol]) delete window._localStreamMap[protocol];
+      statusRef.off('value', statusCb);
+      ansRef.off('value', ansCb);
+      supportCandRef.off('child_added', candCb);
+    }
+  });
+
   return true;
 }
 
-// Toggle mute (admin/client)
-function appToggleMute(){
-  // toggle tracks
-  Object.values(adminPeers).forEach(p=>{
-    if(p.localStream){
-      p.localStream.getAudioTracks().forEach(t=> t.enabled = !t.enabled);
+/* ========================
+   Suporte: quando aceita, cria answer e envia para user
+   - startSupportCall faz:
+     1) ler offer
+     2) criar RTCPeerConnection, setRemoteDescription(offer)
+     3) criar answer, setLocalDescription(answer) e escrever em /calls/{protocol}/answer
+     4) trocar ICE candidates (listen user candidates and push support candidates)
+   ======================== */
+async function startSupportCall(protocol, onStats){
+  const callRef = db.ref('calls/'+protocol);
+  const snap = await callRef.get();
+  if(!snap.exists()) throw new Error('Chamada não encontrada');
+
+  const call = snap.val();
+  if(!call.offer) throw new Error('Offer não encontrada');
+
+  // pedir permissão de microfone
+  const stream = await navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:true, noiseSuppression:true }});
+  window._localStreamMap[protocol] = stream;
+
+  const pc = createPeerConnection(protocol, 'support', (remoteStream)=>{
+    const audio = document.createElement('audio');
+    audio.autoplay = true;
+    audio.srcObject = remoteStream;
+    audio.play().catch(()=>{});
+  }, onStats);
+
+  // add local audio tracks
+  stream.getTracks().forEach(t=> pc.addTrack(t, stream));
+
+  // set offer as remote desc
+  const offerDesc = new RTCSessionDescription(call.offer);
+  await pc.setRemoteDescription(offerDesc);
+
+  // create answer
+  const answer = await pc.createAnswer();
+  await pc.setLocalDescription(answer);
+
+  // write answer to DB
+  await callRef.update({ answer: answer.toJSON(), status:'in_call', acceptedAt: now(), lastAction:'answer' });
+
+  // listen for user ICE candidates
+  const userCandRef = db.ref('calls/'+protocol+'/candidates/user');
+  userCandRef.on('child_added', snap=>{
+    const c = snap.val();
+    if(c){
+      try{ pc.addIceCandidate(new RTCIceCandidate(c)); }catch(e){ console.warn(e); }
     }
   });
-  Object.values(clientPeers).forEach(p=>{
-    if(p.localStream){
-      p.localStream.getAudioTracks().forEach(t=> t.enabled = !t.enabled);
+
+  // push our candidates
+  pc.onicecandidate = (e)=>{
+    if(!e.candidate) return;
+    db.ref('calls/'+protocol+'/candidates/support').push(e.candidate.toJSON());
+  };
+
+  // monitor status to cleanup
+  const statusRef = db.ref('calls/'+protocol+'/status');
+  const statusCb = statusRef.on('value', snap=>{
+    const v = snap.val();
+    if(v === 'ended' || v === 'rejected' || v === 'missed'){
+      try{ pc.close(); }catch(e){}
+      try{ stream.getTracks().forEach(t=>t.stop()); }catch(e){}
+      if(window._pcMap[protocol]) delete window._pcMap[protocol];
+      if(window._localStreamMap[protocol]) delete window._localStreamMap[protocol];
+      statusRef.off('value', statusCb);
+      userCandRef.off();
     }
   });
+
+  // also start ping writer for support
+  const pingRef = db.ref('calls/'+protocol+'/lastPing');
+  const interval = setInterval(()=> pingRef.update({ support: now() }), 5000);
+
+  return true;
 }
 
-// Admin fetch single call detail (optionally used by UI)
-async function appGetCall(protocol){
-  const snap = await db.ref('calls/' + protocol).get();
-  return snap.val();
+/* ========================
+   Suporte: aceitar fluxo com proteção de concorrência
+   ======================== */
+async function acceptCall(protocol){
+  const ref = db.ref('calls/'+protocol);
+  const snap = await ref.get();
+  if(!snap.exists()) return false;
+  const data = snap.val();
+  if(!data || data.status !== 'waiting') return false;
+
+  // transaction to avoid double accept
+  const res = await db.ref('calls/'+protocol+'/status').transaction(current=>{
+    if(current === 'waiting') return 'accepted';
+    return; // abort
+  });
+
+  return res.committed;
 }
 
-/* ==============
-   Real-time listeners for admin UI queue rendering and cleanup
-   ============== */
-db.ref('calls').on('child_removed', snap=>{
-  const protocol = snap.key;
-  // cleanup local peers if any
-  if(adminPeers[protocol] && adminPeers[protocol].pc){ try{ adminPeers[protocol].pc.close(); }catch(e){} delete adminPeers[protocol]; }
-  if(clientPeers[protocol] && clientPeers[protocol].pc){ try{ clientPeers[protocol].pc.close(); }catch(e){} delete clientPeers[protocol]; }
-  // notify UIs to clear selection if necessary
-  if(typeof window.__onCallRemoved === 'function') window.__onCallRemoved(protocol);
+/* ========================
+   Listeners util for admin
+   ======================== */
+function listenActiveCount(onCount){
+  const ref = db.ref('calls');
+  const cb = ref.on('value', snap=>{
+    const v = snap.val();
+    let n = 0;
+    if(v){
+      Object.keys(v).forEach(k=>{
+        if(['accepted','in_call'].includes(v[k].status)) n++;
+      });
+    }
+    onCount(n);
+  });
+  return ()=> ref.off('value', cb);
+}
+
+/* ========================
+   monitor admin ping global (estimate)
+   ======================== */
+function monitorAdminPing(onPing){
+  // crude: sample last 100 calls lastPing diff
+  setInterval(async ()=>{
+    const snap = await db.ref('calls').orderByChild('createdAt').limitToLast(50).get();
+    if(!snap.exists()) { onPing('—'); return; }
+    const v = snap.val();
+    const arr = Object.values(v || {});
+    let pings = [];
+    arr.forEach(item=>{
+      if(item.lastPing && item.lastPing.user && item.lastPing.support) {
+        pings.push(Math.abs(item.lastPing.user - item.lastPing.support));
+      }
+    });
+    const avg = pings.length ? Math.round(pings.reduce((a,b)=>a+b,0)/pings.length) : '—';
+    onPing(avg);
+  }, 5000);
+}
+
+/* ========================
+   Listen waiting calls (wrapper used by admin UI)
+   ======================== */
+function listenWaitingCalls(onList){
+  const ref = db.ref('calls').orderByChild('status').equalTo('waiting');
+  const cb = ref.on('value', snap=>{
+    const val = snap.val();
+    const arr = [];
+    if(val) Object.keys(val).forEach(k=> arr.push(val[k]));
+    arr.sort((a,b)=>a.createdAt - b.createdAt);
+    onList(arr);
+  });
+  return ()=> ref.off('value', cb);
+}
+
+/* ========================
+   monitor call details (helper)
+   ======================== */
+function getCallDetails(protocol){
+  return db.ref('calls/'+protocol).get().then(s=> s.exists() ? s.val() : null);
+}
+
+/* ========================
+   startSupportCall wrapper (ensures accept + start)
+   ======================== */
+async function startSupportCall(protocol, onStats){
+  // try accept
+  const ok = await acceptCall(protocol);
+  if(!ok) throw new Error('Não foi possível aceitar a chamada (já aceita por outro).');
+  return startSupportCallInternal(protocol, onStats);
+}
+async function startSupportCallInternal(protocol, onStats){
+  // internal that actually starts (to avoid name collision)
+  // renamed earlier implementation to startSupportCallInternal; keep compatibility
+  // We'll call the previously defined startSupportCall logic:
+  return startSupportCall_actual(protocol, onStats);
+}
+
+// Because of function name duplication earlier, define actual function:
+async function startSupportCall_actual(protocol, onStats){
+  // delegate to startSupportCall (the previously defined long implementation)
+  // The long implementation above is already named startSupportCall, so call it:
+  return startSupportCall_real(protocol, onStats);
+}
+
+// To avoid confusion, we assign the full implementation to startSupportCall_real earlier;
+// but earlier we already defined startSupportCall (full). To ensure correct binding,
+// redefine startSupportCall_real to be the implementation we already wrote.
+
+const startSupportCall_real = (async function(protocol, onStats){
+  // This function duplicates the full implementation previously defined in this file.
+  // To avoid repetition, we invoke the earlier declared startSupportCallImplementation if present.
+  // However, to keep the code coherent: we'll call the earlier defined startSupportCallImplementation that we used.
+  // Because of possible re-declarations, fallback to a fresh implementation:
+
+  const callRef = db.ref('calls/'+protocol);
+  const snap = await callRef.get();
+  if(!snap.exists()) throw new Error('Chamada não encontrada');
+
+  const call = snap.val();
+  if(!call.offer) throw new Error('Offer não encontrada');
+
+  // pedir permissão de microfone
+  const stream = await navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:true, noiseSuppression:true }});
+  window._localStreamMap[protocol] = stream;
+
+  const pc = createPeerConnection(protocol, 'support', (remoteStream)=>{
+    const audio = document.createElement('audio');
+    audio.autoplay = true;
+    audio.srcObject = remoteStream;
+    audio.play().catch(()=>{});
+  }, onStats);
+
+  // add local audio tracks
+  stream.getTracks().forEach(t=> pc.addTrack(t, stream));
+
+  // set offer as remote desc
+  const offerDesc = new RTCSessionDescription(call.offer);
+  await pc.setRemoteDescription(offerDesc);
+
+  // create answer
+  const answer = await pc.createAnswer();
+  await pc.setLocalDescription(answer);
+
+  // write answer to DB
+  await callRef.update({ answer: answer.toJSON(), status:'in_call', acceptedAt: now(), lastAction:'answer' });
+
+  // listen for user ICE candidates
+  const userCandRef = db.ref('calls/'+protocol+'/candidates/user');
+  userCandRef.on('child_added', snap=>{
+    const c = snap.val();
+    if(c){
+      try{ pc.addIceCandidate(new RTCIceCandidate(c)); }catch(e){ console.warn(e); }
+    }
+  });
+
+  // push our candidates
+  pc.onicecandidate = (e)=>{
+    if(!e.candidate) return;
+    db.ref('calls/'+protocol+'/candidates/support').push(e.candidate.toJSON());
+  };
+
+  // monitor status to cleanup
+  const statusRef = db.ref('calls/'+protocol+'/status');
+  const statusCb = statusRef.on('value', snap=>{
+    const v = snap.val();
+    if(v === 'ended' || v === 'rejected' || v === 'missed'){
+      try{ pc.close(); }catch(e){}
+      try{ stream.getTracks().forEach(t=>t.stop()); }catch(e){}
+      if(window._pcMap[protocol]) delete window._pcMap[protocol];
+      if(window._localStreamMap[protocol]) delete window._localStreamMap[protocol];
+      statusRef.off('value', statusCb);
+      userCandRef.off();
+    }
+  });
+
+  // also start ping writer for support
+  const pingRef = db.ref('calls/'+protocol+'/lastPing');
+  const interval = setInterval(()=> pingRef.update({ support: now() }), 5000);
+
+  return true;
 });
 
-// When calls change, push to admin UI renderer
-db.ref('calls').on('value', snap=>{
-  const calls = snap.val() || {};
-  if(typeof window.__renderQueue === 'function') window.__renderQueue(calls);
-});
+/* ========================
+   Monitor ping helper for user UI (wrapper)
+   ======================== */
+function monitorPing(protocol, cb){
+  // user writes user timestamp and reads support timestamp to show ping
+  const pingRef = db.ref('calls/'+protocol+'/lastPing');
+  const interval = setInterval(()=> {
+    pingRef.update({ user: now() }).catch(()=>{});
+  }, 5000);
+  const listener = pingRef.on('value', snap=>{
+    const v = snap.val();
+    if(v && v.support && v.user) {
+      cb(Math.abs(v.support - v.user));
+    }
+  });
+  return ()=> { clearInterval(interval); pingRef.off('value', listener); };
+}
 
-/* =============
-   Expose functions to global (used by the HTML pages)
-   ============= */
-window.appStartClientCall = appStartClientCall;
-window.appClientCancel = appClientCancel;
-window.appAdminInitUI = appAdminInitUI;
-window.appAdminFetchQueue = appAdminFetchQueue;
-window.appAdminReject = appAdminReject;
-window.appAdminAnswer = appAdminAnswer;
-window.appAdminEnd = appAdminEnd;
-window.appGetCall = appGetCall;
-window.appToggleMute = appToggleMute;
+/* ========================
+   Small compatibility wrappers (avoid duplicates)
+   ======================== */
+window.createCallUser = createCallUser;
+window.listenCallStatus = listenCallStatus;
+window.cancelCall = cancelCall;
+window.hangupCall = hangupCall;
+window.listenWaitingCalls = listenWaitingCalls;
+window.acceptCall = acceptCall;
+window.rejectCall = rejectCall;
+window.getCallDetails = getCallDetails;
+window.startSupportCall = startSupportCall_real; // export the real impl
+window.startUserCall = startUserCall;
+window.monitorPing = monitorPing;
+window.listenActiveCount = listenActiveCount;
+window.monitorAdminPing = monitorAdminPing;
 
-// Optional hooks UIs can implement:
-// window.__onClientCallUpdate(obj) -> client UI updates
-// window.__attachRemoteAudio(stream) -> attach remote audio
-// window.__renderQueue(calls) -> admin renders queue
-// window.__onPingUpdate(ms) -> ping
-// window.__onAdminPing(ms) -> admin ping
-// window.__onAdminConn(s) -> connection status
-
-// ----------------- END script.js -----------------
+/* End of script.js */
