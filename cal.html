@@ -1,233 +1,210 @@
-<!-- widget.html (incorporável) -->
-<!-- Obs: intencionalmente sem <!DOCTYPE> conforme solicitado -->
+<!-- widget.html -->
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Central de Atendimento - Widget</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-
+  <title>Central de Atendimento — Widget</title>
   <style>
     :root{
-      --bg:#ffffff;
-      --card:#f7f8fa;
-      --accent:#0b3b66;
-      --muted:#6b7280;
-      --success:#0b8a4a;
+      --bg:#ffffff; --accent:#0b4b7a; --muted:#6b6b6b;
+      --card-shadow: 0 8px 24px rgba(14,34,59,0.08);
+      font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
-    html,body{height:100%;margin:0;font-family:'Public Sans',system-ui,Segoe UI,Roboto,Arial;}
-    .widget-wrap{background:var(--bg);color:#111;padding:18px;border-radius:12px;box-shadow:0 6px 22px rgba(10,20,30,0.06);max-width:420px;min-width:300px;}
-    h1{margin:0 0 8px;font-size:18px;color:var(--accent);}
-    p.lead{margin:0 0 14px;color:var(--muted);font-size:13px}
-    .form-row{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+    html,body{height:100%;margin:0;background:var(--bg);}
+    .widget{
+      width:100%; max-width:420px; margin:12px auto; padding:18px;
+      background: #fff; border-radius:12px; box-shadow:var(--card-shadow);
+      border:1px solid rgba(11,75,122,0.04);
+    }
+    h1{font-size:18px;margin:0 0 12px;color:var(--accent)}
+    label{display:block;font-size:13px;color:var(--muted);margin-top:10px}
     input[type="text"], input[type="tel"]{
-      padding:10px 12px;border:1px solid #e6e9ef;border-radius:8px;font-size:14px;outline:none;
+      width:100%; padding:10px;border-radius:8px;border:1px solid #eee;font-size:15px;
+      box-sizing:border-box;margin-top:6px;
     }
-    button{background:var(--accent);color:#fff;border:0;padding:10px 12px;border-radius:10px;font-weight:600;cursor:pointer;}
-    .btn-ghost{background:transparent;border:1px solid #e6e9ef;color:var(--accent)}
-    .center{display:flex;gap:8px;align-items:center}
-    .protocol{font-weight:700;color:var(--accent);font-size:14px}
-    .status{margin-top:10px;padding:12px;border-radius:10px;background:var(--card);font-size:14px}
+    .actions{display:flex;gap:8px;margin-top:14px}
+    button{
+      flex:1;padding:10px 12px;border-radius:8px;border:0;background:var(--accent);
+      color:#fff;font-weight:600;cursor:pointer;
+    }
+    button.ghost{background:#f3f7fb;color:var(--accent);border:1px solid rgba(11,75,122,0.08)}
+    .status{margin-top:14px;padding:12px;border-radius:8px;background:#fbfdff;border:1px solid #eef6fc;font-size:14px;color:#0b3b60}
     .small{font-size:13px;color:var(--muted)}
-    .actions{display:flex;gap:8px;margin-top:10px}
-    .hint{margin-top:8px;font-size:12px;color:var(--muted)}
+    .controls{display:flex;gap:8px;align-items:center;margin-top:12px}
+    .call-controls{display:flex;gap:8px;margin-top:12px}
+    audio{display:block;margin-top:10px;width:100%;}
+    .center{display:flex;align-items:center;gap:8px}
+    .badge{background:#e9f3ff;color:var(--accent);padding:6px 8px;border-radius:8px;font-weight:700}
+    .overlay-tut{position:fixed;inset:0;background:rgba(8,10,14,0.5);display:none;align-items:center;justify-content:center;z-index:9999}
+    .tut-box{background:#fff;padding:18px;border-radius:10px;max-width:720px;box-shadow:0 10px 40px rgba(2,6,23,0.3)}
   </style>
 </head>
 <body>
-  <div class="widget-wrap" id="widget">
+  <div class="widget" id="widgetRoot">
     <h1>Central de Atendimento</h1>
-    <p class="lead">Por favor, informe seu nome completo e CPF para gerar um protocolo.</p>
-
     <div id="formArea">
-      <div class="form-row">
-        <input id="nomeInput" type="text" placeholder="Nome completo" />
-        <input id="cpfInput" type="tel" placeholder="CPF (somente números ou formatado)" />
+      <label>Nome completo</label>
+      <input id="nome" type="text" placeholder="Seu nome completo" autocomplete="name"/>
+      <label>CPF</label>
+      <input id="cpf" type="tel" placeholder="000.000.000-00" autocomplete="off"/>
+      <div class="actions">
+        <button id="startBtn">Solicitar Atendimento</button>
+        <button id="cancelBtn" class="ghost" style="display:none">Cancelar</button>
       </div>
-      <div class="center">
-        <button id="startBtn">Iniciar Atendimento</button>
-        <button class="btn-ghost" id="micTestBtn" type="button">Testar microfone</button>
-      </div>
-      <div class="hint">Ao entrar será solicitado acesso ao microfone.</div>
-    </div>
-
-    <div id="waitingArea" style="display:none;">
-      <div class="status">
-        <div>Protocolo: <span class="protocol" id="protocolLabel">—</span></div>
-        <div style="margin-top:8px;" id="waitingMsg">Aguardando atendente. Por favor aguarde! Pode levar alguns minutos.</div>
-        <div class="hint small" id="timerHint">Tempo aguardando: <span id="elapsed">00:00</span></div>
-        <div class="actions">
-          <button id="cancelBtn" class="btn-ghost">Cancelar solicitação</button>
+      <div id="message" class="status" style="display:none"></div>
+      <div id="callArea" style="display:none">
+        <div class="small">Protocolo: <span id="proto" class="badge"></span></div>
+        <div class="small" id="callStatus">Status: aguardando</div>
+        <div class="call-controls" style="margin-top:8px">
+          <button id="hangupBtn" style="background:#c0392b">Desligar</button>
         </div>
+        <audio id="remoteAudio" autoplay></audio>
+        <div class="small" id="callTimer">Duração: 00:00</div>
+        <div class="small" id="pingStatus">Conexão: verificando...</div>
       </div>
     </div>
-
-    <div id="inCallArea" style="display:none;">
-      <div class="status">
-        <div id="callInfo">Conectado ao suporte — duração: <span id="callTimer">00:00</span></div>
-        <div style="margin-top:10px;">
-          <button id="hangupBtn" class="btn-ghost">Desligar</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="resultMsg" style="display:none;margin-top:12px;font-size:13px;color:var(--muted)"></div>
   </div>
 
-  <!-- Firebase compat libs and script.js -->
+  <div class="overlay-tut" id="tutorialOverlay">
+    <div class="tut-box">
+      <h3>Como será atendido</h3>
+      <p>1. Aguarde até um suporte aceitar.<br>
+         2. Ao aceitar, o áudio será conectado — fale normalmente.<br>
+         3. Você pode cancelar antes do atendimento.<br>
+         4. Se não houver atendimento em 10 minutos, aparecerá "não atendido".</p>
+      <p><button id="closeTut">Fechar</button></p>
+    </div>
+  </div>
+
+  <!-- Firebase compat + script.js (seu arquivo principal) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script src="script.js"></script>
 
   <script>
-    // Widget-specific wiring (usa funções de script.js)
+    // widget UI logic - usa funções do script.js (calls API)
     (function(){
-      const nomeInput = document.getElementById('nomeInput');
-      const cpfInput = document.getElementById('cpfInput');
+      const nomeEl = document.getElementById('nome');
+      const cpfEl = document.getElementById('cpf');
       const startBtn = document.getElementById('startBtn');
-      const micTestBtn = document.getElementById('micTestBtn');
-      const waitingArea = document.getElementById('waitingArea');
-      const formArea = document.getElementById('formArea');
-      const protocolLabel = document.getElementById('protocolLabel');
       const cancelBtn = document.getElementById('cancelBtn');
-      const inCallArea = document.getElementById('inCallArea');
+      const message = document.getElementById('message');
+      const callArea = document.getElementById('callArea');
+      const protoEl = document.getElementById('proto');
+      const callStatus = document.getElementById('callStatus');
       const hangupBtn = document.getElementById('hangupBtn');
-      const resultMsg = document.getElementById('resultMsg');
-      const waitingMsg = document.getElementById('waitingMsg');
-      const elapsed = document.getElementById('elapsed');
+      const remoteAudio = document.getElementById('remoteAudio');
       const callTimer = document.getElementById('callTimer');
+      const pingStatus = document.getElementById('pingStatus');
+      const tut = document.getElementById('tutorialOverlay');
+      const closeTut = document.getElementById('closeTut');
 
-      let protocolId = null;
-      let waitingStartedAt = 0;
-      let waitingInterval = null;
-      let callStartedAt = 0;
-      let callInterval = null;
+      let currentCall = null;
+      let callTimerInterval = null;
 
-      async function askMicOnEnter(){
+      closeTut.onclick = ()=> tut.style.display='none';
+
+      async function requestMic(){
         try{
-          await navigator.mediaDevices.getUserMedia({ audio:true });
-          // não usamos stream imediatamente; só pedimos permissão
+          await navigator.mediaDevices.getUserMedia({audio:true});
+          return true;
         }catch(e){
-          console.warn('Microfone não permitido', e);
+          console.warn('Mic denied', e);
+          return false;
         }
       }
 
-      askMicOnEnter();
-
-      micTestBtn.addEventListener('click', async ()=>{
-        try{
-          const s = await navigator.mediaDevices.getUserMedia({ audio:true });
-          // breve teste: apenas abrir e fechar
-          s.getTracks().forEach(t=>t.stop());
-          alert('Microfone acessível.');
-        }catch(e){
-          alert('Falha ao acessar microfone. Permita o microfone no navegador.');
-        }
-      });
-
       startBtn.addEventListener('click', async ()=>{
-        const nome = nomeInput.value.trim();
-        const cpf = cpfInput.value.trim();
-        if(!nome || !cpf){ alert('Preencha nome e CPF'); return; }
-        // gerar protocolo de 12 dígitos
-        function genProtocol(){ return ('' + Math.floor(100000000000 + Math.random()*900000000000)); }
-        protocolId = genProtocol();
+        const nome = nomeEl.value.trim();
+        const cpf = cpfEl.value.trim();
+        if(!nome || !cpf){ message.style.display='block'; message.textContent='Preencha nome e CPF.'; return; }
+        message.style.display='none';
 
-        // cria chamado no Firebase (usa função global createCall)
+        // pedir microfone (para webviews pode abrir permissão)
+        await requestMic();
+
         try{
-          await createCall({
-            protocol: protocolId,
-            nomeCompleto: nome,
-            cpf: cpf
-          });
+          const res = await Calls.createCall({nomeCompleto:nome, cpf});
+          // res = {protocol, status}
+          currentCall = res;
+          protoEl.textContent = res.protocol;
+          callArea.style.display='block';
+          cancelBtn.style.display='none';
+          startBtn.style.display='none';
+          callStatus.textContent = 'Status: aguardando atendente. Por favor aguarde! Pode levar alguns minutos';
+          // start listening for updates
+          Calls.listenCall(res.protocol, updateFromServer);
         }catch(err){
-          console.error(err);
-          alert('Erro ao criar solicitação.');
-          return;
+          message.style.display='block';
+          message.textContent = err.message || String(err);
         }
-
-        protocolLabel.textContent = protocolId;
-        formArea.style.display = 'none';
-        waitingArea.style.display = 'block';
-        resultMsg.style.display = 'none';
-        waitingStartedAt = Date.now();
-        elapsed.textContent = '00:00';
-        waitingInterval = setInterval(()=>{
-          const sec = Math.floor((Date.now()-waitingStartedAt)/1000);
-          const mm = String(Math.floor(sec/60)).padStart(2,'0');
-          const ss = String(sec%60).padStart(2,'0');
-          elapsed.textContent = mm+':'+ss;
-        },1000);
-
-        // passar a UI para escutar status da chamada:
-        subscribeToCall(protocolId, {
-          onOffer: async (offer) => {
-            // suporte já aceitou e criou offer -> seremos callee: responder (answer)
-            waitingMsg.textContent = 'Conectando ao suporte...';
-            try{
-              await handleIncomingOfferAsCallee(protocolId, offer, {
-                onStartCall: ()=>{
-                  // switch UI
-                  waitingArea.style.display = 'none';
-                  inCallArea.style.display = 'block';
-                  callStartedAt = Date.now();
-                  callInterval = setInterval(()=>{
-                    const sec = Math.floor((Date.now()-callStartedAt)/1000);
-                    const mm = String(Math.floor(sec/60)).padStart(2,'0');
-                    const ss = String(sec%60).padStart(2,'0');
-                    callTimer.textContent = mm+':'+ss;
-                  },1000);
-                },
-                onEnded: ()=>{
-                  cleanupAfterCall('A chamada foi encerrada.');
-                }
-              });
-            }catch(e){
-              console.error('Erro ao responder offer', e);
-              cleanupAfterCall('Erro na conexão de áudio.');
-            }
-          },
-          onRemoved: ()=>{
-            // pedido removido (recusado ou encerrado). Exibir mensagem.
-            cleanupAfterCall('Pedido removido pelo suporte.');
-          },
-          onStatusChange: (status)=>{
-            if(status === 'not_answered'){
-              cleanupAfterCall('Não atendido (tempo esgotado).');
-            }
-          }
-        });
-
       });
 
       cancelBtn.addEventListener('click', async ()=>{
-        if(!protocolId) return;
-        try{
-          await cancelCall(protocolId);
-        }catch(e){ console.warn(e); }
-        cleanupAfterCall('Solicitação cancelada por você.');
+        if(!currentCall) return;
+        await Calls.cancelCall(currentCall.protocol, 'cancelled_by_user');
+        resetUI();
       });
 
       hangupBtn.addEventListener('click', async ()=>{
-        if(!protocolId) return;
-        try{
-          await hangupCall(protocolId);
-        }catch(e){ console.warn(e); }
-        cleanupAfterCall('Chamada encerrada.');
+        if(!currentCall) return;
+        await Calls.endCall(currentCall.protocol, 'ended_by_user');
+        resetUI();
       });
 
-      function cleanupAfterCall(message){
-        protocolId = null;
-        if(waitingInterval){ clearInterval(waitingInterval); waitingInterval = null;}
-        if(callInterval){ clearInterval(callInterval); callInterval=null;}
-        formArea.style.display = 'block';
-        waitingArea.style.display = 'none';
-        inCallArea.style.display = 'none';
-        resultMsg.style.display = 'block';
-        resultMsg.textContent = message;
+      function resetUI(){
+        currentCall = null;
+        callArea.style.display='none';
+        startBtn.style.display='block';
+        cancelBtn.style.display='none';
+        protoEl.textContent='';
+        callTimer.textContent='Duração: 00:00';
+        pingStatus.textContent='Conexão: -';
       }
 
+      function updateFromServer(callData){
+        // callData is entire call object from DB
+        if(!callData) { resetUI(); return; }
+        const status = callData.status;
+        callStatus.textContent = `Status: ${status}`;
+        // if in call -> show audio element and play
+        if(status === 'in_call'){
+          // attach remote stream if available (handled by Calls lib)
+          remoteAudio.srcObject = Calls.getRemoteStream();
+          // start timer
+          startTimer(callData.startedAt || Date.now());
+          cancelBtn.style.display='none';
+        }else if(status === 'waiting'){
+          cancelBtn.style.display='block';
+        }else if(status === 'no_answer' || status === 'cancelled' || status === 'ended' || status === 'rejected'){
+          // final statuses -> reset after small delay
+          setTimeout(resetUI, 2000);
+        }
+        // ping heartbeat
+        if(callData.heartbeat){
+          const otherPing = callData.heartbeat.support || callData.heartbeat.client;
+          if(otherPing){
+            pingStatus.textContent = 'Conexão: OK';
+          }
+        }
+      }
+
+      function startTimer(startTs){
+        clearInterval(callTimerInterval);
+        function update(){
+          const diff = Math.max(0, Date.now() - startTs);
+          const mm = String(Math.floor(diff/60000)).padStart(2,'0');
+          const ss = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+          callTimer.textContent = `Duração: ${mm}:${ss}`;
+        }
+        update();
+        callTimerInterval = setInterval(update, 1000);
+      }
+
+      // Expor para debug
+      window._widgetDebug = {resetUI};
     })();
   </script>
 </body>
