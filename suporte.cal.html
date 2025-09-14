@@ -1,101 +1,95 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Central de Atendimento — Suporte</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#0f1724;
-      --card:#0b1220;
-      --muted:#9aa2b2;
-      --accent:#00d4ff;
-      --accent2:#6b6dfc;
-      --danger:#ff6b6b;
-      --glass: rgba(255,255,255,0.03);
-      font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto;
-    }
-    html,body{height:100%;margin:0;background:linear-gradient(180deg,#071025,#081124);color:#e6eef8}
-    .wrap{max-width:1200px;margin:28px auto;padding:18px}
-    .top{display:flex;justify-content:space-between;align-items:center;gap:12px}
-    h1{margin:0;font-weight:700}
-    .grid{display:grid;grid-template-columns:380px 1fr 320px; gap:18px; margin-top:18px}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:18px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
-    .list{max-height:60vh; overflow:auto}
-    .call-item{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:10px;margin-bottom:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
-    .btn{padding:8px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
-    .btn.accept{background:linear-gradient(90deg,var(--accent2),#7b80ff);color:white}
-    .btn.reject{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
-    .small{font-size:13px;color:var(--muted)}
-    .meta{font-size:13px;color:var(--muted);margin-top:6px}
-    .center{display:flex;align-items:center;justify-content:center}
-    .howto {position:fixed; inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6)}
-    .howto .card{width:720px}
-    .call-area{display:flex;flex-direction:column;gap:12px}
-    .call-controls{display:flex;gap:8px;align-items:center}
-    .status-pill{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);font-weight:700}
-    .timeline{background:linear-gradient(180deg,#061026,#07102a);padding:12px;border-radius:10px}
-    @media(max-width:1100px){.grid{grid-template-columns:1fr;}}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Central de Atendimento — Suporte</title>
+
+<style>
+  :root{
+    --accent:#0b74ff;
+    --bg:#fff;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  }
+  body{margin:0;background:linear-gradient(180deg,#fbfdff,#ffffff);color:#071129}
+  .wrap{max-width:1200px;margin:18px auto;padding:18px}
+  header{display:flex;align-items:center;gap:16px}
+  .brand{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#00c2ff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+  h1{margin:0;font-size:20px}
+  .layout{display:grid;grid-template-columns:360px 1fr;gap:18px;margin-top:18px}
+  .left, .right{background:white;padding:14px;border-radius:12px;box-shadow:0 8px 30px rgba(10,18,34,0.06)}
+  .list{display:flex;flex-direction:column;gap:10px;max-height:72vh;overflow:auto;padding-right:6px}
+  .callCard{padding:12px;border-radius:10px;border:1px solid #f1f6ff;background:linear-gradient(180deg,#fff,#fbfdff);display:flex;flex-direction:column;gap:8px}
+  .callCard .meta{display:flex;align-items:center;gap:8px}
+  .callCard .meta .protocol{font-weight:700}
+  .callCard .actions{display:flex;gap:8px;margin-top:6px}
+  .btn{padding:10px;border-radius:10px;border:0;cursor:pointer}
+  .btn.accept{background:var(--accent);color:white}
+  .btn.reject{background:#ff4757;color:white}
+  .btn.small{padding:8px 10px;font-size:13px}
+  .right .details{display:flex;flex-direction:column;gap:8px}
+  .large{font-size:18px;font-weight:700}
+  .muted{color:#748096;font-size:13px}
+  .row{display:flex;gap:8px;align-items:center}
+  .timeline{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+  .howto{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:60}
+  .howto .card{background:white;padding:18px;border-radius:12px;max-width:720px}
+  .ping{margin-left:auto;padding:6px 10px;border-radius:999px;background:#f0f7ff;color:var(--accent);font-weight:700}
+  @media (max-width:900px){ .layout{grid-template-columns:1fr} }
+</style>
+
 </head>
 <body>
   <div class="wrap">
-    <div class="top">
+    <header>
+      <div class="brand">SUP</div>
       <div>
         <h1>Painel de Suporte</h1>
-        <div class="small">Atenda em tempo real — ou recuse. Chamadas atendidas não ficam salvas.</div>
+        <div class="muted">Atenda as solicitações em tempo real — fale o nome da pessoa no início</div>
       </div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button id="howBtn" class="btn reject">Como atender</button>
-        <div class="small">Conectado como: <strong id="adminUser">SUPORTE</strong></div>
-      </div>
-    </div>
+      <div style="margin-left:auto" class="ping" id="adminPing">ping: --</div>
+    </header>
 
-    <div class="grid">
-      <div class="card">
-        <h3>Fila (próximos)</h3>
+    <div class="layout">
+      <div class="left">
+        <div style="display:flex;align-items:center;gap:8px;justify-content:space-between">
+          <strong>Fila de espera</strong>
+          <div>
+            <button class="btn small" id="btnHow">Como atender</button>
+          </div>
+        </div>
         <div class="list" id="callsList">
-          <div class="small">Aguardando conexões...</div>
+          <!-- cards here -->
         </div>
       </div>
 
-      <div class="card">
-        <h3>Atendimento</h3>
-        <div id="activeArea" class="call-area">
-          <div class="small">Nenhuma chamada em andamento</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>Monitor</h3>
-        <div class="timeline">
-          <div><strong>Ping:</strong> <span id="adminPing">—</span></div>
-          <div style="margin-top:8px"><strong>Conexões ativas:</strong> <span id="activeCount">0</span></div>
-          <div style="margin-top:8px"><strong>Status:</strong> <span id="adminStatus">Pronto</span></div>
+      <div class="right">
+        <div class="details" id="detailPanel">
+          <div class="muted">Selecione um chamado à esquerda</div>
         </div>
       </div>
     </div>
-
   </div>
 
-  <div class="howto" id="howtoOverlay">
+  <!-- overlay howto -->
+  <div class="howto" id="howOverlay">
     <div class="card">
-      <h2>Como Atender</h2>
-      <p class="small">Ao aceitar, sua câmera/áudio será conectada — fale o nome da pessoa e conduza o atendimento profissionalmente:</p>
-      <ul class="small">
-        <li>Cumprimente pelo nome: "Bom dia, <em>Nome</em>, eu sou <em>Seu Nome</em> do suporte."</li>
-        <li>Identifique o problema e confirme dados mínimos (não peça senha).</li>
-        <li>Se precisar transferir, explique o próximo passo.</li>
-        <li>Desligue quando finalizar — a chamada não fica salva.</li>
-      </ul>
-      <div style="margin-top:12px" class="center">
-        <button id="closeHow" class="btn accept">Fechar</button>
+      <h3>Como atender</h3>
+      <p class="muted">Passos rápidos para um atendimento de qualidade:</p>
+      <ol>
+        <li>Saúde e simpatia: cumprimente pelo nome completo. "Olá, [Nome]. Meu nome é [seu nome], em que posso ajudar?"</li>
+        <li>Mantenha microfone próximo; fale devagar e escute atentamente.</li>
+        <li>Confirme dados: <strong>CPF</strong> e solicitações.</li>
+        <li>Se precisar transferir, explique o motivo.</li>
+        <li>Finalize confirmando entendimento e encerrando cordialmente.</li>
+      </ol>
+      <div style="text-align:right;margin-top:12px">
+        <button class="btn" id="closeHow">Fechar</button>
       </div>
     </div>
   </div>
 
-  <!-- Firebase compat scripts e script.js -->
+  <!-- Firebase compat SDKs e script.js -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -104,135 +98,123 @@
   <script>
     (function(){
       const callsList = document.getElementById('callsList');
-      const activeArea = document.getElementById('activeArea');
-      const activeCount = document.getElementById('activeCount');
+      const detailPanel = document.getElementById('detailPanel');
       const adminPing = document.getElementById('adminPing');
-      const adminStatus = document.getElementById('adminStatus');
-      const howBtn = document.getElementById('howBtn');
-      const howtoOverlay = document.getElementById('howtoOverlay');
-      document.getElementById('closeHow').addEventListener('click', ()=> howtoOverlay.style.display='none');
-      howBtn.addEventListener('click', ()=> howtoOverlay.style.display='flex');
+      const howOverlay = document.getElementById('howOverlay');
+      const btnHow = document.getElementById('btnHow');
+      const closeHow = document.getElementById('closeHow');
 
-      let currentlyHandling = null;
+      btnHow.addEventListener('click', ()=> howOverlay.style.display='flex');
+      closeHow.addEventListener('click', ()=> howOverlay.style.display='none');
 
-      // pedir microfone
-      (async ()=> {
-        try{ await navigator.mediaDevices.getUserMedia({ audio:true }); }catch(e){ console.warn('Microfone não permitido',e); }
-      })();
-
-      // atualiza lista em tempo real
-      listenWaitingCalls((calls)=>{
+      // listen calls in realtime (function in script.js)
+      listenIncomingCalls((calls)=>{
+        // calls is an array of call objects {protocol, nomeCompleto, cpf, status, ts, obs}
         callsList.innerHTML = '';
-        if(!calls || calls.length===0){
-          callsList.innerHTML = '<div class="small">Nenhuma chamada na fila</div>';
-        }else{
-          calls.forEach(c=>{
-            const item = document.createElement('div');
-            item.className = 'call-item';
-            item.innerHTML = `
+        calls.sort((a,b)=>b.ts - a.ts);
+        calls.forEach(c=>{
+          const el = document.createElement('div');
+          el.className='callCard';
+          el.innerHTML = `
+            <div class="meta">
               <div>
-                <div style="font-weight:700">${c.nomeCompleto}</div>
-                <div class="small">${maskCPF(c.cpf)} • protocolo <span style="font-family:monospace">${c.protocol}</span></div>
-                <div class="meta">Criado: ${new Date(c.createdAt).toLocaleString()}</div>
+                <div class="protocol">${c.protocol}</div>
+                <div class="muted">${c.nomeCompleto} • ${c.cpf}</div>
               </div>
-              <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
-                <div style="display:flex;gap:8px">
-                  <button class="btn accept" data-proto="${c.protocol}">Atender</button>
-                  <button class="btn reject" data-proto="${c.protocol}">Recusar</button>
-                </div>
-                <div class="small">Tempo: <span id="t${c.protocol}">—</span></div>
+              <div style="margin-left:auto;text-align:right">
+                <div class="muted">${timeAgo(c.ts)}</div>
+                <div class="muted">${statusLabel(c.status)}</div>
               </div>
-            `;
-            callsList.appendChild(item);
+            </div>
+            <div class="row">
+              <div class="muted small">${c.obs || ''}</div>
+            </div>
+            <div class="actions">
+              <button class="btn accept" data-pro=${c.protocol}>Atender</button>
+              <button class="btn reject" data-pro=${c.protocol}>Recusar</button>
+            </div>
+          `;
+          callsList.appendChild(el);
 
-            // contadores de tempo
-            setInterval(()=>{
-              const el = document.getElementById('t'+c.protocol);
-              if(!el) return;
-              el.textContent = timeSince(c.createdAt);
-            },1000);
+          // attach actions
+          el.querySelector('.accept').addEventListener('click', ()=> selectAndAccept(c.protocol));
+          el.querySelector('.reject').addEventListener('click', ()=> rejectCall(c.protocol));
+          // click shows details
+          el.addEventListener('click',(ev)=>{
+            if(ev.target.tagName.toLowerCase()==='button') return;
+            showDetails(c);
           });
-        }
+        });
       });
 
-      // atualizar contagem
-      listenActiveCount((n)=> activeCount.textContent = n);
-
-      // interagir com a lista (delegation)
-      callsList.addEventListener('click', async (ev)=>{
-        const proto = ev.target.getAttribute('data-proto');
-        if(!proto) return;
-        if(ev.target.classList.contains('accept')){
-          // aceitar
-          try{
-            const accepted = await acceptCall(proto);
-            if(!accepted) { alert('Não foi possível aceitar. Talvez outra pessoa aceitou.'); return; }
-            // montar UI de atendimento
-            startHandling(proto);
-          }catch(err){ console.error(err); alert('Erro ao aceitar: '+(err.message||err)); }
-        }else if(ev.target.classList.contains('reject')){
-          const reason = 'Recusado pelo suporte';
-          await rejectCall(proto, reason);
-        }
-      });
-
-      // iniciar manipulação local
-      async function startHandling(protocol){
-        currentlyHandling = protocol;
-        adminStatus.textContent = 'Atendendo ' + protocol;
-        // abre a UI para atender
-        activeArea.innerHTML = `
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <div class="small">Protocolo</div>
-              <div style="font-family:monospace;font-weight:800">${protocol}</div>
-            </div>
-            <div>
-              <div class="small">Duração</div>
-              <div id="adminCallTimer" style="font-weight:800">00:00</div>
-            </div>
-          </div>
-          <div class="call-controls">
-            <button id="adminHangup" class="btn reject">Desligar</button>
-          </div>
-          <div class="small" id="participantInfo">Carregando dados...</div>
-          <div class="small" id="adminCallPing">Ping: —</div>
+      // show details
+      function showDetails(c){
+        detailPanel.innerHTML = `
+          <div><div class="muted">Protocolo</div><div class="large">${c.protocol}</div></div>
+          <div><div class="muted">Nome</div><div>${c.nomeCompleto}</div></div>
+          <div><div class="muted">CPF</div><div>${c.cpf}</div></div>
+          <div><div class="muted">Obs</div><div>${c.obs || '—'}</div></div>
+          <div style="margin-top:12px" id="liveControl"></div>
+          <div class="timeline" id="timelineArea"></div>
         `;
-
-        const participantInfo = document.getElementById('participantInfo');
-        const adminCallPing = document.getElementById('adminCallPing');
-
-        // obter dados de call e iniciar WebRTC (usa funções em script.js)
-        const data = await getCallDetails(protocol);
-        participantInfo.textContent = `${data.nomeCompleto} • CPF ${maskCPF(data.cpf)}`;
-
-        // aceitar & iniciar troca SDP
-        await startSupportCall(protocol, (stats)=>{
-          adminCallPing.textContent = 'Ping: ' + stats.ping + ' ms';
-        });
-
-        // timer
-        const startedAt = Date.now();
-        setInterval(()=> {
-          const secs = Math.floor((Date.now()-startedAt)/1000);
-          document.getElementById('adminCallTimer').textContent = formatTime(secs);
-        },1000);
-
-        document.getElementById('adminHangup').addEventListener('click', async ()=>{
-          await hangupCall(protocol, 'Desligado pelo suporte');
-          activeArea.innerHTML = '<div class="small">Nenhuma chamada em andamento</div>';
-          adminStatus.textContent = 'Pronto';
-          currentlyHandling = null;
-        });
       }
 
-      // ping monitor global (admin)
-      monitorAdminPing((p)=> adminPing.textContent = p + ' ms');
+      async function selectAndAccept(protocol){
+        // accept call (function in script.js)
+        try{
+          const supportId = 'support-'+Math.random().toString(36).slice(2,8);
+          await acceptCall(protocol, {supportId});
+          // update detail panel show controls to hangup
+          detailPanel.querySelector('#liveControl').innerHTML = `
+            <button class="btn accept" id="btnStartCall">Iniciar Ligação</button>
+            <button class="btn reject" id="btnEndCall">Encerrar</button>
+            <span style="margin-left:12px" id="callState">Conectando...</span>
+          `;
+          document.getElementById('btnStartCall').addEventListener('click', async ()=>{
+            // start as support (callee)
+            await startAsCallee(protocol, supportId, (state)=> {
+              const st = document.getElementById('callState');
+              if(st) st.textContent = state;
+            });
+            // when in call, update UI
+            document.getElementById('callState').textContent = 'Em chamada';
+          });
+          document.getElementById('btnEndCall').addEventListener('click', async ()=>{
+            await hangupCall(protocol, {by:'support'});
+            detailPanel.querySelector('#liveControl').innerHTML = '';
+          });
+        }catch(err){
+          alert('Erro ao aceitar: ' + (err.message || err));
+        }
+      }
 
-      // util
-      function maskCPF(cpf){ return (cpf||'').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4'); }
-      function timeSince(ts){ const s = Math.floor((Date.now()-ts)/1000); return formatTime(s); }
-      function formatTime(secs){ const mm = String(Math.floor(secs/60)).padStart(2,'0'); const ss = String(secs%60).padStart(2,'0'); return mm+':'+ss; }
+      function rejectCall(protocol){
+        if(!confirm('Recusar solicitação '+protocol+' ?')) return;
+        rejectCallBySupport(protocol);
+      }
+
+      // helper labels
+      function statusLabel(s){
+        switch(s){
+          case 'waiting': return 'Aguardando';
+          case 'accepted': return 'Aceito';
+          case 'in-call': return 'Em chamada';
+          case 'rejected': return 'Recusado';
+          case 'not-answered': return 'Não atendido';
+          default: return s;
+        }
+      }
+      function timeAgo(ts){
+        const d = Math.floor((Date.now()-ts)/1000);
+        if(d<60) return `${d}s`;
+        if(d<3600) return `${Math.floor(d/60)}m`;
+        return `${Math.floor(d/3600)}h`;
+      }
+
+      // ping UI from script.js
+      startAdminPingLoop((ms)=>{
+        adminPing.textContent = 'ping: '+ms+'ms';
+      });
 
     })();
   </script>
