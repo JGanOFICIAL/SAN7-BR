@@ -1,315 +1,209 @@
-<!-- admincall.html -->
-<! — admin panel moderno —>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Central de Atendimento — Suporte</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atendimento — Administração</title>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#f4f7fb;--card:#fff;--accent:#0366d6;--danger:#e24141;--muted:#667085}
-  body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#0b2636}
-  header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:linear-gradient(90deg,#fff,#f6fbff);box-shadow:0 6px 20px rgba(11,38,54,0.05)}
-  h1{margin:0;font-size:18px}
-  .wrap{display:flex;gap:18px;padding:18px;align-items:flex-start}
-  .left{flex:1;max-width:420px}
-  .right{flex:2}
-  .card{background:var(--card);border-radius:12px;padding:14px;box-shadow:0 8px 30px rgba(2,10,23,0.04)}
-  .list-item{display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:10px;margin-bottom:8px;border:1px solid #eef6ff}
-  .meta{font-size:13px}
-  .actions{display:flex;gap:8px}
-  .btn{padding:8px 12px;border-radius:8px;border:0;background:var(--accent);color:white;cursor:pointer}
-  .btn.ghost{background:transparent;border:1px solid rgba(3,102,214,0.12);color:var(--accent)}
-  .btn.red{background:var(--danger)}
-  .muted{color:var(--muted);font-size:13px}
-  .call-panel{margin-top:14px}
-  video,audio{width:100%;border-radius:8px;background:#000}
-  .tutorialBtn{margin-left:8px}
-  .overlay{position:fixed;inset:0;background:rgba(4,8,20,0.6);display:flex;align-items:center;justify-content:center;z-index:80}
-  .overlay .tutorialBox{background:white;padding:18px;border-radius:12px;max-width:720px;width:92%}
-  .status-badge{font-weight:700;color:var(--accent)}
-  .ping{font-size:12px;color:var(--muted)}
-  .controls{display:flex;gap:8px;margin-top:10px}
-  .hidden{display:none}
+body {
+  margin:0; font-family:'Public Sans',sans-serif; background:#f4f7fb; color:#222;
+}
+header {
+  background:#0066ff; color:#fff; padding:16px; text-align:center;
+  font-size:20px; font-weight:600; position:sticky; top:0; z-index:2;
+  display:flex; justify-content:space-between; align-items:center;
+}
+header button {
+  background:#fff; color:#0066ff; border:none; border-radius:6px;
+  padding:6px 12px; font-size:14px; cursor:pointer;
+}
+.container { padding:20px; max-width:800px; margin:auto; }
+.solicitacao {
+  background:#fff; padding:16px; border-radius:10px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08); margin-bottom:15px;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.solicitacao-info { flex:1; }
+.solicitacao strong { display:block; font-size:16px; margin-bottom:6px; }
+.solicitacao small { color:#666; }
+.actions button {
+  margin-left:8px; padding:8px 14px; border:none; border-radius:6px;
+  cursor:pointer; font-weight:600;
+}
+.actions .atender { background:#00b050; color:#fff; }
+.actions .recusar { background:#d9534f; color:#fff; }
+#callArea {
+  display:none; background:#fff; padding:20px; border-radius:12px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.1); margin-top:20px; text-align:center;
+}
+#statusMsg { font-weight:600; margin:10px 0; }
+#timer, #ping { margin:5px 0; font-size:14px; color:#444; }
+#desligarBtn {
+  background:#d9534f; color:#fff; border:none; padding:12px 20px;
+  border-radius:8px; font-size:16px; cursor:pointer; margin-top:15px;
+}
+audio { display:none; }
+/* Tutorial overlay */
+#tutorialOverlay {
+  position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6);
+  display:none; justify-content:center; align-items:center; z-index:5;
+}
+#tutorialContent {
+  background:#fff; padding:30px; border-radius:12px; max-width:500px;
+  text-align:left; font-size:15px; line-height:1.6;
+}
+#tutorialContent h2 { margin-top:0; color:#0066ff; }
+#tutorialContent button {
+  margin-top:20px; padding:10px 20px; border:none; border-radius:8px;
+  background:#0066ff; color:#fff; cursor:pointer;
+}
 </style>
 </head>
 <body>
 <header>
-  <h1>Painel de Suporte — Central</h1>
-  <div>
-    <button class="btn ghost" id="tutorialOpen">Como atender</button>
-    <button class="btn" id="refreshBtn">Atualizar</button>
-    <button class="btn red" id="logoutBtn">Sair</button>
-  </div>
+  <span>Painel de Atendimento</span>
+  <button onclick="abrirTutorial()">Como atender</button>
 </header>
-
-<div class="wrap">
-  <div class="left">
-    <div class="card">
-      <h3>Fila de solicitações</h3>
-      <p class="muted">Novas solicitações aparecem em tempo real. Clique em Atender para iniciar.</p>
-      <div id="requestsList" style="margin-top:12px"></div>
-    </div>
-  </div>
-
-  <div class="right">
-    <div class="card">
-      <h3>Visor da chamada</h3>
-      <div id="callInfo" style="margin-top:10px">
-        <div class="muted">Sem chamada selecionada</div>
-      </div>
-
-      <div class="call-panel hidden" id="callPanel">
-        <div class="muted-line">Protocolo: <strong id="callProtocol"></strong></div>
-        <div class="muted-line">Nome: <strong id="callNome"></strong></div>
-        <div class="muted-line">CPF: <strong id="callCPF"></strong></div>
-        <div class="muted-line">Conexão: <span id="connPing" class="ping">—</span></div>
-
-        <audio id="localAudio" autoplay controls></audio>
-        <audio id="clientAudio" autoplay></audio>
-
-        <div class="controls">
-          <button class="btn" id="acceptBtn">Atender</button>
-          <button class="btn ghost" id="rejectBtn">Recusar</button>
-          <button class="btn red" id="endBtn">Desligar</button>
-        </div>
-      </div>
-    </div>
+<div class="container">
+  <h2>Solicitações em tempo real</h2>
+  <div id="lista"></div>
+  <div id="callArea">
+    <h3 id="callNome"></h3>
+    <p id="callCpf"></p>
+    <p id="callProtocolo"></p>
+    <p id="statusMsg">Em atendimento...</p>
+    <p id="timer"></p>
+    <p id="ping"></p>
+    <button id="desligarBtn" onclick="encerrarChamada()">Desligar</button>
+    <audio id="remoteAudio" autoplay></audio>
   </div>
 </div>
 
-<!-- tutorial overlay -->
-<div id="tutorialOverlay" class="overlay hidden">
-  <div class="tutorialBox">
-    <h3>Como atender</h3>
-    <p class="muted">Siga estas boas práticas: cumprimente sempre falando o nome do solicitante, verifique CPF, confirme identidade, mantenha tom calmo, ofereça solução passo a passo. Use o botão "Desligar" para encerrar. Sempre documente no sistema se necessário.</p>
-    <div style="text-align:right;margin-top:10px"><button class="btn" id="closeTut">Fechar</button></div>
+<!-- Tutorial -->
+<div id="tutorialOverlay">
+  <div id="tutorialContent">
+    <h2>Como atender</h2>
+    <p>1. Clique em <strong>Atender</strong> para iniciar a chamada.</p>
+    <p>2. Sempre cumprimente o cidadão usando o nome completo dele.</p>
+    <p>3. Fale de forma clara e profissional.</p>
+    <p>4. Se precisar encerrar, clique em <strong>Desligar</strong>.</p>
+    <p>5. Se não puder atender, clique em <strong>Recusar</strong>.</p>
+    <p>6. Observe o tempo da ligação e a qualidade da conexão.</p>
+    <button onclick="fecharTutorial()">Entendi</button>
   </div>
 </div>
 
-<!-- Firebase + script.js -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="script.js"></script>
-
 <script>
-/*
- Admin panel logic.
- - Monitora /calls/requests
- - Permite Atender (cria room + answer flow), Recusar, Desligar
- - Requer microfone acesso na entrada
-*/
+let pc=null, localStream=null, currentRef=null, callTimer=null, startTime=null, pingInterval=null;
 
-(function(){
-  // elementos
-  const requestsList = document.getElementById('requestsList');
-  const tutorialOpen = document.getElementById('tutorialOpen');
-  const tutorialOverlay = document.getElementById('tutorialOverlay');
-  const closeTut = document.getElementById('closeTut');
-  const callPanel = document.getElementById('callPanel');
-  const callProtocol = document.getElementById('callProtocol');
-  const callNome = document.getElementById('callNome');
-  const callCPF = document.getElementById('callCPF');
-  const connPing = document.getElementById('connPing');
-  const acceptBtn = document.getElementById('acceptBtn');
-  const rejectBtn = document.getElementById('rejectBtn');
-  const endBtn = document.getElementById('endBtn');
-  const clientAudio = document.getElementById('clientAudio');
-  const localAudio = document.getElementById('localAudio');
+function abrirTutorial(){ document.getElementById('tutorialOverlay').style.display="flex"; }
+function fecharTutorial(){ document.getElementById('tutorialOverlay').style.display="none"; }
 
-  let localStream = null;
-  let pc = null;
-  let selectedProtocol = null;
-  let roomId = null;
-  let queryRef = null;
-  let candidateListenerRefs = [];
-  let requestListener = null;
+// Listar solicitações em tempo real
+db.ref('calls').on('value',snap=>{
+  const lista=document.getElementById('lista');
+  lista.innerHTML="";
+  snap.forEach(item=>{
+    const d=item.val();
+    if(!d) return;
+    if(d.status==='waiting'){
+      const div=document.createElement('div');
+      div.className="solicitacao";
+      div.innerHTML=`
+        <div class="solicitacao-info">
+          <strong>${d.nome}</strong>
+          <small>CPF: ${d.cpf}</small><br>
+          <small>Protocolo: ${item.key}</small>
+        </div>
+        <div class="actions">
+          <button class="atender" onclick="atender('${item.key}','${d.nome}','${d.cpf}')">Atender</button>
+          <button class="recusar" onclick="recusar('${item.key}')">Recusar</button>
+        </div>`;
+      lista.appendChild(div);
+    }
+  });
+});
 
-  // request mic on enter
-  (async ()=>{ await navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{ localStream = s; localAudio.srcObject = s; localAudio.play().catch(()=>{}); }).catch(()=>{}); })();
+async function atender(protocolo,nome,cpf){
+  document.getElementById('callArea').style.display="block";
+  document.getElementById('callNome').innerText=nome;
+  document.getElementById('callCpf').innerText="CPF: "+cpf;
+  document.getElementById('callProtocolo').innerText="Protocolo: "+protocolo;
 
-  // monitor requests
-  function renderRequestItem(proto, data){
-    const el = document.createElement('div');
-    el.className = 'list-item';
-    el.innerHTML = `
-      <div>
-        <div style="font-weight:700">${data.nome}</div>
-        <div class="muted">${proto} • ${new Date(data.criadoEm).toLocaleString()}</div>
-      </div>
-      <div class="actions">
-        <button class="btn ghost" data-proto="${proto}" data-act="view">Ver</button>
-        <button class="btn" data-proto="${proto}" data-act="att">Atender</button>
-      </div>
-    `;
-    return el;
-  }
+  const ref=db.ref('calls/'+protocolo);
+  currentRef=ref;
+  await ref.update({status:'accepted'});
 
-  function listenRequests(){
-    const ref = db.ref('calls/requests');
-    // clean previous
-    if(requestListener) ref.off('value', requestListener);
-    requestListener = ref.on('value', snap=>{
-      const v = snap.val() || {};
-      requestsList.innerHTML = '';
-      // order by created time (asc)
-      const items = Object.keys(v).map(k=>({k,v:v[k]})).sort((a,b)=>a.v.criadoEm - b.v.criadoEm);
-      for(const it of items){
-        const item = renderRequestItem(it.k,it.v);
-        requestsList.appendChild(item);
-      }
-    });
-  }
+  localStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  pc=new RTCPeerConnection();
 
-  requestsList.addEventListener('click', async (e)=>{
-    const btn = e.target.closest('button');
-    if(!btn) return;
-    const proto = btn.dataset.proto;
-    const act = btn.dataset.act;
-    if(act === 'view'){
-      const snap = await db.ref('calls/requests/'+proto).get();
-      const d = snap.val();
-      if(!d) return alert('Solicitação removida');
-      callProtocol.textContent = proto;
-      callNome.textContent = d.nome;
-      callCPF.textContent = d.cpf;
-      selectedProtocol = proto;
-      callPanel.classList.remove('hidden');
-    } else if(act === 'att'){
-      // auto open view then accept
-      const snap = await db.ref('calls/requests/'+proto).get();
-      const d = snap.val();
-      if(!d) return alert('Solicitação removida');
-      callProtocol.textContent = proto;
-      callNome.textContent = d.nome;
-      callCPF.textContent = d.cpf;
-      selectedProtocol = proto;
-      callPanel.classList.remove('hidden');
-      // programmatic accept
-      await acceptCall(proto);
+  localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));
+  pc.ontrack=e=>{
+    document.getElementById('remoteAudio').srcObject=e.streams[0];
+  };
+
+  ref.child('offer').on('value',async s=>{
+    if(s.exists() && !pc.currentRemoteDescription){
+      const offer=new RTCSessionDescription(s.val());
+      await pc.setRemoteDescription(offer);
+      const answer=await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      await ref.child('answer').set({type:answer.type,sdp:answer.sdp});
     }
   });
 
-  tutorialOpen.addEventListener('click', ()=>{ tutorialOverlay.classList.remove('hidden'); });
-  closeTut.addEventListener('click', ()=>{ tutorialOverlay.classList.add('hidden'); });
-
-  async function acceptCall(proto){
-    try{
-      acceptBtn.disabled=true;
-      // create room id
-      const roomIdLocal = 'room-'+proto;
-      roomId = roomIdLocal;
-      // set room id into request
-      await db.ref('calls/requests/'+proto+'/roomId').set(roomId);
-      await db.ref('calls/requests/'+proto+'/estado').set('atendido');
-      await db.ref('calls/rooms/'+roomId).set({createdBy:'support', createdAt:Date.now()});
-      // create peer connection and answer incoming offer
-      await joinRoomAsCallee(proto, roomId);
-    }catch(e){ console.error(e); alert('Falha ao aceitar: '+(e.message||e)); acceptBtn.disabled=false; }
-  }
-
-  async function joinRoomAsCallee(proto, roomId){
-    pc = new RTCPeerConnection({iceServers:[{urls:['stun:stun.l.google.com:19302']}]});
-    // attach local mic tracks to pc
-    if(!localStream){
-      try{ localStream = await navigator.mediaDevices.getUserMedia({audio:true}); localAudio.srcObject = localStream; }catch(e){}
-    }
-    localStream.getTracks().forEach(t=>pc.addTrack(t, localStream));
-
-    const roomRef = db.ref('calls/rooms/'+roomId);
-    const offerSnap = await roomRef.child('offer').get();
-    if(!offerSnap.exists()) { alert('Offer não encontrado'); return; }
-    const offer = offerSnap.val();
-    await pc.setRemoteDescription({type:offer.type, sdp:offer.sdp});
-
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
-    await roomRef.child('answer').set({type:answer.type, sdp:answer.sdp});
-
-    // candidate exchange
-    const callerCandidatesRef = roomRef.child('callerCandidates');
-    const calleeCandidatesRef = roomRef.child('calleeCandidates');
-
-    pc.onicecandidate = (ev)=>{
-      if(ev.candidate){
-        calleeCandidatesRef.push(ev.candidate.toJSON()).catch(()=>{});
-      }
-    };
-
-    callerCandidatesRef.on('child_added', snap=>{
-      const c = snap.val();
-      pc.addIceCandidate(new RTCIceCandidate(c)).catch(e=>console.warn(e));
-    });
-
-    pc.ontrack = (ev)=>{
-      clientAudio.srcObject = ev.streams[0];
-      clientAudio.play().catch(()=>{});
-    };
-
-    pc.onconnectionstatechange = ()=>{
-      if(pc.connectionState === 'connected'){
-        // mark startedAt
-        db.ref('calls/requests/'+proto+'/startedAt').set(Date.now());
-      } else if(pc.connectionState === 'disconnected' || pc.connectionState==='failed'){
-        // end
-      }
-    };
-
-    // update ping UI by reading client's lastPing
-    db.ref('calls/requests/'+proto+'/lastPing').on('value', snap=>{
-      const v = snap.val();
-      if(v) connPing.textContent = `${Date.now()-v} ms`;
-    });
-
-    // store active room under support id (optional)
-    await db.ref('calls/active_support/'+proto).set({support:'me', roomId, startedAt:Date.now()});
-  }
-
-  async function rejectCall(proto){
-    await db.ref('calls/requests/'+proto+'/estado').set('recusado');
-    const cpf = (await db.ref('calls/requests/'+proto+'/cpf').get()).val();
-    if(cpf) await db.ref('calls/active_by_cpf/'+cpf).remove();
-    await db.ref('calls/requests/'+proto).remove();
-    callPanel.classList.add('hidden');
-  }
-
-  async function endCall(proto){
-    if(!proto) return;
-    await db.ref('calls/requests/'+proto+'/estado').set('desligado');
-    const cpf = (await db.ref('calls/requests/'+proto+'/cpf').get()).val();
-    if(cpf) await db.ref('calls/active_by_cpf/'+cpf).remove();
-    // remove room
-    if(roomId) await db.ref('calls/rooms/'+roomId).remove();
-    await db.ref('calls/requests/'+proto).remove();
-    // cleanup local pc
-    try{ if(pc){ pc.getSenders().forEach(s=>s.track && s.track.stop()); pc.close(); pc=null; } }catch(e){}
-    callPanel.classList.add('hidden');
-  }
-
-  acceptBtn.addEventListener('click', async ()=>{ if(selectedProtocol) await acceptCall(selectedProtocol); });
-  rejectBtn.addEventListener('click', async ()=>{ if(selectedProtocol) await rejectCall(selectedProtocol); });
-  endBtn.addEventListener('click', async ()=>{ if(selectedProtocol) await endCall(selectedProtocol); });
-
-  // initial listeners
-  listenRequests();
-
-  // refresh button
-  document.getElementById('refreshBtn').addEventListener('click', ()=>listenRequests());
-
-  // logout (uses script.js auth)
-  document.getElementById('logoutBtn').addEventListener('click', async ()=>{
-    await sair();
-    location.href='login.html';
+  ref.child('candidates/client').on('child_added',c=>{
+    pc.addIceCandidate(new RTCIceCandidate(c.val()));
   });
+  pc.onicecandidate=e=>{
+    if(e.candidate){ ref.child('candidates/support').push(e.candidate.toJSON()); }
+  };
 
-  // tutorial overlay close behavior
-  document.getElementById('closeTut').addEventListener('click', ()=>{ tutorialOverlay.classList.add('hidden'); });
+  startTime=Date.now();
+  callTimer=setInterval(()=>{
+    const elapsed=Math.floor((Date.now()-startTime)/1000);
+    const min=String(Math.floor(elapsed/60)).padStart(2,'0');
+    const sec=String(elapsed%60).padStart(2,'0');
+    document.getElementById('timer').innerText=`Duração: ${min}:${sec}`;
+  },1000);
 
-  // ask for mic permission on load
-  (async ()=>{ await navigator.mediaDevices.getUserMedia({audio:true}).catch(()=>{}); })();
+  // Ping da conexão
+  pingInterval=setInterval(()=>{
+    const rtt=pc?.getStats?pc.getStats():null;
+    if(rtt){
+      rtt.then(stats=>{
+        stats.forEach(report=>{
+          if(report.type==='candidate-pair' && report.currentRoundTripTime){
+            document.getElementById('ping').innerText="Ping: "+Math.round(report.currentRoundTripTime*1000)+" ms";
+          }
+        });
+      });
+    }
+  },2000);
 
-})();
+  ref.on('value',s=>{
+    const d=s.val();
+    if(!d) return;
+    if(d.status==='ended'){ encerrarChamada(); }
+  });
+}
+
+function recusar(protocolo){
+  db.ref('calls/'+protocolo).update({status:'refused'});
+  db.ref('calls/'+protocolo).remove();
+}
+
+function encerrarChamada(){
+  if(currentRef){ currentRef.update({status:'ended'}); currentRef.remove(); }
+  clearInterval(callTimer); clearInterval(pingInterval);
+  if(pc){pc.close(); pc=null;}
+  if(localStream){localStream.getTracks().forEach(t=>t.stop());}
+  document.getElementById('callArea').style.display="none";
+}
 </script>
 </body>
 </html>
