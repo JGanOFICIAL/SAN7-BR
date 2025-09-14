@@ -1,232 +1,240 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Admin Call — Central de Atendimento</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#f7f9fc; --card:#fff; --accent:#0b5fff; --muted:#6b7280; --danger:#ef4444;
-    font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial;
-  }
-  body{margin:0;background:var(--bg);color:#0f172a;padding:18px;}
-  .wrap{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:360px 1fr;gap:18px}
-  .panel{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 8px 24px rgba(12,16,30,0.04)}
-  h1{margin:0 0 8px;font-size:18px}
-  .list-item{padding:12px;border-radius:10px;border:1px solid rgba(12,16,30,0.03);display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px}
-  .small{font-size:13px;color:var(--muted)}
-  .controls{display:flex;gap:8px}
-  .btn{padding:8px 12px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
-  .btn.primary{background:var(--accent);color:#fff}
-  .btn.gray{background:#f3f5f8;color:#0f172a}
-  .btn.danger{background:var(--danger);color:#fff}
-  .call-detail{display:flex;flex-direction:column;gap:8px}
-  .call-meta{display:flex;gap:10px;align-items:center;justify-content:space-between}
-  .tutorial-overlay{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center;z-index:60}
-  .tutorial-card{background:#fff;padding:20px;border-radius:12px;max-width:720px;box-shadow:0 30px 80px rgba(2,6,23,0.4)}
-  .timeline{margin-top:12px;border-top:1px dashed rgba(2,6,23,0.06);padding-top:12px}
-  audio#audioLocalPreview{display:none}
-  .status-badge{padding:6px 8px;border-radius:8px;font-weight:600;font-size:13px}
-  .status-wait{background:#eef2ff;color:#0b5fff}
-  .status-incall{background:#e6ffef;color:#0b8a3e}
-  .status-missed{background:#fff0f0;color:var(--danger)}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Central de Atendimento — Suporte</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --muted:#9aa2b2;
+      --accent:#00d4ff;
+      --accent2:#6b6dfc;
+      --danger:#ff6b6b;
+      --glass: rgba(255,255,255,0.03);
+      font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto;
+    }
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#071025,#081124);color:#e6eef8}
+    .wrap{max-width:1200px;margin:28px auto;padding:18px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    h1{margin:0;font-weight:700}
+    .grid{display:grid;grid-template-columns:380px 1fr 320px; gap:18px; margin-top:18px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:18px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+    .list{max-height:60vh; overflow:auto}
+    .call-item{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:10px;margin-bottom:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+    .btn{padding:8px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .btn.accept{background:linear-gradient(90deg,var(--accent2),#7b80ff);color:white}
+    .btn.reject{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+    .small{font-size:13px;color:var(--muted)}
+    .meta{font-size:13px;color:var(--muted);margin-top:6px}
+    .center{display:flex;align-items:center;justify-content:center}
+    .howto {position:fixed; inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6)}
+    .howto .card{width:720px}
+    .call-area{display:flex;flex-direction:column;gap:12px}
+    .call-controls{display:flex;gap:8px;align-items:center}
+    .status-pill{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);font-weight:700}
+    .timeline{background:linear-gradient(180deg,#061026,#07102a);padding:12px;border-radius:10px}
+    @media(max-width:1100px){.grid{grid-template-columns:1fr;}}
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="panel">
-    <h1>Fila de Solicitações</h1>
-    <div class="small">Recebidas em tempo real</div>
-    <div id="queueList" style="margin-top:12px">
-      <!-- itens gerados dinamicamente -->
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1>Painel de Suporte</h1>
+        <div class="small">Atenda em tempo real — ou recuse. Chamadas atendidas não ficam salvas.</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="howBtn" class="btn reject">Como atender</button>
+        <div class="small">Conectado como: <strong id="adminUser">SUPORTE</strong></div>
+      </div>
     </div>
 
-    <div style="margin-top:12px">
-      <button class="btn primary" id="btnRefresh">Atualizar</button>
-      <button class="btn gray" id="btnHowTo">Como atender</button>
+    <div class="grid">
+      <div class="card">
+        <h3>Fila (próximos)</h3>
+        <div class="list" id="callsList">
+          <div class="small">Aguardando conexões...</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Atendimento</h3>
+        <div id="activeArea" class="call-area">
+          <div class="small">Nenhuma chamada em andamento</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Monitor</h3>
+        <div class="timeline">
+          <div><strong>Ping:</strong> <span id="adminPing">—</span></div>
+          <div style="margin-top:8px"><strong>Conexões ativas:</strong> <span id="activeCount">0</span></div>
+          <div style="margin-top:8px"><strong>Status:</strong> <span id="adminStatus">Pronto</span></div>
+        </div>
+      </div>
     </div>
 
-    <div style="margin-top:12px" class="small">Ping: <span id="adminPing">—</span> &nbsp; Conexão: <span id="adminConn">—</span></div>
   </div>
 
-  <div class="panel" id="detailPanel">
-    <div class="call-detail" id="noSelection">
-      <h1>Selecionar solicitação</h1>
-      <div class="small">Clique em uma solicitação para ver detalhes e atender.</div>
-    </div>
-
-    <div class="call-detail" id="callDetail" style="display:none">
-      <div class="call-meta">
-        <div>
-          <div class="small">Protocolo</div>
-          <div id="detailProtocol" style="font-weight:800;font-size:18px">—</div>
-        </div>
-        <div>
-          <div class="small">Status</div>
-          <div id="detailStatus"><span class="status-badge status-wait">aguardando</span></div>
-        </div>
-      </div>
-
-      <div style="display:flex;gap:12px;align-items:center; margin-top:8px">
-        <div>
-          <div class="small">Nome</div>
-          <div id="detailNome" style="font-weight:700">—</div>
-        </div>
-        <div>
-          <div class="small">CPF</div>
-          <div id="detailCPF">—</div>
-        </div>
-        <div>
-          <div class="small">Tempo de espera</div>
-          <div id="detailTimer">00:00</div>
-        </div>
-      </div>
-
-      <div class="timeline" id="callTimeline">
-        <div class="small">Logs:</div>
-        <div id="logArea" class="small"></div>
-      </div>
-
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <button class="btn primary" id="btnAnswer">Atender</button>
-        <button class="btn gray" id="btnReject">Recusar</button>
-        <button class="btn danger" id="btnEnd" style="display:none">Desligar</button>
-      </div>
-
-      <div style="margin-top:12px">
-        <div class="small">Microfone local: <span id="localMicStatus">aguardando</span></div>
-        <audio id="localPreview" autoplay></audio>
-        <audio id="remotePreview" autoplay></audio>
+  <div class="howto" id="howtoOverlay">
+    <div class="card">
+      <h2>Como Atender</h2>
+      <p class="small">Ao aceitar, sua câmera/áudio será conectada — fale o nome da pessoa e conduza o atendimento profissionalmente:</p>
+      <ul class="small">
+        <li>Cumprimente pelo nome: "Bom dia, <em>Nome</em>, eu sou <em>Seu Nome</em> do suporte."</li>
+        <li>Identifique o problema e confirme dados mínimos (não peça senha).</li>
+        <li>Se precisar transferir, explique o próximo passo.</li>
+        <li>Desligue quando finalizar — a chamada não fica salva.</li>
+      </ul>
+      <div style="margin-top:12px" class="center">
+        <button id="closeHow" class="btn accept">Fechar</button>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Tutorial overlay -->
-<div class="tutorial-overlay" id="tutorialOverlay">
-  <div class="tutorial-card">
-    <h2>Como atender</h2>
-    <p class="small">Ao aceitar, cheque: 1) fale sempre o nome do solicitante, 2) identifique problema, 3) mantenha tom cordial, 4) confirme CPF/identidade, 5) finalize perguntando se mais algo.</p>
-    <ul class="small">
-      <li>Use o botão "Atender" para iniciar a chamada.</li>
-      <li>Você pode desligar a qualquer momento com "Desligar".</li>
-      <li>Se recusar, a solicitação é removida.</li>
-    </ul>
-    <div style="text-align:right;margin-top:12px">
-      <button class="btn primary" id="tutorialClose">Entendi</button>
-    </div>
-  </div>
-</div>
+  <!-- Firebase compat scripts e script.js -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="script.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="script.js"></script>
-<script>
-  (function(){
-    const $ = id => document.getElementById(id);
-    const queueList = $('queueList');
-    const btnRefresh = $('btnRefresh'), btnHowTo = $('btnHowTo');
-    const tutorialOverlay = $('tutorialOverlay'), tutorialClose = $('tutorialClose');
-    const noSelection = $('noSelection'), callDetail = $('callDetail');
-    const detailProtocol = $('detailProtocol'), detailStatus = $('detailStatus'), detailNome = $('detailNome'), detailCPF = $('detailCPF'), detailTimer = $('detailTimer'), logArea = $('logArea');
-    const btnAnswer = $('btnAnswer'), btnReject = $('btnReject'), btnEnd = $('btnEnd');
-    const adminPing = $('adminPing'), adminConn = $('adminConn');
-    let selectedProtocol = null;
-    let timers = {};
+  <script>
+    (function(){
+      const callsList = document.getElementById('callsList');
+      const activeArea = document.getElementById('activeArea');
+      const activeCount = document.getElementById('activeCount');
+      const adminPing = document.getElementById('adminPing');
+      const adminStatus = document.getElementById('adminStatus');
+      const howBtn = document.getElementById('howBtn');
+      const howtoOverlay = document.getElementById('howtoOverlay');
+      document.getElementById('closeHow').addEventListener('click', ()=> howtoOverlay.style.display='none');
+      howBtn.addEventListener('click', ()=> howtoOverlay.style.display='flex');
 
-    window.__onAdminPing = (ms)=> adminPing.textContent = (ms===null? '—': ms + ' ms');
-    window.__onAdminConn = (s)=> adminConn.textContent = s;
+      let currentlyHandling = null;
 
-    // Update queue UI (called from script.js)
-    window.__renderQueue = (calls)=>{
-      queueList.innerHTML = '';
-      if(!calls || Object.keys(calls).length===0){ queueList.innerHTML = '<div class="small">Nenhuma solicitação.</div>'; return; }
-      const ordered = Object.entries(calls).sort((a,b)=> (a[1].createdAt||0)-(b[1].createdAt||0));
-      ordered.forEach(([protocol,data])=>{
-        const el = document.createElement('div');
-        el.className = 'list-item';
-        const left = document.createElement('div');
-        left.innerHTML = '<div style="font-weight:700">'+(data.nomeCompleto||'—')+'</div><div class="small">CPF: '+(data.cpf||'—')+'</div>';
-        const right = document.createElement('div');
-        const status = data.status || 'aguardando';
-        const badge = document.createElement('div');
-        badge.className = 'status-badge ' + (status==='aguardando' ? 'status-wait' : status==='em_chamada' ? 'status-incall' : 'status-missed');
-        badge.textContent = status;
-        right.appendChild(badge);
-        const actions = document.createElement('div');
-        actions.className = 'controls';
-        const btnSel = document.createElement('button');
-        btnSel.className = 'btn gray'; btnSel.textContent = 'Ver';
-        btnSel.addEventListener('click', ()=> selectCall(protocol, data));
-        actions.appendChild(btnSel);
-        right.appendChild(actions);
+      // pedir microfone
+      (async ()=> {
+        try{ await navigator.mediaDevices.getUserMedia({ audio:true }); }catch(e){ console.warn('Microfone não permitido',e); }
+      })();
 
-        el.appendChild(left); el.appendChild(right);
-        queueList.appendChild(el);
+      // atualiza lista em tempo real
+      listenWaitingCalls((calls)=>{
+        callsList.innerHTML = '';
+        if(!calls || calls.length===0){
+          callsList.innerHTML = '<div class="small">Nenhuma chamada na fila</div>';
+        }else{
+          calls.forEach(c=>{
+            const item = document.createElement('div');
+            item.className = 'call-item';
+            item.innerHTML = `
+              <div>
+                <div style="font-weight:700">${c.nomeCompleto}</div>
+                <div class="small">${maskCPF(c.cpf)} • protocolo <span style="font-family:monospace">${c.protocol}</span></div>
+                <div class="meta">Criado: ${new Date(c.createdAt).toLocaleString()}</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+                <div style="display:flex;gap:8px">
+                  <button class="btn accept" data-proto="${c.protocol}">Atender</button>
+                  <button class="btn reject" data-proto="${c.protocol}">Recusar</button>
+                </div>
+                <div class="small">Tempo: <span id="t${c.protocol}">—</span></div>
+              </div>
+            `;
+            callsList.appendChild(item);
+
+            // contadores de tempo
+            setInterval(()=>{
+              const el = document.getElementById('t'+c.protocol);
+              if(!el) return;
+              el.textContent = timeSince(c.createdAt);
+            },1000);
+          });
+        }
       });
-    };
 
-    function selectCall(protocol,data){
-      selectedProtocol = protocol;
-      noSelection.style.display = 'none';
-      callDetail.style.display = '';
-      detailProtocol.textContent = protocol;
-      detailNome.textContent = data.nomeCompleto || '—';
-      detailCPF.textContent = data.cpf || '—';
-      updateStatusUI(data.status || 'aguardando');
-      logArea.textContent = '';
-      if(timers[protocol]) clearInterval(timers[protocol]);
-      const started = data.createdAt || Date.now();
-      timers[protocol] = setInterval(()=>{
-        const diff = Math.max(0, Date.now() - started);
-        const mm = String(Math.floor(diff/60000)).padStart(2,'0');
-        const ss = String(Math.floor(diff%60000/1000)).padStart(2,'0');
-        detailTimer.textContent = `${mm}:${ss}`;
-      },1000);
-    }
+      // atualizar contagem
+      listenActiveCount((n)=> activeCount.textContent = n);
 
-    function updateStatusUI(status){
-      detailStatus.innerHTML = '';
-      const span = document.createElement('span');
-      span.className = 'status-badge ' + (status==='aguardando' ? 'status-wait' : status==='em_chamada' ? 'status-incall' : 'status-missed');
-      span.textContent = status;
-      detailStatus.appendChild(span);
-      btnEnd.style.display = status==='em_chamada' ? '' : 'none';
-    }
+      // interagir com a lista (delegation)
+      callsList.addEventListener('click', async (ev)=>{
+        const proto = ev.target.getAttribute('data-proto');
+        if(!proto) return;
+        if(ev.target.classList.contains('accept')){
+          // aceitar
+          try{
+            const accepted = await acceptCall(proto);
+            if(!accepted) { alert('Não foi possível aceitar. Talvez outra pessoa aceitou.'); return; }
+            // montar UI de atendimento
+            startHandling(proto);
+          }catch(err){ console.error(err); alert('Erro ao aceitar: '+(err.message||err)); }
+        }else if(ev.target.classList.contains('reject')){
+          const reason = 'Recusado pelo suporte';
+          await rejectCall(proto, reason);
+        }
+      });
 
-    btnRefresh.addEventListener('click', ()=> window.appAdminFetchQueue());
-    btnHowTo.addEventListener('click', ()=> tutorialOverlay.style.display = 'flex');
-    tutorialClose.addEventListener('click', ()=> tutorialOverlay.style.display = 'none');
+      // iniciar manipulação local
+      async function startHandling(protocol){
+        currentlyHandling = protocol;
+        adminStatus.textContent = 'Atendendo ' + protocol;
+        // abre a UI para atender
+        activeArea.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div class="small">Protocolo</div>
+              <div style="font-family:monospace;font-weight:800">${protocol}</div>
+            </div>
+            <div>
+              <div class="small">Duração</div>
+              <div id="adminCallTimer" style="font-weight:800">00:00</div>
+            </div>
+          </div>
+          <div class="call-controls">
+            <button id="adminHangup" class="btn reject">Desligar</button>
+          </div>
+          <div class="small" id="participantInfo">Carregando dados...</div>
+          <div class="small" id="adminCallPing">Ping: —</div>
+        `;
 
-    btnReject.addEventListener('click', async ()=>{
-      if(!selectedProtocol) return;
-      await window.appAdminReject(selectedProtocol);
-      // UI updated by backend callback
-    });
-    btnAnswer.addEventListener('click', async ()=>{
-      if(!selectedProtocol) return;
-      // request mic
-      try{
-        const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-        $('localPreview').srcObject = stream;
-        $('localPreview').play().catch(()=>{});
-        await window.appAdminAnswer(selectedProtocol);
-      }catch(e){
-        alert('Permissão de microfone necessária.');
+        const participantInfo = document.getElementById('participantInfo');
+        const adminCallPing = document.getElementById('adminCallPing');
+
+        // obter dados de call e iniciar WebRTC (usa funções em script.js)
+        const data = await getCallDetails(protocol);
+        participantInfo.textContent = `${data.nomeCompleto} • CPF ${maskCPF(data.cpf)}`;
+
+        // aceitar & iniciar troca SDP
+        await startSupportCall(protocol, (stats)=>{
+          adminCallPing.textContent = 'Ping: ' + stats.ping + ' ms';
+        });
+
+        // timer
+        const startedAt = Date.now();
+        setInterval(()=> {
+          const secs = Math.floor((Date.now()-startedAt)/1000);
+          document.getElementById('adminCallTimer').textContent = formatTime(secs);
+        },1000);
+
+        document.getElementById('adminHangup').addEventListener('click', async ()=>{
+          await hangupCall(protocol, 'Desligado pelo suporte');
+          activeArea.innerHTML = '<div class="small">Nenhuma chamada em andamento</div>';
+          adminStatus.textContent = 'Pronto';
+          currentlyHandling = null;
+        });
       }
-    });
-    btnEnd.addEventListener('click', async ()=>{
-      if(!selectedProtocol) return;
-      await window.appAdminEnd(selectedProtocol);
-      // UI will update
-    });
 
-    // initial fetch
-    window.appAdminInitUI && window.appAdminInitUI();
+      // ping monitor global (admin)
+      monitorAdminPing((p)=> adminPing.textContent = p + ' ms');
 
-  })();
-</script>
+      // util
+      function maskCPF(cpf){ return (cpf||'').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4'); }
+      function timeSince(ts){ const s = Math.floor((Date.now()-ts)/1000); return formatTime(s); }
+      function formatTime(secs){ const mm = String(Math.floor(secs/60)).padStart(2,'0'); const ss = String(secs%60).padStart(2,'0'); return mm+':'+ss; }
+
+    })();
+  </script>
 </body>
 </html>
