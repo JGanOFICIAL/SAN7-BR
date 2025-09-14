@@ -1,182 +1,212 @@
-<!-- admincall.html -->
-<!DOCTYPE html>
+<!-- admincall.html - painel administrativo / suporte -->
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Painel Suporte — Central de Atendimento</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Admin Call — Painel Suporte</title>
 
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-  <link rel="stylesheet" href="admincall.css">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{--accent:#0b67a3;--bg:#fff;--muted:#6b7280}
+  html,body{height:100%;margin:0;font-family:'Public Sans',system-ui,Arial;background:var(--bg);color:#111}
+  .wrap{max-width:1100px;margin:20px auto;padding:18px}
+  header{display:flex;align-items:center;justify-content:space-between}
+  .title{display:flex;gap:12px;align-items:center}
+  .mark{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,#0477b9,#0b67a3);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+  h1{margin:0;font-size:20px}
+  .grid{display:grid;grid-template-columns:360px 1fr;gap:16px;margin-top:18px}
+  .panel{background:#fff;padding:14px;border-radius:10px;border:1px solid #eef4fb}
+  .call-item{padding:12px;border-radius:8px;border:1px solid #f1f5f9;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+  .call-info{max-width:200px}
+  .btn{padding:10px;border-radius:8px;border:0;background:var(--accent);color:#fff;font-weight:600;cursor:pointer}
+  .btn.ghost{background:#eef4fb;color:var(--accent);border:1px solid #d6eaf8}
+  .controls{display:flex;gap:8px}
+  .tutorial-overlay{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center}
+  .tutorial-card{background:#fff;padding:18px;border-radius:12px;max-width:720px}
+  .badge{padding:6px 10px;border-radius:999px;background:#f1f5f9}
+  .muted{color:var(--muted)}
+  .square{border-radius:8px;padding:8px;border:1px solid #e6eef8;background:#fff}
+  .call-area{padding:12px;border-radius:8px;border:1px dashed #eef4fb;min-height:120px}
+  .log{font-family:monospace;background:#fbfdff;padding:8px;border-radius:8px;margin-top:10px;max-height:160px;overflow:auto}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <aside class="sidebar">
-      <div class="brand">
-        <img src="logo.png" alt="logo" />
-        <h2>Painel Suporte</h2>
-      </div>
-      <div class="controls">
-        <button id="btn-how" class="btn ghost">Como atender</button>
-        <button id="btn-refresh" class="btn">Atualizar</button>
-      </div>
-
-      <div class="connection">
-        <strong>Conexão</strong>
-        <div id="admin-conn">—</div>
-      </div>
-    </aside>
-
-    <main class="main">
-      <header class="top">
-        <h1>Solicitações em tempo real</h1>
-        <div class="search">
-          <input id="search" placeholder="Buscar por protocolo, nome ou CPF" />
-        </div>
-      </header>
-
-      <section class="timeline" id="calls-list">
-        <!-- items injected here -->
-      </section>
-    </main>
-  </div>
-
-  <!-- overlay tutorial -->
-  <div id="how-modal" class="overlay hidden">
-    <div class="overlay-card">
-      <h2>Como atender</h2>
-      <p>1. Saudações — fale pelo nome da pessoa: "Olá <span id="how-name"></span>, eu sou o suporte..."</p>
-      <p>2. Verificar dados pessoais e objetivo.</p>
-      <p>3. Resolver com calma, confirmar entendimento, encerrar educadamente.</p>
-      <div class="actions">
-        <button id="how-close" class="btn primary">Fechar</button>
+<div class="wrap">
+  <header>
+    <div class="title">
+      <div class="mark">SUP</div>
+      <div>
+        <h1>Painel de Suporte — Admin</h1>
+        <div class="muted">Mostrando solicitações em tempo real</div>
       </div>
     </div>
+    <div>
+      <button id="howBtn" class="btn ghost">Como atender</button>
+      <button id="refreshBtn" class="btn">Atualizar</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="panel">
+      <h3>Fila de solicitações</h3>
+      <div id="callsList" style="margin-top:12px"></div>
+      <div style="margin-top:8px" class="muted small">Chamadas não atendidas por 10 minutos aparecerão como <strong>Não atendido</strong>.</div>
+    </div>
+
+    <div class="panel">
+      <h3>Área de chamada</h3>
+      <div class="call-area" id="callArea">
+        <div id="callMeta" class="muted">Nenhuma chamada ativa</div>
+        <div id="controls" style="margin-top:10px;display:none">
+          <div class="controls">
+            <button id="answerBtn" class="btn">Atender</button>
+            <button id="declineBtn" class="btn ghost">Recusar</button>
+            <button id="hangupAdminBtn" class="btn" style="display:none;background:#ef4444">Desligar</button>
+          </div>
+        </div>
+        <div id="callLog" class="log"></div>
+      </div>
+
+      <div style="margin-top:12px">
+        <div class="muted">Status de conexão: <span id="connStatus">—</span></div>
+        <div class="muted" style="margin-top:6px">Ping: <span id="adminPing">—</span></div>
+      </div>
+
+    </div>
   </div>
+</div>
 
-  <script src="script.js"></script>
-  <script>
-    (function(){
-      const callsList = document.getElementById('calls-list');
-      const adminConn = document.getElementById('admin-conn');
-      const btnHow = document.getElementById('btn-how');
-      const howModal = document.getElementById('how-modal');
-      const howClose = document.getElementById('how-close');
-      const searchInput = document.getElementById('search');
+<!-- Tutorial overlay -->
+<div id="tutorial" class="tutorial-overlay">
+  <div class="tutorial-card">
+    <h2>Como atender (tutorial)</h2>
+    <p>1. Clique em <strong>Atender</strong>. Permita o uso do microfone.<br/>
+      2. Cumprimente a pessoa pelo nome e confirme o CPF.<br/>
+      3. Mantenha fones para evitar eco; fale de forma clara e curta.<br/>
+      4. Use o botão <strong>Desligar</strong> para encerrar a chamada quando terminar.<br/>
+      5. Se recusar, explique o motivo e oriente o cidadão a tentar novamente.</p>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+      <button id="closeTutorial" class="btn ghost">Fechar</button>
+    </div>
+  </div>
+</div>
 
-      // show tutorial
-      btnHow.addEventListener('click', ()=> howModal.classList.remove('hidden'));
-      howClose.addEventListener('click', ()=> howModal.classList.add('hidden'));
+<script src="script.js"></script>
+<script>
+/* Admin UI logic (usa script.js funções globais) */
+(function(){
+  const callsList=document.getElementById('callsList');
+  const callMeta=document.getElementById('callMeta');
+  const controls=document.getElementById('controls');
+  const answerBtn=document.getElementById('answerBtn');
+  const declineBtn=document.getElementById('declineBtn');
+  const hangupAdminBtn=document.getElementById('hangupAdminBtn');
+  const callLog=document.getElementById('callLog');
+  const connStatus=document.getElementById('connStatus');
+  const adminPing=document.getElementById('adminPing');
+  const howBtn=document.getElementById('howBtn');
+  const tutorial=document.getElementById('tutorial');
+  const closeTutorial=document.getElementById('closeTutorial');
+  const refreshBtn=document.getElementById('refreshBtn');
 
-      // monitor connection
-      window.onConnectionStateChanged = (state)=>{
-        adminConn.textContent = state ? 'ONLINE' : 'OFFLINE';
-      };
+  let activeSession = null;
+  let activeCallData = null;
 
-      // listen for incoming calls (script.js provides 'onIncomingCalls' subscription)
-      window.onIncomingCalls(async (snapshot) => {
-        // snapshot is a map of callId -> callData
-        callsList.innerHTML = '';
-        const calls = Object.entries(snapshot || {}).sort((a,b)=> (b[1].createdAt||0) - (a[1].createdAt||0));
-        for(const [callId, call] of calls){
-          const el = document.createElement('div');
-          el.className = 'callcard';
-          el.innerHTML = `
-            <div class="meta">
-              <div><strong>${call.nomeCompleto}</strong></div>
-              <div>CPF: ${call.cpf}</div>
-              <div>Protocolo: ${call.protocol}</div>
-              <div>Status: <span class="st">${call.status}</span></div>
-              <div>Gerado: ${new Date(call.createdAt).toLocaleString()}</div>
+  function refreshList(){
+    callsList.innerHTML = '<div class="muted">Carregando...</div>';
+    listarChamadasAtivas((list)=>{
+      // list = array of calls
+      callsList.innerHTML = '';
+      if(!list.length){ callsList.innerHTML='<div class="muted">Fila vazia</div>'; return; }
+      list.forEach(call=>{
+        const el=document.createElement('div'); el.className='call-item';
+        el.innerHTML = `
+          <div class="call-info">
+            <div><strong>${call.nomeCompleto}</strong></div>
+            <div class="muted">CPF: ${call.cpf}</div>
+            <div class="muted">Protocolo: <span class="badge">${call.protocol}</span></div>
+            <div class="muted">Tempo: ${call.ageMin} min</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+            <div class="controls">
+              <button class="btn" data-proto="${call.protocol}" data-action="accept">Atender</button>
+              <button class="btn ghost" data-proto="${call.protocol}" data-action="decline">Recusar</button>
             </div>
-            <div class="actions">
-              <button data-action="view" class="btn ghost">Ver</button>
-              <button data-action="accept" class="btn primary">Atender</button>
-              <button data-action="reject" class="btn warn">Recusar</button>
-            </div>
-          `;
-          // bind actions
-          el.querySelector('[data-action="view"]').addEventListener('click', ()=> {
-            window.showModal(`Protocolo ${call.protocol}`, `Nome: ${call.nomeCompleto}\nCPF: ${call.cpf}\nCriado em: ${new Date(call.createdAt).toLocaleString()}`);
-          });
-          el.querySelector('[data-action="reject"]').addEventListener('click', async ()=>{
-            await window.rejectCall(callId, {reason:'recusado_pelo_suporte'});
-          });
-          el.querySelector('[data-action="accept"]').addEventListener('click', async ()=>{
-            // Accept and start WebRTC from admin side
-            try{
-              const pc = await window.acceptCall(callId, {agentName: 'Suporte'});
-              // open small call panel
-              openCallPanel(callId, call, pc);
-            }catch(e){
-              console.error(e);
-              window.showModal('Erro', 'Falha ao aceitar a chamada: '+(e.message||e));
-            }
-          });
-
-          callsList.appendChild(el);
-        }
-      });
-
-      // open small in-page call panel for active call
-      function openCallPanel(callId, callData, pc){
-        const panel = document.createElement('div');
-        panel.className = 'in-call-panel';
-        panel.innerHTML = `
-          <div><strong>Atendendo:</strong> ${callData.nomeCompleto} — ${callData.protocol}</div>
-          <div class="in-actions">
-            <button class="btn hangup">Desligar</button>
-            <button class="btn ghost mute">Mudo</button>
+            <div class="muted small">${call.status}</div>
           </div>
         `;
-        panel.querySelector('.hangup').addEventListener('click', async ()=>{
-          await window.endCall(callId, {reason:'desligado_pelo_suporte'});
-          panel.remove();
-        });
-        panel.querySelector('.mute').addEventListener('click', ()=> {
-          // toggle local mute for admin audio
-          window.toggleAdminMute();
-        });
-        document.body.appendChild(panel);
-      }
-
-      // search
-      searchInput.addEventListener('input', (e)=>{
-        const q = e.target.value.toLowerCase().trim();
-        // naive filter by hiding cards that don't match
-        document.querySelectorAll('.callcard').forEach(card=>{
-          const text = card.textContent.toLowerCase();
-          card.style.display = text.includes(q) ? '' : 'none';
-        });
+        callsList.appendChild(el);
       });
 
-    })();
-  </script>
+      // bind buttons
+      callsList.querySelectorAll('button').forEach(btn=>{
+        btn.onclick = async (e)=>{
+          const action = btn.dataset.action;
+          const protocol = btn.dataset.proto;
+          if(action==='accept'){
+            openCall(protocol);
+          }else{
+            await recusarChamada(protocol);
+            refreshList();
+          }
+        };
+      });
+    });
+  }
 
-  <style>
-    /* Admin inline CSS for portability */
-    :root{--bg:#f7fafc;--accent:#0b5cff;--muted:#6b7280;--danger:#ff4d4f}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,Roboto,Arial;background:var(--bg);color:#0b1320}
-    .wrap{display:flex;min-height:100vh}
-    .sidebar{width:300px;background:#fff;border-right:1px solid #edf2f7;padding:20px}
-    .brand img{width:48px;height:48px}
-    .brand h2{margin:8px 0 16px}
-    .controls{display:flex;gap:8px;margin-bottom:12px}
-    .btn{padding:8px 12px;border-radius:8px;border:0;background:#eef4ff;color:var(--accent);cursor:pointer}
-    .btn.ghost{background:transparent;border:1px solid #e6eef8;color:var(--muted)}
-    .btn.warn{background:#ffedd5;color:#7a3700}
-    .main{flex:1;padding:20px}
-    .top{display:flex;justify-content:space-between;align-items:center}
-    .search input{padding:8px;border-radius:8px;border:1px solid #e6eef8}
-    .timeline{margin-top:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
-    .callcard{background:#fff;padding:12px;border-radius:10px;border:1px solid #eef4ff;display:flex;justify-content:space-between;align-items:center}
-    .in-call-panel{position:fixed;right:20px;bottom:20px;background:#fff;padding:12px;border-radius:12px;box-shadow:0 12px 40px rgba(2,6,23,0.12)}
-    .overlay{position:fixed;inset:0;background:rgba(2,6,23,0.45);display:flex;align-items:center;justify-content:center}
-    .overlay-card{background:#fff;padding:18px;border-radius:12px;max-width:720px}
-  </style>
+  refreshBtn.onclick = refreshList;
+  refreshList();
+
+  function openCall(protocol){
+    // mostra metadata e habilita controls; cria or obtém sessão admin
+    callMeta.textContent = 'Conectando à chamada ' + protocol + ' ...';
+    controls.style.display = 'block';
+    callLog.innerHTML='';
+    // criar sessão admin — função retorna objeto com hooks
+    iniciarSessaoAdmin(protocol, {
+      onInfo: (info)=>{ // chamado quando metadados chegam
+        activeCallData = info;
+        callMeta.innerHTML = `<div><strong>${info.nomeCompleto}</strong> — CPF: ${info.cpf}</div><div class="muted">Protocolo: <span class="badge">${info.protocol}</span></div>`;
+      },
+      onLog: (text)=>{ callLog.innerHTML += text + '\n'; callLog.scrollTop = callLog.scrollHeight; },
+      onStatus: (s)=>{
+        if(s==='in_call'){ connStatus.textContent='Em chamada'; hangupAdminBtn.style.display='inline-block'; answerBtn.style.display='none'; declineBtn.style.display='none'; }
+        else if(s==='ended'){ connStatus.textContent='Encerrada'; hangupAdminBtn.style.display='none'; answerBtn.style.display='inline-block'; declineBtn.style.display='inline-block'; }
+        else if(s==='ringing'){ connStatus.textContent='Chamando'; }
+      },
+      onPing: (ms)=>{ adminPing.textContent = ms + ' ms'; }
+    }).then(sess=>{
+      activeSession = sess;
+      // quando chamada aceita via UI:
+      answerBtn.onclick = async ()=>{
+        answerBtn.disabled=true;
+        try{
+          await activeSession.answer();
+        }catch(e){ alert('Erro ao atender: '+e); }
+        answerBtn.disabled=false;
+      };
+      declineBtn.onclick = async ()=>{ await activeSession.decline(); refreshList(); };
+      hangupAdminBtn.onclick = async ()=>{ await activeSession.hangup(); refreshList(); };
+    }).catch(err=>{
+      alert('Erro na sessão admin: '+(err?.message||err));
+      controls.style.display='none';
+    });
+  }
+
+  howBtn.onclick = ()=>{ tutorial.style.display='flex'; };
+  closeTutorial.onclick = ()=>{ tutorial.style.display='none'; };
+
+  // tempo real: atualiza lista quando DB muda
+  subscribeChamadasRealtime(()=>{
+    refreshList();
+  });
+
+})();
+</script>
 </body>
 </html>
