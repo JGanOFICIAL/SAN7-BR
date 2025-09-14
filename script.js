@@ -4,7 +4,7 @@ const firebaseConfig = {
   authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
   projectId: "prefeitura-de-joao-camara",
   storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
-  messagingSenderId: "269299041577",
+  messagingSenderId: "bcv",
   appId: "1:269299041577:web:fd41b2939240e9eb476338",
   measurementId: "G-YT7NHR342J"
 };
