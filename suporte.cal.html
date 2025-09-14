@@ -1,201 +1,204 @@
-<!doctype html>
+<!-- admincall.html -->
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Central de Atendimento — Painel Suporte</title>
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-
+  <title>Painel Suporte — Admin</title>
   <style>
-    :root{
-      --bg:#ffffff;--muted:#6b7280;--accent:#0b3b66;--card:#f5f7fb;
-    }
-    body{margin:0;font-family:'Public Sans',system-ui,Segoe UI,Roboto,Arial;background:#f2f4f8;}
-    header{background:linear-gradient(90deg,#07263f 0%, #0b3b66 100%);color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
-    header h1{margin:0;font-size:18px}
-    header .right{display:flex;gap:10px;align-items:center}
-    .wrap{padding:20px;max-width:1100px;margin:18px auto;display:grid;grid-template-columns:360px 1fr;gap:18px}
-    .panel{background:#fff;padding:14px;border-radius:12px;box-shadow:0 6px 18px rgba(12,20,30,0.06);}
-    .calls-list{display:flex;flex-direction:column;gap:10px;max-height:70vh;overflow:auto;padding-right:6px}
-    .call-item{padding:12px;border-radius:10px;background:var(--card);display:flex;flex-direction:column;gap:8px}
-    .call-row{display:flex;justify-content:space-between;align-items:center}
-    .btn{background:var(--accent);color:#fff;border:0;padding:8px 10px;border-radius:8px;cursor:pointer}
-    .btn-ghost{background:transparent;border:1px solid #e6e9ef;color:var(--accent);padding:8px 10px;border-radius:8px;cursor:pointer}
-    .meta{font-size:13px;color:var(--muted)}
-    .big{font-weight:700;color:var(--accent)}
-    .right-panel{display:flex;flex-direction:column;gap:12px}
-    .call-stage{min-height:120px;display:flex;flex-direction:column;gap:8px;justify-content:center;align-items:center}
-    .tutorial{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;padding:18px;border-radius:12px;box-shadow:0 12px 30px rgba(2,10,30,0.25);display:none;max-width:620px;width:92%}
-    .tutorial h3{margin:0 0 8px}
-    .footer{font-size:13px;color:var(--muted);text-align:right}
+    :root{--bg:#f7fbff;--accent:#0b4b7a;--muted:#6b6b6b}
+    body{margin:0;font-family:Public Sans,system-ui, -apple-system, sans-serif;background:var(--bg)}
+    header{background:#fff;padding:18px;border-bottom:1px solid #e6f0fa;display:flex;justify-content:space-between;align-items:center}
+    h1{margin:0;color:var(--accent);font-size:18px}
+    #main{display:flex;gap:18px;padding:18px}
+    #queues{width:420px;background:#fff;border-radius:10px;padding:12px;box-shadow:0 8px 30px rgba(6,20,40,0.06)}
+    #detail{flex:1;background:#fff;border-radius:10px;padding:16px;box-shadow:0 8px 30px rgba(6,20,40,0.06)}
+    .call-item{padding:10px;border-radius:8px;border:1px solid #eef7ff;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+    .call-item .meta{font-size:13px;color:var(--muted)}
+    .btn{padding:8px 10px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+    .btn.ghost{background:#f3f7fb;color:var(--accent)}
+    .small{font-size:13px;color:var(--muted)}
+    .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:999}
+    .overlay .box{background:#fff;padding:18px;border-radius:10px;width:min(720px,96%);}
   </style>
 </head>
 <body>
   <header>
-    <h1>Painel de Suporte — Central de Atendimento</h1>
-    <div class="right">
-      <button id="howBtn" class="btn-ghost">Como atender</button>
-      <button id="micTest" class="btn-ghost">Testar microfone</button>
+    <h1>Painel de Atendimento — Suporte</h1>
+    <div>
+      <button id="howBtn" class="btn ghost">Como atender</button>
+      <button id="refreshBtn" class="btn">Atualizar</button>
     </div>
   </header>
 
-  <div class="wrap">
-    <div class="panel">
-      <h3>Solicitações Ativas</h3>
-      <div class="calls-list" id="callsList">
-        <!-- preenchido dinamicamente -->
-      </div>
-      <div class="footer">Atualização em tempo real via Firebase</div>
+  <div id="main">
+    <div id="queues">
+      <h3>Chamadas em espera</h3>
+      <div id="callsList"></div>
     </div>
-
-    <div class="panel right-panel">
-      <h3>Área de atendimento</h3>
-      <div id="stage" class="call-stage">
-        <div class="meta" id="stageMeta">Nenhuma chamada selecionada.</div>
-        <div id="stageControls"></div>
-      </div>
-
-      <div style="margin-top:12px;">
-        <div class="meta">Status do sistema: <span id="sysStatus" class="big">Conectado</span></div>
+    <div id="detail">
+      <h3>Detalhes</h3>
+      <div id="detailArea">
+        <div class="small">Selecione uma chamada à esquerda</div>
       </div>
     </div>
   </div>
 
-  <div class="tutorial" id="tutorialBox">
-    <h3>Como atender</h3>
-    <p>1. Selecione um pedido à esquerda. Leia o nome e o CPF em voz clara: "Olá <strong id="tNome"></strong>, meu nome é <em>Suporte</em>, como posso ajudar hoje?"</p>
-    <p>2. Mantenha a voz calma, confirme dados, repita o protocolo se necessário. Use pausas curtas para permitir que o cidadão fale.</p>
-    <p>3. Ao finalizar clique em "Desligar". Chamadas atendidas não ficam salvas.</p>
-    <div style="text-align:right;margin-top:8px"><button id="closeTutorial" class="btn-ghost">Fechar</button></div>
+  <div class="overlay" id="howOverlay">
+    <div class="box">
+      <h3>Como atender</h3>
+      <p>1. Clique em "Atender" — pegue o nome do cidadão e cumprimente-o pelo nome.<br>
+         2. Fale claramente, confirme CPF, anote protocolo.<br>
+         3. Seja educado, confirme solução e encerre. Use o botão "Desligar" para encerrar a ligação.<br>
+         4. Não salvamos chamadas atendidas após o término.</p>
+      <p><button id="closeHow">Fechar</button></p>
+    </div>
   </div>
 
-  <!-- Firebase compat libs and script.js -->
+  <!-- Firebase compat + script.js -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script src="script.js"></script>
 
   <script>
-    // Admin UI wiring
     (function(){
       const callsList = document.getElementById('callsList');
-      const stageMeta = document.getElementById('stageMeta');
-      const stageControls = document.getElementById('stageControls');
+      const detailArea = document.getElementById('detailArea');
+      const howOverlay = document.getElementById('howOverlay');
       const howBtn = document.getElementById('howBtn');
-      const tutorial = document.getElementById('tutorialBox');
-      const closeTutorial = document.getElementById('closeTutorial');
-      const tNome = document.getElementById('tNome');
-      const micTest = document.getElementById('micTest');
+      const closeHow = document.getElementById('closeHow');
+      const refreshBtn = document.getElementById('refreshBtn');
 
-      let currentCall = null;
+      howBtn.onclick = ()=> howOverlay.style.display='flex';
+      closeHow.onclick = ()=> howOverlay.style.display='none';
+      refreshBtn.onclick = ()=> Calls.fetchWaiting().then(renderCalls);
 
-      async function askMicOnEnter(){
+      let selectedProtocol = null;
+      let adminLocalStream = null;
+
+      async function enableMic(){
         try{
-          await navigator.mediaDevices.getUserMedia({ audio:true });
+          adminLocalStream = await navigator.mediaDevices.getUserMedia({audio:true});
         }catch(e){
-          console.warn('Microfone não permitido', e);
+          alert('Permissão de microfone negada. Habilite para atender chamadas.');
         }
       }
-      askMicOnEnter();
 
-      micTest.addEventListener('click', async ()=>{
-        try{
-          const s = await navigator.mediaDevices.getUserMedia({ audio:true });
-          s.getTracks().forEach(t=>t.stop());
-          alert('Microfone acessível.');
-        }catch(e){
-          alert('Falha ao acessar microfone. Permita o microfone no navegador.');
+      enableMic();
+
+      // render list (real-time binding inside Calls.listenWaiting)
+      Calls.listenWaiting((list)=>{
+        renderCalls(list);
+      });
+
+      function renderCalls(list){
+        callsList.innerHTML = '';
+        if(!list || list.length===0){
+          callsList.innerHTML = '<div class="small">Nenhuma chamada</div>';
+          return;
         }
-      });
-
-      howBtn.addEventListener('click', ()=>{
-        tutorial.style.display = 'block';
-      });
-      closeTutorial.addEventListener('click', ()=> tutorial.style.display='none');
-
-      // Carrega chamadas em tempo real
-      listenForCalls({
-        onCallAdded: (callMeta)=>{
-          renderCallItem(callMeta);
-        },
-        onCallRemoved: (protocol)=>{
-          const el = document.getElementById('call-'+protocol);
-          if(el) el.remove();
-          if(currentCall && currentCall.protocol === protocol){
-            // encerrar UI
-            stageMeta.textContent = 'Chamada encerrada/removida.';
-            stageControls.innerHTML = '';
-            currentCall = null;
-          }
-        },
-        onCallChanged: (callMeta)=>{
-          // atualiza item se existir
-          const el = document.getElementById('call-'+callMeta.protocol);
-          if(el){
-            const statusEl = el.querySelector('.status');
-            const whenEl = el.querySelector('.when');
-            statusEl.textContent = callMeta.status;
-            whenEl.textContent = new Date(callMeta.createdAt).toLocaleString();
-          }
-        }
-      });
-
-      function renderCallItem(meta){
-        const div = document.createElement('div');
-        div.className = 'call-item';
-        div.id = 'call-'+meta.protocol;
-        div.innerHTML = `
-          <div class="call-row">
+        list.forEach(c=>{
+          const div = document.createElement('div');
+          div.className = 'call-item';
+          div.innerHTML = `<div>
+              <div style="font-weight:700">${c.nomeCompleto}</div>
+              <div class="meta">CPF: ${c.cpf} • protocolo: ${c.protocol}</div>
+            </div>
             <div>
-              <div class="big">${meta.nomeCompleto}</div>
-              <div class="meta">CPF: ${meta.cpf}</div>
-            </div>
-            <div style="text-align:right">
-              <div class="meta">Protoc.: <strong>${meta.protocol}</strong></div>
-              <div class="meta when">${new Date(meta.createdAt).toLocaleString()}</div>
-            </div>
-          </div>
-          <div style="display:flex;gap:8px;justify-content:flex-end;">
-            <button class="btn" data-action="accept" data-proto="${meta.protocol}">Atender</button>
-            <button class="btn-ghost" data-action="decline" data-proto="${meta.protocol}">Recusar</button>
-          </div>
-        `;
-        callsList.prepend(div);
-
-        div.querySelector('[data-action="accept"]').addEventListener('click', async (e)=>{
-          const p = e.target.dataset.proto;
-          // aceitar via função adminAccept
-          try{
-            const callMeta = await adminAccept(p, {
-              onConnected: ()=>{
-                // mostra na área
-                stageMeta.textContent = `Atendendo ${meta.nomeCompleto} — Protoc.: ${meta.protocol}`;
-                stageControls.innerHTML = `<button id="adminHang" class="btn-ghost">Desligar</button>`;
-                document.getElementById('adminHang').addEventListener('click', async ()=>{
-                  await adminHangup(p);
-                });
-                tNome.textContent = meta.nomeCompleto;
-              },
-              onEnded: ()=>{
-                stageMeta.textContent = 'Chamada encerrada.';
-                stageControls.innerHTML = '';
-              }
-            });
-          }catch(err){
-            console.error(err);
-            alert('Falha ao aceitar chamada.');
-          }
-        });
-
-        div.querySelector('[data-action="decline"]').addEventListener('click', async (e)=>{
-          const p = e.target.dataset.proto;
-          if(!confirm('Recusar essa solicitação?')) return;
-          try{
-            await adminDecline(p);
-          }catch(e){ console.warn(e); alert('Erro ao recusar.'); }
+              <button class="btn ghost" data-proto="${c.protocol}" data-action="view">Ver</button>
+              <button class="btn" data-proto="${c.protocol}" data-action="accept">Atender</button>
+              <button class="btn" style="background:#c0392b" data-proto="${c.protocol}" data-action="reject">Recusar</button>
+            </div>`;
+          callsList.appendChild(div);
         });
       }
 
+      callsList.addEventListener('click', async (ev)=>{
+        const btn = ev.target.closest('button');
+        if(!btn) return;
+        const proto = btn.dataset.proto;
+        const action = btn.dataset.action;
+        if(action==='view'){
+          showDetails(proto);
+        }else if(action==='accept'){
+          await acceptCall(proto);
+        }else if(action==='reject'){
+          await Calls.rejectCall(proto);
+        }
+      });
+
+      async function showDetails(proto){
+        const data = await Calls.getCall(proto);
+        detailArea.innerHTML = `<div><strong>${data.nomeCompleto}</strong></div>
+          <div class="small">CPF: ${data.cpf}</div>
+          <div class="small">Protocolo: ${data.protocol}</div>
+          <div style="margin-top:12px">
+            <button id="acceptNow" class="btn">Atender</button>
+            <button id="rejectNow" class="btn ghost">Recusar</button>
+          </div>
+          <div id="adminCallBox"></div>`;
+        document.getElementById('acceptNow').onclick = ()=> acceptCall(proto);
+        document.getElementById('rejectNow').onclick = ()=> Calls.rejectCall(proto);
+      }
+
+      async function acceptCall(proto){
+        // obtain mic if not
+        if(!adminLocalStream){
+          try{ adminLocalStream = await navigator.mediaDevices.getUserMedia({audio:true}); }
+          catch(e){ alert('Permissão de microfone necessária.'); return; }
+        }
+        selectedProtocol = proto;
+        detailArea.querySelector('#adminCallBox')?.innerHTML = '<div class="small">Conectando...</div>';
+        // create offer as admin and attach local audio
+        Calls.adminAccept(proto, adminLocalStream, onAdminCallUpdate);
+      }
+
+      function onAdminCallUpdate(data){
+        // update UI
+        if(!data) return;
+        detailArea.querySelector('#adminCallBox').innerHTML = `
+          <div class="small">Status: ${data.status}</div>
+          <div class="small">Protocolo: ${data.protocol}</div>
+          <div style="margin-top:8px">
+            <button id="adminHang" class="btn" style="background:#c0392b">Desligar</button>
+          </div>
+          <audio id="adminRemote" autoplay></audio>
+          <div class="small" id="adminTimer">Duração: 00:00</div>
+          <div class="small" id="adminPing">Ping: --</div>
+        `;
+        const hang = document.getElementById('adminHang');
+        hang.onclick = ()=> Calls.endCall(data.protocol, 'ended_by_support');
+        const adminRemote = document.getElementById('adminRemote');
+
+        // attach remote stream provided by Calls lib
+        adminRemote.srcObject = Calls.getRemoteStream();
+
+        if(data.status === 'in_call'){
+          // start timer
+          startAdminTimer(data.startedAt || Date.now());
+        }else if(['ended','rejected','cancelled','no_answer'].includes(data.status)){
+          // remove UI after short delay
+          setTimeout(()=>{ detailArea.querySelector('#adminCallBox').innerHTML = ''; }, 1500);
+        }
+      }
+
+      function startAdminTimer(startTs){
+        const adminTimer = document.getElementById('adminTimer');
+        if(!adminTimer) return;
+        clearInterval(adminTimer._i);
+        function update(){
+          const diff = Math.max(0, Date.now()-startTs);
+          const mm = String(Math.floor(diff/60000)).padStart(2,'0');
+          const ss = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+          adminTimer.textContent = `Duração: ${mm}:${ss}`;
+        }
+        update();
+        adminTimer._i = setInterval(update,1000);
+      }
+
+      // expose for debug
+      window._adminDebug = {acceptCall, showDetails};
     })();
   </script>
 </body>
