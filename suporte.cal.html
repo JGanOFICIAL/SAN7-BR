@@ -1,306 +1,251 @@
-<!-- call_widget.html -->
+<!-- admincall.html -->
 <!doctype html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Central de Atendimento - Widget</title>
-<link rel="stylesheet" href="call_widget_style.css">
+<title>Painel de Suporte - Admin</title>
 <style>
-  /* estilo embutido compacto (pode mover para style.css) */
-  :root{--bg:#ffffff;--accent:#0f4c81;--muted:#6b7280;--card:#f8fafc}
-  *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial}
-  body{margin:0;background:var(--bg);color:#0b1220;}
-  .widget{max-width:420px;margin:18px auto;border-radius:12px;background:linear-gradient(180deg,#fff,#fbfdff);box-shadow:0 8px 24px rgba(12,24,48,0.08);padding:20px}
-  h2{margin:0 0 8px;font-size:18px;color:var(--accent)}
-  .muted{color:var(--muted);font-size:13px;margin-bottom:12px}
-  label{display:block;font-size:13px;color:#243b53;margin-top:8px}
-  input[type="text"]{width:100%;padding:12px;border:1px solid #e6eef6;border-radius:8px;font-size:14px}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:9px;border:none;cursor:pointer}
-  .btn-primary{background:var(--accent);color:#fff}
-  .btn-ghost{background:transparent;border:1px solid #e6eef6;color:var(--accent)}
-  .status{margin-top:16px;padding:14px;border-radius:10px;background:var(--card);font-size:14px}
-  .small{font-size:13px;color:var(--muted)}
-  .actions{display:flex;gap:8px;margin-top:12px}
-  .protocol{font-weight:700;color:#0b3b6b}
-  .hidden{display:none}
-  .center{display:flex;align-items:center;justify-content:center}
+  :root{--bg:#f6f9fc;--card:#fff;--accent:#062b57;--muted:#6b7280}
+  *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+  body{margin:0;background:var(--bg);color:#07203a;padding:20px}
+  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  header h1{margin:0;font-size:20px;color:var(--accent)}
+  .grid{display:grid;grid-template-columns:1fr 360px;gap:16px}
+  .panel{background:var(--card);border-radius:10px;padding:14px;box-shadow:0 6px 18px rgba(9,20,34,0.06)}
+  .list{max-height:68vh;overflow:auto}
+  .callItem{padding:12px;border-radius:8px;border:1px solid #eef6fb;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+  .meta{font-size:13px;color:var(--muted)}
+  .actions{display:flex;gap:8px}
+  button{padding:8px 10px;border-radius:8px;border:none;cursor:pointer}
+  .btn-accept{background:#0f7ae5;color:#fff}
+  .btn-reject{background:transparent;border:1px solid #e6eef6;color:var(--accent)}
+  .callDetails{padding:12px}
+  .big{font-weight:700;color:var(--accent);font-size:16px}
   .timer{font-feature-settings:"tnum";font-variant-numeric:tabular-nums}
+  .hidden{display:none}
 </style>
 </head>
 <body>
-<div class="widget" id="callWidget">
-  <h2>Central de Atendimento</h2>
-  <div class="muted">Preencha seus dados para iniciar o atendimento.</div>
+<header>
+  <h1>Painel de Atendimento (Admin)</h1>
+  <div class="meta">Conectado como <strong>Suporte</strong></div>
+</header>
 
-  <div id="formWrap">
-    <label>Nome completo</label>
-    <input id="fullName" type="text" placeholder="Seu nome completo" />
-    <label>CPF</label>
-    <input id="cpf" type="text" placeholder="000.000.000-00" />
-    <div class="actions">
-      <button class="btn btn-primary" id="startBtn">Iniciar atendimento</button>
-      <button class="btn btn-ghost" id="clearBtn">Limpar</button>
-    </div>
-    <div class="small" style="margin-top:8px">Ao entrar, vamos pedir permissão para usar seu microfone.</div>
+<div class="grid">
+  <div class="panel">
+    <h3>Solicitações em tempo real</h3>
+    <div class="list" id="callsList"></div>
   </div>
 
-  <div id="waitingWrap" class="hidden">
-    <div class="status" id="statusText">
-      <div><span class="protocol" id="protocolText"></span></div>
-      <div id="waitingMsg">Aguardando atendente. Por favor aguarde! Pode levar alguns minutos.</div>
-      <div class="small" style="margin-top:8px">Se desejar cancelar a solicitação antes de ser atendido, clique em Cancelar.</div>
-    </div>
-    <div class="actions">
-      <button class="btn btn-ghost" id="cancelBtn">Cancelar solicitação</button>
+  <div class="panel">
+    <h3>Detalhes da chamada</h3>
+    <div id="callInfo" class="callDetails">
+      <div id="noSelection">Selecione uma solicitação à esquerda para ver detalhes.</div>
+      <div id="selected" class="hidden">
+        <div><span class="big" id="sProtocol"></span></div>
+        <div style="margin-top:6px"><strong>Nome:</strong> <span id="sName"></span></div>
+        <div style="margin-top:4px"><strong>CPF:</strong> <span id="sCpf"></span></div>
+        <div style="margin-top:8px"><strong>Status:</strong> <span id="sStatus"></span></div>
+        <div style="margin-top:8px"><strong>Tempo:</strong> <span id="sTimer" class="timer">00:00</span></div>
+
+        <div style="margin-top:12px" id="actionButtons">
+          <button class="btn-accept" id="acceptBtn">Atender</button>
+          <button class="btn-reject" id="rejectBtn">Recusar</button>
+          <button id="endBtn" class="hidden">Desligar</button>
+        </div>
+      </div>
     </div>
   </div>
-
-  <div id="inCallWrap" class="hidden">
-    <div class="status">
-      <div><strong>Em chamada</strong> — Protocolo: <span id="inCallProtocol" class="protocol"></span></div>
-      <div>Tempo: <span id="callTimer" class="timer">00:00</span></div>
-    </div>
-    <div style="margin-top:10px" class="actions">
-      <button class="btn btn-primary" id="hangupBtn">Desligar</button>
-    </div>
-  </div>
-
-  <div id="finalMsg" class="hidden" style="margin-top:12px">
-    <div class="status" id="finalText"></div>
-    <div class="actions" style="margin-top:8px">
-      <button class="btn btn-ghost" id="restartBtn">Novo atendimento</button>
-    </div>
-  </div>
-
 </div>
 
-<!-- Firebase and script.js as you requested -->
+<!-- Firebase libs and script.js -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="script.js"></script>
 
 <script>
-/*
-Assumptions:
-- 'script.js' inicializa firebase com compat.
-- Este arquivo usa firebase.database() (compat).
-*/
 (function(){
-  // helpers
-  function $(id){return document.getElementById(id)}
-  function genProtocol(){ // 12 digits
-    let s = '';
-    for(let i=0;i<12;i++) s += Math.floor(Math.random()*10);
-    return s;
-  }
-  const startBtn = $('startBtn'), clearBtn = $('clearBtn'), cancelBtn = $('cancelBtn'), hangupBtn = $('hangupBtn');
-  const restartBtn = $('restartBtn');
-  const fullName = $('fullName'), cpf = $('cpf');
-  const formWrap = $('formWrap'), waitingWrap = $('waitingWrap'), inCallWrap = $('inCallWrap'), finalMsg = $('finalMsg');
-  const protocolText = $('protocolText'), waitingMsg = $('waitingMsg'), inCallProtocol = $('inCallProtocol'), callTimer = $('callTimer'), finalText = $('finalText');
+  const callsList = document.getElementById('callsList');
+  const noSelection = document.getElementById('noSelection');
+  const selected = document.getElementById('selected');
+  const sProtocol = document.getElementById('sProtocol'), sName = document.getElementById('sName'), sCpf = document.getElementById('sCpf'), sStatus = document.getElementById('sStatus'), sTimer = document.getElementById('sTimer');
+  const acceptBtn = document.getElementById('acceptBtn'), rejectBtn = document.getElementById('rejectBtn'), endBtn = document.getElementById('endBtn');
 
   let localStream = null;
   let pc = null;
-  let protocol = null;
-  let role = 'user';
-  let callRef = null;
-  let candidatesRef = null;
+  let currentCallRef = null;
+  let currentProtocol = null;
   let timerInterval = null;
   let startCallAt = null;
 
-  // request microphone immediately when user opens (per requirement) but better to do it when clicking start
-  async function ensureMicPermission(){
+  // ensure mic permission on entry (per requirement)
+  async function ensureMic(){
     try{
       localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      // keep it but do not play locally
-    }catch(err){
-      console.warn('Microphone permission denied or error', err);
-      // continue; user may allow later
+    }catch(e){ console.warn('microphone permission denied', e); }
+  }
+  ensureMic();
+
+  // list realtime calls
+  const callsRef = firebase.database().ref('calls');
+  callsRef.on('child_added', snap => {
+    renderCallItem(snap.key, snap.val());
+  });
+  callsRef.on('child_changed', snap => {
+    updateCallItem(snap.key, snap.val());
+    // if meta.status changed to removed, remove item
+  });
+  callsRef.on('child_removed', snap => {
+    removeCallItem(snap.key);
+  });
+
+  function renderCallItem(key,val){
+    const meta = val.meta || val;
+    const el = document.createElement('div');
+    el.className = 'callItem';
+    el.id = 'call_' + key;
+    el.innerHTML = `
+      <div>
+        <div><strong>${meta.protocol}</strong> <span class="meta">- ${meta.name}</span></div>
+        <div class="meta">CPF: ${meta.cpf} • ${meta.status || 'waiting'}</div>
+      </div>
+      <div class="actions">
+        <button data-proto="${meta.protocol}" class="btn-accept smallBtn">Abrir</button>
+      </div>
+    `;
+    callsList.prepend(el);
+    el.querySelector('button').addEventListener('click', ()=>selectCall(key, meta));
+  }
+  function updateCallItem(key,val){
+    const el = document.getElementById('call_' + key);
+    if(!el) return renderCallItem(key,val);
+    const meta = val.meta || val;
+    el.querySelector('.meta').textContent = `CPF: ${meta.cpf} • ${meta.status || 'waiting'}`;
+  }
+  function removeCallItem(key){
+    const el = document.getElementById('call_' + key);
+    if(el) el.remove();
+    if(currentProtocol === key){
+      // current removed -> cleanup
+      finishCallUI('Desligado (registro removido)');
     }
   }
-  // call timeout watcher
-  function watchWaitingTimeout(createdAt){
-    // if after 10 minutes and still waiting -> mark 'no_answer'
-    const TEN_MIN = 10 * 60 * 1000;
-    const interval = setInterval(async ()=>{
-      const now = Date.now();
-      if(now - createdAt > TEN_MIN){
-        if(!callRef) return clearInterval(interval);
-        const snap = await callRef.child('meta').once('value');
-        const meta = snap.val();
-        if(meta && meta.status === 'waiting'){
-          await callRef.child('meta/status').set('no_answer');
-          await callRef.child('meta/endedReason').set('não atendido');
-          // update UI
-        }
-        clearInterval(interval);
+
+  function selectCall(key, meta){
+    currentProtocol = key;
+    currentCallRef = firebase.database().ref('calls/' + key);
+    noSelection.classList.add('hidden'); selected.classList.remove('hidden');
+    sProtocol.textContent = 'Protocolo: ' + meta.protocol;
+    sName.textContent = meta.name;
+    sCpf.textContent = meta.cpf;
+    sStatus.textContent = meta.status || 'waiting';
+    // watch meta changes
+    currentCallRef.child('meta').on('value', snap=>{
+      const m = snap.val();
+      if(!m) return;
+      sStatus.textContent = m.status;
+      if(m.status === 'in_call'){
+        startTimer(m.acceptedAt || Date.now());
+        acceptBtn.disabled = true; rejectBtn.disabled = true; endBtn.classList.remove('hidden');
+      } else {
+        stopTimer(); endBtn.classList.add('hidden'); acceptBtn.disabled = false; rejectBtn.disabled = false;
       }
-    }, 5000);
+    });
   }
 
-  // timer UI
+  // WebRTC for admin: create offer and wait for answer
+  function createPC(){
+    pc = new RTCPeerConnection();
+    if(localStream){
+      for(const t of localStream.getTracks()) pc.addTrack(t, localStream);
+    }
+    const remoteAudio = document.createElement('audio'); remoteAudio.autoplay = true;
+    pc.ontrack = e => {
+      remoteAudio.srcObject = e.streams[0];
+      if(!document.body.contains(remoteAudio)) document.body.appendChild(remoteAudio);
+    };
+    pc.onicecandidate = e=>{
+      if(e.candidate && currentCallRef){
+        currentCallRef.child('candidates/admin').push(e.candidate.toJSON());
+      }
+    };
+    return pc;
+  }
+
+  acceptBtn.addEventListener('click', async ()=>{
+    if(!currentCallRef) return alert('Selecione uma solicitação');
+    // mark accepted
+    await currentCallRef.child('meta/status').set('accepted_pending');
+    await currentCallRef.child('meta/acceptedBy').set('support');
+    // prepare pc
+    if(!pc) createPC();
+    // create offer
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    await currentCallRef.child('offer').set(pc.localDescription.toJSON());
+    // listen for answer
+    currentCallRef.child('answer').on('value', async snap=>{
+      const ans = snap.val();
+      if(!ans) return;
+      await pc.setRemoteDescription(new RTCSessionDescription(ans));
+      // connect candidates from user
+      currentCallRef.child('candidates/user').on('child_added', snap=>{
+        const cand = snap.val();
+        if(cand) pc.addIceCandidate(new RTCIceCandidate(cand)).catch(console.warn);
+      });
+      // mark in_call
+      await currentCallRef.child('meta/status').set('in_call');
+      await currentCallRef.child('meta/acceptedAt').set(Date.now());
+    });
+  });
+
+  rejectBtn.addEventListener('click', async ()=>{
+    if(!currentCallRef) return;
+    await currentCallRef.child('meta/status').set('rejected');
+    await currentCallRef.child('meta/endedReason').set('recusado pelo suporte');
+    // remove after short delay
+    setTimeout(()=>currentCallRef.remove().catch(()=>{}), 2000);
+    // clear UI
+    finishCallUI('Recusado');
+  });
+
+  endBtn.addEventListener('click', async ()=>{
+    if(!currentCallRef) return;
+    // notify end and remove
+    await currentCallRef.child('meta/status').set('ended');
+    await currentCallRef.child('meta/endedBy').set('support');
+    await currentCallRef.remove().catch(()=>{});
+    finishCallUI('Desligado');
+  });
+
+  function finishCallUI(msg){
+    noSelection.classList.remove('hidden');
+    selected.classList.add('hidden');
+    if(pc){ pc.close(); pc=null; }
+    if(currentCallRef){ currentCallRef.off(); currentCallRef = null; }
+    stopTimer();
+    alert(msg);
+  }
+
   function startTimer(since){
     startCallAt = since || Date.now();
     function upd(){
       const diff = Date.now() - startCallAt;
       const mm = String(Math.floor(diff/60000)).padStart(2,'0');
       const ss = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
-      callTimer.textContent = mm + ':' + ss;
+      sTimer.textContent = mm+':'+ss;
     }
     upd();
     timerInterval = setInterval(upd, 1000);
   }
-  function stopTimer(){ clearInterval(timerInterval); timerInterval=null; callTimer.textContent='00:00'; }
+  function stopTimer(){ clearInterval(timerInterval); timerInterval=null; sTimer.textContent='00:00'; }
 
-  // create peer connection and attach local audio
-  function createPeerConnection(){
-    pc = new RTCPeerConnection();
-    // add local tracks
-    if(localStream){
-      for(const t of localStream.getTracks()) pc.addTrack(t, localStream);
-    }
-    // play remote audio
-    const remoteAudio = document.createElement('audio');
-    remoteAudio.autoplay = true;
-    pc.ontrack = e => {
-      remoteAudio.srcObject = e.streams[0];
-      // append to DOM hidden
-      if(!document.body.contains(remoteAudio)) document.body.appendChild(remoteAudio);
-    };
-    pc.onicecandidate = e=>{
-      if(e.candidate){
-        const c = e.candidate.toJSON();
-        candidatesRef.push(c);
-      }
-    };
-    return pc;
-  }
-
-  // User flow: start -> create DB node -> wait -> when admin writes offer, create answer
-  startBtn.addEventListener('click', async ()=>{
-    const name = fullName.value.trim();
-    const cpfVal = cpf.value.trim();
-    if(!name || !cpfVal){ alert('Preencha nome e CPF'); return; }
-    startBtn.disabled = true;
-    await ensureMicPermission();
-    protocol = genProtocol();
-    protocolText.textContent = 'Protocolo: ' + protocol;
-    inCallProtocol.textContent = protocol;
-    formWrap.classList.add('hidden');
-    waitingWrap.classList.remove('hidden');
-
-    // create DB node
-    callRef = firebase.database().ref('calls/' + protocol);
-    const meta = {
-      name, cpf: cpfVal,
-      protocol, createdAt: Date.now(),
-      status: 'waiting'
-    };
-    await callRef.child('meta').set(meta);
-    candidatesRef = callRef.child('candidates/user');
-    // watch for changes
-    callRef.child('meta').on('value', snap=>{
-      const v = snap.val();
-      if(!v) return;
-      if(v.status === 'in_call'){
-        // show in call UI
-        waitingWrap.classList.add('hidden');
-        inCallWrap.classList.remove('hidden');
-        // start WebRTC answer flow handled below
-      } else if(v.status === 'no_answer' || v.status === 'rejected'){
-        waitingWrap.classList.add('hidden');
-        finalMsg.classList.remove('hidden');
-        finalText.textContent = v.endedReason || (v.status === 'rejected' ? 'Recusado pelo suporte' : 'Não atendido');
-      }
-    });
-
-    // watch for offer from admin
-    callRef.child('offer').on('value', async snap=>{
-      const offer = snap.val();
-      if(!offer) return;
-      // Accept the offer: create pc, setRemoteDescription, createAnswer, setAnswer
-      if(!pc) createPeerConnection();
-      await pc.setRemoteDescription(new RTCSessionDescription(offer));
-      const answer = await pc.createAnswer();
-      await pc.setLocalDescription(answer);
-      await callRef.child('answer').set(pc.localDescription.toJSON());
-      // start listening ICE candidates from admin
-      const adminCandidatesRef = callRef.child('candidates/admin');
-      adminCandidatesRef.on('child_added', snap=>{
-        const cand = snap.val();
-        if(cand) pc.addIceCandidate(new RTCIceCandidate(cand)).catch(console.warn);
-      });
-      // mark in_call
-      await callRef.child('meta/status').set('in_call');
-      await callRef.child('meta/acceptedAt').set(Date.now());
-      startTimer();
-    });
-
-    // watch for status changes to ended to cleanup
-    callRef.child('meta').on('child_changed', snap=>{
-      if(snap.key === 'status'){
-        const val = snap.val();
-        if(val === 'ended'){
-          // show final message then cleanup
-          waitingWrap.classList.add('hidden');
-          inCallWrap.classList.add('hidden');
-          finalMsg.classList.remove('hidden');
-          finalText.textContent = 'Desligado';
-          cleanup();
-        }
-      }
-    });
-
-    // start timeout watcher
-    watchWaitingTimeout(meta.createdAt);
+  // small cleanup on unload
+  window.addEventListener('beforeunload', ()=>{
+    if(pc) pc.close();
   });
-
-  // cancel before answered
-  cancelBtn.addEventListener('click', async ()=>{
-    if(!callRef) return;
-    await callRef.child('meta/status').set('cancelled');
-    await callRef.child('meta/endedReason').set('cancelado pelo usuário');
-    // remove node after a short delay
-    setTimeout(()=>callRef.remove().catch(()=>{}), 2000);
-    waitingWrap.classList.add('hidden');
-    finalMsg.classList.remove('hidden');
-    finalText.textContent = 'Solicitação cancelada';
-    startBtn.disabled = false;
-  });
-
-  // hangup during call
-  hangupBtn.addEventListener('click', async ()=>{
-    if(callRef) {
-      await callRef.child('meta/status').set('ended');
-      await callRef.child('meta/endedBy').set('user');
-      await callRef.remove().catch(()=>{}); // as requested, attended calls not saved
-    }
-    inCallWrap.classList.add('hidden');
-    finalMsg.classList.remove('hidden');
-    finalText.textContent = 'Desligado';
-    cleanup();
-    startBtn.disabled = false;
-  });
-
-  restartBtn.addEventListener('click', ()=>{
-    // reset UI
-    finalMsg.classList.add('hidden');
-    formWrap.classList.remove('hidden');
-    startBtn.disabled = false;
-    fullName.value = ''; cpf.value = '';
-  });
-
-  function cleanup(){
-    if(pc){ pc.close(); pc = null; }
-    if(localStream){ for(const t of localStream.getTracks()) t.stop(); localStream=null; }
-    if(callRef){ callRef.off(); callRef = null; }
-    stopTimer();
-  }
-
-  // ask mic on page load (per requirement)
-  ensureMicPermission().catch(()=>{});
 })();
 </script>
 </body>
