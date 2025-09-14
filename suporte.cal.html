@@ -1,95 +1,121 @@
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Atendimento — Administração</title>
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Admin Call — Central de Atendimento</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-body {
-  margin:0; font-family:'Public Sans',sans-serif; background:#f4f7fb; color:#222;
-}
-header {
-  background:#0066ff; color:#fff; padding:16px; text-align:center;
-  font-size:20px; font-weight:600; position:sticky; top:0; z-index:2;
-  display:flex; justify-content:space-between; align-items:center;
-}
-header button {
-  background:#fff; color:#0066ff; border:none; border-radius:6px;
-  padding:6px 12px; font-size:14px; cursor:pointer;
-}
-.container { padding:20px; max-width:800px; margin:auto; }
-.solicitacao {
-  background:#fff; padding:16px; border-radius:10px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.08); margin-bottom:15px;
-  display:flex; justify-content:space-between; align-items:center;
-}
-.solicitacao-info { flex:1; }
-.solicitacao strong { display:block; font-size:16px; margin-bottom:6px; }
-.solicitacao small { color:#666; }
-.actions button {
-  margin-left:8px; padding:8px 14px; border:none; border-radius:6px;
-  cursor:pointer; font-weight:600;
-}
-.actions .atender { background:#00b050; color:#fff; }
-.actions .recusar { background:#d9534f; color:#fff; }
-#callArea {
-  display:none; background:#fff; padding:20px; border-radius:12px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.1); margin-top:20px; text-align:center;
-}
-#statusMsg { font-weight:600; margin:10px 0; }
-#timer, #ping { margin:5px 0; font-size:14px; color:#444; }
-#desligarBtn {
-  background:#d9534f; color:#fff; border:none; padding:12px 20px;
-  border-radius:8px; font-size:16px; cursor:pointer; margin-top:15px;
-}
-audio { display:none; }
-/* Tutorial overlay */
-#tutorialOverlay {
-  position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6);
-  display:none; justify-content:center; align-items:center; z-index:5;
-}
-#tutorialContent {
-  background:#fff; padding:30px; border-radius:12px; max-width:500px;
-  text-align:left; font-size:15px; line-height:1.6;
-}
-#tutorialContent h2 { margin-top:0; color:#0066ff; }
-#tutorialContent button {
-  margin-top:20px; padding:10px 20px; border:none; border-radius:8px;
-  background:#0066ff; color:#fff; cursor:pointer;
-}
+  :root{
+    --bg:#f7f9fc; --card:#fff; --accent:#0b5fff; --muted:#6b7280; --danger:#ef4444;
+    font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial;
+  }
+  body{margin:0;background:var(--bg);color:#0f172a;padding:18px;}
+  .wrap{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:360px 1fr;gap:18px}
+  .panel{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 8px 24px rgba(12,16,30,0.04)}
+  h1{margin:0 0 8px;font-size:18px}
+  .list-item{padding:12px;border-radius:10px;border:1px solid rgba(12,16,30,0.03);display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px}
+  .small{font-size:13px;color:var(--muted)}
+  .controls{display:flex;gap:8px}
+  .btn{padding:8px 12px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
+  .btn.primary{background:var(--accent);color:#fff}
+  .btn.gray{background:#f3f5f8;color:#0f172a}
+  .btn.danger{background:var(--danger);color:#fff}
+  .call-detail{display:flex;flex-direction:column;gap:8px}
+  .call-meta{display:flex;gap:10px;align-items:center;justify-content:space-between}
+  .tutorial-overlay{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center;z-index:60}
+  .tutorial-card{background:#fff;padding:20px;border-radius:12px;max-width:720px;box-shadow:0 30px 80px rgba(2,6,23,0.4)}
+  .timeline{margin-top:12px;border-top:1px dashed rgba(2,6,23,0.06);padding-top:12px}
+  audio#audioLocalPreview{display:none}
+  .status-badge{padding:6px 8px;border-radius:8px;font-weight:600;font-size:13px}
+  .status-wait{background:#eef2ff;color:#0b5fff}
+  .status-incall{background:#e6ffef;color:#0b8a3e}
+  .status-missed{background:#fff0f0;color:var(--danger)}
 </style>
 </head>
 <body>
-<header>
-  <span>Painel de Atendimento</span>
-  <button onclick="abrirTutorial()">Como atender</button>
-</header>
-<div class="container">
-  <h2>Solicitações em tempo real</h2>
-  <div id="lista"></div>
-  <div id="callArea">
-    <h3 id="callNome"></h3>
-    <p id="callCpf"></p>
-    <p id="callProtocolo"></p>
-    <p id="statusMsg">Em atendimento...</p>
-    <p id="timer"></p>
-    <p id="ping"></p>
-    <button id="desligarBtn" onclick="encerrarChamada()">Desligar</button>
-    <audio id="remoteAudio" autoplay></audio>
+<div class="wrap">
+  <div class="panel">
+    <h1>Fila de Solicitações</h1>
+    <div class="small">Recebidas em tempo real</div>
+    <div id="queueList" style="margin-top:12px">
+      <!-- itens gerados dinamicamente -->
+    </div>
+
+    <div style="margin-top:12px">
+      <button class="btn primary" id="btnRefresh">Atualizar</button>
+      <button class="btn gray" id="btnHowTo">Como atender</button>
+    </div>
+
+    <div style="margin-top:12px" class="small">Ping: <span id="adminPing">—</span> &nbsp; Conexão: <span id="adminConn">—</span></div>
+  </div>
+
+  <div class="panel" id="detailPanel">
+    <div class="call-detail" id="noSelection">
+      <h1>Selecionar solicitação</h1>
+      <div class="small">Clique em uma solicitação para ver detalhes e atender.</div>
+    </div>
+
+    <div class="call-detail" id="callDetail" style="display:none">
+      <div class="call-meta">
+        <div>
+          <div class="small">Protocolo</div>
+          <div id="detailProtocol" style="font-weight:800;font-size:18px">—</div>
+        </div>
+        <div>
+          <div class="small">Status</div>
+          <div id="detailStatus"><span class="status-badge status-wait">aguardando</span></div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center; margin-top:8px">
+        <div>
+          <div class="small">Nome</div>
+          <div id="detailNome" style="font-weight:700">—</div>
+        </div>
+        <div>
+          <div class="small">CPF</div>
+          <div id="detailCPF">—</div>
+        </div>
+        <div>
+          <div class="small">Tempo de espera</div>
+          <div id="detailTimer">00:00</div>
+        </div>
+      </div>
+
+      <div class="timeline" id="callTimeline">
+        <div class="small">Logs:</div>
+        <div id="logArea" class="small"></div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn primary" id="btnAnswer">Atender</button>
+        <button class="btn gray" id="btnReject">Recusar</button>
+        <button class="btn danger" id="btnEnd" style="display:none">Desligar</button>
+      </div>
+
+      <div style="margin-top:12px">
+        <div class="small">Microfone local: <span id="localMicStatus">aguardando</span></div>
+        <audio id="localPreview" autoplay></audio>
+        <audio id="remotePreview" autoplay></audio>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- Tutorial -->
-<div id="tutorialOverlay">
-  <div id="tutorialContent">
+<!-- Tutorial overlay -->
+<div class="tutorial-overlay" id="tutorialOverlay">
+  <div class="tutorial-card">
     <h2>Como atender</h2>
-    <p>1. Clique em <strong>Atender</strong> para iniciar a chamada.</p>
-    <p>2. Sempre cumprimente o cidadão usando o nome completo dele.</p>
-    <p>3. Fale de forma clara e profissional.</p>
-    <p>4. Se precisar encerrar, clique em <strong>Desligar</strong>.</p>
-    <p>5. Se não puder atender, clique em <strong>Recusar</strong>.</p>
-    <p>6. Observe o tempo da ligação e a qualidade da conexão.</p>
-    <button onclick="fecharTutorial()">Entendi</button>
+    <p class="small">Ao aceitar, cheque: 1) fale sempre o nome do solicitante, 2) identifique problema, 3) mantenha tom cordial, 4) confirme CPF/identidade, 5) finalize perguntando se mais algo.</p>
+    <ul class="small">
+      <li>Use o botão "Atender" para iniciar a chamada.</li>
+      <li>Você pode desligar a qualquer momento com "Desligar".</li>
+      <li>Se recusar, a solicitação é removida.</li>
+    </ul>
+    <div style="text-align:right;margin-top:12px">
+      <button class="btn primary" id="tutorialClose">Entendi</button>
+    </div>
   </div>
 </div>
 
@@ -98,112 +124,109 @@ audio { display:none; }
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="script.js"></script>
 <script>
-let pc=null, localStream=null, currentRef=null, callTimer=null, startTime=null, pingInterval=null;
+  (function(){
+    const $ = id => document.getElementById(id);
+    const queueList = $('queueList');
+    const btnRefresh = $('btnRefresh'), btnHowTo = $('btnHowTo');
+    const tutorialOverlay = $('tutorialOverlay'), tutorialClose = $('tutorialClose');
+    const noSelection = $('noSelection'), callDetail = $('callDetail');
+    const detailProtocol = $('detailProtocol'), detailStatus = $('detailStatus'), detailNome = $('detailNome'), detailCPF = $('detailCPF'), detailTimer = $('detailTimer'), logArea = $('logArea');
+    const btnAnswer = $('btnAnswer'), btnReject = $('btnReject'), btnEnd = $('btnEnd');
+    const adminPing = $('adminPing'), adminConn = $('adminConn');
+    let selectedProtocol = null;
+    let timers = {};
 
-function abrirTutorial(){ document.getElementById('tutorialOverlay').style.display="flex"; }
-function fecharTutorial(){ document.getElementById('tutorialOverlay').style.display="none"; }
+    window.__onAdminPing = (ms)=> adminPing.textContent = (ms===null? '—': ms + ' ms');
+    window.__onAdminConn = (s)=> adminConn.textContent = s;
 
-// Listar solicitações em tempo real
-db.ref('calls').on('value',snap=>{
-  const lista=document.getElementById('lista');
-  lista.innerHTML="";
-  snap.forEach(item=>{
-    const d=item.val();
-    if(!d) return;
-    if(d.status==='waiting'){
-      const div=document.createElement('div');
-      div.className="solicitacao";
-      div.innerHTML=`
-        <div class="solicitacao-info">
-          <strong>${d.nome}</strong>
-          <small>CPF: ${d.cpf}</small><br>
-          <small>Protocolo: ${item.key}</small>
-        </div>
-        <div class="actions">
-          <button class="atender" onclick="atender('${item.key}','${d.nome}','${d.cpf}')">Atender</button>
-          <button class="recusar" onclick="recusar('${item.key}')">Recusar</button>
-        </div>`;
-      lista.appendChild(div);
-    }
-  });
-});
+    // Update queue UI (called from script.js)
+    window.__renderQueue = (calls)=>{
+      queueList.innerHTML = '';
+      if(!calls || Object.keys(calls).length===0){ queueList.innerHTML = '<div class="small">Nenhuma solicitação.</div>'; return; }
+      const ordered = Object.entries(calls).sort((a,b)=> (a[1].createdAt||0)-(b[1].createdAt||0));
+      ordered.forEach(([protocol,data])=>{
+        const el = document.createElement('div');
+        el.className = 'list-item';
+        const left = document.createElement('div');
+        left.innerHTML = '<div style="font-weight:700">'+(data.nomeCompleto||'—')+'</div><div class="small">CPF: '+(data.cpf||'—')+'</div>';
+        const right = document.createElement('div');
+        const status = data.status || 'aguardando';
+        const badge = document.createElement('div');
+        badge.className = 'status-badge ' + (status==='aguardando' ? 'status-wait' : status==='em_chamada' ? 'status-incall' : 'status-missed');
+        badge.textContent = status;
+        right.appendChild(badge);
+        const actions = document.createElement('div');
+        actions.className = 'controls';
+        const btnSel = document.createElement('button');
+        btnSel.className = 'btn gray'; btnSel.textContent = 'Ver';
+        btnSel.addEventListener('click', ()=> selectCall(protocol, data));
+        actions.appendChild(btnSel);
+        right.appendChild(actions);
 
-async function atender(protocolo,nome,cpf){
-  document.getElementById('callArea').style.display="block";
-  document.getElementById('callNome').innerText=nome;
-  document.getElementById('callCpf').innerText="CPF: "+cpf;
-  document.getElementById('callProtocolo').innerText="Protocolo: "+protocolo;
-
-  const ref=db.ref('calls/'+protocolo);
-  currentRef=ref;
-  await ref.update({status:'accepted'});
-
-  localStream=await navigator.mediaDevices.getUserMedia({audio:true});
-  pc=new RTCPeerConnection();
-
-  localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));
-  pc.ontrack=e=>{
-    document.getElementById('remoteAudio').srcObject=e.streams[0];
-  };
-
-  ref.child('offer').on('value',async s=>{
-    if(s.exists() && !pc.currentRemoteDescription){
-      const offer=new RTCSessionDescription(s.val());
-      await pc.setRemoteDescription(offer);
-      const answer=await pc.createAnswer();
-      await pc.setLocalDescription(answer);
-      await ref.child('answer').set({type:answer.type,sdp:answer.sdp});
-    }
-  });
-
-  ref.child('candidates/client').on('child_added',c=>{
-    pc.addIceCandidate(new RTCIceCandidate(c.val()));
-  });
-  pc.onicecandidate=e=>{
-    if(e.candidate){ ref.child('candidates/support').push(e.candidate.toJSON()); }
-  };
-
-  startTime=Date.now();
-  callTimer=setInterval(()=>{
-    const elapsed=Math.floor((Date.now()-startTime)/1000);
-    const min=String(Math.floor(elapsed/60)).padStart(2,'0');
-    const sec=String(elapsed%60).padStart(2,'0');
-    document.getElementById('timer').innerText=`Duração: ${min}:${sec}`;
-  },1000);
-
-  // Ping da conexão
-  pingInterval=setInterval(()=>{
-    const rtt=pc?.getStats?pc.getStats():null;
-    if(rtt){
-      rtt.then(stats=>{
-        stats.forEach(report=>{
-          if(report.type==='candidate-pair' && report.currentRoundTripTime){
-            document.getElementById('ping').innerText="Ping: "+Math.round(report.currentRoundTripTime*1000)+" ms";
-          }
-        });
+        el.appendChild(left); el.appendChild(right);
+        queueList.appendChild(el);
       });
+    };
+
+    function selectCall(protocol,data){
+      selectedProtocol = protocol;
+      noSelection.style.display = 'none';
+      callDetail.style.display = '';
+      detailProtocol.textContent = protocol;
+      detailNome.textContent = data.nomeCompleto || '—';
+      detailCPF.textContent = data.cpf || '—';
+      updateStatusUI(data.status || 'aguardando');
+      logArea.textContent = '';
+      if(timers[protocol]) clearInterval(timers[protocol]);
+      const started = data.createdAt || Date.now();
+      timers[protocol] = setInterval(()=>{
+        const diff = Math.max(0, Date.now() - started);
+        const mm = String(Math.floor(diff/60000)).padStart(2,'0');
+        const ss = String(Math.floor(diff%60000/1000)).padStart(2,'0');
+        detailTimer.textContent = `${mm}:${ss}`;
+      },1000);
     }
-  },2000);
 
-  ref.on('value',s=>{
-    const d=s.val();
-    if(!d) return;
-    if(d.status==='ended'){ encerrarChamada(); }
-  });
-}
+    function updateStatusUI(status){
+      detailStatus.innerHTML = '';
+      const span = document.createElement('span');
+      span.className = 'status-badge ' + (status==='aguardando' ? 'status-wait' : status==='em_chamada' ? 'status-incall' : 'status-missed');
+      span.textContent = status;
+      detailStatus.appendChild(span);
+      btnEnd.style.display = status==='em_chamada' ? '' : 'none';
+    }
 
-function recusar(protocolo){
-  db.ref('calls/'+protocolo).update({status:'refused'});
-  db.ref('calls/'+protocolo).remove();
-}
+    btnRefresh.addEventListener('click', ()=> window.appAdminFetchQueue());
+    btnHowTo.addEventListener('click', ()=> tutorialOverlay.style.display = 'flex');
+    tutorialClose.addEventListener('click', ()=> tutorialOverlay.style.display = 'none');
 
-function encerrarChamada(){
-  if(currentRef){ currentRef.update({status:'ended'}); currentRef.remove(); }
-  clearInterval(callTimer); clearInterval(pingInterval);
-  if(pc){pc.close(); pc=null;}
-  if(localStream){localStream.getTracks().forEach(t=>t.stop());}
-  document.getElementById('callArea').style.display="none";
-}
+    btnReject.addEventListener('click', async ()=>{
+      if(!selectedProtocol) return;
+      await window.appAdminReject(selectedProtocol);
+      // UI updated by backend callback
+    });
+    btnAnswer.addEventListener('click', async ()=>{
+      if(!selectedProtocol) return;
+      // request mic
+      try{
+        const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+        $('localPreview').srcObject = stream;
+        $('localPreview').play().catch(()=>{});
+        await window.appAdminAnswer(selectedProtocol);
+      }catch(e){
+        alert('Permissão de microfone necessária.');
+      }
+    });
+    btnEnd.addEventListener('click', async ()=>{
+      if(!selectedProtocol) return;
+      await window.appAdminEnd(selectedProtocol);
+      // UI will update
+    });
+
+    // initial fetch
+    window.appAdminInitUI && window.appAdminInitUI();
+
+  })();
 </script>
 </body>
 </html>
