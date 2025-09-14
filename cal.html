@@ -1,401 +1,145 @@
-<!-- call-widget.html -->
-<!-- Layout branco, moderno, sem doctype conforme pedido (mas recomendo DOCTYPE em produção) -->
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Central de Atendimento — Cliente</title>
-
-<!-- Fonte -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Central de Atendimento</title>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#ffffff; --card:#f7f9fb; --accent:#0b63d6; --muted:#7b8794; --danger:#e05050;
-  }
-  html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#0b2636}
-  .center-wrap{display:flex;align-items:center;justify-content:center;height:100vh;padding:20px}
-  .card{width:100%;max-width:420px;background:var(--card);border-radius:14px;box-shadow:0 8px 30px rgba(11,38,54,0.08);padding:20px}
-  h1{margin:0;font-size:20px}
-  p.lead{color:var(--muted);margin:8px 0 18px;font-size:13px}
-  label{font-size:12px;color:var(--muted);display:block;margin-top:12px}
-  input[type="text"]{width:100%;padding:12px;border-radius:10px;border:1px solid #e6eef6;background:#fff;font-size:14px}
-  .row{display:flex;gap:10px;margin-top:16px}
-  .btn{flex:1;padding:12px;border-radius:10px;border:0;background:var(--accent);color:white;font-weight:600;cursor:pointer}
-  .btn.ghost{background:transparent;color:var(--accent);border:1px solid rgba(11,99,214,0.12)}
-  .small{font-size:12px;color:var(--muted);margin-top:10px}
-  .status{margin-top:14px;padding:12px;border-radius:10px;background:#fff;border:1px solid #e6eef6;font-size:13px}
-  .protocol{font-weight:700;color:var(--accent);font-size:16px}
-  .controls{display:flex;gap:10px;margin-top:12px}
-  .btn-red{background:var(--danger)}
-  .muted-line{font-size:12px;color:var(--muted);margin-top:6px}
-  .tutorial-overlay{position:fixed;inset:0;background:rgba(3,10,18,0.6);display:flex;align-items:center;justify-content:center;z-index:60}
-  .tutorial{background:white;padding:18px;border-radius:12px;max-width:720px;width:92%;box-shadow:0 12px 40px rgba(2,8,23,0.4)}
-  .ping{font-size:12px;color:var(--muted);margin-top:8px}
-  .hidden{display:none}
-  audio{display:none}
+body {
+  margin:0; font-family:'Public Sans',sans-serif; background:#fff; color:#222;
+  display:flex; justify-content:center; align-items:center; height:100vh;
+}
+.container {
+  width:100%; max-width:400px; background:#f9f9f9; padding:30px; border-radius:12px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.1); text-align:center;
+}
+h1 { font-size:20px; margin-bottom:20px; color:#111; }
+input {
+  width:100%; padding:12px; margin:10px 0; border:1px solid #ccc; border-radius:8px;
+}
+button {
+  background:#0066ff; color:#fff; border:none; padding:12px 20px; border-radius:8px;
+  font-size:16px; cursor:pointer; width:100%; margin-top:10px;
+}
+button:hover { background:#0051cc; }
+.status { margin-top:20px; font-weight:600; }
+.timer { margin-top:10px; font-size:14px; color:#666; }
+audio { display:none; }
 </style>
-
 </head>
 <body>
-<div class="center-wrap">
-  <div class="card" id="callCard">
-    <h1>Central de Atendimento</h1>
-    <p class="lead">Insira seu nome completo e CPF para gerar um protocolo e aguardar um atendente.</p>
-
-    <label for="nome">Nome completo</label>
-    <input id="nome" type="text" placeholder="Seu nome completo">
-
-    <label for="cpf">CPF</label>
-    <input id="cpf" type="text" placeholder="000.000.000-00">
-
-    <div class="row">
-      <button class="btn" id="callBtn">Solicitar atendimento</button>
-      <button class="btn ghost" id="cancelBtn" disabled>Cancelar</button>
-    </div>
-
-    <div id="statusBox" class="status hidden">
-      <div id="statusText">Aguardando...</div>
-      <div class="muted-line">Protocolo: <span class="protocol" id="protocolText"></span></div>
-      <div class="ping" id="pingText">Ping: —</div>
-      <div class="controls" id="callControls" style="margin-top:8px">
-        <button class="btn red btn-red" id="hangupBtn">Desligar</button>
-      </div>
-      <div class="small" id="sessionTimer">Tempo: 00:00</div>
-      <audio id="remoteAudio" autoplay></audio>
-    </div>
-
-    <div id="messageBox" class="small muted-line">Status da chamada aparecerá aqui.</div>
+<div class="container">
+  <h1>Central de Atendimento</h1>
+  <div id="form">
+    <input type="text" id="nome" placeholder="Nome completo">
+    <input type="text" id="cpf" placeholder="CPF">
+    <button onclick="iniciarAtendimento()">Solicitar Atendimento</button>
   </div>
+  <div id="statusArea" style="display:none;">
+    <p class="status" id="statusMsg">Aguardando atendente. Por favor aguarde! Pode levar alguns minutos.</p>
+    <p id="protocolo"></p>
+    <p class="timer" id="timer"></p>
+    <button id="cancelarBtn" onclick="cancelarAtendimento()">Cancelar Solicitação</button>
+    <button id="desligarBtn" style="display:none;" onclick="desligar()">Desligar</button>
+  </div>
+  <audio id="remoteAudio" autoplay></audio>
 </div>
 
-<!-- Firebase (compat) e script principal -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="script.js"></script>
 <script>
-/*
-  Client-side widget logic.
-  Usa funções do script.js para auth/db util. Trabalha com /calls/requests no RTDB.
-*/
+let protocolo=null, localStream=null, pc=null, callTimer=null, startTime=null;
 
-(function(){
-  // elementos
-  const nomeEl = document.getElementById('nome');
-  const cpfEl = document.getElementById('cpf');
-  const callBtn = document.getElementById('callBtn');
-  const cancelBtn = document.getElementById('cancelBtn');
-  const statusBox = document.getElementById('statusBox');
-  const statusText = document.getElementById('statusText');
-  const protocolText = document.getElementById('protocolText');
-  const messageBox = document.getElementById('messageBox');
-  const remoteAudio = document.getElementById('remoteAudio');
-  const hangupBtn = document.getElementById('hangupBtn');
-  const pingText = document.getElementById('pingText');
-  const sessionTimer = document.getElementById('sessionTimer');
+async function iniciarAtendimento(){
+  const nome=document.getElementById('nome').value.trim();
+  const cpf=document.getElementById('cpf').value.trim();
+  if(!nome||!cpf){alert("Preencha todos os campos");return;}
+  protocolo=String(Math.floor(Math.random()*1e12)).padStart(12,'0');
+  document.getElementById('form').style.display="none";
+  document.getElementById('statusArea').style.display="block";
+  document.getElementById('protocolo').innerText="Protocolo: "+protocolo;
 
-  let localStream = null;
-  let currentProtocol = null;
-  let callRef = null;
-  let pc = null;
-  let sessionInterval = null;
-  let sessionStart = null;
-  let pingInterval = null;
-  let answeringSupportId = null;
+  const callRef=db.ref('calls/'+protocolo);
+  await callRef.set({
+    nome, cpf, status:'waiting', createdAt:Date.now()
+  });
 
-  // gera protocolo
-  function genProtocol(){
-    const digits = '0123456789';
-    let s='';
-    for(let i=0;i<12;i++) s+=digits[Math.floor(Math.random()*10)];
-    return s;
-  }
-
-  function formatTime(sec){
-    const m = String(Math.floor(sec/60)).padStart(2,'0');
-    const s = String(sec%60).padStart(2,'0');
-    return `${m}:${s}`;
-  }
-
-  async function requestMicrophone(){
-    try{
-      localStream = await navigator.mediaDevices.getUserMedia({audio:true});
-      // não reproduz local aqui
-      return true;
-    }catch(err){
-      console.warn('microphone denied',err);
-      return false;
-    }
-  }
-
-  // colocar pedido no Firebase
-  async function createRequest(nome, cpf){
-    if(!nome || !cpf) throw new Error('Dados incompletos');
-    const proto = genProtocol();
-    const now = Date.now();
-    const cpfDigits = onlyDigits(cpf);
-    // bloqueia se já houver ligação ativa para mesmo cpf
-    const activeCheck = await db.ref('calls/active_by_cpf/'+cpfDigits).get();
-    if(activeCheck.exists()){
-      throw new Error('Existe uma ligação ativa com este CPF.');
-    }
-
-    const req = {
-      protocol: proto,
-      nome,
-      cpf: cpfDigits,
-      estado: 'aguardando',
-      criadoEm: now,
-      lastPing: now,
-      deviceHint: navigator.userAgent || 'web',
-      // place for future notification/icon
-      notifyIcon: null
-    };
-    const ref = db.ref('calls/requests/'+proto);
-    await ref.set(req);
-    // index by cpf to prevent duplicate new calls
-    await db.ref('calls/active_by_cpf/'+cpfDigits).set(proto);
-    return proto;
-  }
-
-  // update ping (client)
-  function startPing(proto){
-    if(!proto) return;
-    const ref = db.ref('calls/requests/'+proto+'/lastPing');
-    pingInterval = setInterval(()=>{
-      const t = Date.now();
-      ref.set(t);
-      // optionally measure roundtrip using server timestamp -> approximate
-    },5000);
-  }
-
-  function stopPing(){ if(pingInterval) clearInterval(pingInterval); pingInterval=null; }
-
-  // listen for status changes
-  function watchRequest(proto){
-    callRef = db.ref('calls/requests/'+proto);
-    callRef.on('value', async snap=>{
-      const v = snap.val();
-      if(!v){
-        // removed/finished
-        cleanupSession('removido');
-        return;
-      }
-      // estado
-      const st = v.estado || 'aguardando';
-      statusText.textContent = stateTextFor(st);
-      protocolText.textContent = proto;
-      document.getElementById('statusBox').classList.remove('hidden');
-      messageBox.textContent = `Estado: ${st}`;
-      if(st === 'atendido' && v.roomId){
-        // iniciar WebRTC handshake ou conectar se já iniciado
-        if(!pc) await joinRoom(proto, v.roomId, /*isCaller*/ true);
-      }
-      if(st === 'recusado' || st === 'desligado' || st==='nao_atendido'){
-        cleanupSession(st);
-      }
-      // calc ping approximate:
-      if(v.lastPing){
-        const rtt = Date.now() - v.lastPing;
-        pingText.textContent = `Ping estimado: ${rtt} ms`;
-      }
-      // session time if present
-      if(v.startedAt){
-        const seconds = Math.floor((Date.now() - v.startedAt)/1000);
-        sessionTimer.textContent = 'Tempo: '+formatTime(seconds);
+  // Timer 10min
+  setTimeout(()=>{
+    callRef.once('value').then(s=>{
+      if(s.exists() && s.val().status==='waiting'){
+        document.getElementById('statusMsg').innerText="Não atendido";
+        cancelarAtendimento();
       }
     });
-  }
+  },600000);
 
-  function stateTextFor(s){ 
-    switch(s){
-      case 'aguardando': return 'Aguardando atendente. Por favor aguarde! Pode levar alguns minutos.';
-      case 'atendido': return 'Atendido — conectando...';
-      case 'desligado': return 'Desligado';
-      case 'recusado': return 'Recusado pelo suporte';
-      case 'nao_atendido': return 'Não atendido (tempo excedido)';
-      default: return s;
-    }
-  }
-
-  // criar/join room WebRTC
-  async function joinRoom(proto, roomId, isCaller){
-    // create RTCPeerConnection
-    pc = new RTCPeerConnection({iceServers:[{urls:['stun:stun.l.google.com:19302']}]});
-    // handle remote audio
-    pc.ontrack = (ev)=> {
-      remoteAudio.srcObject = ev.streams[0];
-      remoteAudio.play().catch(()=>{});
-    };
-    // add local tracks
-    if(!localStream){
-      try{ localStream = await navigator.mediaDevices.getUserMedia({audio:true}); }
-      catch(e){ console.error('microphone failed',e); }
-    }
-    localStream.getTracks().forEach(t=>pc.addTrack(t, localStream));
-
-    // ICE candidates exchange via DB
-    const roomRef = db.ref('calls/rooms/'+roomId);
-    const callerCandidatesRef = roomRef.child(isCaller? 'callerCandidates':'calleeCandidates');
-    const calleeCandidatesRef = roomRef.child(isCaller? 'calleeCandidates':'callerCandidates');
-
-    pc.onicecandidate = (event)=>{
-      if(event.candidate){
-        const c = event.candidate.toJSON();
-        callerCandidatesRef.push(c).catch(()=>{});
-      }
-    };
-
-    if(isCaller){
-      const offer = await pc.createOffer();
-      await pc.setLocalDescription(offer);
-      await roomRef.child('offer').set({sdp:offer.sdp, type:offer.type});
-      // wait for answer
-      roomRef.child('answer').on('value', async snap=>{
-        const ans = snap.val();
-        if(ans && !pc.currentRemoteDescription){
-          const desc = {type:ans.type, sdp:ans.sdp};
-          await pc.setRemoteDescription(new RTCSessionDescription(desc));
-        }
-      });
-    } else {
-      // callee path (admin) handled in admin file; code symmetrical there
-    }
-
-    // candidate listeners
-    calleeCandidatesRef.on('child_added', snap=>{
-      const c = snap.val();
-      pc.addIceCandidate(new RTCIceCandidate(c)).catch(e=>console.warn(e));
-    });
-
-    // mark session start once connected
-    pc.onconnectionstatechange = ()=>{
-      if(pc.connectionState === 'connected'){
-        // set startedAt timestamp
-        db.ref('calls/requests/'+proto+'/startedAt').set(Date.now());
-        sessionStart = Date.now();
-        sessionInterval = setInterval(()=>{
-          const sec = Math.floor((Date.now()-sessionStart)/1000);
-          sessionTimer.textContent = 'Tempo: '+formatTime(sec);
-        },1000);
-      }
-      if(pc.connectionState === 'disconnected' || pc.connectionState==='failed' || pc.connectionState==='closed'){
-        // end call
-      }
-    };
-  }
-
-  // hangup: notify db and cleanup
-  async function hangup(proto, reason='desligado'){
-    try{
-      if(!proto) return;
-      await db.ref('calls/requests/'+proto+'/estado').set(reason);
-      // clear room and active_by_cpf
-      const reqsnap = await db.ref('calls/requests/'+proto).get();
-      if(reqsnap.exists()){
-        const cpf = reqsnap.val().cpf;
-        if(cpf) await db.ref('calls/active_by_cpf/'+cpf).remove();
-      }
-      await db.ref('calls/rooms/'+(reqsnap.val()?.roomId || '')).remove().catch(()=>{});
-      await db.ref('calls/requests/'+proto).remove();
-    }catch(e){ console.warn(e); }
-    cleanupSession(reason);
-  }
-
-  function cleanupSession(reason){
-    // stop ping/intervals
-    stopPing();
-    if(callRef) callRef.off();
-    if(pingInterval) clearInterval(pingInterval);
-    if(sessionInterval) clearInterval(sessionInterval);
-    if(pc){
-      try{ pc.getSenders().forEach(s=>s.track && s.track.stop()); }catch{}
-      try{ pc.close(); }catch{}
-      pc=null;
-    }
-    if(localStream){ localStream.getTracks().forEach(t=>t.stop()); localStream=null; }
-    currentProtocol=null;
-    callRef=null;
-    answeringSupportId=null;
-    document.getElementById('statusBox').classList.add('hidden');
-    cancelBtn.disabled=true;
-    callBtn.disabled=false;
-    messageBox.textContent = `Chamado finalizado (${reason}).`;
-  }
-
-  // Cancel before answered
-  async function cancelRequest(){
-    if(!currentProtocol) return;
-    await hangup(currentProtocol,'cancelado');
-  }
-
-  // auto-timeout 10 minutes
-  async function startAutoTimeout(proto){
-    const start = Date.now();
-    const timeoutMs = 10 * 60 * 1000;
-    const tId = setTimeout(async ()=>{
-      // mark nao_atendido if still waiting
-      const snap = await db.ref('calls/requests/'+proto+'/estado').get();
-      if(snap.exists() && snap.val() === 'aguardando'){
-        await db.ref('calls/requests/'+proto+'/estado').set('nao_atendido');
-        const cpf = (await db.ref('calls/requests/'+proto+'/cpf').get()).val();
-        if(cpf) await db.ref('calls/active_by_cpf/'+cpf).remove();
-        // remove request after marking
-        await db.ref('calls/requests/'+proto).remove();
-      }
-    }, timeoutMs);
-    return tId;
-  }
-
-  // UI handlers
-  callBtn.addEventListener('click', async ()=>{
-    try{
-      callBtn.disabled = true;
-      const nome = nomeEl.value.trim();
-      const cpf = cpfEl.value.trim();
-      if(!nome || !cpf){ alert('Preencha nome e CPF'); callBtn.disabled=false; return; }
-      const micOk = await requestMicrophone();
-      if(!micOk){ alert('Permita acesso ao microfone para prosseguir.'); callBtn.disabled=false; return; }
-      const proto = await createRequest(nome, cpf);
-      currentProtocol = proto;
-      protocolText.textContent = proto;
-      statusBox.classList.remove('hidden');
-      statusText.textContent = stateTextFor('aguardando');
-      cancelBtn.disabled=false;
-      // watch for changes
-      watchRequest(proto);
-      startPing(proto);
-      // auto-timeout handled server/client
-      startAutoTimeout(proto);
-      messageBox.textContent = 'Solicitação enviada. Aguardando atendente...';
-    }catch(err){
-      alert('Erro: '+(err.message||err));
-      callBtn.disabled=false;
-    }
+  callRef.on('value',snap=>{
+    const data=snap.val(); if(!data) return;
+    if(data.status==='accepted'){ iniciarChamada(callRef); }
+    if(data.status==='ended'){ encerrarUI("Desligado"); }
+    if(data.status==='refused'){ encerrarUI("Chamado recusado"); }
   });
+}
 
-  cancelBtn.addEventListener('click', async ()=>{
-    if(!currentProtocol) return;
-    await cancelRequest();
-  });
+async function iniciarChamada(ref){
+  document.getElementById('statusMsg').innerText="Em atendimento";
+  document.getElementById('cancelarBtn').style.display="none";
+  document.getElementById('desligarBtn').style.display="inline-block";
 
-  hangupBtn.addEventListener('click', async ()=>{
-    if(!currentProtocol) return;
-    await hangup(currentProtocol,'desligado');
-  });
+  localStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  pc=new RTCPeerConnection();
 
-  // expose small API for admin to trigger
-  window._clientCallWidget = {
-    joinRoom,
-    hangup,
-    currentProtocol: ()=>currentProtocol
+  localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));
+
+  pc.ontrack=e=>{
+    document.getElementById('remoteAudio').srcObject=e.streams[0];
   };
 
-  // request mic permission on load as asked
-  (async ()=>{ await navigator.mediaDevices.getUserMedia({audio:true}).catch(()=>{}); })();
+  const offer=await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  await ref.child('offer').set({type:offer.type,sdp:offer.sdp});
 
-})();
+  ref.child('answer').on('value',async s=>{
+    if(s.exists() && !pc.currentRemoteDescription){
+      await pc.setRemoteDescription(new RTCSessionDescription(s.val()));
+    }
+  });
+
+  ref.child('candidates/support').on('child_added',c=>{
+    pc.addIceCandidate(new RTCIceCandidate(c.val()));
+  });
+  pc.onicecandidate=e=>{
+    if(e.candidate){ ref.child('candidates/client').push(e.candidate.toJSON()); }
+  };
+
+  startTime=Date.now();
+  callTimer=setInterval(()=>{
+    const elapsed=Math.floor((Date.now()-startTime)/1000);
+    const min=String(Math.floor(elapsed/60)).padStart(2,'0');
+    const sec=String(elapsed%60).padStart(2,'0');
+    document.getElementById('timer').innerText=`Duração: ${min}:${sec}`;
+  },1000);
+}
+
+function cancelarAtendimento(){
+  if(protocolo){ db.ref('calls/'+protocolo).remove(); }
+  encerrarUI("Cancelado");
+}
+function desligar(){
+  if(protocolo){ db.ref('calls/'+protocolo+'/status').set('ended'); }
+  encerrarUI("Desligado");
+}
+function encerrarUI(msg){
+  document.getElementById('statusMsg').innerText=msg;
+  document.getElementById('desligarBtn').style.display="none";
+  document.getElementById('cancelarBtn').style.display="none";
+  clearInterval(callTimer);
+  if(pc){pc.close(); pc=null;}
+  if(localStream){localStream.getTracks().forEach(t=>t.stop());}
+}
 </script>
 </body>
 </html>
