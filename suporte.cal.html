@@ -1,95 +1,100 @@
-<!doctype html>
+<!-- admincall.html -->
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Central de Atendimento — Suporte</title>
-
-<style>
-  :root{
-    --accent:#0b74ff;
-    --bg:#fff;
-    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-  }
-  body{margin:0;background:linear-gradient(180deg,#fbfdff,#ffffff);color:#071129}
-  .wrap{max-width:1200px;margin:18px auto;padding:18px}
-  header{display:flex;align-items:center;gap:16px}
-  .brand{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#00c2ff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
-  h1{margin:0;font-size:20px}
-  .layout{display:grid;grid-template-columns:360px 1fr;gap:18px;margin-top:18px}
-  .left, .right{background:white;padding:14px;border-radius:12px;box-shadow:0 8px 30px rgba(10,18,34,0.06)}
-  .list{display:flex;flex-direction:column;gap:10px;max-height:72vh;overflow:auto;padding-right:6px}
-  .callCard{padding:12px;border-radius:10px;border:1px solid #f1f6ff;background:linear-gradient(180deg,#fff,#fbfdff);display:flex;flex-direction:column;gap:8px}
-  .callCard .meta{display:flex;align-items:center;gap:8px}
-  .callCard .meta .protocol{font-weight:700}
-  .callCard .actions{display:flex;gap:8px;margin-top:6px}
-  .btn{padding:10px;border-radius:10px;border:0;cursor:pointer}
-  .btn.accept{background:var(--accent);color:white}
-  .btn.reject{background:#ff4757;color:white}
-  .btn.small{padding:8px 10px;font-size:13px}
-  .right .details{display:flex;flex-direction:column;gap:8px}
-  .large{font-size:18px;font-weight:700}
-  .muted{color:#748096;font-size:13px}
-  .row{display:flex;gap:8px;align-items:center}
-  .timeline{margin-top:10px;display:flex;flex-direction:column;gap:6px}
-  .howto{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:60}
-  .howto .card{background:white;padding:18px;border-radius:12px;max-width:720px}
-  .ping{margin-left:auto;padding:6px 10px;border-radius:999px;background:#f0f7ff;color:var(--accent);font-weight:700}
-  @media (max-width:900px){ .layout{grid-template-columns:1fr} }
-</style>
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Central de Atendimento — Painel Suporte</title>
+  <style>
+    :root{--accent:#0066ff;--bg:#fff;--muted:#7b8597;--card:#f8f9fb;--success:#2bb673;--danger:#e94b4b}
+    body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#111}
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:1px solid #eef2f7}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand h2{margin:0;font-size:18px}
+    .main{display:grid;grid-template-columns:360px 1fr;gap:18px;padding:20px;max-width:1200px;margin:18px auto}
+    .panel{background:var(--card);padding:14px;border-radius:12px;box-shadow:0 6px 20px rgba(2,6,23,0.04)}
+    .list{display:flex;flex-direction:column;gap:10px;max-height:70vh;overflow:auto;padding-right:6px}
+    .item{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:10px;background:white;border:1px solid #eef4ff}
+    .meta{display:flex;flex-direction:column}
+    .meta .name{font-weight:700}
+    .meta .cpf{font-size:13px;color:var(--muted)}
+    button{border:0;padding:10px 12px;border-radius:10px;background:var(--accent);color:white;cursor:pointer}
+    .danger{background:var(--danger)}
+    .accept{background:#0b9444}
+    .controls{display:flex;gap:8px}
+    .right-area{display:flex;flex-direction:column;gap:12px}
+    .call-area{background:white;padding:16px;border-radius:12px;min-height:260px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+    .call-meta{display:flex;gap:16px;align-items:center;width:100%}
+    .protocol{font-size:18px;font-weight:800;color:#0b3a9f}
+    .status{font-size:13px;color:var(--muted)}
+    .timer{font-weight:700}
+    .how{background:transparent;border:1px solid #e6eefc;color:var(--accent);padding:10px;border-radius:10px}
+    audio{display:none}
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">SUP</div>
+  <header>
+    <div class="brand">
+      <img src="" alt="" style="width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#e6f0ff,#fff);"/>
       <div>
-        <h1>Painel de Suporte</h1>
-        <div class="muted">Atenda as solicitações em tempo real — fale o nome da pessoa no início</div>
+        <h2>Painel de Suporte</h2>
+        <div style="font-size:13px;color:var(--muted)">Atendimento em tempo real</div>
       </div>
-      <div style="margin-left:auto" class="ping" id="adminPing">ping: --</div>
-    </header>
+    </div>
+    <div>
+      <button id="howBtn" class="how">Como atender</button>
+    </div>
+  </header>
 
-    <div class="layout">
-      <div class="left">
-        <div style="display:flex;align-items:center;gap:8px;justify-content:space-between">
-          <strong>Fila de espera</strong>
-          <div>
-            <button class="btn small" id="btnHow">Como atender</button>
+  <div class="main">
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-weight:700">Fila de solicitações</div>
+        <div style="font-size:13px;color:var(--muted)">Atualização em tempo real</div>
+      </div>
+
+      <div class="list" id="requestsList">
+        <!-- itens serão injetados -->
+      </div>
+    </div>
+
+    <div class="right-area">
+      <div class="panel call-area" id="callArea">
+        <div style="display:flex;justify-content:space-between;width:100%">
+          <div class="call-meta">
+            <div class="protocol" id="callProtocol">—</div>
+            <div style="display:flex;flex-direction:column">
+              <div class="status" id="callStatus">Nenhuma chamada selecionada</div>
+              <div class="small" id="callerName"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="timer" id="callTimer">00:00</div>
+            <div><button id="endBtn" class="danger">Desligar</button></div>
           </div>
         </div>
-        <div class="list" id="callsList">
-          <!-- cards here -->
+
+        <div style="width:100%;margin-top:10px">
+          <div style="display:flex;gap:10px;align-items:center">
+            <button id="acceptBtn" class="accept">Atender</button>
+            <button id="rejectBtn" class="danger">Recusar</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;width:100%">
+          <div style="font-weight:700">Informações</div>
+          <div style="margin-top:8px">
+            <div class="small muted">Nome: <span id="infoNome">—</span></div>
+            <div class="small muted">CPF: <span id="infoCPF">—</span></div>
+            <div class="small muted">Última atividade: <span id="infoAt">—</span></div>
+          </div>
         </div>
       </div>
 
-      <div class="right">
-        <div class="details" id="detailPanel">
-          <div class="muted">Selecione um chamado à esquerda</div>
-        </div>
-      </div>
+      <audio id="remoteAudioAdmin" autoplay></audio>
     </div>
   </div>
 
-  <!-- overlay howto -->
-  <div class="howto" id="howOverlay">
-    <div class="card">
-      <h3>Como atender</h3>
-      <p class="muted">Passos rápidos para um atendimento de qualidade:</p>
-      <ol>
-        <li>Saúde e simpatia: cumprimente pelo nome completo. "Olá, [Nome]. Meu nome é [seu nome], em que posso ajudar?"</li>
-        <li>Mantenha microfone próximo; fale devagar e escute atentamente.</li>
-        <li>Confirme dados: <strong>CPF</strong> e solicitações.</li>
-        <li>Se precisar transferir, explique o motivo.</li>
-        <li>Finalize confirmando entendimento e encerrando cordialmente.</li>
-      </ol>
-      <div style="text-align:right;margin-top:12px">
-        <button class="btn" id="closeHow">Fechar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Firebase compat SDKs e script.js -->
+  <!-- Firebase compat libs + script.js -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -97,124 +102,131 @@
 
   <script>
     (function(){
-      const callsList = document.getElementById('callsList');
-      const detailPanel = document.getElementById('detailPanel');
-      const adminPing = document.getElementById('adminPing');
-      const howOverlay = document.getElementById('howOverlay');
-      const btnHow = document.getElementById('btnHow');
-      const closeHow = document.getElementById('closeHow');
+      const listEl = document.getElementById('requestsList');
+      const acceptBtn = document.getElementById('acceptBtn');
+      const rejectBtn = document.getElementById('rejectBtn');
+      const endBtn = document.getElementById('endBtn');
+      const callProtocol = document.getElementById('callProtocol');
+      const callStatus = document.getElementById('callStatus');
+      const callerName = document.getElementById('callerName');
+      const infoNome = document.getElementById('infoNome');
+      const infoCPF = document.getElementById('infoCPF');
+      const infoAt = document.getElementById('infoAt');
+      const callTimer = document.getElementById('callTimer');
+      const remoteAudioAdmin = document.getElementById('remoteAudioAdmin');
+      const howBtn = document.getElementById('howBtn');
 
-      btnHow.addEventListener('click', ()=> howOverlay.style.display='flex');
-      closeHow.addEventListener('click', ()=> howOverlay.style.display='none');
+      let selected = null; // {protocol, data}
+      let timerInterval = null;
 
-      // listen calls in realtime (function in script.js)
-      listenIncomingCalls((calls)=>{
-        // calls is an array of call objects {protocol, nomeCompleto, cpf, status, ts, obs}
-        callsList.innerHTML = '';
-        calls.sort((a,b)=>b.ts - a.ts);
-        calls.forEach(c=>{
+      // Ask mic on load
+      (async ()=>{
+        try{ await navigator.mediaDevices.getUserMedia({audio:true}); }catch(e){ console.warn('Microfone admin não permitido', e); }
+      })();
+
+      howBtn.onclick = ()=>{
+        // overlay / tutorial
+        alert('Como atender:\n1) Clique em uma solicitação à esquerda.\n2) Clique em ATENDER. O áudio será conectado.\n3) Fale o nome do usuário e confirme dados.\n4) Seja cortês, diga o nome da pessoa e registre o atendimento. Use o botão "Desligar" para finalizar.');
+      };
+
+      // Ouve solicitações em tempo real (fila)
+      listenIncomingRequests((items)=>{
+        // items: array de {protocol,data}
+        listEl.innerHTML = '';
+        items.forEach(it=>{
           const el = document.createElement('div');
-          el.className='callCard';
-          el.innerHTML = `
-            <div class="meta">
-              <div>
-                <div class="protocol">${c.protocol}</div>
-                <div class="muted">${c.nomeCompleto} • ${c.cpf}</div>
-              </div>
-              <div style="margin-left:auto;text-align:right">
-                <div class="muted">${timeAgo(c.ts)}</div>
-                <div class="muted">${statusLabel(c.status)}</div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="muted small">${c.obs || ''}</div>
-            </div>
-            <div class="actions">
-              <button class="btn accept" data-pro=${c.protocol}>Atender</button>
-              <button class="btn reject" data-pro=${c.protocol}>Recusar</button>
-            </div>
-          `;
-          callsList.appendChild(el);
-
-          // attach actions
-          el.querySelector('.accept').addEventListener('click', ()=> selectAndAccept(c.protocol));
-          el.querySelector('.reject').addEventListener('click', ()=> rejectCall(c.protocol));
-          // click shows details
-          el.addEventListener('click',(ev)=>{
-            if(ev.target.tagName.toLowerCase()==='button') return;
-            showDetails(c);
-          });
+          el.className = 'item';
+          el.innerHTML = `<div class="meta"><div class="name">${it.data.nomeCompleto}</div><div class="cpf">${maskCpf(it.data.cpf)} • ${timeAgo(it.data.createdAt)}</div></div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+              <div style="font-weight:700">${it.protocol}</div>
+              <div class="controls"><button data-pro="${it.protocol}" class="openBtn">Abrir</button></div>
+            </div>`;
+          listEl.appendChild(el);
         });
+
+        // attach listeners
+        Array.from(listEl.querySelectorAll('.openBtn')).forEach(b=>{
+          b.onclick = async (e)=>{
+            const protocol = e.target.getAttribute('data-pro');
+            const node = await getCallOnce(protocol);
+            if(!node) return alert('Solicitação expirada ou removida.');
+            selectCall(protocol, node);
+          };
+        });
+
+        if(items.length===0){
+          listEl.innerHTML = '<div class="small muted">Nenhuma solicitação no momento</div>';
+        }
       });
 
-      // show details
-      function showDetails(c){
-        detailPanel.innerHTML = `
-          <div><div class="muted">Protocolo</div><div class="large">${c.protocol}</div></div>
-          <div><div class="muted">Nome</div><div>${c.nomeCompleto}</div></div>
-          <div><div class="muted">CPF</div><div>${c.cpf}</div></div>
-          <div><div class="muted">Obs</div><div>${c.obs || '—'}</div></div>
-          <div style="margin-top:12px" id="liveControl"></div>
-          <div class="timeline" id="timelineArea"></div>
-        `;
+      async function selectCall(protocol, data){
+        selected = {protocol, data};
+        callProtocol.innerText = protocol;
+        callStatus.innerText = data.status || 'waiting';
+        callerName.innerText = data.nomeCompleto;
+        infoNome.innerText = data.nomeCompleto;
+        infoCPF.innerText = data.cpf;
+        infoAt.innerText = new Date(data.createdAt).toLocaleString();
       }
 
-      async function selectAndAccept(protocol){
-        // accept call (function in script.js)
-        try{
-          const supportId = 'support-'+Math.random().toString(36).slice(2,8);
-          await acceptCall(protocol, {supportId});
-          // update detail panel show controls to hangup
-          detailPanel.querySelector('#liveControl').innerHTML = `
-            <button class="btn accept" id="btnStartCall">Iniciar Ligação</button>
-            <button class="btn reject" id="btnEndCall">Encerrar</button>
-            <span style="margin-left:12px" id="callState">Conectando...</span>
-          `;
-          document.getElementById('btnStartCall').addEventListener('click', async ()=>{
-            // start as support (callee)
-            await startAsCallee(protocol, supportId, (state)=> {
-              const st = document.getElementById('callState');
-              if(st) st.textContent = state;
-            });
-            // when in call, update UI
-            document.getElementById('callState').textContent = 'Em chamada';
-          });
-          document.getElementById('btnEndCall').addEventListener('click', async ()=>{
-            await hangupCall(protocol, {by:'support'});
-            detailPanel.querySelector('#liveControl').innerHTML = '';
-          });
-        }catch(err){
-          alert('Erro ao aceitar: ' + (err.message || err));
-        }
-      }
+      acceptBtn.onclick = async ()=>{
+        if(!selected) return alert('Selecione uma solicitação à esquerda.');
+        // marca como accepted
+        await acceptRequest(selected.protocol);
+        callStatus.innerText = 'accepted';
+        // inicia como answer (callee)
+        const pc = await startAsCallee(selected.protocol, remoteAudioAdmin, {
+          onConnected: ()=> {
+            callStatus.innerText = 'ongoing';
+            startTimer();
+          },
+          onEnded: ()=> {
+            stopTimer();
+            callStatus.innerText = 'ended';
+            // limpeza já feita pelo script.js
+          }
+        });
+      };
 
-      function rejectCall(protocol){
-        if(!confirm('Recusar solicitação '+protocol+' ?')) return;
-        rejectCallBySupport(protocol);
-      }
+      rejectBtn.onclick = async ()=>{
+        if(!selected) return alert('Selecione uma solicitação.');
+        await rejectRequest(selected.protocol);
+        callStatus.innerText = 'recusado';
+        // remove seleção
+        selected = null;
+        callProtocol.innerText = '—';
+        infoNome.innerText = '—'; infoCPF.innerText='—'; infoAt.innerText='—';
+      };
 
-      // helper labels
-      function statusLabel(s){
-        switch(s){
-          case 'waiting': return 'Aguardando';
-          case 'accepted': return 'Aceito';
-          case 'in-call': return 'Em chamada';
-          case 'rejected': return 'Recusado';
-          case 'not-answered': return 'Não atendido';
-          default: return s;
-        }
+      endBtn.onclick = async ()=>{
+        if(!selected) return alert('Nenhuma chamada ativa.');
+        await endCall(selected.protocol);
+        callStatus.innerText = 'desligado';
+        stopTimer();
+      };
+
+      function startTimer(){
+        let start = Date.now();
+        callTimer.innerText = '00:00';
+        if(timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(()=>{
+          const diff = Date.now()-start;
+          const s = Math.floor(diff/1000);
+          const mm = String(Math.floor(s/60)).padStart(2,'0');
+          const ss = String(s%60).padStart(2,'0');
+          callTimer.innerText = `${mm}:${ss}`;
+        },1000);
       }
+      function stopTimer(){ if(timerInterval) clearInterval(timerInterval); timerInterval=null; callTimer.innerText='00:00'; }
+
+      // util
       function timeAgo(ts){
-        const d = Math.floor((Date.now()-ts)/1000);
-        if(d<60) return `${d}s`;
-        if(d<3600) return `${Math.floor(d/60)}m`;
-        return `${Math.floor(d/3600)}h`;
+        const d = Date.now()-ts;
+        if(d<60000) return 'há poucos segundos';
+        if(d<3600000) return 'há '+Math.floor(d/60000)+' min';
+        return new Date(ts).toLocaleString();
       }
-
-      // ping UI from script.js
-      startAdminPingLoop((ms)=>{
-        adminPing.textContent = 'ping: '+ms+'ms';
-      });
+      function maskCpf(cpf){ return (cpf||'').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4'); }
 
     })();
   </script>
