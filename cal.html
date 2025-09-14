@@ -1,295 +1,178 @@
-<!-- client-call.html -->
-<!-- Layout branco, moderno, sem doctype extra (mas manterei DOCTYPE para compatibilidade) -->
-<!DOCTYPE html>
+<!-- widget.html - incorporar em outros -->
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Central de Atendimento — Chamar Suporte</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Central de Atendimento — Cidadão</title>
 
-  <!-- Firebase compat scripts (conforme solicitado) -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<!-- Firebase compat scripts (caminhos que você indicou) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-  <link rel="stylesheet" href="client-call.css">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{--accent:#0b67a3;--bg:#ffffff;--muted:#6b7280;--danger:#dc2626}
+  html,body{height:100%;margin:0;font-family:'Public Sans',system-ui,Arial;background:var(--bg);color:#111}
+  .widget{max-width:420px;margin:18px auto;padding:20px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.08);background:#fff;border:1px solid #f1f5f9}
+  .logo{display:flex;align-items:center;gap:12px}
+  .logo .mark{width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#0477b9);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+  h1{font-size:18px;margin:12px 0 6px}
+  p.lead{margin:0;color:var(--muted);font-size:14px}
+  form{margin-top:16px;display:grid;gap:10px}
+  input{padding:12px;border-radius:8px;border:1px solid #e6eef8;font-size:14px;outline:none}
+  input:focus{box-shadow:0 0 0 4px rgba(11,103,163,0.08);border-color:var(--accent)}
+  .btn{padding:12px;border-radius:8px;border:0;background:var(--accent);color:#fff;font-weight:600;cursor:pointer}
+  .btn.secondary{background:#eef4fb;color:var(--accent);border:1px solid #d6eaf8}
+  .status{margin-top:12px;padding:12px;border-radius:10px;background:#f8fafc;border:1px dashed #e6eef8;font-size:14px}
+  .protocol{font-family:monospace;font-weight:700}
+  .actions{display:flex;gap:8px;margin-top:10px}
+  .small{font-size:13px;color:var(--muted)}
+  .floating-cancel{margin-top:8px;background:#fff;border:1px solid #f1f5f9;padding:10px;border-radius:8px}
+  .mic-pulse{display:inline-block;width:10px;height:10px;border-radius:50%;background:#10b981;margin-left:8px;animation:pulse 1.4s infinite}
+  @keyframes pulse{0%{transform:scale(.9);opacity:1}50%{transform:scale(1.4);opacity:.5}100%{transform:scale(.9);opacity:1}}
+  .call-controls{display:flex;gap:8px;margin-top:12px}
+  .square{padding:10px;border-radius:8px;border:1px solid #e6eef8;background:#fff}
+  .muted{color:var(--muted)}
+  .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#f1f5f9;font-weight:600}
+</style>
 </head>
 <body>
-  <div id="app" class="container">
-    <div class="card">
-      <header class="card-header">
-        <img src="logo.png" alt="logo" class="logo" />
-        <h1>Central de Atendimento</h1>
-        <p class="subtitle">Fale com o suporte ao vivo — áudio em tempo real.</p>
-      </header>
-
-      <main class="card-body">
-        <div id="step-form">
-          <label class="field">
-            <span>Nome completo</span>
-            <input id="nome" type="text" placeholder="João da Silva" autocomplete="name">
-          </label>
-          <label class="field">
-            <span>CPF</span>
-            <input id="cpf" type="text" placeholder="000.000.000-00" inputmode="numeric" maxlength="14" autocomplete="off">
-          </label>
-
-          <div class="actions">
-            <button id="btn-start" class="btn primary">Solicitar Atendimento</button>
-            <button id="btn-cancel-create" class="btn ghost" style="display:none;">Cancelar</button>
-          </div>
-        </div>
-
-        <div id="status-panel" class="hidden">
-          <div class="status-card">
-            <div>
-              <strong>Protocolo:</strong> <span id="protocolo"></span>
-            </div>
-            <div>
-              <strong>Status:</strong> <span id="status-text">Aguardando</span>
-            </div>
-            <div>
-              <strong>Tempo:</strong> <span id="call-timer">00:00</span>
-            </div>
-          </div>
-
-          <div class="call-actions">
-            <button id="btn-cancel" class="btn warn">Cancelar Solicitação</button>
-            <button id="btn-toggle-mute" class="btn">Mudo</button>
-            <button id="btn-end" class="btn danger" style="display:none;">Desligar</button>
-          </div>
-
-          <div class="log" id="log"></div>
-        </div>
-      </main>
-
-      <footer class="card-footer">
-        <small>Conexão: <span id="conn-state">desconhecida</span></small>
-      </footer>
+<div class="widget" id="widget">
+  <div class="logo">
+    <div class="mark">CR</div>
+    <div>
+      <h1>Central de Atendimento</h1>
+      <p class="lead">Fale com um atendente — gratuito e em tempo real</p>
     </div>
-
-    <!-- Modal "não atendido" e outros -->
-    <div id="modal" class="modal hidden">
-      <div class="modal-card">
-        <h3 id="modal-title">Aviso</h3>
-        <p id="modal-msg"></p>
-        <div class="modal-actions">
-          <button id="modal-ok" class="btn primary">OK</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- tutorial overlay (não usado aqui, só admin) -->
   </div>
 
-  <script src="script.js"></script>
-  <script>
-    // Client page-specific bindings
-    (function(){
-      const btnStart = document.getElementById('btn-start');
-      const btnCancelCreate = document.getElementById('btn-cancel-create');
-      const nomeEl = document.getElementById('nome');
-      const cpfEl = document.getElementById('cpf');
-      const statusPanel = document.getElementById('status-panel');
-      const protocoloEl = document.getElementById('protocolo');
-      const statusText = document.getElementById('status-text');
-      const btnCancel = document.getElementById('btn-cancel');
-      const btnEnd = document.getElementById('btn-end');
-      const btnMute = document.getElementById('btn-toggle-mute');
-      const callTimer = document.getElementById('call-timer');
-      const connState = document.getElementById('conn-state');
-      const logEl = document.getElementById('log');
-      const modal = document.getElementById('modal');
-      const modalTitle = document.getElementById('modal-title');
-      const modalMsg = document.getElementById('modal-msg');
-      const modalOk = document.getElementById('modal-ok');
+  <div id="formWrap">
+    <form id="callForm" onsubmit="return false">
+      <input id="nome" placeholder="Nome completo" required />
+      <input id="cpf" placeholder="CPF (somente números ou formatado)" required />
+      <div style="display:flex;gap:8px">
+        <button id="startBtn" class="btn" type="button">Iniciar atendimento</button>
+        <button id="clearBtn" class="btn secondary" type="button">Limpar</button>
+      </div>
+      <p class="small">Ao iniciar, pediremos acesso ao microfone. Não gravamos chamadas após encerrar.</p>
+    </form>
+  </div>
 
-      let localCallRef = null;
-      let localProtocol = null;
-      let localStart = null;
-      let timerInterval = null;
-      let muted = false;
+  <div id="statusWrap" style="display:none">
+    <div class="status" id="statusBox">
+      <div><strong id="statusTitle">Aguardando</strong> <span id="statusBadge" class="badge">Aguardando atendente</span></div>
+      <div style="margin-top:8px">Protocolo: <span class="protocol" id="protocolTxt">—</span></div>
+      <div style="margin-top:6px" class="small">Tempo: <span id="timeElapsed">00:00</span></div>
+      <div id="callControls" class="call-controls">
+        <button id="cancelBtn" class="square">Cancelar solicitação</button>
+        <button id="hangupBtn" class="square" style="display:none;background:#fff;border:1px solid #f1f5f9">Desligar</button>
+      </div>
+      <div id="connectionPing" class="small muted" style="margin-top:8px">Conexão: <span id="pingVal">—</span></div>
+    </div>
+  </div>
+</div>
 
-      function log(msg){
-        const p = document.createElement('div');
-        p.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
-        logEl.prepend(p);
-      }
+<script src="script.js"></script>
+<script>
+/* Widget-specific logic: usa funções do script.js globalmente exportadas */
+(async function(){
+  const nomeEl=document.getElementById('nome');
+  const cpfEl=document.getElementById('cpf');
+  const startBtn=document.getElementById('startBtn');
+  const clearBtn=document.getElementById('clearBtn');
+  const statusWrap=document.getElementById('statusWrap');
+  const statusTitle=document.getElementById('statusTitle');
+  const protocolTxt=document.getElementById('protocolTxt');
+  const timeElapsed=document.getElementById('timeElapsed');
+  const cancelBtn=document.getElementById('cancelBtn');
+  const hangupBtn=document.getElementById('hangupBtn');
+  const pingVal=document.getElementById('pingVal');
+  const statusBadge=document.getElementById('statusBadge');
 
-      function showModal(title, msg){
-        modalTitle.textContent = title;
-        modalMsg.textContent = msg;
-        modal.classList.remove('hidden');
-      }
-      modalOk.addEventListener('click', ()=> modal.classList.add('hidden'));
+  let session = null; // objeto retornado por script.js quando iniciar chamada
+  let timerInt=null;
 
-      // quick CPF normalize
-      cpfEl.addEventListener('input', ()=> {
-        let v = cpfEl.value.replace(/\D/g,'');
-        if(v.length>3) v = v.replace(/^(\d{3})(\d)/, '$1.$2');
-        if(v.length>6) v = v.replace(/^(\d{3})\.(\d{3})(\d)/,'$1.$2.$3');
-        if(v.length>9) v = v.replace(/^(\d{3}\.\d{3}\.\d{3})(\d)/,'$1-$2');
-        cpfEl.value = v.slice(0,14);
+  function formatTime(sec){
+    const mm=String(Math.floor(sec/60)).padStart(2,'0');
+    const ss=String(sec%60).padStart(2,'0');
+    return mm+':'+ss;
+  }
+
+  startBtn.onclick = async ()=>{
+    const nome=nomeEl.value.trim();
+    const cpf=cpfEl.value.trim();
+    if(!nome || !cpf){ alert('Preencha nome e CPF'); return; }
+
+    // chama função global iniciarChamadaCidadao(nome,cpf) definida em script.js
+    try{
+      startBtn.disabled=true;
+      session = await iniciarChamadaCidadao({nomeCompleto:nome, cpf});
+      // session tem {protocol, hangup, onStatus, onPing}
+      document.getElementById('formWrap').style.display='none';
+      statusWrap.style.display='block';
+      protocolTxt.textContent=session.protocol;
+      statusTitle.textContent='Aguardando';
+      statusBadge.textContent='Aguardando atendente';
+      let elapsed=0;
+      timerInt=setInterval(()=>{ elapsed++; timeElapsed.textContent=formatTime(elapsed); },1000);
+
+      // Hooks
+      session.onStatus((s)=>{
+        // s = 'ringing'|'in_call'|'ended'|'not_answered'|'canceled'
+        if(s==='in_call'){
+          statusTitle.textContent='Em chamada';
+          statusBadge.textContent='Ligado ao suporte';
+          hangupBtn.style.display='inline-block';
+          cancelBtn.style.display='none';
+        }else if(s==='ended'){
+          statusTitle.textContent='Desligado';
+          statusBadge.textContent='Desligado';
+          hangupBtn.style.display='none';
+          cancelBtn.style.display='none';
+          cleanup();
+        }else if(s==='not_answered'){
+          statusTitle.textContent='Não atendido';
+          statusBadge.textContent='Não atendido';
+          cancelBtn.style.display='none';
+          hangupBtn.style.display='none';
+          cleanup();
+        }else if(s==='canceled'){
+          statusTitle.textContent='Cancelado';
+          statusBadge.textContent='Cancelado';
+          cancelBtn.style.display='none';
+          hangupBtn.style.display='none';
+          cleanup();
+        }else if(s==='ringing'){
+          statusTitle.textContent='Chamando';
+          statusBadge.textContent='Chamando suporte...';
+        }
       });
 
-      // update connection status from script.js helper
-      window.onConnectionStateChanged = (state)=>{
-        connState.textContent = state ? 'ok' : 'offline';
+      session.onPing((ms)=>{
+        pingVal.textContent = ms + ' ms';
+      });
+
+      cancelBtn.onclick = async ()=>{
+        await session.cancel();
+      };
+      hangupBtn.onclick = async ()=>{
+        await session.hangup();
       };
 
-      // request microphone early
-      async function requestMic(){
-        try{
-          await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
-        }catch(e){
-          console.warn('Mic permission declined or error', e);
-        }
-      }
-      requestMic();
-
-      // create call
-      btnStart.addEventListener('click', async ()=>{
-        const nome = nomeEl.value.trim();
-        const cpf = cpfEl.value.trim();
-        if(!nome || cpf.replace(/\D/g,'').length < 11){
-          showModal('Erro', 'Por favor informe Nome completo e CPF válido.');
-          return;
-        }
-
-        btnStart.disabled = true;
-        btnCancelCreate.style.display = 'inline-block';
-        log('Criando solicitação...');
-
-        try{
-          // createCall returns callRef path and protocol
-          const call = await window.createCall({
-            nomeCompleto: nome,
-            cpf,
-            meta: {origin: 'client-web'}
-          });
-          localCallRef = call.ref;
-          localProtocol = call.protocol;
-          protocoloEl.textContent = localProtocol;
-          statusPanel.classList.remove('hidden');
-          document.getElementById('step-form').style.display = 'none';
-          statusText.textContent = 'Aguardando atendente';
-          localStart = Date.now();
-          startTimer();
-
-          // listen for status updates for this call (provided by script.js)
-          window.onCallUpdate(localCallRef, (data)=>{
-            if(!data) return;
-            statusText.textContent = translateStatus(data.status);
-            if(data.status === 'in-call') {
-              btnEnd.style.display = 'inline-block';
-              btnCancel.style.display = 'none';
-              btnMute.style.display = 'inline-block';
-            }
-            if(data.status === 'ended' || data.status === 'recused' || data.status === 'nao_atendido'){
-              showModal('Finalizado', data.reason || 'Encerrado');
-              stopAndCleanup();
-            }
-          });
-
-          // show push (local) notify
-          window.showLocalNotification(`Solicitação enviada - ${localProtocol}`, 'Aguarde atendimento. Você pode cancelar.');
-          log('Protocolo gerado: ' + localProtocol);
-
-        }catch(err){
-          console.error(err);
-          showModal('Erro', err.message || 'Erro ao criar solicitação');
-          btnStart.disabled = false;
-        }finally{
-          btnCancelCreate.style.display = 'none';
-        }
-      });
-
-      btnCancelCreate.addEventListener('click', ()=>{
-        btnStart.disabled = false; btnCancelCreate.style.display='none';
-      });
-
-      btnCancel.addEventListener('click', async ()=>{
-        if(!localCallRef) return;
-        await window.cancelCall(localCallRef, {reason:'cancelado_pelo_usuario'});
-        stopAndCleanup();
-      });
-
-      btnEnd.addEventListener('click', async ()=>{
-        if(!localCallRef) return;
-        await window.endCall(localCallRef, {reason:'desligado_pelo_usuario'});
-        stopAndCleanup();
-      });
-
-      btnMute.addEventListener('click', ()=>{
-        muted = !muted;
-        btnMute.textContent = muted ? 'Desmutar' : 'Mudo';
-        window.setLocalMute(muted);
-      });
-
-      function translateStatus(s){
-        const map = {
-          waiting: 'Aguardando atendente',
-          in-call: 'Em atendimento',
-          recused: 'Recusado',
-          ended: 'Desligado',
-          nao_atendido: 'Não atendido'
-        };
-        return map[s] || s;
-      }
-
-      function startTimer(){
-        clearInterval(timerInterval);
-        timerInterval = setInterval(()=>{
-          if(!localStart) return;
-          const d = Date.now() - localStart;
-          const m = Math.floor(d/60000); const s = Math.floor((d%60000)/1000);
-          callTimer.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-        }, 1000);
-      }
-      function stopTimer(){ clearInterval(timerInterval); timerInterval = null; }
-
-      function stopAndCleanup(){
-        stopTimer();
-        protocol = null;
-        localCallRef = null;
-        btnStart.disabled = false;
-        document.getElementById('step-form').style.display = '';
-        statusPanel.classList.add('hidden');
-      }
-
-    })();
-  </script>
-  <style>
-    /* Basic styles inline for portability (you may separate to client-call.css) */
-    :root{
-      --bg:#ffffff; --primary:#0b5cff; --accent:#0b5cff; --muted:#9aa4b2; --danger:#ff4d4f;
-      font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;
+    }catch(err){
+      alert('Erro ao iniciar: '+(err?.message||err));
+      startBtn.disabled=false;
     }
-    body{background:var(--bg); color:#111; margin:0; padding:20px; display:flex; justify-content:center; align-items:flex-start; min-height:100vh;}
-    .container{width:100%;max-width:820px}
-    .card{background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(15,23,42,0.08); overflow:hidden; border:1px solid #f0f4f8}
-    .card-header{padding:24px;border-bottom:1px solid #f3f6fb}
-    .logo{width:44px;height:44px;object-fit:contain;margin-bottom:8px}
-    .card-header h1{margin:0;font-size:20px}
-    .card-header .subtitle{margin:6px 0 0;color:var(--muted);font-size:13px}
-    .card-body{padding:20px}
-    .field{display:block;margin-bottom:12px}
-    .field span{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
-    input[type="text"]{width:100%;padding:12px;border-radius:8px;border:1px solid #e6eef8;background:#fbfdff}
-    .actions{display:flex;gap:8px;margin-top:10px}
-    .btn{padding:10px 14px;border-radius:10px;border:0;background:#eef4ff;color:var(--primary);cursor:pointer}
-    .btn.primary{background:var(--primary);color:#fff}
-    .btn.warn{background:#ffdca3;color:#7a4b00}
-    .btn.danger{background:var(--danger);color:#fff}
-    .btn.ghost{background:transparent;border:1px solid #e6eef8;color:var(--muted)}
-    .status-card{padding:14px;border-radius:10px;background:#fbfdff;border:1px solid #eef4ff;margin-bottom:12px}
-    .call-actions{display:flex;gap:8px}
-    .hidden{display:none}
-    .modal{position:fixed;inset:0;background:rgba(2,6,23,0.5);display:flex;align-items:center;justify-content:center}
-    .modal-card{background:#fff;padding:18px;border-radius:10px;max-width:420px;box-shadow:0 8px 40px rgba(2,6,23,0.2)}
-    .modal-actions{text-align:right}
-    .log{max-height:140px;overflow:auto;margin-top:10px;font-size:12px;color:var(--muted)}
-    footer.card-footer{padding:12px;border-top:1px solid #f3f6fb;text-align:right}
-  </style>
+  };
+
+  clearBtn.onclick = ()=>{ nomeEl.value=''; cpfEl.value=''; };
+  function cleanup(){
+    if(timerInt){ clearInterval(timerInt); timerInt=null; }
+  }
+
+})();
+</script>
 </body>
 </html>
