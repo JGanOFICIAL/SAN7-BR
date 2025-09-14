@@ -1,264 +1,222 @@
-<!doctype html>
+<!-- cliente.html -->
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Central de Atendimento — Cidadão</title>
-
-<!-- Styles: moderno, branco -->
-<style>
-  :root{
-    --accent:#0b74ff;
-    --muted:#707785;
-    --bg:#ffffff;
-    --surface:#fbfdff;
-    --shadow: 0 6px 20px rgba(11,20,40,0.06);
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  }
-  html,body{height:100%;margin:0;background:var(--bg);color:#0b1b2b}
-  .container{max-width:920px;margin:32px auto;padding:28px;background:var(--surface);box-shadow:var(--shadow);border-radius:14px;}
-  header{display:flex;align-items:center;gap:16px}
-  header h1{margin:0;font-size:20px}
-  .brand-dot{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#00c2ff);display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
-  form{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-  input{width:100%;padding:12px;border-radius:10px;border:1px solid #e6eef7;background:white;font-size:15px;box-sizing:border-box}
-  .full{grid-column:1/-1}
-  .actions{display:flex;gap:10px;align-items:center;margin-top:14px}
-  button{padding:12px 16px;border-radius:10px;border:0;background:var(--accent);color:white;font-weight:600;cursor:pointer}
-  button.ghost{background:transparent;color:var(--accent);border:1px solid rgba(11,116,255,0.12)}
-  .panel{margin-top:18px;padding:16px;border-radius:12px;background:linear-gradient(180deg,#fff,#fbfdff);box-shadow:0 4px 12px rgba(15,23,42,0.04)}
-  .status{font-size:15px;color:var(--muted)}
-  .protocol{font-weight:700;font-size:18px;color:#0b2b4a}
-  .small{font-size:13px;color:var(--muted)}
-  .hidden{display:none}
-  .controls{display:flex;gap:10px;margin-top:12px}
-  .danger{background:#ff4757;color:white}
-  .row{display:flex;gap:10px;align-items:center}
-  .ping-badge{margin-left:auto;background:#f1f6ff;padding:6px 10px;border-radius:999px;font-weight:600}
-  .mini{font-size:12px;color:var(--muted)}
-  footer{margin-top:18px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
-  @media (max-width:720px){
-    .container{margin:12px;padding:16px}
-    form{grid-template-columns:1fr}
-  }
-</style>
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Central de Atendimento — Solicitar</title>
+  <style>
+    /* CSS moderno, branco, espaçamento, responsivo */
+    :root{
+      --accent:#0066ff;
+      --muted:#7b8597;
+      --bg:#ffffff;
+      --card:#f8f9fb;
+      --danger:#e94b4b;
+      --success:#2bb673;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    html,body{height:100%;background:var(--bg);margin:0;color:#111;}
+    .container{max-width:960px;margin:36px auto;padding:28px;box-shadow:0 8px 30px rgba(17,24,39,0.06);border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,0.98),#fff);display:grid;grid-template-columns:1fr 360px;gap:20px;}
+    @media(max-width:900px){.container{grid-template-columns:1fr; padding:20px}}
+    .left{padding:18px}
+    h1{margin:0 0 8px;font-size:22px}
+    p.lead{color:var(--muted);margin:0 0 18px}
+    .card{background:var(--card);border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.5)}
+    label{display:block;font-size:13px;color:#333;margin-bottom:6px}
+    input[type="text"], input[type="tel"]{width:100%;padding:12px;border-radius:10px;border:1px solid #e6e9ef;background:#fff;font-size:15px}
+    .row{display:flex;gap:12px}
+    button{background:var(--accent);color:white;padding:12px 16px;border-radius:10px;border:0;font-weight:600;cursor:pointer}
+    button.ghost{background:transparent;color:var(--accent);border:1px solid rgba(0,102,255,0.12)}
+    .status{margin-top:12px;font-size:15px;color:var(--muted)}
+    .protocol{font-weight:700;color:#0b3a9f;font-size:18px;margin-top:6px}
+    .small{font-size:13px;color:var(--muted)}
+    .right{padding:18px;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center}
+    .waiting-box{width:100%;text-align:center;padding:18px;border-radius:12px;background:linear-gradient(180deg,#fff,#f6fbff);border:1px solid #eef6ff}
+    .big-msg{font-size:18px;font-weight:700}
+    .muted{color:var(--muted)}
+    .controls{display:flex;gap:8px;margin-top:12px}
+    .btn-danger{background:var(--danger)}
+    .overlay{position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(8,10,20,0.45);display:flex;align-items:center;justify-content:center;z-index:200}
+    .tutorial{background:white;padding:18px;border-radius:12px;max-width:820px;box-shadow:0 18px 60px rgba(2,6,23,0.3)}
+    audio{display:none}
+    .ping{font-size:12px;color:var(--muted);margin-top:8px}
+    .secure{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:#f3f8ff;border:1px solid #e9f2ff;font-size:13px}
+  </style>
 </head>
 <body>
-  <div class="container" role="main">
-    <header>
-      <div class="brand-dot">AT</div>
-      <div>
-        <h1>Central de Atendimento</h1>
-        <div class="small">Atendimento por voz em tempo real</div>
-      </div>
-      <div style="margin-left:auto" class="ping-badge" id="userPing">ping: --</div>
-    </header>
-
-    <form id="callForm" autocomplete="off" onsubmit="return false;">
-      <div class="full">
-        <label for="nome">Nome completo</label>
-        <input id="nome" required placeholder="Seu nome completo"/>
-      </div>
-
-      <div>
-        <label for="cpf">CPF</label>
-        <input id="cpf" required placeholder="000.000.000-00" maxlength="14"/>
-      </div>
-
-      <div>
-        <label for="obs">Observação (opcional)</label>
-        <input id="obs" placeholder="Ex.: motivo do contato (opcional)"/>
-      </div>
-
-      <div class="full actions">
-        <button id="btnStart">Iniciar Atendimento</button>
-        <button id="btnCancel" class="ghost" type="button">Cancelar</button>
-      </div>
-    </form>
-
-    <div class="panel" id="panelWaiting" style="display:none">
-      <div class="row">
+  <div class="container">
+    <div class="left">
+      <div style="display:flex;align-items:center;justify-content:space-between">
         <div>
-          <div class="status">Protocolo</div>
-          <div class="protocol" id="protocolNumber">—</div>
+          <h1>Central de Atendimento</h1>
+          <p class="lead">Atendimento por voz em tempo real. Preencha seus dados para abrir a solicitação.</p>
         </div>
-        <div style="margin-left:auto;text-align:right">
-          <div class="small">Status</div>
-          <div id="statusText">Aguardando atendente</div>
+        <div class="secure">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v6a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-6a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5z" stroke="#0b3a9f" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div style="display:flex;flex-direction:column">
+            <span style="font-weight:700;font-size:13px">Conexão segura</span>
+            <span class="small">Autenticação e criptografia</span>
+          </div>
         </div>
       </div>
 
-      <div style="margin-top:12px;">
-        <div class="small">Aguardando atendente. Por favor aguarde! Pode levar alguns minutos.</div>
+      <div class="card">
+        <label>Nome completo</label>
+        <input id="nome" type="text" placeholder="Ex: Maria Silva">
       </div>
 
-      <div class="controls" id="inCallControls" style="display:none">
-        <button id="btnHangup" class="danger">Desligar</button>
+      <div class="card">
+        <label>CPF</label>
+        <input id="cpf" type="tel" inputmode="numeric" placeholder="000.000.000-00">
       </div>
 
-      <div class="controls" id="preCallControls" style="margin-top:12px">
-        <button id="btnCancelRequest" class="ghost">Cancelar solicitação</button>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button id="startBtn">Abrir solicitação</button>
+        <button class="ghost" id="howBtn">Como funciona</button>
       </div>
+
+      <div class="status" id="statusBox"></div>
+
+      <div style="margin-top:16px" class="small muted">
+        Ao iniciar, será solicitado acesso ao microfone. O atendimento pode levar alguns minutos.
+      </div>
+
     </div>
 
-    <footer>
-      <div class="mini">Conexão: <span id="netQuality">—</span></div>
-      <div class="mini">Autenticação segura via Firebase</div>
-    </footer>
+    <div class="right">
+      <div class="waiting-box" id="waitingPanel">
+        <div id="waitingTitle"><span class="big-msg">Nenhuma solicitação ativa</span></div>
+        <div id="protocolArea" style="display:none">
+          <div class="muted small">Protocolo</div>
+          <div class="protocol" id="protocolNum"></div>
+          <div class="status" id="waitingMsg">Aguardando atendente. Por favor aguarde! Pode levar alguns minutos.</div>
+          <div class="controls">
+            <button id="cancelBtn" class="btn-danger">Cancelar solicitação</button>
+          </div>
+          <div class="ping" id="pingStatus"></div>
+        </div>
+      </div>
+
+      <div class="card" style="width:100%">
+        <div style="font-weight:700">Privacidade</div>
+        <div class="small muted" style="margin-top:8px">Seu CPF é usado apenas para controle de duplicidade e autenticação. A chamada não fica gravada após encerrar.</div>
+      </div>
+    </div>
   </div>
 
-  <!-- Firebase compat SDKs e script.js (usuário pediu estes caminhos) -->
+  <audio id="remoteAudio" autoplay></audio>
+
+  <!-- Firebase compat libs + script.js (você já possui) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script src="script.js"></script>
 
   <script>
-    // Client-side flow using functions implemented in script.js
-    (function(){
-      // elements
+    // Lógica apenas da UI desta página, chamando funções do script.js
+    (async function(){
       const nomeEl = document.getElementById('nome');
       const cpfEl = document.getElementById('cpf');
-      const obsEl = document.getElementById('obs');
-      const btnStart = document.getElementById('btnStart');
-      const btnCancel = document.getElementById('btnCancel');
-      const panel = document.getElementById('panelWaiting');
-      const protocolNumberEl = document.getElementById('protocolNumber');
-      const statusText = document.getElementById('statusText');
-      const btnCancelRequest = document.getElementById('btnCancelRequest');
-      const btnHangup = document.getElementById('btnHangup');
-      const inCallControls = document.getElementById('inCallControls');
-      const preCallControls = document.getElementById('preCallControls');
-      const userPing = document.getElementById('userPing');
-      const netQuality = document.getElementById('netQuality');
+      const startBtn = document.getElementById('startBtn');
+      const howBtn = document.getElementById('howBtn');
+      const statusBox = document.getElementById('statusBox');
+      const waitingPanel = document.getElementById('waitingPanel');
+      const protocolArea = document.getElementById('protocolArea');
+      const protocolNumEl = document.getElementById('protocolNum');
+      const waitingMsg = document.getElementById('waitingMsg');
+      const cancelBtn = document.getElementById('cancelBtn');
+      const remoteAudio = document.getElementById('remoteAudio');
+      const pingStatus = document.getElementById('pingStatus');
 
       let currentProtocol = null;
-      let localStream = null;
-      let deviceId = localStorage.getItem('deviceId') || ('d-'+Math.random().toString(36).slice(2,10));
-      localStorage.setItem('deviceId', deviceId);
+      let callState = null; // waiting, accepted, ongoing, ended
 
-      // request microphone immediately (will be asked later too)
-      async function requestMicFirst(){
+      // Requisita microfone logo que entra (permitir ou não)
+      async function askMic(){
         try{
           await navigator.mediaDevices.getUserMedia({audio:true});
         }catch(e){
-          console.warn('Mic permission not granted yet.', e);
+          console.warn('Microfone não permitido:', e);
         }
       }
-      requestMicFirst();
+      askMic();
 
-      // format CPF simple
-      cpfEl.addEventListener('input', (e)=>{
-        let v = e.target.value.replace(/\D/g,'').slice(0,11);
-        v = v.replace(/^(\d{3})(\d)/,'$1.$2');
-        v = v.replace(/^(\d{3})\.(\d{3})(\d)/,'$1.$2.$3');
-        v = v.replace(/\.(\d{3})(\d)/,'.$1-$2');
-        e.target.value = v;
-      });
+      howBtn.onclick = () => {
+        alert('Passo a passo rápido:\n1) Preencha nome e CPF.\n2) Clique em "Abrir solicitação".\n3) Aguarde o atendente aceitar. Quando aceitar, sua voz será transmitida.\n4) Você pode cancelar antes do atendimento ou desligar durante a ligação.');
+      };
 
-      function updatePingUI(ms){
-        userPing.textContent = 'ping: ' + (ms ? ms + 'ms' : '--');
-      }
-
-      // Start call
-      btnStart.addEventListener('click', async ()=>{
+      startBtn.onclick = async ()=>{
         const nome = nomeEl.value.trim();
         const cpf = cpfEl.value.trim();
-        const obs = obsEl.value.trim();
-        if(!nome || !cpf){ alert('Preencha nome e CPF'); return; }
-
+        if(!nome || !cpf){ statusBox.innerText='Preencha nome e CPF.'; return; }
+        startBtn.disabled = true; startBtn.innerText='Abrindo...';
         try{
-          // create call via function in script.js: createCallForCitizen
-          const result = await createCallForCitizen({nomeCompleto:nome, cpf, obs, deviceId});
-          currentProtocol = result.protocol;
-          protocolNumberEl.textContent = currentProtocol;
-          panel.style.display = 'block';
-          statusText.textContent = 'Aguardando atendente';
-          // listen for updates
-          listenCallUpdates(currentProtocol, async (snap)=>{
-            if(!snap){ // removed
-              statusText.textContent = 'Finalizado';
-              panel.style.display = 'none';
-              currentProtocol = null;
-              stopLocalStream();
-              return;
+          const res = await criarSolicitacao({nomeCompleto:nome, cpf});
+          // res = { protocol }
+          currentProtocol = res.protocol;
+          protocolNumEl.innerText = currentProtocol;
+          protocolArea.style.display='block';
+          waitingPanel.querySelector('.big-msg').style.display='none';
+          statusBox.innerText = '';
+          callState = 'waiting';
+          // exibe ping periodicamente
+          window._callPingInterval = monitorPing(currentProtocol, pingStatus);
+          // ouve status da solicitação
+          const unsub = listenCallStatus(currentProtocol, async (s)=>{
+            // s: {status:'waiting'|'accepted'|'ongoing'|'ended'|'not_answered', supportId, acceptedAt}
+            if(!s) return;
+            if(s.status === 'accepted'){
+              waitingMsg.innerText = 'Atendido! Aguardando conexão...';
+              callState = 'accepted';
             }
-            const data = snap;
-            statusText.textContent = getStatusLabel(data.status);
-            if(data.status === 'accepted' && data.supportId){
-              // start WebRTC as caller
-              preCallControls.style.display = 'none';
-              inCallControls.style.display = 'flex';
-              await startAsCaller(currentProtocol);
+            if(s.status === 'ongoing'){
+              waitingMsg.innerText = 'Conectado. Ligação em andamento.';
+              callState = 'ongoing';
             }
-            if(data.status === 'in-call'){
-              preCallControls.style.display = 'none';
-              inCallControls.style.display = 'flex';
+            if(s.status === 'not_answered'){
+              waitingMsg.innerText = 'Não atendido. Por favor tente novamente mais tarde.';
+              callState = 'not_answered';
+              cleanAfterEnd();
+              unsub();
             }
-            if(data.status === 'not-answered' || data.status==='rejected'){
-              // show message and clear after short delay
-              statusText.textContent = data.status === 'not-answered' ? 'Não atendido' : 'Recusado';
-              setTimeout(()=>{ panel.style.display='none'; }, 3000);
-            }
-            // update ping UI if present
-            if(data.ping && data.ping.client){
-              updatePingUI(data.ping.client);
+            if(s.status === 'ended'){
+              waitingMsg.innerText = 'Desligado.';
+              callState = 'ended';
+              cleanAfterEnd();
+              unsub();
             }
           });
 
-          // show ping updates (local ping computation)
-          startPingLoopForCall(currentProtocol, (ms)=>{
-            netQuality.textContent = (ms < 200 ? 'boa' : (ms < 500 ? 'ok' : 'ruim')) + ' ('+ms+'ms)';
-            updatePingUI(ms);
+          // Conecta WebRTC como "caller" (solicitante)
+          const pc = await startAsCaller(currentProtocol, remoteAudio, {
+            onConnected: ()=> console.log('WebRTC: conectado (caller)'),
+            onEnded: ()=> { console.log('Chamada encerrada (caller)'); cleanAfterEnd(); }
           });
+
+          // expõe cancel/hangup
+          cancelBtn.onclick = async ()=>{
+            await cancelarSolicitacao(currentProtocol);
+            waitingMsg.innerText = 'Solicitação cancelada.';
+            cleanAfterEnd();
+            unsub();
+          };
 
         }catch(err){
-          alert('Erro ao iniciar: ' + (err.message || err));
           console.error(err);
+          statusBox.innerText = (err && err.message) ? err.message : 'Erro ao abrir solicitação.';
+        } finally {
+          startBtn.disabled = false; startBtn.innerText = 'Abrir solicitação';
         }
-      });
+      };
 
-      btnCancel.addEventListener('click', ()=>{ // reset form
-        document.getElementById('callForm').reset();
-      });
-
-      btnCancelRequest.addEventListener('click', async ()=>{
-        if(!currentProtocol) return;
-        await cancelCall(currentProtocol, {initiator:'user'});
-        panel.style.display = 'none';
-        stopLocalStream();
+      function cleanAfterEnd(){
+        try{
+          if(window._callPingInterval) clearInterval(window._callPingInterval);
+        }catch(e){}
+        protocolArea.style.display='none';
+        waitingPanel.querySelector('.big-msg').style.display='block';
         currentProtocol = null;
-      });
-
-      btnHangup.addEventListener('click', async ()=>{
-        if(!currentProtocol) return;
-        await hangupCall(currentProtocol, {by:'user'});
-        panel.style.display = 'none';
-        stopLocalStream();
-        currentProtocol = null;
-      });
-
-      // helpers
-      function getStatusLabel(s){
-        switch(s){
-          case 'waiting': return 'Aguardando atendente';
-          case 'accepted': return 'Conectando...';
-          case 'in-call': return 'Em chamada';
-          case 'rejected': return 'Recusado';
-          case 'ended': return 'Desligado';
-          case 'not-answered': return 'Não atendido';
-          default: return s || '—';
-        }
       }
-
-      function stopLocalStream(){
-        try{ if(localStream){ localStream.getTracks().forEach(t=>t.stop()); localStream=null; } }catch(e){}
-      }
-
-      // expose some functions for debugging (they are implemented in script.js)
-      window.__u = { startAsCaller, stopLocalStream };
 
     })();
   </script>
