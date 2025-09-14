@@ -1,5 +1,3 @@
-// script.js (completo - mantenha o header compat firebase que você já usa)
-
 // ===== Firebase (Compat) — Config =====
 const firebaseConfig = {
   apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
@@ -17,7 +15,7 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 const db = firebase.database();
 
-// ===== Util (preservadas) =====
+// ===== Util =====
 function onlyDigits(str){ return (str||'').replace(/\D/g,''); }
 
 function traduzErroAuth(err){
@@ -50,6 +48,7 @@ async function protegerPagina(){
   });
 }
 
+// ===== Auth =====
 async function loginComEmail(email, senha){
   return auth.signInWithEmailAndPassword(email, senha);
 }
@@ -67,7 +66,7 @@ async function registrarCidadao(perfil, senha){
   const cpfNum = onlyDigits(perfil.cpf);
   const refIdx = db.ref('cpf_to_uid/'+cpfNum);
   const uidReservado = await refIdx.transaction(current=>{
-    if(current === null){ return 'PENDING'; } // reserva
+    if(current === null){ return 'PENDING'; }
     return;
   }, undefined, false).then(res=>res.committed ? res.snapshot.val() : null);
 
@@ -78,6 +77,7 @@ async function registrarCidadao(perfil, senha){
   try{
     const cred = await auth.createUserWithEmailAndPassword(perfil.email, senha);
     const uid = cred.user.uid;
+
     const dados = {
       uid,
       nomeCompleto: perfil.nomeCompleto,
@@ -91,6 +91,7 @@ async function registrarCidadao(perfil, senha){
     };
     await db.ref('users/'+uid).set(dados);
     await refIdx.set(uid);
+
     return uid;
   }catch(err){
     await db.ref('cpf_to_uid/'+cpfNum).set(null);
@@ -98,6 +99,7 @@ async function registrarCidadao(perfil, senha){
   }
 }
 
+// ===== Perfil =====
 async function obterPerfil(uid){
   const snap = await db.ref('users/'+uid).get();
   return snap.exists() ? snap.val() : null;
@@ -119,109 +121,57 @@ async function atualizarContatoEndereco(uid, {telefone, endereco}){
   return novo;
 }
 
-/* =========================
-   CHAMADAS / WEBRTC (NOVAS)
-   - sinalização via RTDB: /calls/rooms/{roomId} e /calls/requests/{protocol}
-   - protege duplicidade por /calls/active_by_cpf/{cpf}
-   - estados em requests: aguardando, atendido, recusado, desligado, nao_atendido, cancelado
-   ========================= */
-
-async function createCallRequest(nome, cpf){
-  const proto = (function(){
-    const digits = '0123456789'; let s='';
-    for(let i=0;i<12;i++) s+=digits[Math.floor(Math.random()*10)];
-    return s;
-  })();
-  const now = Date.now();
-  const cpfDigits = onlyDigits(cpf);
-  // check duplication
-  const active = await db.ref('calls/active_by_cpf/'+cpfDigits).get();
-  if(active.exists()){
-    throw new Error('Já existe uma chamada ativa para este CPF.');
-  }
-  const req = {
-    protocol: proto,
-    nome,
-    cpf: cpfDigits,
-    estado: 'aguardando',
-    criadoEm: now,
-    lastPing: now,
-    deviceHint: navigator.userAgent || 'web',
-    notifyIcon: null
-  };
-  await db.ref('calls/requests/'+proto).set(req);
-  await db.ref('calls/active_by_cpf/'+cpfDigits).set(proto);
-  return proto;
+// ===== PUSH NOTIFICATIONS =====
+let messaging;
+try {
+  messaging = firebase.messaging();
+} catch(e) {
+  console.warn("Push não disponível neste ambiente.");
 }
 
-async function cancelCallRequest(protocol){
-  const snap = await db.ref('calls/requests/'+protocol).get();
-  if(!snap.exists()) return;
-  const cpf = snap.val().cpf;
-  await db.ref('calls/requests/'+protocol+'/estado').set('cancelado');
-  if(cpf) await db.ref('calls/active_by_cpf/'+cpf).remove();
-  await db.ref('calls/rooms/'+('room-'+protocol)).remove().catch(()=>{});
-  await db.ref('calls/requests/'+protocol).remove().catch(()=>{});
+// Registrar Service Worker para notificações
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/firebase-messaging-sw.js')
+  .then(reg => {
+    console.log('Service Worker registrado:', reg);
+  })
+  .catch(err => console.error('Erro ao registrar SW:', err));
 }
 
-async function markNotAnswered(protocol){
-  await db.ref('calls/requests/'+protocol+'/estado').set('nao_atendido');
-  const cpf = (await db.ref('calls/requests/'+protocol+'/cpf').get()).val();
-  if(cpf) await db.ref('calls/active_by_cpf/'+cpf).remove();
-  await db.ref('calls/requests/'+protocol).remove().catch(()=>{});
-}
-
-// helper to remove after end
-async function clearCall(protocol){
-  const snap = await db.ref('calls/requests/'+protocol).get();
-  if(!snap.exists()) return;
-  const cpf = snap.val().cpf;
-  if(cpf) await db.ref('calls/active_by_cpf/'+cpf).remove();
-  const roomId = snap.val().roomId;
-  if(roomId) await db.ref('calls/rooms/'+roomId).remove().catch(()=>{});
-  await db.ref('calls/requests/'+protocol).remove().catch(()=>{});
-}
-
-// utility for server-side like timeouts: you can also run cron or cloud function. But client sets a timeout on creation
-function startAutoTimeoutFor(protocol, ms=10*60*1000){
-  setTimeout(async ()=>{
-    const snap = await db.ref('calls/requests/'+protocol+'/estado').get();
-    if(snap.exists() && snap.val() === 'aguardando'){
-      await markNotAnswered(protocol);
+async function solicitarPermissaoPush(uid){
+  if (!messaging) return;
+  try {
+    const token = await messaging.getToken({
+      vapidKey: "BOM_COLOCAR_SUA_VAPID_KEY_AQUI" // 🔑 coloque sua chave pública aqui
+    });
+    if (token) {
+      await db.ref('fcmTokens/'+uid).set(token);
     }
-  }, ms);
+  } catch (err) {
+    console.error("Erro ao obter token de notificação:", err);
+  }
 }
 
-/* =========================
-   Signaling helpers (room creation)
-   ========================= */
-
-async function createRoomForSupport(protocol){
-  const roomId = 'room-'+protocol;
-  await db.ref('calls/rooms/'+roomId).set({createdBy:'support', createdAt:Date.now()});
-  await db.ref('calls/requests/'+protocol+'/roomId').set(roomId);
-  await db.ref('calls/requests/'+protocol+'/estado').set('atendido');
-  return roomId;
+// Receber notificações foreground
+if (messaging) {
+  messaging.onMessage(payload => {
+    console.log("Mensagem recebida em foreground:", payload);
+    const { title, body, icon } = payload.notification;
+    new Notification(title, {
+      body,
+      icon: icon || "/icone.png" // 🔔 local reservado para imagem
+    });
+  });
 }
 
-/* =========================
-   Small helpers for ping / connection quality
-   ========================= */
-function clientStartPing(protocol){
-  const ref = db.ref('calls/requests/'+protocol+'/lastPing');
-  const id = setInterval(()=> ref.set(Date.now()), 5000);
-  return ()=> clearInterval(id);
-}
+// ===== Função disparo de notificação =====
+async function enviarNotificacaoPara(uidDestino, titulo, mensagem, icone="/icone.png"){
+  const snap = await db.ref('fcmTokens/'+uidDestino).get();
+  if (!snap.exists()) return;
 
-/* =========================
-   Export functions so pages can call them if needed
-   ========================= */
-window.calls = {
-  createCallRequest,
-  cancelCallRequest,
-  startAutoTimeoutFor,
-  createRoomForSupport,
-  clearCall,
-  markNotAnswered,
-  clientStartPing
-};
+  const token = snap.val();
+  // Aqui normalmente você usaria Cloud Functions para enviar via FCM HTTP v1
+  // Exemplo: fetch para endpoint do Firebase Cloud Messaging
+  // Por simplicidade, deixo o local preparado
+  console.log("Enviar push para:", token, titulo, mensagem);
+}
