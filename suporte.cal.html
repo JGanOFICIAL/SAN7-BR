@@ -1,100 +1,87 @@
-<!-- admincall.html -->
+<!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Central de Atendimento — Painel Suporte</title>
+  <title>Painel de Suporte — Admin Call</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <style>
-    :root{--accent:#0066ff;--bg:#fff;--muted:#7b8597;--card:#f8f9fb;--success:#2bb673;--danger:#e94b4b}
-    body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#111}
-    header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:1px solid #eef2f7}
-    .brand{display:flex;align-items:center;gap:12px}
-    .brand h2{margin:0;font-size:18px}
-    .main{display:grid;grid-template-columns:360px 1fr;gap:18px;padding:20px;max-width:1200px;margin:18px auto}
-    .panel{background:var(--card);padding:14px;border-radius:12px;box-shadow:0 6px 20px rgba(2,6,23,0.04)}
-    .list{display:flex;flex-direction:column;gap:10px;max-height:70vh;overflow:auto;padding-right:6px}
-    .item{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:10px;background:white;border:1px solid #eef4ff}
-    .meta{display:flex;flex-direction:column}
-    .meta .name{font-weight:700}
-    .meta .cpf{font-size:13px;color:var(--muted)}
-    button{border:0;padding:10px 12px;border-radius:10px;background:var(--accent);color:white;cursor:pointer}
-    .danger{background:var(--danger)}
-    .accept{background:#0b9444}
-    .controls{display:flex;gap:8px}
-    .right-area{display:flex;flex-direction:column;gap:12px}
-    .call-area{background:white;padding:16px;border-radius:12px;min-height:260px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
-    .call-meta{display:flex;gap:16px;align-items:center;width:100%}
-    .protocol{font-size:18px;font-weight:800;color:#0b3a9f}
-    .status{font-size:13px;color:var(--muted)}
-    .timer{font-weight:700}
-    .how{background:transparent;border:1px solid #e6eefc;color:var(--accent);padding:10px;border-radius:10px}
-    audio{display:none}
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --accent:#0b6cff;
+      --muted:#6b7280;
+      --success:#10b981;
+      --danger:#ef4444;
+      --glass: rgba(11,108,255,0.06);
+      --radius:14px;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    body{margin:0;background:linear-gradient(180deg,var(--bg),#eef4ff);min-height:100vh;color:#071033;}
+    .wrap{max-width:1200px;margin:28px auto;padding:20px;display:grid;grid-template-columns:360px 1fr;gap:20px;}
+    .panel{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:0 10px 30px rgba(11,24,40,0.05);}
+    .left .title{font-size:18px;font-weight:800;}
+    .list{margin-top:12px;display:flex;flex-direction:column;gap:10px;max-height:72vh;overflow:auto;padding-right:6px;}
+    .call-item{padding:12px;border-radius:10px;border:1px solid rgba(11,23,40,0.04);display:flex;flex-direction:column;gap:6px;}
+    .row{display:flex;gap:8px;align-items:center;justify-content:space-between;}
+    .muted{color:var(--muted);font-size:13px;}
+    .btn{padding:10px 12px;border-radius:10px;border:0;background:var(--accent);color:white;cursor:pointer;font-weight:700;}
+    .btn.ghost{background:transparent;border:1px solid rgba(11,108,255,0.12);color:var(--accent);}
+    .btn.danger{background:var(--danger);}
+    .right .title{font-size:20px;font-weight:900;}
+    .detail{margin-top:12px;display:flex;flex-direction:column;gap:10px;}
+    .big{font-size:16px;font-weight:800;}
+    .controls{display:flex;gap:8px;}
+    .tutorialOverlay{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center;padding:20px;}
+    .tutorialCard{background:var(--card);padding:18px;border-radius:12px;max-width:720px;box-shadow:0 18px 40px rgba(2,6,23,0.3);}
+    .audioRow{display:flex;gap:8px;align-items:center;}
+    audio{width:100%;border-radius:8px;}
+    .statusBadge{padding:6px 8px;border-radius:8px;font-weight:700;font-size:12px;}
+    .status-wait{background:#fff4e5;color:#b45309;border:1px solid rgba(180,83,9,0.06);}
+    .status-incall{background:#e6fffa;color:#065f46;border:1px solid rgba(6,95,70,0.06);}
+    .status-ended{background:#fff0f3;color:#9f1239;border:1px solid rgba(159,18,57,0.06);}
+    @media(max-width:900px){ .wrap{grid-template-columns:1fr; padding:12px;} .left{order:2} .right{order:1} }
   </style>
 </head>
 <body>
-  <header>
-    <div class="brand">
-      <img src="" alt="" style="width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#e6f0ff,#fff);"/>
-      <div>
-        <h2>Painel de Suporte</h2>
-        <div style="font-size:13px;color:var(--muted)">Atendimento em tempo real</div>
-      </div>
-    </div>
-    <div>
-      <button id="howBtn" class="how">Como atender</button>
-    </div>
-  </header>
+  <div class="wrap">
+    <div class="panel left">
+      <div class="title">Solicitações em espera</div>
+      <div class="muted">Lista em tempo real — atualiza automaticamente</div>
 
-  <div class="main">
-    <div class="panel">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <div style="font-weight:700">Fila de solicitações</div>
-        <div style="font-size:13px;color:var(--muted)">Atualização em tempo real</div>
+      <div style="margin-top:12px;">
+        <button id="howAttendBtn" class="btn ghost">Como atender</button>
+        <button id="refreshBtn" class="btn" style="margin-left:8px">Atualizar</button>
       </div>
 
-      <div class="list" id="requestsList">
-        <!-- itens serão injetados -->
-      </div>
+      <div class="list" id="callsList" aria-live="polite"></div>
     </div>
 
-    <div class="right-area">
-      <div class="panel call-area" id="callArea">
-        <div style="display:flex;justify-content:space-between;width:100%">
-          <div class="call-meta">
-            <div class="protocol" id="callProtocol">—</div>
-            <div style="display:flex;flex-direction:column">
-              <div class="status" id="callStatus">Nenhuma chamada selecionada</div>
-              <div class="small" id="callerName"></div>
-            </div>
-          </div>
-          <div style="display:flex;gap:10px;align-items:center">
-            <div class="timer" id="callTimer">00:00</div>
-            <div><button id="endBtn" class="danger">Desligar</button></div>
-          </div>
-        </div>
-
-        <div style="width:100%;margin-top:10px">
-          <div style="display:flex;gap:10px;align-items:center">
-            <button id="acceptBtn" class="accept">Atender</button>
-            <button id="rejectBtn" class="danger">Recusar</button>
-          </div>
-        </div>
-
-        <div style="margin-top:12px;width:100%">
-          <div style="font-weight:700">Informações</div>
-          <div style="margin-top:8px">
-            <div class="small muted">Nome: <span id="infoNome">—</span></div>
-            <div class="small muted">CPF: <span id="infoCPF">—</span></div>
-            <div class="small muted">Última atividade: <span id="infoAt">—</span></div>
-          </div>
-        </div>
+    <div class="panel right">
+      <div class="title">Detalhes da chamada</div>
+      <div class="detail" id="detailArea">
+        <div class="muted">Selecione uma solicitação à esquerda para ver os detalhes.</div>
       </div>
-
-      <audio id="remoteAudioAdmin" autoplay></audio>
     </div>
   </div>
 
-  <!-- Firebase compat libs + script.js -->
+  <div class="tutorialOverlay" id="tutorialOverlay" role="dialog" aria-modal="true">
+    <div class="tutorialCard">
+      <h3>Como atender — Tutorial rápido</h3>
+      <p class="muted">Siga estas etapas para oferecer o melhor atendimento. Sempre trate a pessoa pelo nome.</p>
+      <ol>
+        <li>Confirme o CPF e o nome exibidos.</li>
+        <li>Ao aceitar, a conexão de áudio será estabelecida — fale claramente e peça para a pessoa repetir quando necessário.</li>
+        <li>Evite ruídos e use fone quando possível. Sempre use o nome do solicitante.</li>
+        <li>Ao encerrar, clique em "Encerrar" para remover a solicitação — chamadas não ficam salvas.</li>
+      </ol>
+      <div style="text-align:right;margin-top:12px">
+        <button id="closeTutorial" class="btn ghost">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- firebase + script.js -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -102,131 +89,271 @@
 
   <script>
     (function(){
-      const listEl = document.getElementById('requestsList');
-      const acceptBtn = document.getElementById('acceptBtn');
-      const rejectBtn = document.getElementById('rejectBtn');
-      const endBtn = document.getElementById('endBtn');
-      const callProtocol = document.getElementById('callProtocol');
-      const callStatus = document.getElementById('callStatus');
-      const callerName = document.getElementById('callerName');
-      const infoNome = document.getElementById('infoNome');
-      const infoCPF = document.getElementById('infoCPF');
-      const infoAt = document.getElementById('infoAt');
-      const callTimer = document.getElementById('callTimer');
-      const remoteAudioAdmin = document.getElementById('remoteAudioAdmin');
-      const howBtn = document.getElementById('howBtn');
+      const callsList = document.getElementById('callsList');
+      const detailArea = document.getElementById('detailArea');
+      const tutorialOverlay = document.getElementById('tutorialOverlay');
+      const howAttendBtn = document.getElementById('howAttendBtn');
+      const closeTutorial = document.getElementById('closeTutorial');
+      const refreshBtn = document.getElementById('refreshBtn');
 
-      let selected = null; // {protocol, data}
-      let timerInterval = null;
+      let selectedCall = null;
+      let adminLocalStream = null;
+      let adminPC = null;
+      let listeningHandles = {};
+      let callTimers = {};
 
-      // Ask mic on load
-      (async ()=>{
-        try{ await navigator.mediaDevices.getUserMedia({audio:true}); }catch(e){ console.warn('Microfone admin não permitido', e); }
-      })();
-
-      howBtn.onclick = ()=>{
-        // overlay / tutorial
-        alert('Como atender:\n1) Clique em uma solicitação à esquerda.\n2) Clique em ATENDER. O áudio será conectado.\n3) Fale o nome do usuário e confirme dados.\n4) Seja cortês, diga o nome da pessoa e registre o atendimento. Use o botão "Desligar" para finalizar.');
-      };
-
-      // Ouve solicitações em tempo real (fila)
-      listenIncomingRequests((items)=>{
-        // items: array de {protocol,data}
-        listEl.innerHTML = '';
-        items.forEach(it=>{
-          const el = document.createElement('div');
-          el.className = 'item';
-          el.innerHTML = `<div class="meta"><div class="name">${it.data.nomeCompleto}</div><div class="cpf">${maskCpf(it.data.cpf)} • ${timeAgo(it.data.createdAt)}</div></div>
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
-              <div style="font-weight:700">${it.protocol}</div>
-              <div class="controls"><button data-pro="${it.protocol}" class="openBtn">Abrir</button></div>
-            </div>`;
-          listEl.appendChild(el);
-        });
-
-        // attach listeners
-        Array.from(listEl.querySelectorAll('.openBtn')).forEach(b=>{
-          b.onclick = async (e)=>{
-            const protocol = e.target.getAttribute('data-pro');
-            const node = await getCallOnce(protocol);
-            if(!node) return alert('Solicitação expirada ou removida.');
-            selectCall(protocol, node);
-          };
-        });
-
-        if(items.length===0){
-          listEl.innerHTML = '<div class="small muted">Nenhuma solicitação no momento</div>';
-        }
-      });
-
-      async function selectCall(protocol, data){
-        selected = {protocol, data};
-        callProtocol.innerText = protocol;
-        callStatus.innerText = data.status || 'waiting';
-        callerName.innerText = data.nomeCompleto;
-        infoNome.innerText = data.nomeCompleto;
-        infoCPF.innerText = data.cpf;
-        infoAt.innerText = new Date(data.createdAt).toLocaleString();
+      function timeAgo(ts){
+        if(!ts) return '-';
+        const d=new Date(ts); return d.toLocaleString();
+      }
+      function secToHHMMSS(s){
+        const mm = String(Math.floor(s/60)).padStart(2,'0');
+        const ss = String(s%60).padStart(2,'0');
+        return `${mm}:${ss}`;
       }
 
-      acceptBtn.onclick = async ()=>{
-        if(!selected) return alert('Selecione uma solicitação à esquerda.');
-        // marca como accepted
-        await acceptRequest(selected.protocol);
-        callStatus.innerText = 'accepted';
-        // inicia como answer (callee)
-        const pc = await startAsCallee(selected.protocol, remoteAudioAdmin, {
-          onConnected: ()=> {
-            callStatus.innerText = 'ongoing';
-            startTimer();
-          },
-          onEnded: ()=> {
-            stopTimer();
-            callStatus.innerText = 'ended';
-            // limpeza já feita pelo script.js
+      // request mic on enter
+      async function ensureMic(){
+        if(adminLocalStream) return true;
+        try{
+          adminLocalStream = await navigator.mediaDevices.getUserMedia({audio:true});
+          return true;
+        }catch(e){
+          alert('Permissão de microfone necessária para atender chamadas.');
+          return false;
+        }
+      }
+
+      // render list item
+      function renderCallItem(pid, data){
+        const el = document.createElement('div');
+        el.className='call-item';
+        el.id = 'call_'+pid;
+        el.innerHTML = `
+          <div class="row">
+            <div>
+              <div class="big">${data.nome}</div>
+              <div class="muted">CPF: ${data.cpf} · Protocolo: <strong>${pid}</strong></div>
+            </div>
+            <div style="text-align:right">
+              <div class="muted">${timeAgo(data.createdAt)}</div>
+              <div style="margin-top:6px">${data.status === 'waiting' ? '<span class="statusBadge status-wait">Aguardando</span>' : ''}</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn acceptBtn">Atender</button>
+            <button class="btn ghost rejectBtn">Recusar</button>
+          </div>
+        `;
+        // attach events
+        el.querySelector('.acceptBtn').addEventListener('click', ()=>acceptCall(pid,data));
+        el.querySelector('.rejectBtn').addEventListener('click', ()=>rejectCall(pid));
+        return el;
+      }
+
+      // listen for calls (realtime)
+      function listenCalls(){
+        const ref = db.ref('calls');
+        ref.on('child_added', snap=>{
+          const pid = snap.key;
+          const data = snap.val();
+          if(data.status === 'waiting'){
+            const node = renderCallItem(pid,data);
+            callsList.prepend(node);
           }
         });
-      };
-
-      rejectBtn.onclick = async ()=>{
-        if(!selected) return alert('Selecione uma solicitação.');
-        await rejectRequest(selected.protocol);
-        callStatus.innerText = 'recusado';
-        // remove seleção
-        selected = null;
-        callProtocol.innerText = '—';
-        infoNome.innerText = '—'; infoCPF.innerText='—'; infoAt.innerText='—';
-      };
-
-      endBtn.onclick = async ()=>{
-        if(!selected) return alert('Nenhuma chamada ativa.');
-        await endCall(selected.protocol);
-        callStatus.innerText = 'desligado';
-        stopTimer();
-      };
-
-      function startTimer(){
-        let start = Date.now();
-        callTimer.innerText = '00:00';
-        if(timerInterval) clearInterval(timerInterval);
-        timerInterval = setInterval(()=>{
-          const diff = Date.now()-start;
-          const s = Math.floor(diff/1000);
-          const mm = String(Math.floor(s/60)).padStart(2,'0');
-          const ss = String(s%60).padStart(2,'0');
-          callTimer.innerText = `${mm}:${ss}`;
-        },1000);
+        ref.on('child_changed', snap=>{
+          const pid = snap.key; const data = snap.val();
+          const node = document.getElementById('call_'+pid);
+          if(node){
+            if(data.status !== 'waiting') node.remove();
+          }else{
+            if(data.status === 'waiting'){
+              const node2 = renderCallItem(pid,data);
+              callsList.prepend(node2);
+            }
+          }
+          // if selected and updated
+          if(selectedCall && selectedCall.protocol === pid){
+            showDetail(pid,data);
+          }
+        });
+        ref.on('child_removed', snap=>{
+          const pid = snap.key;
+          const node = document.getElementById('call_'+pid);
+          if(node) node.remove();
+          if(selectedCall && selectedCall.protocol === pid){
+            detailArea.innerHTML = '<div class="muted">Solicitação removida.</div>';
+          }
+        });
       }
-      function stopTimer(){ if(timerInterval) clearInterval(timerInterval); timerInterval=null; callTimer.innerText='00:00'; }
 
-      // util
-      function timeAgo(ts){
-        const d = Date.now()-ts;
-        if(d<60000) return 'há poucos segundos';
-        if(d<3600000) return 'há '+Math.floor(d/60000)+' min';
-        return new Date(ts).toLocaleString();
+      // show detail
+      function showDetail(pid, data){
+        selectedCall = Object.assign({protocol: pid}, data);
+        // build UI
+        detailArea.innerHTML = `
+          <div class="big">${data.nome}</div>
+          <div class="muted">CPF: ${data.cpf}</div>
+          <div class="muted">Protocolo: ${pid}</div>
+          <div class="muted">Criado em: ${timeAgo(data.createdAt)}</div>
+          <div style="margin-top:8px" id="detailStatus"><span class="statusBadge ${data.status==='waiting'?'status-wait':''}">${data.status}</span></div>
+
+          <div style="margin-top:12px" class="audioRow">
+            <audio id="remoteInAdmin" autoplay playsinline></audio>
+          </div>
+
+          <div style="margin-top:12px" class="controls">
+            <button id="acceptBtn" class="btn">Atender</button>
+            <button id="rejectBtn" class="btn ghost">Recusar</button>
+            <button id="endBtn" class="btn danger" style="display:none">Encerrar</button>
+          </div>
+
+          <div style="margin-top:12px" class="muted">Logs: <span id="logArea">—</span></div>
+        `;
+        // attach
+        document.getElementById('acceptBtn').addEventListener('click', ()=>acceptCall(pid,data));
+        document.getElementById('rejectBtn').addEventListener('click', ()=>rejectCall(pid));
+        document.getElementById('endBtn').addEventListener('click', ()=>endCall(pid));
       }
-      function maskCpf(cpf){ return (cpf||'').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4'); }
+
+      // accept call -> admin creates answer flow (waits for offer)
+      async function acceptCall(pid, data){
+        // ensure mic
+        const ok = await ensureMic();
+        if(!ok) return;
+
+        const callRef = db.ref('calls/' + pid);
+        const snapshot = await callRef.get();
+        if(!snapshot.exists()) { alert('Solicitação não existe mais.'); return; }
+        const current = snapshot.val();
+        if(current.status !== 'waiting'){ alert('Esta solicitação já não está disponível.'); return; }
+
+        // mark accepted
+        await callRef.update({status:'accepted', adminId: 'admin_' + (Math.floor(Math.random()*9000)+1000), adminName: 'Suporte', acceptedAt: Date.now()});
+
+        // setup pc and answer
+        startAdminWebRTC(pid, callRef, adminLocalStream);
+
+        // update UI
+        showDetail(pid, Object.assign({}, current, {status:'accepted', adminName:'Suporte'}));
+      }
+
+      async function rejectCall(pid){
+        if(!confirm('Deseja recusar esta solicitação?')) return;
+        const callRef = db.ref('calls/'+pid);
+        await callRef.update({status:'rejected', endedAt: Date.now()});
+        // remove node after short delay
+        setTimeout(()=>callRef.remove(), 1000);
+        // cleanup active_by_cpf entry
+        const snap = await callRef.get();
+        if(snap.exists()){
+          const cpf = snap.val().cpf;
+          if(cpf) db.ref('active_by_cpf/'+onlyDigits(cpf)).set(null);
+        }
+      }
+
+      async function endCall(pid){
+        const callRef = db.ref('calls/'+pid);
+        await callRef.update({status:'ended', endedAt: Date.now()});
+        // stop pc, streams
+        if(adminPC){ adminPC.close(); adminPC=null; }
+        if(adminLocalStream){ adminLocalStream.getTracks().forEach(t=>t.stop()); adminLocalStream=null; }
+        // remove node
+        setTimeout(()=>callRef.remove(), 800);
+      }
+
+      // Admin WebRTC: waits for offer, sets remote desc, creates answer
+      async function startAdminWebRTC(pid, callRef, localStream){
+        const offerRef = callRef.child('offer');
+        const answerRef = callRef.child('answer');
+        const callerIceRef = callRef.child('callerIce');
+        const adminIceRef = callRef.child('adminIce');
+
+        adminPC = new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+
+        // add local audio
+        for(const t of localStream.getTracks()) adminPC.addTrack(t, localStream);
+
+        // remote track -> play
+        const remoteAudioEl = document.getElementById('remoteInAdmin');
+        adminPC.addEventListener('track', ev=>{
+          remoteAudioEl.srcObject = ev.streams[0];
+          remoteAudioEl.play().catch(()=>{});
+        });
+
+        // ICE gather from admin -> push to adminIceRef
+        adminPC.onicecandidate = (e)=>{
+          if(e.candidate) adminIceRef.push(e.candidate.toJSON());
+        };
+
+        // listen for existing offer
+        const offerSnap = await offerRef.get();
+        if(!offerSnap.exists()){
+          console.error('Sem offer do caller — abortando');
+          return;
+        }
+        const offer = offerSnap.val();
+        const offerDesc = {type: offer.type || 'offer', sdp: offer.sdp};
+        await adminPC.setRemoteDescription(offerDesc);
+
+        const answer = await adminPC.createAnswer();
+        await adminPC.setLocalDescription(answer);
+        await answerRef.set({sdp: answer.sdp, type: answer.type});
+
+        // listen for caller ICE and add
+        callerIceRef.on('child_added', snap=>{
+          const cand = snap.val();
+          adminPC.addIceCandidate(new RTCIceCandidate(cand)).catch(()=>{});
+        });
+
+        // UI: enable end button
+        const endBtn = document.getElementById('endBtn');
+        if(endBtn) endBtn.style.display='inline-block';
+
+        // track call time
+        const acceptedAt = Date.now();
+        const timerKey = pid;
+        if(callTimers[timerKey]) clearInterval(callTimers[timerKey]);
+        let started = Date.now();
+        callTimers[timerKey] = setInterval(async ()=>{
+          // update a small heartbeat
+          await callRef.update({adminPing: Date.now()});
+        },3000);
+      }
+
+      // initial load
+      listenCalls();
+
+      // tutorial overlay
+      howAttendBtn.addEventListener('click', ()=> tutorialOverlay.style.display='flex');
+      closeTutorial.addEventListener('click', ()=> tutorialOverlay.style.display='none');
+      refreshBtn.addEventListener('click', ()=> {
+        callsList.innerHTML='';
+        listenCalls();
+      });
+
+      // when select a call from list -> show detail (event delegation)
+      callsList.addEventListener('click', (ev)=>{
+        const callEl = ev.target.closest('.call-item');
+        if(!callEl) return;
+        const pid = callEl.id.replace('call_','');
+        db.ref('calls/'+pid).get().then(snap=>{
+          if(snap.exists()) showDetail(pid, snap.val());
+        });
+      });
+
+      // detect removed nodes and cleanup timers
+      db.ref('calls').on('child_removed', snap=>{
+        const pid = snap.key;
+        if(callTimers[pid]){ clearInterval(callTimers[pid]); delete callTimers[pid]; }
+      });
+
+      // request microphone on page load (admin)
+      window.addEventListener('load', ()=> {
+        // prompt once politely
+        navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{ adminLocalStream=s; }).catch(()=>{ /* user may allow later */ });
+      });
 
     })();
   </script>
