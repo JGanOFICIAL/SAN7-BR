@@ -1,5 +1,3 @@
-// ====================== script.js ======================
-// Mantive todas as funções que você havia fornecido (e acrescentei módulos WebRTC abaixo)
 // ===== Firebase (Compat) — Config =====
 const firebaseConfig = {
   apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
@@ -141,46 +139,3 @@ async function atualizarContatoEndereco(uid, {telefone, endereco}){
   return novo;
 }
 
-// ================= WebRTC / Call management module =================
-//
-// Usamos Realtime Database para sinalização em /calls/{protocol}
-// Estrutura mínima:
-// calls/{protocol} = {
-//   protocol, nome, cpf, status: 'waiting'|'accepted'|'ended'|'nao_atendido'|'canceled', createdAt, acceptedAt, adminId, adminName, callerPing, adminPing
-// }
-// calls/{protocol}/offer
-// calls/{protocol}/answer
-// calls/{protocol}/callerIce (child nodes push)
-// calls/{protocol}/adminIce (child nodes push)
-// active_by_cpf/{cpf} = {protocol, createdAt}  <-- bloqueia duplicados
-//
-// Regras:
-// - caller cria o nó e escreve status 'waiting'
-// - admin aceita -> escreve status 'accepted' + adminId/adminName + acceptedAt
-// - sinalização por offer/answer e ICE arrays
-// - se não atendido em 10 minutos -> status 'nao_atendido'
-// - ao encerrar/recusar -> status 'ended'|'rejected'/'canceled' e removemos nós
-// - chamadas atendidas não ficam salvas permanentemente (remoção ao encerrar)
-
-async function cleanupCallNode(protocol){
-  try{
-    await db.ref('calls/' + protocol).remove();
-    // cleanup any active_by_cpf referencing it
-    const snap = await db.ref('active_by_cpf').get();
-    if(snap.exists()){
-      snap.forEach(child=>{
-        const v = child.val();
-        if(v && v.protocol === protocol) child.ref.set(null);
-      });
-    }
-  }catch(e){
-    console.warn('Erro ao limpar nó da chamada', e);
-  }
-}
-
-// Observações:
-// - O widget/admin HTML implementa a lógica de inicialização de getUserMedia e RTCPeerConnection.
-// - Esse script.js fornece utilitários e a configuração do banco (já inicializada).
-// - As rotinas específicas de criação/offer/answer são executadas nos próprios componentes client (veja códigos das páginas).
-
-// ==================== Fim do script.js ====================
