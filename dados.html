@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Prefeitura de João Câmara — Dados</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body,html{height:100%;width:100%;font-family:"Public Sans",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  body{background:#0b2b6b}
+  header{position:fixed;top:0;left:0;right:0;z-index:30;background:#fff;color:#333;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+  header .logo{display:flex;align-items:center;gap:10px}
+  header .logo img{width:40px;height:40px;object-fit:contain;border-radius:6px}
+  header .logo div{display:flex;flex-direction:column}
+  header strong{font-size:15px}
+  header small{font-size:13px;color:#444}
+  .btn-back{background:#0b2b6b;color:#fff;width:38px;height:38px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:20px;border:none;border-radius:0}
+  .dados-container{background:linear-gradient(180deg,#0b2b6b 0%,#041739 100%);color:#fff;width:100%;max-width:480px;padding:80px 28px 40px;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;overflow-y:auto;margin:0 auto}
+  h2{font-size:22px;font-weight:700;margin-bottom:6px}
+  p{font-size:15px;margin-bottom:20px}
+  label{font-weight:600;font-size:14px}
+  input{width:100%;padding:12px;border:1px solid #dfe3eb;border-radius:12px;font-size:16px;outline:none;transition:.25s}
+  input:focus{border-color:#0a2a66;box-shadow:0 0 0 3px rgba(10,42,102,.18)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:500px){.grid{grid-template-columns:1fr}}
+  .btn{width:100%;padding:16px;border:none;border-radius:30px;font-weight:700;font-size:16px;cursor:pointer;transition:.2s}
+  .btn-save{background:#0b2b6b;color:#fff;margin-top:20px}
+  .spinner{width:18px;height:18px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .rodape{margin-top:30px;text-align:center;font-size:14px;color:rgba(255,255,255,.85)}
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcf-AtSCrU4sQ8PORTd7uRTwMwR1mzoxn5NMWhhAKbE2dsKY6Uiu17i5U7&s=10" alt="Logo">
+      <div>
+        <strong>Meus dados</strong>
+        <small>Câmara Municipal de João Câmara</small>
+      </div>
+    </div>
+    <a href="perfil.html" class="btn-back">←</a>
+  </header>
+
+  <div class="dados-container">
+    <h2>Meus Dados</h2>
+    <p>Veja e edite suas informações de contato abaixo.</p>
+
+    <div class="grid">
+      <div><label>Nome completo</label><input id="d_nome" disabled/></div>
+      <div><label>CPF</label><input id="d_cpf" disabled/></div>
+      <div><label>Data de nascimento</label><input id="d_nasc" disabled/></div>
+      <div><label>Telefone</label><input id="d_tel"/></div>
+      <div><label>CEP</label><input id="d_cep" maxlength="9"/></div>
+      <div><label>Cidade</label><input id="d_cidade"/></div>
+      <div><label>Rua</label><input id="d_rua"/></div>
+      <div><label>Número</label><input id="d_numero"/></div>
+    </div>
+
+    <button id="btnSalvarDados" class="btn btn-save"><span>Salvar alterações</span></button>
+    <div id="dadosMsg" style="font-size:14px;color:#e5e5e5;margin-top:10px"></div>
+
+    <div class="rodape">© Câmara Municipal de João Câmara - <span id="ano"></span></div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="script.js"></script>
+  <script>
+    document.getElementById('ano').textContent=new Date().getFullYear();
+    protegerPagina();
+
+    onAuthReady(async user=>{
+      const perfil=await obterPerfil(user.uid);
+      document.getElementById("d_nome").value=perfil?.nomeCompleto||"";
+      document.getElementById("d_cpf").value=perfil?.cpf||"";
+      document.getElementById("d_nasc").value=perfil?.nascimento||"";
+      document.getElementById("d_tel").value=perfil?.telefone||"";
+      document.getElementById("d_cep").value=perfil?.endereco?.cep||"";
+      document.getElementById("d_cidade").value=perfil?.endereco?.cidade||"";
+      document.getElementById("d_rua").value=perfil?.endereco?.rua||"";
+      document.getElementById("d_numero").value=perfil?.endereco?.numero||"";
+    });
+
+    const btnSalvar=document.getElementById("btnSalvarDados"),
+          dadosMsg=document.getElementById("dadosMsg");
+
+    function setSaving(s){
+      btnSalvar.disabled=s;
+      btnSalvar.innerHTML=s?'<div class="spinner"></div><span>Salvando…</span>':'<span>Salvar alterações</span>';
+    }
+
+    btnSalvar.addEventListener("click",async()=>{
+      setSaving(true);dadosMsg.textContent="";
+      const u=firebase.auth().currentUser;
+      const dados={
+        telefone:document.getElementById("d_tel").value.trim(),
+        endereco:{
+          cep:document.getElementById("d_cep").value.trim(),
+          cidade:document.getElementById("d_cidade").value.trim(),
+          rua:document.getElementById("d_rua").value.trim(),
+          numero:document.getElementById("d_numero").value.trim()
+        }
+      };
+      try{
+        await atualizarContatoEndereco(u.uid,dados);
+        dadosMsg.textContent="Alterações salvas com sucesso.";
+      }catch(e){dadosMsg.textContent=traduzErroAuth(e)}
+      finally{setSaving(false)}
+    });
+  </script>
+</body>
+</html>
+<div id="overlay">
+  <div class="alert-box">
+    <div class="spinner"></div>
+    <p>Carregando</p>
+  </div>
+</div>
+
+<style>
+#overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.alert-box {
+  background: #fff;
+  padding: 25px 40px;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #001f4d;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
+}
+.alert-box p {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+}
+</style>
+
+<script>
+window.onload = () => {
+  setTimeout(() => {
+    document.getElementById("overlay").style.display = "none";
+  }, 2000);
+};
+</script>
