@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Segurança — JpFelix Tecnologia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--header-h:64px;--max-w:1000px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;width:100%;font-family:"Public Sans",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  body{min-height:100vh;background:#041739;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;color:#fff}
+  header{position:fixed;top:0;left:0;right:0;height:var(--header-h);z-index:1100;background:#fff;color:#333;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+  header .logo{display:flex;align-items:center;gap:12px}
+  header .logo img{width:44px;height:44px;object-fit:contain;border-radius:8px}
+  header .logo div{display:flex;flex-direction:column}
+  header strong{font-size:15px}
+  header small{font-size:13px;color:#444}
+  .btn-back{background:#0b2b6b;color:#fff;width:40px;height:40px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:20px;border:none;border-radius:6px}
+  main{margin:0 auto;max-width:var(--max-w);padding:20px;margin-top:calc(var(--header-h) + 10px);color:#fff;min-height:calc(100vh - (var(--header-h) + 20px));animation:fadeIn 1.2s ease}
+  h1,h2,p,.contato{animation:slideUp .8s ease both}
+  h1{font-size:22px;margin-bottom:14px;animation-delay:.1s}
+  h2{font-size:18px;margin:20px 0 10px;animation-delay:.2s}
+  p{margin-bottom:12px;line-height:1.6;animation-delay:.3s}
+  a{color:#fff;text-decoration:underline}
+  .contato{margin-bottom:20px;padding:14px;border:1px solid rgba(255,255,255,.2);border-radius:10px;background:rgba(255,255,255,.05);display:flex;flex-direction:column;gap:12px;animation-delay:0s}
+  .contato-item{display:flex;align-items:center;gap:10px}
+  .contato-item img{width:22px;height:22px;object-fit:contain}
+  .contato strong{display:block;margin:0}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <img id="logoHeader" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcf-AtSCrU4sQ8PORTd7uRTwMwR1mzoxn5NMWhhAKbE2dsKY6Uiu17i5U7&s=10" alt="Logo">
+    <div>
+      <strong>Segurança</strong>
+      <small>Câmara Municipal de João Câmara</small>
+    </div>
+  </div>
+  <a href="perfil.html" class="btn-back" aria-label="Voltar">←</a>
+</header>
+
+
+<br><br><br><br>
+
+<div id="seguranca-box" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:360px;padding:25px;background:#fff;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.2);text-align:center;font-family:Inter,sans-serif;color:#111;">
+  <label id="labelCheck" style="display:flex;align-items:center;gap:12px;justify-content:center;cursor:pointer;font-weight:600;font-size:16px;">
+    <div style="width:22px;height:22px;border:2px solid #0a2540;border-radius:6px;display:flex;align-items:center;justify-content:center;position:relative;">
+      <input type="checkbox" id="checkSeguranca" style="opacity:0;width:100%;height:100%;cursor:pointer;position:absolute;top:0;left:0;">
+      <div class="custom-check" style="width:14px;height:14px;background:#0a2540;display:none;border-radius:4px;"></div>
+    </div>
+    Checar Segurança
+  </label>
+  
+  <hr style="margin:20px 0;border:none;border-top:1px solid #ccc;">
+  
+  <div id="carregando" style="margin-top:15px;display:none;">
+    <div class="spinner" style="border:4px solid rgba(0,0,0,0.1);border-top:4px solid #0a2540;border-radius:50%;width:30px;height:30px;animation:spin 1s linear infinite;margin:10px auto;"></div>
+  </div>
+  
+  <div id="resultados" style="margin-top:15px;display:none;text-align:left;font-size:15px;line-height:1.6;color:#111;">
+    <p>- Rede segura</p>
+    <p>- Boa conexão</p>
+    <p>- Ambiente criptografado</p>
+    <p>- Dados seguros</p>
+  </div>
+  
+  <hr style="margin:20px 0;border:none;border-top:1px solid #ccc;">
+  
+  <div id="observacoes" style="margin-top:10px;display:none;text-align:left;font-size:14px;line-height:1.6;color:#111;">
+    <h4 style="margin-bottom:8px;">Fique Atento em Dicas de Segurança</h4>
+    <p style="font-style:italic;margin-bottom:10px;">Sempre siga as recomendações abaixo para manter seu ambiente seguro:</p>
+    <ul style="padding-left:20px;margin:0;">
+      <li>Não utilize redes públicas para acessar informações sensíveis.</li>
+      <li>Use sempre navegadores atualizados e confiáveis.</li>
+      <li>Verifique se o ambiente está criptografado.</li>
+      <li>Mantenha senhas fortes e únicas.</li>
+      <li>Evite clicar em links desconhecidos.</li>
+      <li>Confirme sempre a autenticidade do site antes de inserir dados.</li>
+    </ul>
+  </div>
+</div>
+
+<style>
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+#checkSeguranca:checked + .custom-check {
+  display: block;
+}
+</style>
+
+<script>
+const checkbox = document.getElementById("checkSeguranca");
+const carregando = document.getElementById("carregando");
+const resultados = document.getElementById("resultados");
+const observacoes = document.getElementById("observacoes");
+const labelCheck = document.getElementById("labelCheck");
+const customCheck = document.querySelector(".custom-check");
+
+checkbox.addEventListener("change", ()=>{
+  if(checkbox.checked){
+    labelCheck.style.pointerEvents = "none";
+    carregando.style.display = "block";
+    resultados.style.display = "none";
+    observacoes.style.display = "none";
+    customCheck.style.display = "block";
+    setTimeout(()=>{
+      carregando.style.display = "none";
+      resultados.style.display = "block";
+      observacoes.style.display = "block";
+    },2000);
+  } else {
+    labelCheck.style.pointerEvents = "auto";
+    carregando.style.display = "none";
+    resultados.style.display = "none";
+    observacoes.style.display = "none";
+    customCheck.style.display = "none";
+  }
+});
+</script>
+
+
+
+
+
+
+
+</main>
+</body>
+</html>
+
+<div id="overlay">
+  <div class="alert-box">
+    <div class="spinner"></div>
+    <p>Carregando</p>
+  </div>
+</div>
+
+<style>
+#overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.alert-box {
+  background: #fff;
+  padding: 25px 40px;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #001f4d;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
+}
+.alert-box p {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+}
+</style>
+
+<script>
+window.onload = () => {
+  setTimeout(() => {
+    document.getElementById("overlay").style.display = "none";
+  }, 2000);
+};
+</script>
