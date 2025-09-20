@@ -1,4 +1,6 @@
-// ===== Firebase (Compat) — Config =====
+// script.js  -- colocar na mesma pasta e referenciar em todos os HTML
+// Firebase compat libs devem ser incluídas em cada HTML antes deste script.
+
 const firebaseConfig = {
   apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
   authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
@@ -9,133 +11,103 @@ const firebaseConfig = {
   measurementId: "G-YT7NHR342J"
 };
 
-if (!firebase.apps.length) {
+// Inicializa Firebase
+if(!firebase.apps.length){
   firebase.initializeApp(firebaseConfig);
 }
-const auth = firebase.auth();
 const db = firebase.database();
 
-// ===== Util =====
-function onlyDigits(str){ return (str||'').replace(/\D/g,''); }
-
-function traduzErroAuth(err){
-  const code = err?.code || '';
-  const map = {
-    'auth/invalid-email':'E-mail inválido.',
-    'auth/user-not-found':'Usuário não encontrado.',
-    'auth/wrong-password':'Senha incorreta.',
-    'auth/too-many-requests':'Muitas tentativas. Tente novamente em alguns minutos.',
-    'auth/email-already-in-use':'Este e-mail já está em uso.',
-    'auth/weak-password':'Senha fraca. Use 6+ caracteres.',
-    'auth/network-request-failed':'Falha de rede. Verifique sua conexão.',
-  };
-  return map[code] || (err?.message || 'Ocorreu um erro. Tente novamente.');
+// Utilidades comuns
+function formatCPF(v){
+  v = v.replace(/\D/g,'').slice(0,11);
+  v = v.replace(/^(\d{3})(\d)/, '$1.$2');
+  v = v.replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3');
+  v = v.replace(/\.(\d{3})(\d)/, '.$1-$2');
+  return v;
 }
-
-function onAuthReady(callback){
-  // Chama callback quando estado de auth estiver resolvido
-  const unsub = auth.onAuthStateChanged((user)=>{
-    callback(user);
-    unsub();
-  });
+function calculateAge(dobString){
+  if(!dobString) return '';
+  const today = new Date();
+  const parts = dobString.split('-'); // yyyy-mm-dd
+  if(parts.length<3) return '';
+  const dob = new Date(parts[0], parts[1]-1, parts[2]);
+  let age = today.getFullYear() - dob.getFullYear();
+  const m = today.getMonth() - dob.getMonth();
+  if(m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+  return age;
 }
-
-async function protegerPagina(){
-  return new Promise((resolve)=>{
-    auth.onAuthStateChanged((user)=>{
-      if(!user){ location.href='login.html'; return; }
-      resolve(true);
-    });
-  });
-}
-
-// ===== Auth =====
-async function loginComEmail(email, senha){
-  return auth.signInWithEmailAndPassword(email, senha);
-}
-
-async function enviarResetSenha(email){
-  return auth.sendPasswordResetEmail(email);
-}
-
-async function sair(){
-  return auth.signOut();
-}
-
-// ===== Cadastro com CPF único =====
-/**
- * Regras:
- * - Ninguém pode ter mais de uma conta com o mesmo CPF.
- * - Usamos nó índice: /cpf_to_uid/{cpfNumerico} = uid
- * - Salvamos perfil em /users/{uid}
- * - "Transação" garante exclusividade contra corrida
- */
-async function registrarCidadao(perfil, senha){
-  const cpfNum = onlyDigits(perfil.cpf);
-  // 1) Verifica/Reserva CPF via transação
-  const refIdx = db.ref('cpf_to_uid/'+cpfNum);
-  const uidReservado = await refIdx.transaction(current=>{
-    if(current === null){ return 'PENDING'; } // reserva
-    return; // abortar
-  }, undefined, false).then(res=>res.committed ? res.snapshot.val() : null);
-
-  if(uidReservado === null){
-    throw {code:'cpf/duplicado', message:'CPF já cadastrado.'};
+function maskPhone(v){
+  v = v.replace(/\D/g,'').slice(0,11);
+  if(v.length<=10){
+    v = v.replace(/^(\d{2})(\d)/g,'($1) $2');
+    v = v.replace(/(\d{4})(\d)/,'$1-$2');
+  } else {
+    v = v.replace(/^(\d{2})(\d)/g,'($1) $2');
+    v = v.replace(/(\d{5})(\d)/,'$1-$2');
   }
+  return v;
+}
 
-  try{
-    // 2) Cria usuário
-    const cred = await auth.createUserWithEmailAndPassword(perfil.email, senha);
-    const uid = cred.user.uid;
+// Salva inscrição
+async function saveInscription(courseId, formData){
+  const ref = db.ref('inscriptions/' + courseId);
+  const pushRef = await ref.push();
+  await pushRef.set(formData);
+  return pushRef.key;
+}
 
-    // 3) Salva perfil
-    const dados = {
-      uid,
-      nomeCompleto: perfil.nomeCompleto,
-      cpf: perfil.cpf, // formatado
-      nascimento: perfil.nascimento,
-      telefone: perfil.telefone || '',
-      endereco: perfil.endereco || {cep:'',cidade:'',rua:'',numero:''},
-      cadunico: perfil.cadunico || null,
-      email: perfil.email,
-      criadoEm: Date.now()
-    };
-    await db.ref('users/'+uid).set(dados);
+// Buscar cursos (snapshot -> array)
+async function fetchCourses(){
+  const snap = await db.ref('courses').once('value');
+  const data = snap.val() || {};
+  return Object.keys(data).map(k => ({ id: k, ...data[k] }));
+}
 
-    // 4) Confirma índice CPF -> UID
-    await refIdx.set(uid);
+// Buscar inscrições de um curso
+async function fetchInscriptions(courseId){
+  const snap = await db.ref('inscriptions/' + courseId).once('value');
+  const data = snap.val() || {};
+  return Object.keys(data).map(k => ({ id: k, ...data[k] }));
+}
 
-    return uid;
-  }catch(err){
-    // rollback índice se falhar após reserva
-    await db.ref('cpf_to_uid/'+cpfNum).set(null);
-    throw err;
+// Cadastrar curso (admin)
+async function createCourse(course){
+  const ref = db.ref('courses');
+  const newRef = await ref.push();
+  await newRef.set(course);
+  return newRef.key;
+}
+
+// Atualizar curso
+async function updateCourse(courseId, updates){
+  await db.ref('courses/' + courseId).update(updates);
+}
+
+// Consultar inscrição por telefone (no campo consulta)
+async function queryByPhone(phone){
+  const norm = phone.replace(/\D/g,'');
+  const snap = await db.ref('inscriptions').once('value');
+  const result = [];
+  const all = snap.val() || {};
+  for(const courseId of Object.keys(all)){
+    const entries = all[courseId] || {};
+    for(const id of Object.keys(entries)){
+      const item = entries[id];
+      const ph = (item.telefone || '').replace(/\D/g,'');
+      if(ph === norm){
+        result.push({ courseId, id, ...item });
+      }
+    }
   }
+  return result;
 }
 
-// ===== Perfil =====
-async function obterPerfil(uid){
-  const snap = await db.ref('users/'+uid).get();
-  return snap.exists() ? snap.val() : null;
+// Export CSV helper
+function toCSV(rows){
+  if(!rows || rows.length===0) return '';
+  const keys = Object.keys(rows[0]);
+  const esc = v => `"${String(v || '').replace(/"/g,'""')}"`;
+  const header = keys.map(esc).join(',');
+  const lines = rows.map(r => keys.map(k => esc(r[k])).join(','));
+  return [header, ...lines].join('\r\n');
 }
-
-/**
- * Atualiza somente telefone + endereço.
- * Persistência imediata; retorna perfil atualizado.
- */
-async function atualizarContatoEndereco(uid, {telefone, endereco}){
-  const updates = {};
-  if(typeof telefone === 'string') updates['users/'+uid+'/telefone'] = telefone;
-  if(endereco && typeof endereco === 'object'){
-    updates['users/'+uid+'/endereco'] = {
-      cep: endereco.cep||'',
-      cidade: endereco.cidade||'',
-      rua: endereco.rua||'',
-      numero: endereco.numero||''
-    };
-  }
-  await db.ref().update(updates);
-  const novo = await obterPerfil(uid);
-  return novo;
-}
-
