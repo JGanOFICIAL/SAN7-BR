@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Curso — Detalhes</title>
+<style>
+body{font-family:Arial,Helvetica,sans-serif;background:#f7f7f7;margin:0;color:#222}
+.header{background:#fff;border-bottom:6px solid #d9b24d;padding:12px;position:fixed;top:0;left:0;right:0;z-index:1000}
+.logo{color:#0b57a4;font-weight:700}
+.container{padding:90px 14px 14px}
+.hero{background:#fff;padding:12px;border:1px solid #d0d7db}
+.hero img{width:100%;max-height:200px;object-fit:cover;border:1px solid #ccc}
+.title{font-weight:700;margin:8px 0}
+.meta{color:#555;font-size:14px;margin-bottom:8px}
+.btn{background:#0b57a4;color:#fff;padding:10px 12px;border-radius:4px;text-decoration:none;display:inline-block}
+footer{padding:18px;text-align:center;color:#666;margin-top:40px}
+#backButton{
+  position:fixed;
+  bottom:20px;
+  left:20px;
+  right:20px;
+  width:auto;
+  padding:15px 0;
+  background-color:#003366;
+  color:white;
+  font-size:18px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  z-index:9999;
+  font-weight:500;
+}
+#backButton:hover{background-color:#002244}
+</style>
+</head>
+<body>
+  <header class="header"><div class="logo">Câmara - Cursos</div></header>
+
+  <main class="container">
+    <div class="hero" id="hero">
+      <img id="img" src="https://via.placeholder.com/640x240?text=curso" alt="imagem" />
+      <h2 class="title" id="title">Carregando...</h2>
+      <div class="meta" id="dates"></div>
+      <div id="desc" style="white-space:pre-wrap;margin-bottom:12px"></div>
+      <a id="inscrev" class="btn" href="#">Realizar inscrição</a>
+    </div>
+  </main>
+  <footer>© Câmara Municipal</footer>
+
+  <button id="backButton">Voltar</button>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="script.js"></script>
+
+  <script>
+  async function load(){
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+    if(!id) return document.getElementById('title').textContent = 'Curso não encontrado';
+    const snap = await db.ref('courses/' + id).once('value');
+    const c = snap.val();
+    if(!c) return document.getElementById('title').textContent = 'Curso não encontrado';
+    document.getElementById('title').textContent = c.title || '';
+    document.getElementById('img').src = c.image || 'https://via.placeholder.com/640x240';
+    document.getElementById('dates').textContent = `Inscrições: ${c.startDate||'—'} → ${c.endDate||'—'} • Vagas: ${c.vagas||'—'}`;
+    document.getElementById('desc').textContent = c.description || '';
+    document.getElementById('inscrev').href = `inscrever.html?course=${id}`;
+  }
+  load();
+
+  const backBtn = document.getElementById('backButton');
+  backBtn.onclick = () => { window.location.href = "cursos.html"; }
+  </script>
+</body>
+</html>
