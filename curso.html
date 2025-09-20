@@ -71,47 +71,49 @@ h2 {
   background: var(--card-bg);
   border-radius: 8px;
   box-shadow: var(--shadow);
-  padding: 14px;
-  margin-bottom: 16px;
+  padding: 16px;
+  margin-bottom: 20px;
   display: flex;
+  flex-direction: column;
   gap: 14px;
-  align-items: flex-start;
   transition: transform .15s;
 }
 .card:hover {
   transform: translateY(-3px);
 }
 .card img {
-  width: 120px;
-  height: 80px;
+  width: 100%;
+  height: 200px;
   object-fit: cover;
   border-radius: 6px;
 }
 .meta { flex: 1; }
 .title {
   font-weight: 600;
-  font-size: 17px;
-  margin: 0 0 6px;
+  font-size: 18px;
+  margin: 0 0 8px;
   color: var(--accent);
 }
 .dates {
   font-size: 14px;
   color: #555;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 .small {
-  font-size: 14px;
-  color: #666;
+  font-size: 15px;
+  color: #444;
+  margin-bottom: 12px;
 }
 .btn {
   display: inline-block;
-  padding: 9px 14px;
+  padding: 10px 16px;
   background: var(--accent);
   color: #fff;
   text-decoration: none;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
+  text-align: center;
   transition: background .2s;
 }
 .btn:hover {
@@ -130,8 +132,63 @@ footer {
 </head>
 <body>
   <header class="header">
-    <div class="logo">Câmara - Cursos</div>
+    
+
+
+<div style="display:flex; align-items:center; padding:10px; border-bottom:1px solid #ccc;">
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhK5u2yj1qLq6nT1CbbZ8ZtR9D3vCfcphukHaSGmBn7g0ZtBMYam8Oz_aSj36ceLOQKMcH-XRGcbw9jIbDAH1Z2Fb_NRG-P6fE86_a8DLzJiKBlSVN_ZQhwbkR5hTBYRvd2h5DzWgWChE4QJmJktLI5tQgWF9xkA30PoSECc0KCzWfK80Sh18md_FOQNp0/s440/3C9CA617-5959-423B-A55F-1ACC97BD080F.jpeg" alt="Logo" style="height:50px; width:auto;">
+</div>
+
+
+
+
+
     <div style="margin-left:auto"></div>
+
+
+
+<div style="position:relative; text-align:right;">
+  <button onclick="abrirMenu()" style="border:2px solid #000; background:transparent; color:#000; padding:10px 15px; font-weight:bold; cursor:pointer;">
+    Menu ▼
+  </button>
+  <div id="menu" style="display:none; position:absolute; right:0; top:35px; border:1px solid #ccc; background:#f7f7f7; min-width:160px; box-shadow:0 2px 6px rgba(0,0,0,0.2); font-size:14px;">
+    <button onclick="fecharMenu()" style="float:right; border:none; background:transparent; font-size:14px; cursor:pointer; color:#333; padding:5px;">✖</button>
+    <div style="clear:both;"></div>
+    <a href="escrito.html" style="display:block; padding:8px 12px; text-decoration:none; color:#000; border-top:1px solid #ddd;">Consultar Inscrição</a>
+    <a href="perfil.html" style="display:block; padding:8px 12px; text-decoration:none; color:#000; border-top:1px solid #ddd;">Portal da Câmera</a>
+    <a href="e-sic.html" style="display:block; padding:8px 12px; text-decoration:none; color:#000; border-top:1px solid #ddd;">e-SIC</a>
+  </div>
+</div>
+
+<script>
+function abrirMenu() {
+  let menu = document.getElementById("menu");
+  menu.style.display = "block";
+  menu.style.animation = "slideDown 0.3s ease";
+  new Audio("https://www.soundjay.com/buttons/sounds/button-16.mp3").play();
+}
+function fecharMenu() {
+  let menu = document.getElementById("menu");
+  menu.style.animation = "slideUp 0.3s ease";
+  setTimeout(()=> menu.style.display="none", 300);
+  new Audio("https://www.soundjay.com/buttons/sounds/button-09.mp3").play();
+}
+</script>
+
+<style>
+@keyframes slideDown {
+  from {opacity:0; transform:translateY(-10px);}
+  to {opacity:1; transform:translateY(0);}
+}
+@keyframes slideUp {
+  from {opacity:1; transform:translateY(0);}
+  to {opacity:0; transform:translateY(-10px);}
+}
+</style>
+
+
+
+
   </header>
 
   <main class="container">
@@ -164,15 +221,13 @@ footer {
       const d = document.createElement('div');
       d.className = 'card';
       d.innerHTML = `
-        <img src="${c.image || 'https://via.placeholder.com/160x90?text=curso'}" alt="${c.title||'Curso'}" />
+        <img src="${c.image || 'https://via.placeholder.com/600x300?text=Curso'}" alt="${c.title||'Curso'}" />
         <div class="meta">
           <div class="title">${c.title || '—'}</div>
           <div class="dates">Inscrições: ${c.startDate || '—'} → ${c.endDate || '—'}</div>
-          <div class="small">${(c.description || '').slice(0,160)}</div>
+          <div class="small">${(c.description || '').slice(0,200)}</div>
         </div>
-        <div>
-          <a class="btn" href="escrito.html?id=${c.id}">Ver curso</a>
-        </div>`;
+        <a class="btn" href="escrito.html?id=${c.id}">Ver curso</a>`;
       return d;
     }
     list.innerHTML='';
@@ -191,9 +246,14 @@ footer {
     filtered.forEach(c=>{
       const el = document.createElement('div');
       el.className='card';
-      el.innerHTML = `<img src="${c.image||'https://via.placeholder.com/160x90'}" alt="">
-      <div class="meta"><div class="title">${c.title}</div><div class="dates">Inscrições: ${c.startDate||'—'} → ${c.endDate||'—'}</div><div class="small">${(c.description||'').slice(0,160)}</div></div>
-      <div><a class="btn" href="escrito.html?id=${c.id}">Ver curso</a></div>`;
+      el.innerHTML = `
+        <img src="${c.image||'https://via.placeholder.com/600x300?text=Curso'}" alt="">
+        <div class="meta">
+          <div class="title">${c.title}</div>
+          <div class="dates">Inscrições: ${c.startDate||'—'} → ${c.endDate||'—'}</div>
+          <div class="small">${(c.description||'').slice(0,200)}</div>
+        </div>
+        <a class="btn" href="escrito.html?id=${c.id}">Ver curso</a>`;
       list.appendChild(el);
     });
   });
@@ -201,3 +261,60 @@ footer {
   </script>
 </body>
 </html>
+
+<div id="overlay">
+  <div class="alert-box">
+    <div class="spinner"></div>
+    <p>Carregando</p>
+  </div>
+</div>
+
+<style>
+#overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.alert-box {
+  background: #fff;
+  padding: 25px 40px;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #001f4d;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
+}
+.alert-box p {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+}
+</style>
+
+<script>
+window.onload = () => {
+  setTimeout(() => {
+    document.getElementById("overlay").style.display = "none";
+  }, 2000);
+};
+</script>
