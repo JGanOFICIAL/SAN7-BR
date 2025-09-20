@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Inscrição</title>
+<style>
+body{font-family:Arial,Helvetica,sans-serif;background:#f7f7f7;margin:0;color:#222}
+.header{background:#fff;border-bottom:6px solid #d9b24d;padding:12px}
+.container{padding:14px}
+.form{background:#fff;padding:12px;border:1px solid #d0d7db}
+.form label{display:block;font-size:13px;margin-top:8px}
+input,select,textarea{width:100%;padding:10px;border:1px solid #cfcfcf;border-radius:6px}
+.row{display:flex;gap:8px}
+.row > *{flex:1}
+.btn{background:#0b57a4;color:#fff;padding:10px 12px;border-radius:6px;border:none;margin-top:10px}
+.small{font-size:13px;color:#666;margin-top:6px}
+footer{padding:18px;text-align:center;color:#666}
+#backButton{
+  position:fixed;
+  bottom:20px;
+  left:20px;
+  right:20px;
+  width:auto;
+  padding:15px 0;
+  background-color:#003366;
+  color:white;
+  font-size:18px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  z-index:9999;
+  font-weight:500;
+}
+#backButton:hover{background-color:#002244}
+</style>
+</head>
+<body>
+  <header class="header"><div class="logo">Câmara - Cursos</div></header>
+  <main class="container">
+    <h2>Formulário de Inscrição</h2>
+    <div class="form">
+      <form id="form">
+        <label>Curso <input id="courseTitle" readonly /></label>
+
+        <label>Nome completo<input id="nome" required /></label>
+
+        <div class="row">
+          <label style="flex:2">CPF<input id="cpf" required /></label>
+          <label style="flex:1">Data de Nascimento<input id="dob" type="date" required /></label>
+        </div>
+
+        <label>Idade<input id="idade" readonly /></label>
+
+        <label>Nome do pai<input id="pai" /></label>
+        <label>Nome da mãe<input id="mae" /></label>
+
+        <div class="row">
+          <label style="flex:1">Telefone<input id="telefone" required /></label>
+          <label style="flex:1">Cidade<input id="cidade" /></label>
+        </div>
+
+        <div class="row">
+          <label style="flex:1">Estado<input id="estado" /></label>
+          <label style="flex:1">CEP<input id="cep" /></label>
+        </div>
+
+        <label>Endereço completo<textarea id="endereco" rows="2"></textarea></label>
+
+        <label>Documentos necessários (confirme)<textarea id="docs" rows="2">RG, CPF, Comprovante de residência</textarea></label>
+
+        <button class="btn" type="submit">Realizar inscrição</button>
+        <div id="msg" class="small" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </main>
+  <footer>© Câmara Municipal</footer>
+
+  <button id="backButton">Voltar</button>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="script.js"></script>
+
+  <script>
+  const params = new URLSearchParams(location.search);
+  const courseId = params.get('course');
+  async function loadCourse(){
+    if(!courseId) return;
+    const snap = await db.ref('courses/' + courseId).once('value');
+    const c = snap.val() || {};
+    document.getElementById('courseTitle').value = c.title || '—';
+  }
+  loadCourse();
+
+  const cpfEl = document.getElementById('cpf');
+  cpfEl.addEventListener('input', e=>{
+    e.target.value = formatCPF(e.target.value);
+  });
+  const telEl = document.getElementById('telefone');
+  telEl.addEventListener('input', e=>{
+    e.target.value = maskPhone(e.target.value);
+  });
+
+  const dobEl = document.getElementById('dob');
+  dobEl.addEventListener('change', e=>{
+    document.getElementById('idade').value = calculateAge(e.target.value);
+  });
+
+  document.getElementById('form').addEventListener('submit', async (ev)=>{
+    ev.preventDefault();
+    const data = {
+      nome: document.getElementById('nome').value.trim(),
+      cpf: document.getElementById('cpf').value.trim(),
+      nascimento: document.getElementById('dob').value,
+      idade: document.getElementById('idade').value,
+      pai: document.getElementById('pai').value.trim(),
+      mae: document.getElementById('mae').value.trim(),
+      telefone: document.getElementById('telefone').value.trim(),
+      cidade: document.getElementById('cidade').value.trim(),
+      estado: document.getElementById('estado').value.trim(),
+      cep: document.getElementById('cep').value.trim(),
+      endereco: document.getElementById('endereco').value.trim(),
+      docs: document.getElementById('docs').value.trim(),
+      cursoTitulo: document.getElementById('courseTitle').value,
+      timestamp: new Date().toISOString(),
+      status: 'pendente'
+    };
+    try{
+      if(!courseId) throw new Error('Curso não definido');
+      const key = await saveInscription(courseId, data);
+      location.href = `periodo.html?course=${courseId}&id=${key}`;
+    }catch(err){
+      document.getElementById('msg').textContent = 'Erro ao salvar: ' + err.message;
+    }
+  });
+
+  const backBtn = document.getElementById('backButton');
+  backBtn.onclick = () => { window.location.href = "cursos.html"; }
+  </script>
+</body>
+</html>
