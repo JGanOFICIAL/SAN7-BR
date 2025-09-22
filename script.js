@@ -139,3 +139,6 @@ async function atualizarContatoEndereco(uid, {telefone, endereco}){
   return novo;
 }
 
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/service-worker.js");
+}
