@@ -1,3 +1,4 @@
+<!-- admin.html -->
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -336,3 +337,39 @@
   </script>
 </body>
 </html>
+
+<!-- script para incorporar em outros sites (notificação de validação) -->
+<div id="notificacao-validacao" style="position:fixed;top:25px;right:25px;z-index:9999;display:none;padding:14px 18px;border-radius:8px;font-weight:500;color:#fff;background:#111;box-shadow:0 4px 12px rgba(0,0,0,.3);"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, onChildAdded } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+  authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
+  projectId: "prefeitura-de-joao-camara",
+  storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
+  messagingSenderId: "269299041577",
+  appId: "1:269299041577:web:fd41b2939240e9eb476338",
+  measurementId: "G-YT7NHR342J"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const box = document.getElementById("notificacao-validacao");
+
+function mostrarNotificacao(msg, ok=true){
+  box.textContent = msg;
+  box.style.background = ok ? 'rgba(24,144,0,0.95)' : 'rgba(204,40,40,0.95)';
+  box.style.display = "block";
+  setTimeout(()=>{ box.style.display="none"; },1000);
+}
+
+onChildAdded(ref(db,'logsValidacao'),snap=>{
+  const data = snap.val();
+  if(data && data.nome && data.matricula){
+    mostrarNotificacao(`${data.nome} (${data.matricula}) - ${data.status}`, data.status==="Aprovado");
+  }
+});
+</script>
