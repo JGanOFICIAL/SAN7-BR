@@ -3,37 +3,206 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Funcionário</title>
+<title>Portal do Funcionário</title>
 <style>
 :root{
-  --verde:#0db57b;
-  --azul:#0a6fff;
-  --bg:#f6fbff;
-  --card:#fff;
-  --muted:#6b7785;
+  --verde:#00c98d;
+  --verde-escuro:#00996a;
+  --fundo:#f4f9f6;
+  --branco:#ffffff;
+  --texto:#1b1b1b;
+  --muted:#7b8a87;
+  --sombra:0 4px 25px rgba(0,0,0,0.08);
 }
-*{box-sizing:border-box;font-family:Inter,Roboto,Arial,sans-serif}
-body{margin:0;background:linear-gradient(180deg,var(--bg),#eef7fb);display:flex;flex-direction:column;height:100vh}
-header{background:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 12px rgba(0,0,0,.05);position:fixed;width:100%;top:0;z-index:20}
-header img{height:44px}
-header h1{margin:0;font-size:18px;color:var(--azul)}
-.chat-area{flex:1;padding:90px 14px 80px;overflow-y:auto;display:flex;flex-direction:column}
-.message{max-width:80%;margin:10px;padding:12px 16px;border-radius:20px;line-height:1.4;font-size:14px}
-.bot{align-self:flex-start;background:#fff;border:1px solid #dbe9f7;color:#222;box-shadow:0 2px 8px rgba(0,0,0,.04)}
-.user{align-self:flex-end;background:var(--azul);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.chat-input{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px 14px;display:flex;align-items:center;box-shadow:0 -2px 10px rgba(0,0,0,.06)}
-.chat-input input{flex:1;padding:12px 15px;border:1px solid #ddd;border-radius:20px;font-size:14px}
-.chat-input button{background:var(--azul);border:0;color:#fff;padding:11px 18px;border-radius:20px;margin-left:8px;cursor:pointer}
-.typing{display:flex;align-items:center;margin:10px}
-.typing span{height:7px;width:7px;background:#bbb;border-radius:50%;margin:0 3px;animation:blink 1.3s infinite both}
-.typing span:nth-child(2){animation-delay:.2s}
-.typing span:nth-child(3){animation-delay:.4s}
-@keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
-.doc{border:2px dashed #c5d6e8;background:#fff;padding:14px;border-radius:12px;margin-top:8px}
-.doc p{margin:5px 0;font-size:14px}
-.download-btn{background:var(--verde);color:#fff;border:0;padding:8px 12px;border-radius:6px;cursor:pointer;margin-top:8px}
-.spinner{border:4px solid #eee;border-top:4px solid var(--azul);border-radius:50%;width:26px;height:26px;animation:spin 1s linear infinite;margin:10px auto}
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Inter",Roboto,Arial,sans-serif}
+body{
+  background:linear-gradient(180deg,var(--fundo),#ecf6f1);
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  color:var(--texto);
+  overflow:hidden;
+}
+header{
+  background:var(--branco);
+  padding:14px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  box-shadow:var(--sombra);
+  position:fixed;
+  width:100%;
+  top:0;
+  z-index:10;
+}
+header img{
+  height:48px;
+  border-radius:10px;
+  object-fit:cover;
+}
+header h1{
+  font-size:20px;
+  font-weight:600;
+  color:var(--verde-escuro);
+  letter-spacing:.3px;
+}
+.chat-area{
+  flex:1;
+  padding:90px 16px 95px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  background:var(--fundo);
+}
+.message{
+  max-width:85%;
+  margin:10px;
+  padding:16px 20px;
+  border-radius:18px;
+  line-height:1.6;
+  font-size:16px;
+  word-wrap:break-word;
+  transition:.3s all;
+}
+.bot{
+  align-self:flex-start;
+  background:var(--branco);
+  border:1px solid #cfe8db;
+  box-shadow:0 3px 8px rgba(0,0,0,.05);
+  color:var(--texto);
+  border-top-left-radius:0;
+}
+.user{
+  align-self:flex-end;
+  background:var(--verde);
+  color:#fff;
+  box-shadow:0 3px 8px rgba(0,0,0,.08);
+  border-top-right-radius:0;
+}
+.chat-input{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:var(--branco);
+  padding:16px 18px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  box-shadow:0 -4px 15px rgba(0,0,0,.05);
+  border-top:1px solid #dce7e0;
+}
+.chat-input input{
+  flex:1;
+  padding:18px 22px;
+  border:1px solid #bfe0cf;
+  border-radius:40px;
+  font-size:18px;
+  outline:none;
+  transition:border .3s, box-shadow .3s;
+}
+.chat-input input:focus{
+  border-color:var(--verde);
+  box-shadow:0 0 8px rgba(0,201,141,0.3);
+}
+.chat-input button{
+  background:var(--verde);
+  border:0;
+  color:#fff;
+  padding:14px 26px;
+  border-radius:40px;
+  cursor:pointer;
+  font-size:16px;
+  font-weight:500;
+  transition:background .3s, transform .2s, box-shadow .2s;
+}
+.chat-input button:hover{
+  background:var(--verde-escuro);
+  transform:scale(1.05);
+  box-shadow:0 3px 10px rgba(0,153,106,0.3);
+}
+.typing{
+  display:flex;
+  align-items:center;
+  margin:10px 18px;
+  gap:6px;
+}
+.typing span{
+  height:10px;width:10px;
+  background:#a8bfb2;
+  border-radius:50%;
+  animation:bounce 1.4s infinite ease-in-out both;
+}
+.typing span:nth-child(1){animation-delay:-0.32s}
+.typing span:nth-child(2){animation-delay:-0.16s}
+@keyframes bounce{
+  0%,80%,100%{transform:scale(0)}
+  40%{transform:scale(1)}
+}
+.doc{
+  border:2px solid #bde6d2;
+  background:#fff;
+  padding:18px 20px;
+  border-radius:14px;
+  margin:12px 10px;
+  box-shadow:var(--sombra);
+  transition:all .3s;
+}
+.doc:hover{transform:translateY(-2px)}
+.doc p{margin:6px 0;font-size:15px;color:#333}
+.download-btn{
+  background:var(--verde);
+  color:#fff;
+  border:0;
+  padding:11px 16px;
+  border-radius:10px;
+  cursor:pointer;
+  margin-top:12px;
+  font-size:15px;
+  font-weight:500;
+  transition:background .3s, transform .2s;
+}
+.download-btn:hover{
+  background:var(--verde-escuro);
+  transform:scale(1.05);
+}
+.spinner{
+  border:4px solid #eee;
+  border-top:4px solid var(--verde);
+  border-radius:50%;
+  width:34px;height:34px;
+  animation:spin 1s linear infinite;
+  margin:18px auto;
+}
 @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.signature-pad{
+  border:2px solid #bbb;
+  border-radius:8px;
+  background:#fff;
+  margin-top:12px;
+  width:100%;
+  height:180px;
+  touch-action:none;
+}
+.sign-btn{
+  margin-top:12px;
+  padding:10px 18px;
+  background:var(--verde);
+  color:#fff;
+  border:0;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:15px;
+}
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-thumb{background:#bcd2c6;border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:#a5c3b3}
+@media (max-width:600px){
+  header h1{font-size:18px}
+  .message{font-size:15px}
+  .chat-input input{font-size:16px}
+  .chat-input button{font-size:15px;padding:13px 22px}
+}
 </style>
 </head>
 <body>
@@ -44,7 +213,7 @@ header h1{margin:0;font-size:18px;color:var(--azul)}
 </header>
 
 <div class="chat-area" id="chat">
-  <div class="message bot">Olá 👋 Digite seu CPF para buscar as credenciais do funcionário.</div>
+  <div class="message bot">Olá 👋 Digite seu CPF para buscar as credenciais do funcionário ou alterar telefone.</div>
 </div>
 
 <div class="chat-input">
@@ -70,47 +239,147 @@ const db=firebase.database();
 const chat=document.getElementById("chat");
 const msg=document.getElementById("msg");
 const sendBtn=document.getElementById("sendBtn");
-let step="cpf"; let currentEmp=null;
+let step="cpf"; 
+let currentEmp=null;
+let phoneFlow=false;
+let phoneCode=null;
+let signatureImage=null;
+function randomId(){
+  const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  return Array.from({length:18},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+}
 
-function addMsg(t,s){const d=document.createElement("div");d.className=`message ${s}`;d.textContent=t;chat.appendChild(d);chat.scrollTop=chat.scrollHeight}
-function typing(){const d=document.createElement("div");d.className="typing";d.innerHTML="<span></span><span></span><span></span>";chat.appendChild(d);chat.scrollTop=chat.scrollHeight;return d}
+function addMsg(t,s){
+  const d=document.createElement("div");
+  d.className=`message ${s}`;
+  d.innerHTML=t;
+  chat.appendChild(d);
+  chat.scrollTop=chat.scrollHeight;
+}
+function typing(){
+  const d=document.createElement("div");
+  d.className="typing";
+  d.innerHTML="<span></span><span></span><span></span>";
+  chat.appendChild(d);
+  chat.scrollTop=chat.scrollHeight;
+  return d;
+}
 
 sendBtn.onclick=async()=>{
   const t=msg.value.trim();if(!t)return;
   addMsg(t,"user");msg.value="";
   const load=typing();
-  await new Promise(r=>setTimeout(r,1800));
+  await new Promise(r=>setTimeout(r,1200));
   load.remove();
 
-  if(step==="cpf"){
-    const cpf=t;
+  if(step==="cpf" && !phoneFlow){
+    const cpf=t.replace(/\D/g,'');
     const snap=await db.ref("employees").orderByChild("cpf").equalTo(cpf).once("value");
     if(!snap.exists()){addMsg("CPF não encontrado, tente novamente.","bot");return}
     const val=Object.entries(snap.val())[0];
     const id=val[0],data=val[1];
     currentEmp={id,...data};
     showDoc(data);
+    addMsg("Para alterar o telefone digite 'alterar telefone'. Para consultar cargas horárias digite 'consultar'.","bot");
     step="opts";
-  }
-  else if(step==="opts"){
+  } 
+  else if(step==="opts" && !phoneFlow){
     if(t.toLowerCase().includes("consultar")){
-      addMsg("Digite o mês (1-12) e o ano no formato MM/AAAA para consultar.","bot");
+      addMsg("Digite o mês e o ano no formato MM/AAAA para consultar.","bot");
       step="mesano";
-    }else addMsg("Comando inválido. Digite 'consultar' para ver suas cargas horárias.","bot");
+    } else if(t.toLowerCase().includes("alterar telefone")){
+      phoneFlow=true;
+      phoneCode=Math.floor(100000+Math.random()*900000);
+      addMsg(`Digite o novo número de telefone. Você precisará confirmar o código ${phoneCode} e seu CPF no final.`,"bot");
+      step="phoneInput";
+    } else addMsg("Comando inválido.","bot");
   }
   else if(step==="mesano"){
     const [mes,ano]=t.split("/");
     if(!mes||!ano){addMsg("Formato inválido. Use MM/AAAA.","bot");return}
     const loading=document.createElement("div");
-    loading.className="spinner";chat.appendChild(loading);
+    loading.className="spinner";
+    chat.appendChild(loading);
     chat.scrollTop=chat.scrollHeight;
-    await new Promise(r=>setTimeout(r,2000));
+    await new Promise(r=>setTimeout(r,1800));
     loading.remove();
     showHours(currentEmp.id,parseInt(mes),parseInt(ano));
+    step="opts";
+  }
+  else if(step==="phoneInput"){
+    const phone=t.trim();
+    if(phone.length<8){addMsg("Telefone inválido.","bot");return}
+    currentEmp.newPhone=phone;
+    addMsg(`Digite o código de 6 dígitos para confirmar: <b>${phoneCode}</b>`,"bot");
+    step="phoneCode";
+  }
+  else if(step==="phoneCode"){
+    if(t!==String(phoneCode)){addMsg("Código incorreto.","bot");return}
+    addMsg("Digite seu CPF para confirmar a alteração.","bot");
+    step="phoneCpf";
+  }
+  else if(step==="phoneCpf"){
+    const cpfConfirm=t.replace(/\D/g,'');
+    if(cpfConfirm!==currentEmp.cpf){addMsg("CPF incorreto.","bot");return}
+    showSignatureTerm();
   }
 };
 
-function showDoc(d){
+function showSignatureTerm(){
+  const termDiv=document.createElement("div");
+  termDiv.className="doc";
+  termDiv.innerHTML=`
+    <p>Declaro, para os devidos fins, que eu, <b>${currentEmp.name}</b>, portador do CPF <b>${currentEmp.cpf}</b>, autorizo formalmente a atualização do meu número de telefone cadastrado no sistema institucional.</p>
+    <canvas id="signaturePad" class="signature-pad"></canvas>
+    <button class="sign-btn" id="confirmSign">Concluir</button>
+  `;
+  chat.appendChild(termDiv);
+  chat.scrollTop=chat.scrollHeight;
+
+  const canvas=termDiv.querySelector("#signaturePad");
+  const ctx=canvas.getContext("2d");
+  let drawing=false;
+  function start(e){drawing=true;draw(e)}
+  function stop(){drawing=false;ctx.beginPath()}
+  function draw(e){
+    if(!drawing)return;
+    e.preventDefault();
+    const rect=canvas.getBoundingClientRect();
+    const x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
+    const y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;
+    ctx.lineWidth=2;
+    ctx.lineCap="round";
+    ctx.strokeStyle="#000";
+    ctx.lineTo(x,y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x,y);
+  }
+  canvas.addEventListener("mousedown",start);
+  canvas.addEventListener("mouseup",stop);
+  canvas.addEventListener("mousemove",draw);
+  canvas.addEventListener("touchstart",start);
+  canvas.addEventListener("touchend",stop);
+  canvas.addEventListener("touchmove",draw);
+
+  termDiv.querySelector("#confirmSign").onclick=async()=>{
+    signatureImage=canvas.toDataURL("image/png");
+    const docId=randomId();
+    const loading=document.createElement("div");
+    loading.className="spinner";
+    chat.appendChild(loading);
+    chat.scrollTop=chat.scrollHeight;
+    await new Promise(r=>setTimeout(r,2000));
+    loading.remove();
+    await db.ref("employees/"+currentEmp.id).update({phone: currentEmp.newPhone, updatedAt: Date.now()});
+    addMsg(`✅ Telefone atualizado com sucesso!<br><small>ID do Documento: <b>${docId}</b></small>`,"bot");
+    phoneFlow=false; step="opts";
+    currentEmp.phone=currentEmp.newPhone;
+    showDoc(currentEmp,docId);
+  };
+}
+
+function showDoc(d,docId){
   const div=document.createElement("div");
   div.className="doc";
   div.innerHTML=`
@@ -119,19 +388,24 @@ function showDoc(d){
   <p><b>Telefone:</b> ${d.phone||'-'}</p>
   <p><b>CPF:</b> ${d.cpf||'-'}</p>
   <p><b>Série:</b> ${d.serial}</p>
+  ${docId?`<p><b>ID do Documento:</b> ${docId}</p>`:""}
   <button class="download-btn">Baixar PDF</button>`;
-  chat.appendChild(div);chat.scrollTop=chat.scrollHeight;
-  addMsg("Deseja consultar suas cargas horárias? Digite 'consultar'.","bot");
+  chat.appendChild(div);
+  chat.scrollTop=chat.scrollHeight;
   div.querySelector(".download-btn").onclick=()=>{
     const {jsPDF}=window.jspdf;
     const doc=new jsPDF();
-    doc.text("Comprovante de Cadastro",20,20);
+    doc.text("Comprovante de Alteração",20,20);
     doc.text(`Nome: ${d.name}`,20,40);
     doc.text(`Função: ${d.role}`,20,50);
     doc.text(`CPF: ${d.cpf}`,20,60);
     doc.text(`Série: ${d.serial}`,20,70);
     doc.text(`Telefone: ${d.phone||'-'}`,20,80);
-    doc.save("cadastro.pdf");
+    if(docId) doc.text(`ID do Documento: ${docId}`,20,90);
+    if(signatureImage){
+      doc.addImage(signatureImage,"PNG",20,100,40,20);
+    }
+    doc.save("comprovante.pdf");
   };
 }
 
