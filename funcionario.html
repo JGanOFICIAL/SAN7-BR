@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Funcionário</title>
+<style>
+:root{
+  --verde:#0db57b;
+  --azul:#0a6fff;
+  --bg:#f6fbff;
+  --card:#fff;
+  --muted:#6b7785;
+}
+*{box-sizing:border-box;font-family:Inter,Roboto,Arial,sans-serif}
+body{margin:0;background:linear-gradient(180deg,var(--bg),#eef7fb);display:flex;flex-direction:column;height:100vh}
+header{background:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 12px rgba(0,0,0,.05);position:fixed;width:100%;top:0;z-index:20}
+header img{height:44px}
+header h1{margin:0;font-size:18px;color:var(--azul)}
+.chat-area{flex:1;padding:90px 14px 80px;overflow-y:auto;display:flex;flex-direction:column}
+.message{max-width:80%;margin:10px;padding:12px 16px;border-radius:20px;line-height:1.4;font-size:14px}
+.bot{align-self:flex-start;background:#fff;border:1px solid #dbe9f7;color:#222;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.user{align-self:flex-end;background:var(--azul);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.chat-input{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px 14px;display:flex;align-items:center;box-shadow:0 -2px 10px rgba(0,0,0,.06)}
+.chat-input input{flex:1;padding:12px 15px;border:1px solid #ddd;border-radius:20px;font-size:14px}
+.chat-input button{background:var(--azul);border:0;color:#fff;padding:11px 18px;border-radius:20px;margin-left:8px;cursor:pointer}
+.typing{display:flex;align-items:center;margin:10px}
+.typing span{height:7px;width:7px;background:#bbb;border-radius:50%;margin:0 3px;animation:blink 1.3s infinite both}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
+.doc{border:2px dashed #c5d6e8;background:#fff;padding:14px;border-radius:12px;margin-top:8px}
+.doc p{margin:5px 0;font-size:14px}
+.download-btn{background:var(--verde);color:#fff;border:0;padding:8px 12px;border-radius:6px;cursor:pointer;margin-top:8px}
+.spinner{border:4px solid #eee;border-top:4px solid var(--azul);border-radius:50%;width:26px;height:26px;animation:spin 1s linear infinite;margin:10px auto}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjM8laYM9og0h4685t14OeuLxVCdko1f6TJsC6UlTmis7Grf7tYzY_n3s9M8S1Y2VP_dPvpj4wVBOmSCn9MBL49ce_-apvf6BNeTydFF3n1xUcA1VNhT_RtgZ4OJOm4cC7tz7wrNC8z4pi4fMHw5Ei-W0FllK4eI5vP1lEaNtTCnIMawvTgW35FRf-XP_0/s711/22B49C44-6D22-4F0B-857A-E185F8E083B9.jpeg" alt="logo">
+  <h1></h1>
+</header>
+
+<div class="chat-area" id="chat">
+  <div class="message bot">Olá 👋 Digite seu CPF para buscar as credenciais do funcionário.</div>
+</div>
+
+<div class="chat-input">
+  <input type="text" id="msg" placeholder="Digite aqui..." />
+  <button id="sendBtn">Enviar</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script>
+const firebaseConfig={
+  apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+  authDomain:"prefeitura-de-joao-camara.firebaseapp.com",
+  projectId:"prefeitura-de-joao-camara",
+  storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",
+  messagingSenderId:"269299041577",
+  appId:"1:269299041577:web:fd41b2939240e9eb476338",
+  measurementId:"G-YT7NHR342J"
+};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+const chat=document.getElementById("chat");
+const msg=document.getElementById("msg");
+const sendBtn=document.getElementById("sendBtn");
+let step="cpf"; let currentEmp=null;
+
+function addMsg(t,s){const d=document.createElement("div");d.className=`message ${s}`;d.textContent=t;chat.appendChild(d);chat.scrollTop=chat.scrollHeight}
+function typing(){const d=document.createElement("div");d.className="typing";d.innerHTML="<span></span><span></span><span></span>";chat.appendChild(d);chat.scrollTop=chat.scrollHeight;return d}
+
+sendBtn.onclick=async()=>{
+  const t=msg.value.trim();if(!t)return;
+  addMsg(t,"user");msg.value="";
+  const load=typing();
+  await new Promise(r=>setTimeout(r,1800));
+  load.remove();
+
+  if(step==="cpf"){
+    const cpf=t;
+    const snap=await db.ref("employees").orderByChild("cpf").equalTo(cpf).once("value");
+    if(!snap.exists()){addMsg("CPF não encontrado, tente novamente.","bot");return}
+    const val=Object.entries(snap.val())[0];
+    const id=val[0],data=val[1];
+    currentEmp={id,...data};
+    showDoc(data);
+    step="opts";
+  }
+  else if(step==="opts"){
+    if(t.toLowerCase().includes("consultar")){
+      addMsg("Digite o mês (1-12) e o ano no formato MM/AAAA para consultar.","bot");
+      step="mesano";
+    }else addMsg("Comando inválido. Digite 'consultar' para ver suas cargas horárias.","bot");
+  }
+  else if(step==="mesano"){
+    const [mes,ano]=t.split("/");
+    if(!mes||!ano){addMsg("Formato inválido. Use MM/AAAA.","bot");return}
+    const loading=document.createElement("div");
+    loading.className="spinner";chat.appendChild(loading);
+    chat.scrollTop=chat.scrollHeight;
+    await new Promise(r=>setTimeout(r,2000));
+    loading.remove();
+    showHours(currentEmp.id,parseInt(mes),parseInt(ano));
+  }
+};
+
+function showDoc(d){
+  const div=document.createElement("div");
+  div.className="doc";
+  div.innerHTML=`
+  <p><b>Nome:</b> ${d.name}</p>
+  <p><b>Função:</b> ${d.role}</p>
+  <p><b>Telefone:</b> ${d.phone||'-'}</p>
+  <p><b>CPF:</b> ${d.cpf||'-'}</p>
+  <p><b>Série:</b> ${d.serial}</p>
+  <button class="download-btn">Baixar PDF</button>`;
+  chat.appendChild(div);chat.scrollTop=chat.scrollHeight;
+  addMsg("Deseja consultar suas cargas horárias? Digite 'consultar'.","bot");
+  div.querySelector(".download-btn").onclick=()=>{
+    const {jsPDF}=window.jspdf;
+    const doc=new jsPDF();
+    doc.text("Comprovante de Cadastro",20,20);
+    doc.text(`Nome: ${d.name}`,20,40);
+    doc.text(`Função: ${d.role}`,20,50);
+    doc.text(`CPF: ${d.cpf}`,20,60);
+    doc.text(`Série: ${d.serial}`,20,70);
+    doc.text(`Telefone: ${d.phone||'-'}`,20,80);
+    doc.save("cadastro.pdf");
+  };
+}
+
+async function showHours(empId,mes,ano){
+  const snap=await db.ref("attendance").orderByChild("employeeId").equalTo(empId).once("value");
+  const all=snap.val()||{};const arr=[];
+  for(const[k,v]of Object.entries(all)){
+    if(v.startTime){
+      const dt=new Date(v.startTime);
+      if(dt.getMonth()+1===mes&&dt.getFullYear()===ano)arr.push(v);
+    }
+  }
+  if(!arr.length){addMsg("Nenhum registro neste mês.","bot");return}
+  let totalMs=0;let txt="📅 Registros:\n";
+  arr.forEach(v=>{
+    const ini=new Date(v.startTime);
+    const fim=new Date(v.endTime||v.startTime);
+    const dur=(v.durationMs||fim-ini);
+    totalMs+=dur;
+    txt+=`\n${ini.toLocaleDateString()} • ${ini.toLocaleTimeString()} às ${fim.toLocaleTimeString()} (${formatDur(dur)})`;
+  });
+  const total=totalMs/(1000*3600);
+  txt+=`\n\nTotal: ${formatDur(totalMs)} (${total.toFixed(2)}h)`;
+  addMsg(txt,"bot");
+}
+
+function formatDur(ms){
+  const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60);
+  return `${h}h ${m}m`;
+}
+</script>
+</body>
+</html>
