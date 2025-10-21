@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dashboard - Academia</title>
+<style>
+:root{
+  --bg:#fff;
+  --dark:#000;
+  --card:#f8f8f8;
+  --green:#32CD32;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+body{background:var(--bg);color:var(--dark);min-height:100vh}
+header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #eee;z-index:10}
+.logo-canto-esquerdo{height:38px;width:auto}
+.menu-container{position:relative}
+.menu-btn{width:32px;height:24px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between}
+.menu-btn div{width:100%;height:3px;background:#000;border-radius:2px;transition:all .3s}
+.menu-btn.active div:nth-child(1){transform:rotate(45deg) translateY(9px)}
+.menu-btn.active div:nth-child(2){opacity:0}
+.menu-btn.active div:nth-child(3){transform:rotate(-45deg) translateY(-9px)}
+.menu{position:absolute;top:40px;right:0;background:#fff;box-shadow:0 4px 15px rgba(0,0,0,.1);border-radius:6px;display:none;flex-direction:column;width:200px;overflow:hidden}
+.menu.active{display:flex}
+.menu a{text-decoration:none;color:#000;padding:12px 15px;transition:.3s}
+.menu a:hover{background:#f5f5f5}
+
+main{width:100%;max-width:400px;padding:20px;margin-top:100px}
+.card{background:var(--card);padding:20px;border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,.05)}
+.card h3{font-size:22px;font-weight:600;margin-bottom:10px}
+.meta{color:#555;font-size:14px;margin-bottom:6px}
+footer{margin-top:40px;font-size:12px;color:#888;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjOvLMq7oeCH6uI1reiI3Gfa66OmBp_uYaQCObkOntfJHSA6PmMAKdIhyphenhyphenO0PGDP-cwWJvSOjtRw8rTkq311ROKf_kYNWLXIcn6gJSidqV3Fwygk1nqg6kWOChPAiPLNahew9orxaAXb0zGz1wE80cNsWkYyttaDRLJjF9D2YUwxJLa7d45cS1L68T_j3NY/s394/E94D78A0-32B2-4F58-AA91-C1BA1FC190A9.jpeg" class="logo-canto-esquerdo">
+  <div class="menu-container">
+    <div class="menu-btn" id="menuBtn"><div></div><div></div><div></div></div>
+    <div class="menu" id="menu">
+      <a href="chat.html">Entrar em contato</a>
+      
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="card" id="userCard">
+    <h3 id="userName">Carregando...</h3>
+    <div class="meta" id="userCpf"></div>
+    <div class="meta" id="planInfo"></div>
+  </div>
+  
+</main>
+
+
+<br><br>
+
+
+<div style="display: flex; justify-content: center;">
+  <img src="https://i.pinimg.com/736x/dc/31/2b/dc312b5e75a80047258250bb31b934dc.jpg" style="width: TAMANHO_WIDTHpx; height: 310px;">
+</div>
+
+
+
+
+
+
+<script>
+const btn=document.getElementById('menuBtn');
+const menu=document.getElementById('menu');
+btn.onclick=()=>{btn.classList.toggle('active');menu.classList.toggle('active');};
+</script>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomain:"prefeitura-de-joao-camara.firebaseapp.com",projectId:"prefeitura-de-joao-camara",storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",messagingSenderId:"269299041577",appId:"1:269299041577:web:fd41b2939240e9eb476338",measurementId:"G-YT7NHR342J"};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+
+const logged=localStorage.getItem('loggedUser');
+if(!logged){location.href='index.html';}
+const cpfDigits=logged;
+const userNameEl=document.getElementById('userName');
+const userCpfEl=document.getElementById('userCpf');
+const planInfoEl=document.getElementById('planInfo');
+
+const userRef=db.ref('users/'+cpfDigits);
+userRef.on('value',snap=>{
+  if(!snap.exists()){alert('Usuário removido.');localStorage.removeItem('loggedUser');location.href='index.html';return;}
+  const u=snap.val();
+  userNameEl.textContent=u.name||'Usuário';
+  userCpfEl.textContent='Número do Aluno (NA): '+(cpfDigits.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4'));
+  let info='Plano: '+(u.planName||'—');
+  if(u.startDate) info+=' • Início: '+u.startDate;
+  if(u.endDate){
+    info+=' • Término: '+u.endDate;
+    const today=new Date().toISOString().slice(0,10);
+    const left=Math.ceil((new Date(u.endDate)-new Date(today))/(1000*60*60*24));
+    info+=' • Dias restantes: '+(left>=0?left:0);
+  }
+  planInfoEl.textContent=info;
+  const today=new Date().toISOString().slice(0,10);
+  if(!u.active||(u.endDate&&u.endDate<today)){
+    alert('Seu plano está inativo ou expirado.');
+    localStorage.removeItem('loggedUser');
+    location.href='index.html';
+  }
+});
+</script>
+</body>
+</html>
+
+<style>
+#loadingScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.5);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:9999;opacity:1;transition:opacity .8s ease}
+#loadingBox{width:100px;height:100px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(0,0,0,0.1)}
+.spinner{width:40px;height:40px;border:4px solid #ccc;border-top:4px solid #32CD32;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+</style>
+
+<div id="loadingScreen">
+  <div id="loadingBox">
+    <div class="spinner"></div>
+  </div>
+</div>
+
+<script>
+setTimeout(()=>{
+  const loading=document.getElementById('loadingScreen');
+  loading.style.opacity='0';
+  setTimeout(()=>{loading.style.display='none'},800);
+},2000);
+</script>
+
+<style>
+.footer-buttons{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #eee;z-index:15}
+.footer-buttons button{flex:1;margin:0 5px;background:#32CD32;border:none;color:#fff;font-weight:600;font-size:16px;padding:12px;border-radius:8px;cursor:pointer;transition:.3s}
+.footer-buttons button:hover{opacity:.9}
+</style>
+
+<div class="footer-buttons">
+  <button onclick="window.location.href='index.html'">Treinos</button>
+  <button onclick="window.location.href='login.html'">Sair</button>
+</div>
