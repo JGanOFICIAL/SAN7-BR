@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Login - Academia</title>
+<style>
+:root{
+  --bg:#fff;
+  --dark:#000;
+  --light:#f5f5f5;
+  --accent:#f0f0f0;
+  --green:#32CD32;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+body{background:var(--bg);color:var(--dark);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:100px}
+header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #eee;z-index:10}
+.logo-canto-esquerdo{height:38px;width:auto}
+.menu-container{position:relative}
+.menu-btn{width:32px;height:24px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between}
+.menu-btn div{width:100%;height:3px;background:#000;border-radius:2px;transition:all .3s}
+.menu-btn.active div:nth-child(1){transform:rotate(45deg) translateY(9px)}
+.menu-btn.active div:nth-child(2){opacity:0}
+.menu-btn.active div:nth-child(3){transform:rotate(-45deg) translateY(-9px)}
+.menu{position:absolute;top:40px;right:0;background:#fff;box-shadow:0 4px 15px rgba(0,0,0,.1);border-radius:6px;display:none;flex-direction:column;width:200px;overflow:hidden}
+.menu.active{display:flex}
+.menu a{text-decoration:none;color:#000;padding:12px 15px;transition:.3s}
+.menu a:hover{background:#f5f5f5}
+
+main{width:100%;max-width:400px;padding:20px}
+.container{margin-top:20px}
+h2{font-size:22px;font-weight:600;margin-bottom:25px}
+label{display:block;font-size:14px;color:#444;margin-bottom:8px}
+input[type="text"]{
+  width:100%;padding:14px;border:none;border-bottom:1px solid #ccc;font-size:17px;color:#000;background:transparent;outline:none;
+}
+input::placeholder{color:#aaa}
+.btn{margin-top:25px;width:100%;padding:14px;border-radius:8px;border:none;background:#e6e6e6;color:#999;font-weight:600;font-size:16px;cursor:pointer;transition:.3s}
+.btn:hover{background:#ddd}
+.btn.active{background:var(--green);color:#fff}
+.info{margin-top:20px;font-size:13px;color:#555}
+footer{margin-top:60px;font-size:12px;color:#888;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjOvLMq7oeCH6uI1reiI3Gfa66OmBp_uYaQCObkOntfJHSA6PmMAKdIhyphenhyphenO0PGDP-cwWJvSOjtRw8rTkq311ROKf_kYNWLXIcn6gJSidqV3Fwygk1nqg6kWOChPAiPLNahew9orxaAXb0zGz1wE80cNsWkYyttaDRLJjF9D2YUwxJLa7d45cS1L68T_j3NY/s394/E94D78A0-32B2-4F58-AA91-C1BA1FC190A9.jpeg" class="logo-canto-esquerdo">
+
+
+<button onclick="window.location.href='index.html'" style="position:absolute;top:10px;right:20px;background:#7CFC00;color:#000;font-weight:bold;padding:12px 18px;border:none;cursor:pointer;">Voltar</button>
+
+
+
+
+ 
+  </div>
+</header>
+
+
+<div style="display: flex; justify-content: center;">
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi0yCUWA5ZJrJ15O4A_nx3har6rw3HWqln8i1Wb6kEKhGsSPvDDfX3-pHf5r3RofzAPRnlryaJcvTdGedrqdExgSOUh8Z9X6KRbFamhV631FQZR3DcpxhQaGLxwSzasWvg5SepcBbEoSuYEejULP8noaft1X55jWxRRRBf9rV5Hh4phFXU5ES1Zx3JYVrw/s568/C1BEFBAD-7E9A-4A6A-8DD9-5D144FAA686F.jpeg" style="width: TAMANHO_WIDTHpx; height: 150px;">
+</div>
+
+
+
+
+<div id="presencaContainer">
+  <div class="presenca-card">
+    <h2 id="tituloMes"></h2>
+    <p id="dataHoje"></p>
+    <div class="user-info">
+      <span id="userNome"></span><br>
+      <small id="userNA"></small>
+    </div>
+
+    <button id="btnIniciarTreino">Iniciar meu treino agora</button>
+    <button id="btnHistorico">Histórico</button>
+    <div id="contadorContainer"></div>
+
+
+    <div class="dias-lista" id="diasMes"></div>
+  </div>
+
+
+  <div id="overlayTreino" class="overlay">
+    <div class="overlay-content">
+      <span class="fechar" id="fecharTreino">×</span>
+      <h3 id="dataTreino"></h3>
+      <p id="msgMotivacional"></p>
+      <button id="btnIniciarAgora">Iniciar</button>
+    </div>
+  </div>
+
+  <div id="overlayComprovante" class="overlay">
+    <div class="overlay-content">
+      <h3>Comprovante de Treino</h3>
+      <p id="infoComprovante"></p>
+      <p id="msgFinal"></p>
+      <button id="btnOkComprovante">OK</button>
+    </div>
+  </div>
+
+  <div id="historicoOverlay">
+    <div class="historico-content">
+      <span id="fecharHistorico">×</span>
+      <h3>Consultar histórico</h3>
+      <input type="number" id="mesInput" placeholder="Mês (1-12)" min="1" max="12">
+      <input type="number" id="anoInput" placeholder="Ano (ex: 2025)">
+      <button id="consultarBtn">Consultar</button>
+      <div id="resultadoHistorico"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+#presencaContainer{font-family:Inter,system-ui,Roboto,Arial;color:#000;display:flex;justify-content:center;margin-top:40px}
+.presenca-card{padding:25px;text-align:center;width:100%;max-width:460px}
+.presenca-card h2{color:#39e27b;margin-bottom:5px;font-size:22px;letter-spacing:.5px}
+.presenca-card p{margin-bottom:10px;color:#555;font-size:15px}
+.user-info{margin-bottom:20px;font-weight:600;color:#333}
+.user-info small{color:#777}
+.presenca-card button{margin:8px;padding:13px 20px;border:none;border-radius:0;cursor:pointer;font-weight:600;transition:.3s;font-size:15px;width:100%;text-transform:uppercase;letter-spacing:.5px}
+#btnIniciarTreino{background:#39e27b;color:#fff;box-shadow:0 3px 10px rgba(57,226,123,.4)}
+#btnIniciarTreino:hover{transform:scale(1.03)}
+#btnHistorico{background:#f3f3f3;color:#333}
+#btnHistorico:hover{background:#e5e5e5}
+#contadorContainer{margin-top:10px}
+#tempoTreino{font-size:18px;font-weight:600;margin-top:10px;color:#39e27b}
+#pararTreinoBtn{margin-top:8px;background:#f44336;color:#fff;border:none;padding:10px 20px;cursor:pointer;transition:.3s;border-radius:0;font-weight:600;letter-spacing:.5px}
+#pararTreinoBtn:hover{background:#d32f2f}
+.dias-lista{margin-top:25px;text-align:left}
+.dia-linha{display:flex;align-items:center;gap:10px;margin:6px 0;font-weight:500;padding:4px 0;border-bottom:1px solid #f0f0f0}
+.dia-linha img{width:22px;height:22px}
+.dia-verde{color:#2ecc71}
+.dia-vermelho{color:#e74c3c}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:999}
+.overlay-content{background:#fff;padding:30px;border-radius:8px;box-shadow:0 8px 25px rgba(0,0,0,.2);text-align:center;width:90%;max-width:380px;position:relative;animation:fadeIn .3s ease}
+.overlay-content h3{margin-bottom:10px;color:#39e27b}
+.overlay-content p{color:#555;margin-bottom:20px}
+.overlay-content button{padding:12px 25px;background:#39e27b;border:none;border-radius:0;color:#fff;font-weight:600;cursor:pointer;transition:.3s;box-shadow:0 3px 10px rgba(57,226,123,.4)}
+.overlay-content button:hover{transform:scale(1.03)}
+.fechar{position:absolute;top:10px;right:15px;font-size:24px;cursor:pointer;color:#333}
+#historicoOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:999}
+.historico-content{background:#fff;padding:30px;border-radius:8px;box-shadow:0 8px 25px rgba(0,0,0,.2);text-align:center;width:90%;max-width:400px;position:relative;animation:fadeIn .3s ease}
+.historico-content input{display:block;width:100%;margin:10px 0;padding:12px;border:1px solid #ccc;border-radius:0;outline:none}
+.historico-content button{padding:12px;width:100%;background:#39e27b;border:none;border-radius:0;color:#fff;font-weight:600;cursor:pointer;transition:.3s;box-shadow:0 3px 10px rgba(57,226,123,.4)}
+.historico-content button:hover{transform:scale(1.03)}
+#fecharHistorico{position:absolute;top:10px;right:15px;font-size:24px;cursor:pointer;color:#333}
+#resultadoHistorico{margin-top:15px;color:#333;font-size:15px;text-align:left}
+@keyframes fadeIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomain:"prefeitura-de-joao-camara.firebaseapp.com",projectId:"prefeitura-de-joao-camara",storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",messagingSenderId:"269299041577",appId:"1:269299041577:web:fd41b2939240e9eb476338",measurementId:"G-YT7NHR342J"};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+
+const userId=localStorage.getItem("loggedUser");
+const btnIniciarTreino=document.getElementById("btnIniciarTreino");
+const overlayTreino=document.getElementById("overlayTreino");
+const fecharTreino=document.getElementById("fecharTreino");
+const btnIniciarAgora=document.getElementById("btnIniciarAgora");
+const msgMotivacional=document.getElementById("msgMotivacional");
+const dataTreino=document.getElementById("dataTreino");
+const diasMes=document.getElementById("diasMes");
+const btnHistorico=document.getElementById("btnHistorico");
+const overlayHistorico=document.getElementById("historicoOverlay");
+const fecharHistorico=document.getElementById("fecharHistorico");
+const consultarBtn=document.getElementById("consultarBtn");
+const resultadoHistorico=document.getElementById("resultadoHistorico");
+const overlayComprovante=document.getElementById("overlayComprovante");
+const infoComprovante=document.getElementById("infoComprovante");
+const msgFinal=document.getElementById("msgFinal");
+const btnOkComprovante=document.getElementById("btnOkComprovante");
+const userNome=document.getElementById("userNome");
+const userNA=document.getElementById("userNA");
+const contadorContainer=document.getElementById("contadorContainer");
+
+let inicioTreino=null;
+let intervalo=null;
+
+const hoje=new Date();
+const mes=hoje.toLocaleString("pt-BR",{month:"long"});
+const dia=hoje.getDate();
+const ano=hoje.getFullYear();
+document.getElementById("tituloMes").textContent=mes.charAt(0).toUpperCase()+mes.slice(1)+" "+ano;
+document.getElementById("dataHoje").textContent=`Hoje é ${dia} de ${mes} de ${ano}.`;
+
+let urlVerificado="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSR2QHTv08jj8Og3kVRC4gjzeYjPzAa1LkAW_kwijtUlg&s=10";
+let urlX="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmA6aN6a1XYSJw1QbrkvTcbi4TJXaydU9Vblp88WTl8A&s=10";
+
+const mensagens=[
+  "Você é mais forte do que imagina!",
+  "A persistência vence o cansaço.",
+  "Cada treino é um passo para o sucesso.",
+  "Você não veio até aqui para desistir.",
+  "A força vem da consistência.",
+  "Hoje é o dia perfeito para evoluir!",
+  "Corpo em movimento, mente em paz.",
+  "Você está se superando!",
+  "A disciplina cria campeões.",
+  "Seu único limite é você mesmo."
+];
+
+if(userId){
+  db.ref("users/"+userId).once("value").then(snap=>{
+    if(snap.exists()){
+      const u=snap.val();
+      userNome.textContent=u.name?u.name:"Usuário";
+      userNA.textContent="NA: "+userId;
+      carregarDias();
+    }
+  });
+}
+
+function carregarDias(){
+  const ultimoDia=new Date(ano,hoje.getMonth()+1,0).getDate();
+  diasMes.innerHTML="";
+  db.ref(`presencas/${userId}/${ano}/${hoje.getMonth()+1}`).once("value").then(snap=>{
+    const dados=snap.val()||{};
+    for(let i=1;i<=ultimoDia;i++){
+      const linha=document.createElement("div");
+      linha.classList.add("dia-linha");
+      const img=document.createElement("img");
+      const span=document.createElement("span");
+      span.textContent=`Dia ${i}`;
+      if(dados[i]){
+        img.src=urlVerificado;
+        span.classList.add("dia-verde");
+      }else if(i<=dia){
+        img.src=urlX;
+        span.classList.add("dia-vermelho");
+      }else{
+        span.style.color="#aaa";
+      }
+      linha.appendChild(img);
+      linha.appendChild(span);
+      diasMes.appendChild(linha);
+    }
+  });
+}
+
+btnIniciarTreino.addEventListener("click",()=>{
+  const msg=mensagens[Math.floor(Math.random()*mensagens.length)];
+  msgMotivacional.textContent=msg;
+  dataTreino.textContent=new Date().toLocaleString("pt-BR",{dateStyle:"full"});
+  overlayTreino.style.display="flex";
+});
+
+fecharTreino.addEventListener("click",()=>overlayTreino.style.display="none");
+
+btnIniciarAgora.addEventListener("click",()=>{
+  overlayTreino.style.display="none";
+  if(!inicioTreino){
+    inicioTreino=Date.now();
+    localStorage.setItem("inicioTreino",inicioTreino);
+    iniciarContador();
+  }
+});
+
+function iniciarContador(){
+  if(document.getElementById("tempoTreino")) return;
+  const tempoDiv=document.createElement("div");
+  tempoDiv.id="tempoTreino";
+  tempoDiv.textContent="Treinando: 00:00:00";
+  const pararBtn=document.createElement("button");
+  pararBtn.id="pararTreinoBtn";
+  pararBtn.textContent="Parar treino";
+  pararBtn.onclick=pararTreino;
+  contadorContainer.appendChild(tempoDiv);
+  contadorContainer.appendChild(pararBtn);
+
+  intervalo=setInterval(()=>{
+    const inicio=parseInt(localStorage.getItem("inicioTreino"));
+    if(!inicio)return;
+    const tempoDecorrido=Math.floor((Date.now()-inicio)/1000);
+    const horas=Math.floor(tempoDecorrido/3600);
+    const minutos=Math.floor((tempoDecorrido%3600)/60);
+    const segundos=tempoDecorrido%60;
+    tempoDiv.textContent=`Treinando: ${String(horas).padStart(2,"0")}:${String(minutos).padStart(2,"0")}:${String(segundos).padStart(2,"0")}`;
+  },1000);
+}
+
+function pararTreino(){
+  clearInterval(intervalo);
+  const inicio=parseInt(localStorage.getItem("inicioTreino"));
+  if(!inicio)return;
+  const tempo=Math.floor((Date.now()-inicio)/1000);
+  localStorage.removeItem("inicioTreino");
+
+  const horas=Math.floor(tempo/3600);
+  const minutos=Math.floor((tempo%3600)/60);
+  const segundos=tempo%60;
+  const tempoStr=`${String(horas).padStart(2,"0")}:${String(minutos).padStart(2,"0")}:${String(segundos).padStart(2,"0")}`;
+
+  const dados={presente:true,data:new Date().toISOString(),tempo:tempoStr};
+  db.ref(`presencas/${userId}/${ano}/${hoje.getMonth()+1}/${dia}`).set(dados).then(()=>{
+    carregarDias();
+  });
+
+  overlayComprovante.style.display="flex";
+  infoComprovante.innerHTML=`<strong>${userNome.textContent}</strong><br>${new Date().toLocaleString("pt-BR",{dateStyle:"full"})}<br>Duração: ${tempoStr}`;
+  msgFinal.textContent=mensagens[Math.floor(Math.random()*mensagens.length)];
+  contadorContainer.innerHTML="";
+}
+
+btnOkComprovante.addEventListener("click",()=>{
+  overlayComprovante.style.display="none";
+});
+
+if(localStorage.getItem("inicioTreino")){
+  iniciarContador();
+}
+
+btnHistorico.addEventListener("click",()=>overlayHistorico.style.display="flex");
+fecharHistorico.addEventListener("click",()=>overlayHistorico.style.display="none");
+
+consultarBtn.addEventListener("click",()=>{
+  const mesInput=document.getElementById("mesInput").value;
+  const anoInput=document.getElementById("anoInput").value;
+  if(!mesInput||!anoInput){alert("Preencha mês e ano.");return;}
+  const ref=db.ref(`presencas/${userId}/${anoInput}/${mesInput}`);
+  ref.once("value").then(snap=>{
+    if(!snap.exists()){resultadoHistorico.textContent="Nenhum treino registrado nesse mês.";return;}
+    const dias=snap.val();
+    let total=0;let html="";
+    Object.keys(dias).forEach(d=>{
+      const p=dias[d];
+      total++;
+      html+=`<div style="padding:8px 0;border-bottom:1px solid #eee">
+        <strong>Dia ${d}</strong> — Duração: ${p.tempo?p.tempo:"N/A"}
+      </div>`;
+    });
+    resultadoHistorico.innerHTML=`<p style="margin-bottom:10px">Total de treinos: <strong>${total}</strong></p>${html}`;
+  });
+});
+</script>
+
+<style>
+#loadingScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.5);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:9999;opacity:1;transition:opacity .8s ease}
+#loadingBox{width:100px;height:100px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(0,0,0,0.1)}
+.spinner{width:40px;height:40px;border:4px solid #ccc;border-top:4px solid #32CD32;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+</style>
+
+<div id="loadingScreen">
+  <div id="loadingBox">
+    <div class="spinner"></div>
+  </div>
+</div>
+
+<script>
+setTimeout(()=>{
+  const loading=document.getElementById('loadingScreen');
+  loading.style.opacity='0';
+  setTimeout(()=>{loading.style.display='none'},800);
+},2000);
+</script>
