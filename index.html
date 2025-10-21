@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Login - Academia</title>
+<style>
+:root{
+  --bg:#fff;
+  --dark:#000;
+  --light:#f5f5f5;
+  --accent:#f0f0f0;
+  --green:#32CD32;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+body{background:var(--bg);color:var(--dark);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:100px}
+header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #eee;z-index:10}
+.logo-canto-esquerdo{height:38px;width:auto}
+.menu-container{position:relative}
+.menu-btn{width:32px;height:24px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between}
+.menu-btn div{width:100%;height:3px;background:#000;border-radius:2px;transition:all .3s}
+.menu-btn.active div:nth-child(1){transform:rotate(45deg) translateY(9px)}
+.menu-btn.active div:nth-child(2){opacity:0}
+.menu-btn.active div:nth-child(3){transform:rotate(-45deg) translateY(-9px)}
+.menu{position:absolute;top:40px;right:0;background:#fff;box-shadow:0 4px 15px rgba(0,0,0,.1);border-radius:6px;display:none;flex-direction:column;width:200px;overflow:hidden}
+.menu.active{display:flex}
+.menu a{text-decoration:none;color:#000;padding:12px 15px;transition:.3s}
+.menu a:hover{background:#f5f5f5}
+
+main{width:100%;max-width:400px;padding:20px}
+.container{margin-top:20px}
+h2{font-size:22px;font-weight:600;margin-bottom:25px}
+label{display:block;font-size:14px;color:#444;margin-bottom:8px}
+input[type="text"]{
+  width:100%;padding:14px;border:none;border-bottom:1px solid #ccc;font-size:17px;color:#000;background:transparent;outline:none;
+}
+input::placeholder{color:#aaa}
+.btn{margin-top:25px;width:100%;padding:14px;border-radius:8px;border:none;background:#e6e6e6;color:#999;font-weight:600;font-size:16px;cursor:pointer;transition:.3s}
+.btn:hover{background:#ddd}
+.btn.active{background:var(--green);color:#fff}
+.info{margin-top:20px;font-size:13px;color:#555}
+footer{margin-top:60px;font-size:12px;color:#888;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjOvLMq7oeCH6uI1reiI3Gfa66OmBp_uYaQCObkOntfJHSA6PmMAKdIhyphenhyphenO0PGDP-cwWJvSOjtRw8rTkq311ROKf_kYNWLXIcn6gJSidqV3Fwygk1nqg6kWOChPAiPLNahew9orxaAXb0zGz1wE80cNsWkYyttaDRLJjF9D2YUwxJLa7d45cS1L68T_j3NY/s394/E94D78A0-32B2-4F58-AA91-C1BA1FC190A9.jpeg" class="logo-canto-esquerdo">
+  <button onclick="window.location.href='login.html'" style="position:absolute;top:10px;right:20px;background:#7CFC00;color:#000;font-weight:bold;padding:12px 18px;border:none;cursor:pointer;">Sair</button>
+</header>
+
+<div style="display: flex; justify-content: center;">
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjMZRAFc6AJA_VhXje1ROgS0FfroVrPTGTa3aolQkeuIbQLHwwyH4E0LDsYttr7Te-B0XgegODL20NcLdsKwq4Z5KbjR5gcXUQ98oNCcTCxdAVpVSB_uSNx5LK08OU6iNlTh_fcRBe9MYxD8Da-_4GrOHq7aheI8qRnuwwg1ol6REvL4SN51Djxv2QEJ6U/s667/D70B849C-D738-46CD-B2F1-31C236E6CF18.jpeg" style="width: TAMANHO_WIDTHpx; height: 152px;">
+</div>
+
+
+
+
+<div class="opcoes-treino">
+  <div class="opcao" data-link="perna.html">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzvunfVwFyBroGU9N1Ng-WlYghzF2HXUiqrP9BGY0IUQ&s=10" alt="Pernas">
+    <span>Inicio</span>
+  </div>
+  <div class="opcao" data-link="triceps.html">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfEwnI5ET4r2byKwAhbGVzcyuNwzBMmtokPUJAxM8QAQ&s=10" alt="Tríceps">
+    <span>Tríceps</span>
+  </div>
+  <div class="opcao" data-link="perna.html">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVMEVpeoHxoAYSmtFRhKeRYvX1MrqtKdhK_iS19O6jVw&s=10" alt="Pernas">
+    <span>Pernas</span>
+  </div>
+  <div class="opcao" data-link="panturrilha.html">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSOltnRg1off_xFjAC2D_9r_325BwLln5GJTl41b0XZQ&s=10" alt="Panturrilha">
+    <span>Panturrilha</span>
+  </div>
+  <div class="opcao" data-link="tela.html">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkGS2X4rXO-4QVmHaCUPGZh9U_lNiKnK63SHp2do_Nzg&s=10" alt="Abdômen">
+    <span>Abdômen</span>
+  </div>
+  <div class="opcao" data-link="tela.html">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLF6iW8aoVsvtwgZFv9y0GJR9BdtsGpMlUgN-Ol-PPKQ&s=10" alt="Peito">
+    <span>Peito</span>
+  </div>
+  <div class="opcao" data-link="tela.html">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQja4z_LZ42DNTIYI3kz5TACwgZM65c8muClVx0boIiSw&s=10" alt="Costas">
+    <span>Costas</span>
+  </div>
+  <div class="opcao" data-link="tela.html">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzK6LxVaqqdxjOuNp1CLUoOHxCHH_bv-dRfwJyX7hIsg&s=10" alt="Ombros">
+    <span>Ombros</span>
+  </div>
+  <div class="opcao" data-link="dashboard.html">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFVKy13vD8yericev9zvMAWqLenSjjKlEr7YMcNJOKLw&s=10" alt="Meu Plano">
+    <span>Meu Plano</span>
+  </div>
+<div class="opcao" data-link="treino.html">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0jlBLIsEVXEYmR4pbiLjRQzKAsJSxmJOXBDywmYF5TA&s=10" alt="Meu Plano">
+    <span>Tempo de treino</span>
+  </div>
+</div>
+
+<div id="loader" class="loader"></div>
+
+<style>
+.opcoes-treino {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  justify-items: center;
+}
+
+.opcao {
+  background: #fff;
+  border-radius: 12px;
+  text-align: center;
+  padding: 18px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 200px;
+}
+
+.opcao:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.opcao img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: opacity 0.3s ease;
+}
+
+.opcao:hover img {
+  opacity: 0.9;
+}
+
+.opcao span {
+  display: block;
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+  letter-spacing: 0.3px;
+}
+
+.loader {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 45px;
+  height: 45px;
+  border: 5px solid #e0e0e0;
+  border-top: 5px solid #00a86b;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
+
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@media (max-width: 600px) {
+  .opcao img {
+    height: 100px;
+  }
+  .opcao span {
+    font-size: 14px;
+  }
+}
+</style>
+
+<script>
+const opcoes = document.querySelectorAll('.opcao');
+const loader = document.getElementById('loader');
+
+opcoes.forEach(opcao => {
+  opcao.addEventListener('click', () => {
+    loader.style.display = 'block';
+    setTimeout(() => {
+      window.location.href = opcao.dataset.link;
+    }, 1000);
+  });
+});
+</script>
+
+<div class="social-float">
+  <a href="https://www.instagram.com/domusfit__/" target="_blank">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQ8lvQPDQap4DKzja4cuE31IvasKBPOhiXVogsr-d-bQ&s=10" alt="Instagram">
+  </a>
+  <a href="https://wa.me/5584991078696" target="_blank">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcTFWb9z5hCYiLmqd3rMKjMumrbW8pcXUshmd_1l2Uvw&s=10" alt="WhatsApp">
+  </a>
+</div>
+
+<style>
+.social-float {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 9999;
+}
+.social-float a img {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  backdrop-filter: blur(8px);
+}
+.social-float a img:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+}
+</style>
+
+
+
+<style>
+#loadingScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.5);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:9999;opacity:1;transition:opacity .8s ease}
+#loadingBox{width:100px;height:100px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(0,0,0,0.1)}
+.spinner{width:40px;height:40px;border:4px solid #ccc;border-top:4px solid #32CD32;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+</style>
+
+<div id="loadingScreen">
+  <div id="loadingBox">
+    <div class="spinner"></div>
+  </div>
+</div>
+
+<script>
+setTimeout(()=>{
+  const loading=document.getElementById('loadingScreen');
+  loading.style.opacity='0';
+  setTimeout(()=>{loading.style.display='none'},800);
+},2000);
+</script>
+
+
+<div style="display: flex; justify-content: center;">
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEghPJvETNgkQo6a1nD9jmTsxRSIOkoGqoC_Fp7AQqokzChyphenhyphen4QkSTHy55FxVcxPCFwblTbQ8Q8MRbdDET_AWt590cuTseLv0Ue2GnNtF-2IdUZ81q0HSwF0YCag4rquYcvXUtRKzgWv7x3D8JM6VLVKOOni5VAnPARxwpi9OCRbpRngLBVu-oXvUEzDB5_s/s723/BEDA8AD8-221B-4C2A-A9A1-62F0FE5283A5.jpeg" style="width: TAMANHO_WIDTHpx; height: 98px;">
+</div>
+<br>
