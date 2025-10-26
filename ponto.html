@@ -1,432 +1,256 @@
-<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Batimento de Ponto - Academia</title>
-<!-- Variáveis que você deve trocar com URLs -->
-<!-- coloque a URL da imagem do verificado e da logo aqui -->
-<script>
-  const IMAGE_VERIFIED_URL = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjxi_-PNM9yMbjcNuEmrmvXO8bAFbczExJQ1BOLDYg8i30_kaN86_SIpyXNI2Imvvy_4yPpVkjFuP4CSdTqXQWh6gstW-0ErmxhV7-HZTg09LRr_lnd28Tb58gLs6QXTRJ19ZRAZNRc5FTscGRJMpCtJknVRR-iLF9ag1TOUZflP2Ao98YWmStcJddlPzg/s594/A2E54363-6D06-4E97-8A63-FC92AD15D929.jpeg";
-  const LOGO_URL = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEirT0smLXL0E7OIuJauyXPmxXqlmSkIWEpkVgog6rNbEjfgRS5-PQuSftVizA7sqXJ3lQyWQr9eMWLPwiwaCDh_GA5rmSASH8g5KiCnqil90eb2G6ciByyTSDMYUdigSO5la0PCopVCJpj9ukDDbyTFZYkJ3SmjnBErJsh-sNHUdIVROi4HBv5Eb5ZNvoY/s320/3D1C93CB-1878-4513-B794-FA727106A8BF.png";
-</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ponto Eletrônico</title>
 <style>
-  :root{
-    --verde:#0db57b;
-    --azul:#0a6fff;
-    --bg:#f8fbfc;
-    --card:#ffffff;
-    --muted:#707e8a;
-    --glass: rgba(255,255,255,0.85);
-  }
-  *{box-sizing:border-box;font-family:Inter, Roboto, Arial, sans-serif}
-  body{margin:0;background:linear-gradient(180deg,var(--bg),#eef7fb);color:#123;min-height:100vh}
-  header{display:flex;align-items:center;gap:16px;padding:18px 28px}
-  header img.logo{height:44px;border-radius:8px;box-shadow:0 6px 18px rgba(10,20,30,0.06)}
-  header h1{font-size:18px;margin:0;color:var(--azul)}
-  .container{padding:18px;max-width:1100px;margin:0 auto}
-  .card{background:var(--card);border-radius:14px;padding:18px;box-shadow:0 8px 30px rgba(15,30,45,0.06)}
-  .grid{display:grid;grid-template-columns:1fr 320px;gap:18px}
-  /* lista de funcionários */
-  .list{display:flex;flex-direction:column;gap:12px}
-  .employee{display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;border:1px solid rgba(10,20,30,0.04)}
-  .employee img{width:56px;height:56px;border-radius:10px;object-fit:cover}
-  .info{flex:1}
-  .info h3{margin:0;font-size:15px}
-  .meta{font-size:13px;color:var(--muted);margin-top:6px}
-  .actions{display:flex;gap:8px;align-items:center}
-  button.btn{padding:10px 12px;border-radius:10px;border:0;background:var(--azul);color:#fff;cursor:pointer;box-shadow:0 6px 14px rgba(10,100,255,0.12)}
-  button.ghost{background:transparent;border:1px solid rgba(10,20,30,0.06);color:var(--muted)}
-  .status-open{background:linear-gradient(90deg,var(--verde),#37d19a);color:#fff;padding:8px 10px;border-radius:10px;font-weight:600}
-  /* overlay modal padrão */
-  .overlay{position:fixed;inset:0;background:rgba(3,12,30,0.45);display:none;align-items:center;justify-content:center;z-index:60}
-  .modal{width:420px;background:var(--glass);backdrop-filter:blur(6px);border-radius:14px;padding:18px;box-shadow:0 20px 60px rgba(8,20,40,0.25);position:relative}
-  .modal h2{margin:0 0 8px 0}
-  .close-x{position:absolute;right:10px;top:10px;background:transparent;border:0;font-size:18px;cursor:pointer}
-  .field{display:flex;flex-direction:column;margin-top:8px}
-  input[type="text"], input[type="number"]{padding:10px;border-radius:10px;border:1px solid rgba(10,20,30,0.06);font-size:14px}
-  .loader{width:48px;height:48px;border-radius:50%;border:5px solid rgba(255,255,255,0.2);border-top-color:var(--azul);animation:spin 1s linear infinite;margin:18px auto}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .camera-wrap{position:relative;width:100%;height:360px;background:#000;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center}
-  video#camera{width:100%;height:100%;object-fit:cover}
-  .oval{position:absolute;width:60%;height:70%;border-radius:50% / 60%;box-shadow:0 0 0 9999px rgba(0,0,0,0.36);border:3px solid rgba(255,255,255,0.12);pointer-events:none}
-  .center-note{position:absolute;bottom:12px;left:0;right:0;text-align:center;color:#fff;font-weight:600}
-  .receipt{padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff,#f6fbff);font-size:14px}
-  .small{font-size:13px;color:var(--muted)}
-  .top-actions{display:flex;gap:8px;justify-content:flex-end}
-  .empty{padding:18px;border-radius:12px;text-align:center;color:var(--muted)}
+:root{
+  --bg:#ffffff;
+  --card:#f1f3f6;
+  --accent:#0077ff;
+  --text:#111;
+  --muted:#666;
+  --radius:8px;
+  font-family: 'Inter',sans-serif;
+}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+}
+header{
+  position:fixed;
+  top:0;left:0;right:0;
+  background:var(--card);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:15px 20px;
+  box-shadow:0 2px 6px rgba(0,0,0,.1);
+  z-index:10;
+}
+header h1{margin:0;font-size:18px;color:var(--accent);}
+header button{
+  background:var(--accent);border:none;padding:10px 16px;
+  color:#fff;font-weight:600;border-radius:var(--radius);cursor:pointer;
+}
+main{padding:100px 20px 40px;}
+.user-list{
+  display:grid;
+  gap:10px;
+}
+.user{
+  background:var(--card);
+  padding:15px;
+  border-radius:var(--radius);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.1);
+}
+.user span{font-size:15px;}
+.user button{
+  background:var(--accent);
+  border:none;
+  padding:6px 10px;
+  color:#fff;
+  font-weight:600;
+  border-radius:var(--radius);
+  cursor:pointer;
+}
+.overlay{
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background:rgba(255,255,255,.9);
+  display:none;
+  align-items:center;justify-content:center;
+  z-index:20;
+}
+.overlay.active{display:flex;}
+.box{
+  background:var(--card);
+  padding:30px;
+  border-radius:var(--radius);
+  width:90%;max-width:400px;
+  text-align:center;
+  box-shadow:0 0 20px rgba(0,0,0,.1);
+}
+.box input{
+  width:80%;
+  padding:10px;
+  margin:15px 0;
+  border:none;
+  border-bottom:2px solid var(--accent);
+  background:transparent;
+  color:var(--text);
+  font-size:16px;
+  text-align:center;
+}
+.box button{
+  background:var(--accent);
+  border:none;
+  padding:10px 20px;
+  font-weight:600;
+  border-radius:var(--radius);
+  cursor:pointer;
+  color:#fff;
+}
+#cameraView{
+  width:200px;
+  height:260px;
+  border-radius:120px/160px;
+  overflow:hidden;
+  margin:0 auto 15px;
+  position:relative;
+  background:#ddd;
+}
+#cameraView video{
+  width:100%;height:100%;object-fit:cover;
+}
+#comprovante p{margin:10px 0;}
 </style>
 </head>
 <body>
 <header>
-  <img class="logo" src="" alt="logo" id="logoImg"/>
-  <h1></h1>
+  <h1>DomusFit</h1>
+  <button id="btnIniciar">Iniciar Carga Horária</button>
 </header>
-
-<main class="container">
-  <div class="card grid">
-    <div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <h2 style="margin:0">Funcionários com Ponto Aberto</h2>
-          <div class="small">Lista em tempo real — atualiza automaticamente</div>
-        </div>
-        <div class="top-actions">
-          <button class="btn" id="btnStart">Iniciar Ponto</button>
-        </div>
-      </div>
-
-      <div style="margin-top:12px" id="openListContainer" class="card">
-        <div id="openList" class="list">
-          <div class="empty">Carregando...</div>
-        </div>
-      </div>
-
-      <div style="margin-top:12px" class="card">
-        <h3 style="margin:0 0 6px 0">Todos os funcionários</h3>
-        <div id="allList" class="list">
-          <div class="empty">Carregando...</div>
-        </div>
-      </div>
-    </div>
-
-    <aside>
-      <div class="card">
-        <h3 style="margin:0">Status Rápido</h3>
-        <div style="margin-top:8px" id="quickStats">
-          <div class="small">Online agora: <strong id="onlineCount">0</strong></div>
-          <div class="small" style="margin-top:8px">Total de funcionários: <strong id="totalCount">0</strong></div>
-        </div>
-        <div style="margin-top:12px">
-          <img id="verifiedImg" src="" alt="verificado" style="width:100%;border-radius:10px;object-fit:cover;height:160px"/>
-        </div>
-      </div>
-      <div style="height:18px"></div>
-      <div class="card">
-        <h4 style="margin:0">Observações</h4>
-        <div class="small" style="margin-top:8px">
-          - Número de série: 5 dígitos (usado para iniciar/encerrar ponto).<br>
-          - Duração é guardada com precisão e exibida em horas e minutos.
-        </div>
-      </div>
-    </aside>
-  </div>
+<main>
+  <div class="user-list" id="userList"></div>
 </main>
 
-<!-- MODAL: Iniciar Ponto (serial input -> validation -> camera overlay) -->
-<div id="overlayStart" class="overlay">
-  <div class="modal">
-    <button class="close-x" onclick="closeOverlay('overlayStart')">✕</button>
-    <h2>Iniciar Ponto</h2>
-    <div class="field">
-      <label class="small">Digite o número de série (5 dígitos)</label>
-      <input id="serialStart" type="text" maxlength="5" placeholder="Ex: 12345" />
-    </div>
-    <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
-      <button class="ghost" onclick="closeOverlay('overlayStart')">Cancelar</button>
-      <button class="btn" id="btnValidateStart">Validar</button>
-    </div>
-    <div id="startLoader" style="display:none" class="loader"></div>
+
+
+
+<div class="overlay" id="overlayCamera">
+  <div class="box">
+    <h3>Reconhecimento Facial</h3>
+    <div id="cameraView"><video id="video" autoplay playsinline></video></div>
+    <button id="btnValidar">Validar</button>
   </div>
 </div>
 
-<!-- MODAL: Camera / Simulated facial recognition -->
-<div id="overlayCamera" class="overlay">
-  <div class="modal" style="width:520px;padding:10px 12px">
-    <button class="close-x" onclick="stopCameraAndClose()">✕</button>
-    <h2 id="cameraTitle">Reconhecimento Facial</h2>
-    <div class="camera-wrap" id="cameraWrap">
-      <video id="camera" autoplay playsinline></video>
-      <div class="oval"></div>
-      <div class="center-note">Posicione o rosto no centro</div>
-    </div>
-    <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
-      <button class="ghost" onclick="stopCameraAndClose()">Cancelar</button>
-      <button class="btn" id="btnValidateFace">Validar</button>
-    </div>
-    <div id="faceLoader" style="display:none" class="loader"></div>
+<div class="overlay" id="overlaySerie">
+  <div class="box">
+    <h3>Informe o número de série (5 dígitos)</h3>
+    <input type="text" id="serieInput" maxlength="5" placeholder="00000">
+    <button id="btnConfirmarSerie">Iniciar</button>
   </div>
 </div>
 
-<!-- MODAL: Comprovante -->
-<div id="overlayReceipt" class="overlay">
-  <div class="modal">
-    <button class="close-x" onclick="closeOverlay('overlayReceipt')">✕</button>
-    <h2>Comprovante de Ponto</h2>
-    <div id="receiptArea" class="receipt">
-      <!-- preenchido dinamicamente -->
-    </div>
-    <div style="display:flex;justify-content:flex-end;margin-top:12px">
-      <button class="btn" onclick="closeOverlay('overlayReceipt')">OK</button>
-    </div>
+<div class="overlay" id="overlayFinalizar">
+  <div class="box">
+    <h3>Finalizar Dia</h3>
+    <input type="text" id="serieFinal" maxlength="5" placeholder="Número de série">
+    <button id="btnFinalizarDia">Finalizar</button>
   </div>
 </div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<div class="overlay" id="comprovante">
+  <div class="box">
+    <h3>Comprovante de Finalização</h3>
+    <p id="textoComprovante"></p>
+    <button onclick="fecharComprovante()">OK</button>
+  </div>
+</div>
 
-<script>
-/* ========== CONFIG - coloquei o config que você enviou ========== */
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, set, onValue, get, child, remove } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
-  authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
-  projectId: "prefeitura-de-joao-camara",
-  storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
-  messagingSenderId: "269299041577",
-  appId: "1:269299041577:web:fd41b2939240e9eb476338",
-  measurementId: "G-YT7NHR342J"
+  apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+  authDomain:"prefeitura-de-joao-camara.firebaseapp.com",
+  projectId:"prefeitura-de-joao-camara",
+  storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",
+  messagingSenderId:"269299041577",
+  appId:"1:269299041577:web:fd41b2939240e9eb476338",
+  measurementId:"G-YT7NHR342J"
 };
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-/* ========== UTIL / UI ========== */
-document.getElementById('logoImg').src = LOGO_URL;
-document.getElementById('verifiedImg').src = IMAGE_VERIFIED_URL;
+const userList = document.getElementById('userList');
+const overlayCamera=document.getElementById('overlayCamera');
+const overlaySerie=document.getElementById('overlaySerie');
+const overlayFinalizar=document.getElementById('overlayFinalizar');
+const comprovante=document.getElementById('comprovante');
+const video=document.getElementById('video');
 
-function el(q){return document.querySelector(q)}
-function openOverlay(id){document.getElementById(id).style.display='flex'}
-function closeOverlay(id){document.getElementById(id).style.display='none'}
+document.getElementById('btnIniciar').onclick=()=>{
+  overlayCamera.classList.add('active');
+  navigator.mediaDevices.getUserMedia({video:true})
+  .then(s=>{video.srcObject=s;})
+  .catch(e=>alert("Permissão da câmera negada"));
+};
 
-/* ========== Dados locais e listeners ========== */
-const openList = document.getElementById('openList');
-const allList = document.getElementById('allList');
-const onlineCount = document.getElementById('onlineCount');
-const totalCount = document.getElementById('totalCount');
+document.getElementById('btnValidar').onclick=()=>{
+  overlayCamera.classList.remove('active');
+  overlaySerie.classList.add('active');
+};
 
-let employees = {}; // cache employee objects
+document.getElementById('btnConfirmarSerie').onclick=()=>{
+  const serie=document.getElementById('serieInput').value.trim();
+  if(serie.length!==5)return alert('Número de série inválido');
+  const inicio=Date.now();
+  const refUser=ref(db,'ponto/'+serie);
+  set(refUser,{inicio:inicio,ativo:true});
+  overlaySerie.classList.remove('active');
+};
 
-/* Load employees in realtime */
-const empRef = db.ref('employees');
-empRef.on('value', snap=>{
-  employees = snap.val() || {};
-  renderAllEmployees();
-});
+onValue(ref(db,'ponto'),snap=>{
+  userList.innerHTML='';
+  if(!snap.exists())return;
+  const data=snap.val();
+  Object.entries(data).forEach(([serie,info])=>{
+    if(!info.ativo)return;
+    const div=document.createElement('div');
+    div.className='user';
+    const tempoSpan=document.createElement('span');
+    const btn=document.createElement('button');
+    btn.innerText='Finalizar';
+    btn.onclick=()=>finalizar(serie);
+    div.appendChild(tempoSpan);
+    div.appendChild(btn);
+    userList.appendChild(div);
 
-/* Listen to attendance changes for open statuses */
-const attendanceRef = db.ref('attendance');
-attendanceRef.on('value', snap=>{
-  renderOpenList();
-});
-
-/* RENDER FUNCTIONS */
-function renderAllEmployees(){
-  allList.innerHTML = '';
-  const arr = Object.entries(employees);
-  totalCount.innerText = arr.length;
-  if(arr.length===0){
-    allList.innerHTML = '<div class="empty">Nenhum funcionário cadastrado.</div>';
-    return;
-  }
-  arr.sort((a,b)=>a[1].name.localeCompare(b[1].name));
-  for(const [id, e] of arr){
-    const div = document.createElement('div'); div.className='employee';
-    div.innerHTML = `
-      <img src="${e.photo || 'https://via.placeholder.com/120'}" alt="">
-      <div class="info">
-        <h3>${e.name}</h3>
-        <div class="meta">Função: ${e.role || '-'} · Série: <strong>${e.serial}</strong></div>
-      </div>
-      <div class="actions">
-        <div id="status-${id}" class="${e.open ? 'status-open' : ''}">${e.open ? 'Ponto Aberto' : '—'}</div>
-        <button class="ghost" onclick="showInfo('${id}')">Info</button>
-      </div>
-    `;
-    allList.appendChild(div);
-    const st = document.getElementById(`status-${id}`);
-    if(st) st.style.minWidth='88px';
-  }
-}
-
-/* Render open list */
-async function renderOpenList(){
-  openList.innerHTML = '';
-  const attSnap = await attendanceRef.once('value');
-  const att = attSnap.val() || {};
-  const openEntries = [];
-  for(const [aid,a] of Object.entries(att)){
-    if(!a.endTime && a.employeeId){
-      openEntries.push(a);
-    }
-  }
-  if(openEntries.length===0){
-    openList.innerHTML = '<div class="empty">Nenhum ponto aberto no momento.</div>';
-  } else {
-    for(const entry of openEntries){
-      const e = employees[entry.employeeId] || {name:'Desconhecido', photo:'https://via.placeholder.com/120', serial:'?????'};
-      const div = document.createElement('div'); div.className='employee';
-      const started = new Date(entry.startTime);
-      div.innerHTML = `
-        <img src="${e.photo || 'https://via.placeholder.com/120'}" alt="">
-        <div class="info">
-          <h3>${e.name}</h3>
-          <div class="meta">Iniciado: ${started.toLocaleString()}</div>
-          <div class="meta" id="running-${entry._id || entryKey(entry)}">Duração: ${formatDuration(Date.now() - entry.startTime)}</div>
-        </div>
-        <div class="actions">
-          <div class="status-open">Online</div>
-          <button class="btn" onclick="promptFinish('${entry.employeeId}')">Finalizar</button>
-        </div>
-      `;
-      openList.appendChild(div);
-    }
-  }
-  // update quick stat
-  const online = openEntries.length;
-  onlineCount.innerText = online;
-}
-
-/* helper to format milliseconds -> "H h MM m" */
-function formatDuration(ms){
-  if(!ms || ms<0) ms=0;
-  const totalSeconds = Math.floor(ms/1000);
-  const hours = Math.floor(totalSeconds/3600);
-  const minutes = Math.floor((totalSeconds % 3600)/60);
-  return `${hours}h ${minutes}m`;
-}
-
-/* ========== START FLOW ========== */
-document.getElementById('btnStart').addEventListener('click', ()=>{
-  document.getElementById('serialStart').value='';
-  openOverlay('overlayStart');
-});
-
-/* Validate serial then open camera */
-document.getElementById('btnValidateStart').addEventListener('click', async ()=>{
-  const serial = (document.getElementById('serialStart').value||'').trim();
-  if(!/^\d{5}$/.test(serial)){ alert('Coloque os 5 dígitos do número de série.'); return; }
-  document.getElementById('startLoader').style.display='block';
-  // find employee by serial
-  const snap = await db.ref('employees').orderByChild('serial').equalTo(serial).once('value');
-  const found = snap.val();
-  setTimeout(()=>{
-    document.getElementById('startLoader').style.display='none';
-    if(!found){
-      alert('Número de série não encontrado.');
-      return;
-    }
-    // take first match
-    const id = Object.keys(found)[0];
-    // store selected id for camera flow
-    window._pendingStartEmployeeId = id;
-    closeOverlay('overlayStart');
-    openCameraOverlay();
-  }, 800);
-});
-
-/* CAMERA overlay handling (request permission immediately) */
-let cameraStream = null;
-async function openCameraOverlay(){
-  openOverlay('overlayCamera');
-  const video = document.getElementById('camera');
-  try{
-    cameraStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}, audio:false});
-    video.srcObject = cameraStream;
-  }catch(err){
-    alert('Permissão para câmera recusada ou indisponível.');
-    closeOverlay('overlayCamera');
-  }
-}
-
-function stopCameraAndClose(){
-  if(cameraStream){
-    const tracks = cameraStream.getTracks();
-    tracks.forEach(t=>t.stop());
-    cameraStream = null;
-  }
-  closeOverlay('overlayCamera');
-}
-
-/* Validate face (simulate) */
-document.getElementById('btnValidateFace').addEventListener('click', async ()=>{
-  document.getElementById('faceLoader').style.display='block';
-  // simulate 2s processing
-  setTimeout(async ()=>{
-    document.getElementById('faceLoader').style.display='none';
-    stopCameraAndClose();
-    // Start attendance: write to attendance and mark employee open
-    const empId = window._pendingStartEmployeeId;
-    if(!empId){ alert('Erro interno: funcionário não definido.'); return; }
-    const attRef = db.ref('attendance').push();
-    const now = Date.now();
-    const attObj = {
-      _id: attRef.key,
-      employeeId: empId,
-      startTime: now,
-      endTime: null,
-      durationMs: null,
-      paid: false
+    const atualizar=()=>{
+      const tempo=calcTempo(info.inicio);
+      tempoSpan.innerHTML=`<b>${serie}</b> — ${tempo}`;
     };
-    await attRef.set(attObj);
-    // mark employee open
-    await db.ref(`employees/${empId}`).update({open:true, lastAttendanceId: attRef.key});
-    // show "sou eu" comprovante e sucesso
-    showReceipt({title:'Ponto Iniciado', content:`Funcionário: ${employees[empId].name}<br>Série: ${employees[empId].serial}<br>Início: ${new Date(now).toLocaleString()}`});
-  }, 2000);
+    atualizar();
+    setInterval(atualizar,1000);
+  });
 });
 
-/* SHOW receipt modal */
-function showReceipt({title, content}){
-  document.getElementById('receiptArea').innerHTML = `<h3 style="margin:0">${title}</h3><div class="small" style="margin-top:8px">${content}</div>`;
-  openOverlay('overlayReceipt');
+function calcTempo(inicio){
+  const diff=Date.now()-inicio;
+  const s=Math.floor(diff/1000);
+  const h=Math.floor(s/3600);
+  const m=Math.floor((s%3600)/60);
+  const sec=s%60;
+  return `${h}h ${m}m ${sec}s`;
 }
 
-/* ========== FINISH FLOW ========== */
-function promptFinish(employeeId){
-  // open modal to ask serial for finish
-  const serial = prompt("Digite o número de série (5 dígitos) para finalizar:");
-  if(!serial) return;
-  if(!/^\d{5}$/.test(serial)){ alert('Série inválida'); return; }
-  // verify serial matches employee
-  const emp = employees[employeeId];
-  if(!emp || emp.serial !== serial){ alert('Número incompatível com funcionário.'); return; }
-  // proceed to finalize latest open attendance for this employee
-  finalizeAttendanceForEmployee(employeeId);
-}
-
-async function finalizeAttendanceForEmployee(employeeId){
-  // find open attendance for employee
-  const snap = await db.ref('attendance').orderByChild('employeeId').equalTo(employeeId).once('value');
-  const data = snap.val() || {};
-  let target = null, key=null;
-  for(const [k,v] of Object.entries(data)){
-    if(!v.endTime){ target=v; key=k; break; }
-  }
-  if(!target){ alert('Nenhum ponto aberto encontrado para este funcionário.'); return; }
-  // show loader simulation
-  const loader = document.createElement('div'); loader.className='loader'; document.body.appendChild(loader);
-  // compute finalization
-  setTimeout(async ()=>{
-    loader.remove();
-    const now = Date.now();
-    const durationMs = now - target.startTime;
-    await db.ref(`attendance/${key}`).update({endTime: now, durationMs: durationMs});
-    await db.ref(`employees/${employeeId}`).update({open:false});
-    showReceipt({title:'Ponto Finalizado', content:
-      `Funcionário: ${employees[employeeId].name}<br>
-       Início: ${new Date(target.startTime).toLocaleString()}<br>
-       Fim: ${new Date(now).toLocaleString()}<br>
-       Tempo total: ${formatDuration(durationMs)}`
+window.finalizar=(serie)=>{
+  overlayFinalizar.classList.add('active');
+  document.getElementById('btnFinalizarDia').onclick=()=>{
+    const input=document.getElementById('serieFinal').value.trim();
+    if(input!==serie)return alert('Número de série incorreto');
+    get(child(ref(db),'ponto/'+serie)).then(s=>{
+      if(!s.exists())return;
+      const data=s.val();
+      const fim=Date.now();
+      const tempo=calcTempo(data.inicio);
+      const refUser=ref(db,'historico/'+serie+'/'+Date.now());
+      set(refUser,{inicio:data.inicio,fim:fim,tempo:tempo});
+      remove(ref(db,'ponto/'+serie));
+      overlayFinalizar.classList.remove('active');
+      document.getElementById('textoComprovante').innerText=`Usuário ${serie}\nTempo total: ${tempo}\nFinalizado às ${new Date().toLocaleTimeString()}`;
+      comprovante.classList.add('active');
     });
-  }, 800);
-}
+  };
+};
 
-/* Helper to get attendance key (fallback) */
-function entryKey(obj){
-  return obj._id || Object.keys(obj)[0] || '';
-}
-
-
-/* Keep updating running durations every minute */
-setInterval(()=>{ // update durations in open list
-  const els = document.querySelectorAll('[id^="running-"]');
-  els.forEach(el=>{
-    // the entry id encoded in element id is not stored, so we'll re-render by triggering renderOpenList
-  });
-  // simpler: re-render to update durations from DB
-  renderOpenList();
-}, 60*1000);
-
+window.fecharComprovante=()=>comprovante.classList.remove('active');
 </script>
 </body>
 </html>
