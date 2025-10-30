@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Histórico - Sistema de Loja</title>
+<style>
+:root {
+  --white: #ffffff;
+  --black: #000000;
+  --yellow: #ffd500;
+  --gray: #f7f7f7;
+  --border: #e0e0e0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: var(--gray);
+  color: var(--black);
+}
+
+/* ===== CABEÇALHO ===== */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: var(--white);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 25px;
+  z-index: 10;
+}
+
+header img {
+  height: 45px;
+}
+
+header button {
+  background: var(--yellow);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+header button:hover {
+  opacity: 0.9;
+}
+
+/* ===== CONTEÚDO ===== */
+main {
+  margin-top: 100px;
+  padding: 20px;
+}
+
+/* Pesquisa */
+.filtro {
+  background: var(--white);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.filtro input {
+  width: 28%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+/* Lista de históricos */
+.historicos {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 15px;
+}
+
+.historico {
+  background: var(--white);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.historico:hover {
+  transform: scale(1.02);
+}
+
+.historico strong {
+  font-size: 1rem;
+}
+
+.historico small {
+  color: #555;
+}
+
+/* Modal Detalhes */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+.modal-content {
+  background: var(--white);
+  border-radius: 10px;
+  padding: 20px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content .close {
+  float: right;
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: #333;
+}
+
+.modal-content .close:hover {
+  color: red;
+}
+
+.venda-item {
+  background: #fafafa;
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+.venda-item button {
+  background: var(--yellow);
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-top: 5px;
+}
+</style>
+</head>
+<body>
+  <header>
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhjzHjhTIyqYoSZG8vev_6LnCfbU-ZtiuhmnwF4mg4tIpnRPqwGAJBeOLqDvNfjG1kr7f-XoHQAH6RuJZtIIZcYRud3Mj7MPslOGrhf9BVhGEpXH0JosziwhF2bEx6OLz6-6MI6IfuzyDOKuh_O_iDeGrz0pGc_UFZaXIB4Er6_wuzA1I8YFtgnfXgmjTg/s665/C7D9E909-0047-48E4-AC64-B95B76114751.jpeg" alt="Logo">
+    <button onclick="window.location.href='tela.html'">Voltar</button>
+  </header>
+
+  <main>
+    <div class="filtro">
+      <input type="number" id="dia" placeholder="Dia">
+      <input type="number" id="mes" placeholder="Mês">
+      <input type="number" id="ano" placeholder="Ano">
+      <button id="consultarBtn">Consultar</button>
+    </div>
+
+    <div class="historicos" id="listaHistoricos"></div>
+  </main>
+
+  <!-- Modal Detalhes -->
+  <div class="modal" id="modalDetalhes">
+    <div class="modal-content">
+      <span class="close" id="closeDetalhes">&times;</span>
+      <h2>Detalhes do Dia</h2>
+      <div id="detalhesDia"></div>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+    authDomain: "login-you-see.firebaseapp.com",
+    databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+    projectId: "login-you-see",
+    storageBucket: "login-you-see.firebasestorage.app",
+    messagingSenderId: "524877259374",
+    appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
+    measurementId: "G-K7E00VXYHG"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const listaHistoricos = document.getElementById('listaHistoricos');
+  const modalDetalhes = document.getElementById('modalDetalhes');
+  const closeDetalhes = document.getElementById('closeDetalhes');
+  const detalhesDia = document.getElementById('detalhesDia');
+
+  // Carregar histórico de dias
+  function carregarHistorico() {
+    db.ref('historicoDias').on('value', snap => {
+      listaHistoricos.innerHTML = '';
+      snap.forEach(h => {
+        const dia = h.val();
+        const div = document.createElement('div');
+        div.classList.add('historico');
+        div.innerHTML = `
+          <strong>${dia.data}</strong><br>
+          <small>${dia.hora}</small><br>
+          <p>Total: R$ ${dia.total.toFixed(2)}</p>
+        `;
+        div.onclick = () => abrirDetalhes(h.key, dia);
+        listaHistoricos.appendChild(div);
+      });
+    });
+  }
+  carregarHistorico();
+
+  // Abrir detalhes do dia
+  function abrirDetalhes(id, dia) {
+    modalDetalhes.style.display = 'flex';
+    detalhesDia.innerHTML = `
+      <p><strong>Data:</strong> ${dia.data}</p>
+      <p><strong>Hora:</strong> ${dia.hora}</p>
+      <p><strong>Total:</strong> R$ ${dia.total.toFixed(2)}</p>
+      <hr>
+      <h3>Vendas:</h3>
+    `;
+    if (dia.vendas) {
+      Object.values(dia.vendas).forEach(v => {
+        const div = document.createElement('div');
+        div.classList.add('venda-item');
+        div.innerHTML = `
+          <strong>${v.produto}</strong><br>
+          ${v.tipo === 'avista' ? 'À vista' : 'Cartão'} - R$${v.valor.toFixed(2)}<br>
+          ${v.hora} - ${v.data}
+          <button onclick="excluirVendaDia('${id}', '${v.hora}', ${v.valor})">Excluir</button>
+        `;
+        detalhesDia.appendChild(div);
+      });
+    }
+  }
+  window.abrirDetalhes = abrirDetalhes;
+
+  closeDetalhes.onclick = () => modalDetalhes.style.display = 'none';
+
+  // Excluir venda de um dia específico
+  window.excluirVendaDia = (id, horaVenda, valor) => {
+    if (confirm('Deseja excluir esta venda do histórico?')) {
+      db.ref('historicoDias/' + id).once('value').then(snap => {
+        const dia = snap.val();
+        if (!dia || !dia.vendas) return;
+        const novasVendas = dia.vendas.filter(v => v.hora !== horaVenda);
+        const novoTotal = dia.total - valor;
+        db.ref('historicoDias/' + id).update({ vendas: novasVendas, total: novoTotal });
+        alert('Venda excluída com sucesso!');
+        modalDetalhes.style.display = 'none';
+      });
+    }
+  };
+
+  // Consultar por data
+  document.getElementById('consultarBtn').onclick = () => {
+    const dia = document.getElementById('dia').value;
+    const mes = document.getElementById('mes').value;
+    const ano = document.getElementById('ano').value;
+    const dataConsulta = `${dia}/${mes}/${ano}`;
+    db.ref('historicoDias').once('value', snap => {
+      listaHistoricos.innerHTML = '';
+      snap.forEach(h => {
+        const d = h.val();
+        if (d.data === dataConsulta) {
+          const div = document.createElement('div');
+          div.classList.add('historico');
+          div.innerHTML = `
+            <strong>${d.data}</strong><br>
+            <small>${d.hora}</small><br>
+            <p>Total: R$ ${d.total.toFixed(2)}</p>
+          `;
+          div.onclick = () => abrirDetalhes(h.key, d);
+          listaHistoricos.appendChild(div);
+        }
+      });
+    });
+  };
+  </script>
+</body>
+</html>
