@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+
+<title>Caixa - Sistema de Loja</title>
+<style>
+:root{
+  --white:#ffffff;
+  --black:#000000;
+  --yellow:#ffd500;
+  --gray:#f7f7f7;
+  --border:#e0e0e0;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+body{background:var(--gray);color:var(--black);-webkit-font-smoothing:antialiased}
+header{
+  position:fixed;top:0;left:0;width:100%;background:var(--white);
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);display:flex;align-items:center;
+  justify-content:space-between;padding:12px 22px;z-index:20
+}
+header img{height:44px;object-fit:contain}
+header .botoes-topo{display:flex;gap:10px;align-items:center}
+header .saldo{font-weight:600;font-size:1rem}
+main{margin-top:92px;padding:18px}
+.search-bar{
+  background:var(--white);padding:12px;border-radius:10px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;gap:10px;align-items:center;
+}
+.search-bar input{flex:1;padding:10px;border:1px solid var(--border);border-radius:8px}
+button{background:var(--yellow);border:none;padding:9px 14px;border-radius:8px;cursor:pointer;font-weight:600}
+button:hover{opacity:.95}
+.produtos{
+  margin-top:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;
+}
+.produto{
+  background:var(--white);padding:14px;border-radius:12px;border:1px solid var(--border);
+  display:flex;flex-direction:column;justify-content:space-between;min-height:120px;box-shadow:0 3px 10px rgba(0,0,0,0.03)
+}
+.produto h3{font-size:1rem;margin-bottom:4px}
+.produto small{color:#666}
+.produto .precos{border-top:1px solid var(--border);margin-top:10px;padding-top:10px;display:flex;flex-direction:column;gap:6px}
+.produto .preco-line{display:flex;justify-content:space-between;align-items:center;padding:6px;border-radius:8px;background:#fbfbfb;border:1px solid #f0f0f0}
+.produto .acao{margin-top:10px;align-self:stretch}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;justify-content:center;align-items:center;z-index:40}
+.modal-content{background:var(--white);width:92%;max-width:440px;padding:18px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.18);position:relative}
+.modal-content h2{text-align:center;margin-bottom:12px;font-size:1.05rem}
+.modal-content input{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;margin-bottom:10px}
+.modal-content .close{position:absolute;right:12px;top:10px;font-size:20px;cursor:pointer;color:#444}
+.modal-precos{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.modal-precos .box{border:1px solid var(--border);padding:10px;border-radius:8px;background:#fbfbfb;display:flex;justify-content:space-between;align-items:center}
+.venda-item{background:#fafafa;border:1px solid #eee;padding:10px;border-radius:8px;margin-bottom:8px}
+.venda-item small{display:block;color:#666;margin-top:6px}
+.info-empty{text-align:center;color:#777;padding:25px;background:var(--white);border-radius:10px;border:1px dashed #eee;margin-top:16px}
+</style>
+</head>
+<body>
+
+<header>
+
+
+  <img id="logoImg" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhjzHjhTIyqYoSZG8vev_6LnCfbU-ZtiuhmnwF4mg4tIpnRPqwGAJBeOLqDvNfjG1kr7f-XoHQAH6RuJZtIIZcYRud3Mj7MPslOGrhf9BVhGEpXH0JosziwhF2bEx6OLz6-6MI6IfuzyDOKuh_O_iDeGrz0pGc_UFZaXIB4Er6_wuzA1I8YFtgnfXgmjTg/s665/C7D9E909-0047-48E4-AC64-B95B76114751.jpeg" alt="Logo">
+  <div class="botoes-topo">
+    <span class="saldo">Saldo: R$ <span id="saldoValor">0.00</span></span>
+    <button id="editarVendasBtn">Editar</button>
+    <button id="finalizarDiaBtn">Finalizar Dia</button>
+  </div>
+</header>
+
+<main>
+  <div class="search-bar">
+    <input id="searchInput" placeholder="Pesquisar por nome ou marca...">
+    <button id="cadastroProdutoBtn">Cadastrar Produto</button>
+  </div>
+
+  <div id="listaProdutos" class="produtos"></div>
+</main>
+
+<!-- Modal Cadastro -->
+<div id="modalCadastro" class="modal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true">
+    <span id="closeCadastro" class="close">&times;</span>
+    <h2>Cadastrar Produto</h2>
+    <input id="nomeProduto" placeholder="Nome do Produto" />
+    <input id="marcaProduto" placeholder="Marca (opcional)" />
+    <input id="precoAvista" type="number" step="0.01" placeholder="Preço à vista (ex: 10.00)" />
+    <input id="precoCartao" type="number" step="0.01" placeholder="Preço no cartão (ex: 12.00)" />
+    <button id="salvarProduto">Salvar Produto</button>
+  </div>
+</div>
+
+<!-- Modal Venda -->
+<div id="modalVenda" class="modal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true">
+    <span id="closeVenda" class="close">&times;</span>
+    <h2>Vender Produto</h2>
+    <div class="modal-precos">
+      <div class="box">
+        <div>
+          <div style="font-weight:700">À Vista</div>
+          <div style="color:#333">R$ <span id="precoAvistaVenda">0.00</span></div>
+        </div>
+        <div>
+          <button id="btnAvista">Vender</button>
+        </div>
+      </div>
+      <div class="box">
+        <div>
+          <div style="font-weight:700">Cartão</div>
+          <div style="color:#333">R$ <span id="precoCartaoVenda">0.00</span></div>
+        </div>
+        <div>
+          <button id="btnCartao">Vender</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Vendas -->
+<div id="modalEditar" class="modal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true">
+    <span id="closeEditar" class="close">&times;</span>
+    <h2>Vendas Realizadas</h2>
+    <div id="listaVendas" style="margin-top:12px;max-height:60vh;overflow:auto"></div>
+    <div style="margin-top:12px;text-align:center">
+      <button id="fecharEditar">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase (compat libs) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+/* CONFIG FIREBASE - mantenha como fornecido */
+const firebaseConfig = {
+  apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
+  authDomain: "login-you-see.firebaseapp.com",
+  databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
+  projectId: "login-you-see",
+  storageBucket: "login-you-see.firebasestorage.app",
+  messagingSenderId: "524877259374",
+  appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
+  measurementId: "G-K7E00VXYHG"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* ELEMENTOS */
+const saldoValorEl = document.getElementById('saldoValor');
+const listaProdutosEl = document.getElementById('listaProdutos');
+const listaVendasEl = document.getElementById('listaVendas');
+
+const modalCadastro = document.getElementById('modalCadastro');
+const modalVenda = document.getElementById('modalVenda');
+const modalEditar = document.getElementById('modalEditar');
+
+const nomeProdutoInput = document.getElementById('nomeProduto');
+const marcaProdutoInput = document.getElementById('marcaProduto');
+const precoAvistaInput = document.getElementById('precoAvista');
+const precoCartaoInput = document.getElementById('precoCartao');
+
+const precoAvistaVendaSpan = document.getElementById('precoAvistaVenda');
+const precoCartaoVendaSpan = document.getElementById('precoCartaoVenda');
+
+let produtoAtual = null; // {id, nome, avista, cartao}
+
+/* UTILITÁRIOS */
+function showModal(modal){ modal.style.display = 'flex'; modal.setAttribute('aria-hidden','false'); }
+function hideModal(modal){ modal.style.display = 'none'; modal.setAttribute('aria-hidden','true'); }
+
+/* SALDO EM TEMPO REAL */
+db.ref('saldo').on('value', snap => {
+  const v = Number(snap.val() || 0);
+  saldoValorEl.textContent = v.toFixed(2);
+});
+
+/* CARREGA PRODUTOS - robusto, evita erros com tipos */
+function carregarProdutos(){
+  db.ref('produtos').on('value', snap => {
+    listaProdutosEl.innerHTML = '';
+    if(!snap.exists()){
+      listaProdutosEl.innerHTML = '<div class="info-empty">Nenhum produto cadastrado.</div>';
+      return;
+    }
+    snap.forEach(child => {
+      const p = child.val() || {};
+      const id = child.key;
+      const nome = (p.nome || '').toString();
+      const marca = (p.marca || '').toString();
+      const avista = Number(p.avista || 0);
+      const cartao = Number(p.cartao || 0);
+      const card = document.createElement('div');
+      card.className = 'produto';
+      card.innerHTML = `
+        <div>
+          <h3>${escapeHtml(nome)}</h3>
+          <small>${escapeHtml(marca)}</small>
+          <div class="precos">
+            <div class="preco-line"><span>À vista</span><strong>R$ ${avista.toFixed(2)}</strong></div>
+            <div class="preco-line"><span>Cartão</span><strong>R$ ${cartao.toFixed(2)}</strong></div>
+          </div>
+        </div>
+        <div class="acao">
+          <button type="button" data-id="${id}" data-nome="${escapeAttr(nome)}" data-avista="${avista}" data-cartao="${cartao}">Vender</button>
+        </div>
+      `;
+      listaProdutosEl.appendChild(card);
+    });
+  });
+}
+carregarProdutos();
+
+/* PESQUISA (em tempo real) */
+document.getElementById('searchInput').addEventListener('input', e=>{
+  const termo = e.target.value.trim().toLowerCase();
+  document.querySelectorAll('.produto').forEach(card => {
+    const nome = (card.querySelector('h3')?.textContent || '').toLowerCase();
+    const marca = (card.querySelector('small')?.textContent || '').toLowerCase();
+    card.style.display = (nome.includes(termo) || marca.includes(termo)) ? 'flex' : 'none';
+  });
+});
+
+/* ABRIR/FECHAR MODAIS */
+document.getElementById('cadastroProdutoBtn').addEventListener('click', ()=>{ resetCadastroForm(); showModal(modalCadastro); });
+document.getElementById('closeCadastro').addEventListener('click', ()=> hideModal(modalCadastro));
+document.getElementById('closeVenda').addEventListener('click', ()=> hideModal(modalVenda));
+document.getElementById('closeEditar').addEventListener('click', ()=> hideModal(modalEditar));
+document.getElementById('fecharEditar').addEventListener('click', ()=> hideModal(modalEditar));
+
+window.addEventListener('click', (e)=>{
+  if(e.target === modalCadastro) hideModal(modalCadastro);
+  if(e.target === modalVenda) hideModal(modalVenda);
+  if(e.target === modalEditar) hideModal(modalEditar);
+});
+
+/* ESCAPE helpers to avoid injection */
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];}); }
+function escapeAttr(s){ return String(s).replace(/"/g,'&quot;'); }
+
+/* SALVAR PRODUTO - garantindo uso de elementos e tipos */
+document.getElementById('salvarProduto').addEventListener('click', async ()=>{
+  const nome = nomeProdutoInput.value.trim();
+  const marca = marcaProdutoInput.value.trim();
+  const avista = parseFloat(precoAvistaInput.value);
+  const cartao = parseFloat(precoCartaoInput.value);
+
+  if(!nome){
+    alert('Preencha o nome do produto.');
+    return;
+  }
+  if(isNaN(avista) || isNaN(cartao)){
+    alert('Preencha preços válidos.');
+    return;
+  }
+
+  try{
+    const newRef = db.ref('produtos').push();
+    await newRef.set({
+      nome,
+      marca: marca || '',
+      avista: Number(avista),
+      cartao: Number(cartao)
+    });
+    // limpar formulário e fechar
+    resetCadastroForm();
+    hideModal(modalCadastro);
+  }catch(err){
+    console.error('Erro ao cadastrar produto:', err);
+    alert('Erro ao cadastrar produto. Verifique console.');
+  }
+});
+
+function resetCadastroForm(){
+  nomeProdutoInput.value = '';
+  marcaProdutoInput.value = '';
+  precoAvistaInput.value = '';
+  precoCartaoInput.value = '';
+}
+
+/* EVENTO DINÂMICO: abrir modal venda ao clicar no botão "Vender" dentro do card */
+listaProdutosEl.addEventListener('click', (e)=>{
+  const btn = e.target.closest('button[data-id]');
+  if(!btn) return;
+  const id = btn.getAttribute('data-id');
+  const nome = btn.getAttribute('data-nome') || '';
+  const avista = Number(btn.getAttribute('data-avista') || 0);
+  const cartao = Number(btn.getAttribute('data-cartao') || 0);
+  abrirVenda({id, nome, avista, cartao});
+});
+
+function abrirVenda(prod){
+  produtoAtual = prod;
+  precoAvistaVendaSpan.textContent = Number(prod.avista || 0).toFixed(2);
+  precoCartaoVendaSpan.textContent = Number(prod.cartao || 0).toFixed(2);
+  showModal(modalVenda);
+}
+
+/* VENDER - atualiza saldo imediatamente e grava venda (saldo será resetado ao finalizar dia) */
+async function vender(tipo){
+  if(!produtoAtual) return;
+  const valor = (tipo === 'avista') ? Number(produtoAtual.avista) : Number(produtoAtual.cartao);
+  const venda = {
+    produto: produtoAtual.nome || '',
+    produtoId: produtoAtual.id || null,
+    tipo,
+    valor: Number(valor),
+    hora: new Date().toLocaleTimeString(),
+    data: new Date().toLocaleDateString()
+  };
+  try{
+    // grava venda
+    await db.ref('vendas').push(venda);
+    // atualiza saldo em tempo real (incrementa)
+    const snap = await db.ref('saldo').once('value');
+    const atual = Number(snap.val() || 0);
+    await db.ref('saldo').set(Number((atual + valor).toFixed(2)));
+  }catch(err){
+    console.error('Erro ao registrar venda:', err);
+    alert('Erro ao registrar venda. Verifique console.');
+  } finally {
+    produtoAtual = null;
+    hideModal(modalVenda);
+  }
+}
+document.getElementById('btnAvista').addEventListener('click', ()=> vender('avista'));
+document.getElementById('btnCartao').addEventListener('click', ()=> vender('cartao'));
+
+/* EDITAR VENDAS - mostra vendas e permite excluir (recalcula saldo) */
+document.getElementById('editarVendasBtn').addEventListener('click', async ()=>{
+  showModal(modalEditar);
+  listaVendasEl.innerHTML = '';
+  try{
+    const snap = await db.ref('vendas').once('value');
+    if(!snap.exists()){
+      listaVendasEl.innerHTML = '<div class="info-empty">Nenhuma venda realizada hoje.</div>';
+      return;
+    }
+    snap.forEach(child => {
+      const v = child.val();
+      const id = child.key;
+      const item = document.createElement('div');
+      item.className = 'venda-item';
+      item.innerHTML = `
+        <strong>${escapeHtml(v.produto || '')}</strong>
+        <small>${v.tipo === 'avista' ? 'À vista' : 'Cartão'} — R$ ${Number(v.valor || 0).toFixed(2)}</small>
+        <small>${escapeHtml(String(v.hora || ''))} • ${escapeHtml(String(v.data || ''))}</small>
+        <div style="margin-top:8px"><button data-venda-id="${id}" data-venda-valor="${Number(v.valor||0)}">Excluir</button></div>
+      `;
+      listaVendasEl.appendChild(item);
+    });
+  }catch(err){
+    console.error('Erro ao carregar vendas:', err);
+    listaVendasEl.innerHTML = '<div class="info-empty">Erro ao carregar vendas.</div>';
+  }
+});
+
+/* Delegação para exclusão de venda dentro do modal editar */
+listaVendasEl.addEventListener('click', async (e)=>{
+  const btn = e.target.closest('button[data-venda-id]');
+  if(!btn) return;
+  const id = btn.getAttribute('data-venda-id');
+  const valor = Number(btn.getAttribute('data-venda-valor') || 0);
+  if(!confirm('Deseja realmente excluir esta venda?')) return;
+  try{
+    await db.ref('vendas/' + id).remove();
+    // subtrai do saldo atual
+    const snap = await db.ref('saldo').once('value');
+    const atual = Number(snap.val() || 0);
+    await db.ref('saldo').set(Number(Math.max(0, (atual - valor)).toFixed(2)));
+    // atualiza a lista no modal
+    const parent = btn.closest('.venda-item');
+    if(parent) parent.remove();
+    // se ficou vazio, mostra mensagem
+    if(!listaVendasEl.querySelector('.venda-item')) listaVendasEl.innerHTML = '<div class="info-empty">Nenhuma venda realizada hoje.</div>';
+  }catch(err){
+    console.error('Erro ao excluir venda:', err);
+    alert('Erro ao excluir venda. Verifique console.');
+  }
+});
+
+/* FINALIZAR DIA - salva histórico, limpa vendas e zera saldo */
+document.getElementById('finalizarDiaBtn').addEventListener('click', async ()=>{
+  if(!confirm('Deseja realmente finalizar o dia? Isso salvará todas as vendas no histórico e limpará o saldo atual.')) return;
+  try{
+    const vendasSnap = await db.ref('vendas').once('value');
+    if(!vendasSnap.exists()){
+      alert('Nenhuma venda para finalizar.');
+      return;
+    }
+    // coleta vendas em array
+    const vendas = [];
+    vendasSnap.forEach(child => vendas.push(child.val()));
+    const total = vendas.reduce((s,v)=> s + Number(v.valor||0), 0);
+    const id = db.ref('historicoDias').push().key;
+    const data = new Date().toLocaleDateString();
+    const hora = new Date().toLocaleTimeString();
+    await db.ref('historicoDias/' + id).set({ data, hora, total: Number(total.toFixed(2)), vendas });
+    // limpa vendas e zera saldo
+    await db.ref('vendas').remove();
+    await db.ref('saldo').set(0);
+    alert('Dia finalizado e salvo no histórico!');
+    hideModal(modalEditar);
+  }catch(err){
+    console.error('Erro ao finalizar dia:', err);
+    alert('Erro ao finalizar dia. Verifique console.');
+  }
+});
+
+/* Garantias: se houver valores inválidos no banco, harmoniza exibição */
+function safeToFixed(v){
+  const n = Number(v || 0);
+  return (isNaN(n) ? 0 : n).toFixed(2);
+}
+
+/* Inicial: se saldo não existe, cria com zero (opcional) */
+db.ref('saldo').once('value').then(snap=>{
+  if(!snap.exists()) db.ref('saldo').set(0);
+}).catch(()=>{/* ignore */});
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+<div id="loginOverlay">
+  <div id="loginBox">
+    <div id="loginTitulo">Acesso Restrito</div>
+    <input type="password" id="senhaInput" placeholder="Digite a senha">
+    <button id="acessarBtn">Acessar</button>
+    <div id="feedbackContainer" style="display:none;">
+      <div id="progressContainer">
+        <div id="progressBar"></div>
+      </div>
+      <img id="verificadoImg" src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Verificado" style="display:none;">
+      <img id="erroImg" src="https://cdn-icons-png.flaticon.com/512/221/221755.png" alt="Erro" style="display:none;">
+      <div id="navegacaoSegura" style="display:none;">Perfeito! pode acessar o sistema.</div>
+      <div id="erroSenha" style="display:none; color:red; font-weight:bold;">Senha incorreta!</div>
+    </div>
+    <div id="rodape">
+      <button id="okBtn" style="display:none;">Liberar</button>
+      <div id="desenvolvidoCentral">
+        <div id="desenvolvidoPor">Desenvolvido por San7Cloud</div>
+        <hr>
+        <div id="pageID"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+#loginOverlay {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.4);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+#loginBox {
+  width:320px;
+  background:#f9f4e6;
+  border:2px solid #000;
+  padding:25px 20px;
+  text-align:center;
+  font-family: Arial, sans-serif;
+  box-shadow:5px 5px 15px rgba(0,0,0,0.25);
+  border-radius:4px;
+}
+#loginTitulo {
+  font-weight:bold;
+  margin-bottom:20px;
+  font-size:16px;
+}
+#senhaInput {
+  width: 100%;
+  padding:8px;
+  border:2px solid #000;
+  outline:none;
+  font-size:14px;
+  margin-bottom:15px;
+  box-sizing:border-box;
+  background:#fff;
+}
+#senhaInput:focus {
+  outline:none;
+  border-color:#000;
+  box-shadow:none;
+}
+#acessarBtn {
+  padding:6px 18px;
+  border:2px solid #000;
+  background:#f9f4e6;
+  cursor:pointer;
+  font-weight:bold;
+}
+#acessarBtn:hover {
+  background:#eee5d0;
+}
+#feedbackContainer {
+  text-align:center;
+  margin-bottom:10px;
+}
+#progressContainer {
+  width: 100%;
+  height: 22px;
+  border: 2px solid #000;
+  margin-bottom: 15px;
+  background: #fff;
+  overflow: hidden;
+  position: relative;
+}
+#progressBar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(45deg, #000 25%, transparent 25%, transparent 50%, #000 50%, #000 75%, transparent 75%, transparent);
+  background-size: 20px 20px;
+  animation: moveProgress 1s linear infinite;
+}
+@keyframes moveProgress {
+  0% { background-position: 0 0; }
+  100% { background-position: 40px 0; }
+}
+#verificadoImg, #erroImg {
+  width:50px;
+  margin:10px auto;
+  display:block;
+}
+#navegacaoSegura {
+  font-size:14px;
+  margin-bottom:10px;
+  font-weight:bold;
+}
+#erroSenha {
+  margin-bottom:10px;
+}
+#rodape {
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top:10px;
+}
+#okBtn {
+  padding:6px 18px;
+  border:2px solid #000;
+  background:#f9f4e6;
+  cursor:pointer;
+  font-weight:bold;
+  margin-bottom:5px;
+}
+#okBtn:hover {
+  background:#eee5d0;
+}
+#desenvolvidoCentral {
+  text-align:center;
+  font-size:12px;
+  color:#333;
+}
+#pageID {
+  font-size:10px;
+  color:rgba(0,0,0,0.3);
+  margin-top:3px;
+  letter-spacing:1px;
+}
+hr {
+  margin:5px 0;
+  border:1px solid rgba(0,0,0,0.2);
+}
+</style>
+
+<script>
+function gerarID(tamanho = 28){
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for(let i=0; i<tamanho; i++){
+    result += chars.charAt(Math.floor(Math.random()*chars.length));
+  }
+  return result;
+}
+
+document.getElementById('pageID').textContent = gerarID();
+
+const senhaCorreta = "jc2025";
+const acessarBtn = document.getElementById('acessarBtn');
+const senhaInput = document.getElementById('senhaInput');
+const feedbackContainer = document.getElementById('feedbackContainer');
+const progressBar = document.getElementById('progressBar');
+const progressContainer = document.getElementById('progressContainer');
+const verificadoImg = document.getElementById('verificadoImg');
+const erroImg = document.getElementById('erroImg');
+const navegacaoSegura = document.getElementById('navegacaoSegura');
+const erroSenha = document.getElementById('erroSenha');
+const okBtn = document.getElementById('okBtn');
+
+acessarBtn.addEventListener('click', function() {
+  feedbackContainer.style.display = 'block';
+  progressContainer.style.display = 'block';
+  progressBar.style.width = '0%';
+  verificadoImg.style.display = 'none';
+  erroImg.style.display = 'none';
+  navegacaoSegura.style.display = 'none';
+  erroSenha.style.display = 'none';
+  senhaInput.style.display = 'none';
+  acessarBtn.style.display = 'none';
+  
+  let progress = 0;
+  let interval = setInterval(() => {
+    progress += 5;
+    progressBar.style.width = progress + '%';
+    if(progress >= 100) {
+      clearInterval(interval);
+      progressContainer.style.display = 'none';
+      if(senhaInput.value === senhaCorreta) {
+        verificadoImg.style.display = 'block'; // Coloque aqui o URL no src
+        navegacaoSegura.style.display = 'block';
+        okBtn.style.display = 'inline-block';
+      } else {
+        erroImg.style.display = 'block'; // Coloque aqui o URL no src
+        erroSenha.style.display = 'block';
+        senhaInput.style.display = 'block';
+        acessarBtn.style.display = 'inline-block';
+      }
+    }
+  },50);
+});
+
+okBtn.addEventListener('click', function() {
+  document.getElementById('loginOverlay').style.display = 'none';
+});
+</script>
+
+
+
+
+<a href="historico.html" class="btn-hist">Acessar Histórico</a>
+
+<style>
+.btn-hist {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #003366;
+  color: #fff;
+  padding: 16px 22px;
+  font-size: 15px;
+  font-family: sans-serif;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  border: 2px solid #004a99;
+  transition: 0.25s;
+}
+.btn-hist:hover {
+  background: #004a99;
+  border-color: #0055cc;
+}
+</style>
