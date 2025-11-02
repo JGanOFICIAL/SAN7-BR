@@ -3,42 +3,26 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Login - Academia</title>
+<title>Treinos - Academia</title>
 <style>
 :root{
   --bg:#fff;
   --dark:#000;
-  --light:#f5f5f5;
-  --accent:#f0f0f0;
+  --card:#f8f8f8;
   --green:#32CD32;
 }
 *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
 body{
+  background:var(--bg) url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjg2uC7y-ELYYY-bOQtvL1LZY3i-xGB27LLPucy8a3Cw8IAFDnCeGm5TwC2ki0NRz03Tg2we-BorZUvgsjzBrIKX2-liUmCw6n9QwzcCECdX4CMiY-ic4oMOSq0AWP_-jIb3BnDqbIlIMav2DYk4rf-tqBC3uPOjWDNOjVjyAgPuNRBSO2kDE6bwB240C8/s1078/E49B0C31-045A-451C-A029-627BE80C1AF3.jpeg') no-repeat center center/cover;
+  color:var(--dark);
   min-height:100vh;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:flex-start;
   padding-top:100px;
-  position:relative;
-  color:var(--dark);
-  background:url("https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000003-bb004bb006/327D58F7-EA95-465C-A2ED-93EFE48A1516.webp") no-repeat center center/cover;
-  overflow:hidden;
 }
-header{
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  height:64px;
-  background:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 20px;
-  border-bottom:1px solid #eee;
-  z-index:10;
-}
+header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #eee;z-index:10}
 .logo-canto-esquerdo{height:38px;width:auto}
 .menu-container{position:relative}
 .menu-btn{width:32px;height:24px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between}
@@ -50,57 +34,183 @@ header{
 .menu.active{display:flex}
 .menu a{text-decoration:none;color:#000;padding:12px 15px;transition:.3s}
 .menu a:hover{background:#f5f5f5}
-main{width:100%;max-width:400px;padding:20px;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1)}
-.container{margin-top:20px}
-h2{font-size:22px;font-weight:600;margin-bottom:25px;text-align:center;color:#111}
-label{display:block;font-size:14px;color:#444;margin-bottom:8px}
-input[type="text"]{
-width:100%;padding:14px;border:none;border-bottom:1px solid #ccc;font-size:17px;color:#000;background:transparent;outline:none;
+.opcoes-treino {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  justify-items: center;
 }
-input::placeholder{color:#aaa}
-.btn{margin-top:25px;width:100%;padding:14px;border-radius:8px;border:none;background:#e6e6e6;color:#999;font-weight:600;font-size:16px;cursor:pointer;transition:.3s}
-.btn:hover,
-.btn.active{background:var(--green);color:#fff}
-.info{margin-top:20px;font-size:13px;color:#555;text-align:center}
-footer{margin-top:60px;font-size:12px;color:#888;text-align:center}
+.opcao {
+  background: #fff;
+  border-radius: 0;
+  text-align: center;
+  padding: 18px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 200px;
+}
+.opcao:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+.opcao img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 0;
+  transition: opacity 0.3s ease;
+}
+.opcao:hover img {opacity: 0.9;}
+.opcao span {
+  display: block;
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+  letter-spacing: 0.3px;
+}
+.loader {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 45px;
+  height: 45px;
+  border: 5px solid #e0e0e0;
+  border-top: 5px solid #00a86b;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
+@keyframes spin {to { transform: translate(-50%, -50%) rotate(360deg); }}
+@media (max-width: 600px) {
+  .opcao img {height: 100px;}
+  .opcao span {font-size: 14px;}
+}
+.social-float {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 9999;
+}
+.social-float a img {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  backdrop-filter: blur(8px);
+}
+.social-float a img:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+}
+#loadingScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.5);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:9999;opacity:1;transition:opacity .8s ease}
+#loadingBox{width:100px;height:100px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(0,0,0,0.1)}
+.spinner{width:40px;height:40px;border:4px solid #ccc;border-top:4px solid #32CD32;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 <header>
   <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfpNssMlb0FEXHahE9QP1mIOh9ISzzz5RvuHFNCF4muXYY2TzPSbp_DpqXir7OnrUoRUr-uGpO0RWwJw-WisbxtZmSm0jBK4B1zzm6ddbg4iOBs0nzWFO6XwlNiZtJg7y3jEDGkcmYiCJ22W4E9rkdXzVnTgDpM0M5vYP-Lf32q__Nw4HUXFFOpf5CzV8/s433/B392849B-E68A-4EED-9FE0-52211BA37A65.jpeg" class="logo-canto-esquerdo">
-  <div class="menu-container">
-    <div class="menu-btn" id="menuBtn"><div></div><div></div><div></div></div>
-    <div class="menu" id="menu">
-      <a href="chat.html">Entrar em contato</a>
-    </div>
+  
+
+
+<div style="position:absolute;right:20px;top:50%;transform:translateY(-50%);">
+  <div id="menuBtn" style="cursor:pointer;width:36px;display:flex;flex-direction:column;justify-content:space-between;height:26px;">
+    <div style="height:4px;background:#000;border-radius:2px;"></div>
+    <div style="height:4px;background:#000;border-radius:2px;"></div>
+    <div style="height:4px;background:#000;border-radius:2px;"></div>
   </div>
+</div>
+
+<div id="menuBox" style="position:fixed;top:0;right:-230px;width:210px;height:100%;background:#f2f2f2;padding:20px;box-shadow:-2px 0 6px rgba(0,0,0,.3);transition:.3s;font-family:sans-serif;">
+  <span id="closeBtn" style="position:absolute;top:10px;right:15px;cursor:pointer;font-size:22px;">&times;</span>
+  <h3 style="margin-top:0;margin-bottom:20px;font-size:18px;border-bottom:1px solid #ccc;padding-bottom:5px;">Menu</h3>
+  
+  <div style="display:flex;align-items:center;margin-bottom:20px;cursor:pointer;" onclick="location.href='login.html'">
+    <img src="https://www.iconpacks.net/icons/1/free-user-logout-icon-304-thumb.png" style="width:40px;height:40px;border-radius:50%;margin-right:10px;">
+    <span>Sair da conta</span>
+  </div>
+
+<div style="display:flex;align-items:center;margin-bottom:20px;cursor:pointer;" onclick="location.href='treino.html'">
+    <img src="https://images.vexels.com/media/users/3/138774/isolated/preview/827000c564e21e1ab79e0870ae44a134-silhueta-de-mulher-fitness-correndo.png" style="width:40px;height:40px;border-radius:50%;margin-right:10px;">
+    <span>Meus treinos</span>
+  </div>
+
+
+
+
+
+
+  <div style="border-bottom:1px solid #ccc;padding:12px 0;cursor:pointer;font-size:16px;" onclick="location.href='index.html'">Corrida e caminhada</div>
+  <div style="border-bottom:1px solid #ccc;padding:12px 0;cursor:pointer;font-size:16px;" onclick="location.href='dashboard.html'">Mensalidade</div>
+<div style="border-bottom:1px solid #ccc;padding:12px 0;cursor:pointer;font-size:16px;" onclick="location.href='chat.html'">Chat zap</div>
+
+</div>
+
+
+<script>
+menuBtn.onclick=()=>menuBox.style.right='0';
+closeBtn.onclick=()=>menuBox.style.right='-230px';
+window.onclick=e=>{if(e.target==menuBox)menuBox.style.right='-230px';};
+</script>
+
+
+
 </header>
 
-<main>
-  <div class="container">
-    <h2>Digite seu NA para acessar</h2>
-    <label for="serial">Digite os 5 dígitos do seu NA</label>
-    <input id="serial" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Ex: 12345" maxlength="5" autocomplete="off"/>
-    <div class="info">Ao continuar, você aceita os termos de uso e política de privacidade da página.</div>
-    <button id="loginBtn" class="btn">Continuar</button>
+<div style="display:flex;justify-content:center;margin-top:20px;">
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjMZRAFc6AJA_VhXje1ROgS0FfroVrPTGTa3aolQkeuIbQLHwwyH4E0LDsYttr7Te-B0XgegODL20NcLdsKwq4Z5KbjR5gcXUQ98oNCcTCxdAVpVSB_uSNx5LK08OU6iNlTh_fcRBe9MYxD8Da-_4GrOHq7aheI8qRnuwwg1ol6REvL4SN51Djxv2QEJ6U/s667/D70B849C-D738-46CD-B2F1-31C236E6CF18.jpeg" style="width:TAMANHO_WIDTHpx;height:152px;">
+</div>
 
-    <a href="na.html" style="display:block;text-align:center;font-size:18px;color:#333;text-decoration:none;font-weight:500;margin:20px 0;">Saiba mais sobre o NA</a>
-  </div>
-</main>
+
+<div class="carrossel-container"><div class="carrossel"><div class="item"><img src="https://www.polar.com/img/cms/ace4fffbd0d795347afa99983af8a72d780153b7-3489x1841-2880.webp"><p>Cardio: qualquer atividade física que aumenta a frequência cardíaca e respiratória, fortalecendo o coração e os pulmões.</p></div><div class="item"><img src="https://s2-ge.glbimg.com/1poTdSoDJL7BQu_ZqPQF9z_-wYY=/0x0:1253x836/600x0/smart/filters:gifv():strip_icc()/i.s3.glbimg.com/v1/AUTH_bc8228b6673f488aa253bbcb03c80ec5/internal_photos/bs/2021/a/l/Lx0f1GQHak9pFJj2uCxw/exercicios-em-casa.jpg"><p>Antes de iniciar os exercícios, prepare o corpo com alongamentos e movimentos leves para evitar lesões.</p></div><div class="item"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQiCW9edkIFEoRj1brXl4X83sOTRUGfGhmoiu8u8AR42-pCsO6ZihZj58&s=10"><p>A creatina é encontrada em vertebrados, onde facilita a reciclagem de trifosfato de adenosina, principalmente nas fibras musculares e no cérebro.</p></div><div class="item"><img src="https://assets.entrepreneur.com/content/3x2/2000/20190620131326-Example-of-Personal-Trainer-Business-Ideas-Bigstock-4000pxW-X-2670pxH-copy.jpeg"><p>A profissão de personal trainer é a de um profissional de Educação Física que cria programas de exercícios personalizados e acompanha seus clientes para que alcancem seus objetivos de saúde e bem-estar. </p></div><div class="item"><img src="https://media.istockphoto.com/id/1441694626/pt/foto/hand-of-athlete-woman-holding-dumbbell-from-the-rack-in-the-gym-muscular-fitness-female.jpg?s=612x612&w=0&k=20&c=keUz19Hez2bL8unh6rbVKqQOZ2Ypub0d9seVKT1o9Ak="><p>Dedique alguns minutos no fim do dia ou da semana para arrumar a desordem acumulada. Manter a organização em pequenas rotinas é mais fácil do que lidar com uma bagunça grande. </p></div></div></div><style>.carrossel-container{width:100%;max-width:800px;overflow:hidden;position:relative}.carrossel{display:flex;transition:transform .6s ease-in-out}.item{min-width:100%;height:400px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid #ccc;background:#f4f4f4}.item img{width:100%;height:300px;object-fit:cover}.item p{margin-top:10px;font-size:1rem;padding:0 10px;text-align:center}@media(max-width:600px){.item{height:300px}.item img{height:200px}}</style><script>let atual=0;const carrossel=document.querySelector('.carrossel');const total=document.querySelectorAll('.item').length;function mudarSlide(){atual=(atual+1)%total;carrossel.style.transform=`translateX(-${atual*100}%)`}let intervalo=setInterval(mudarSlide,4000);carrossel.addEventListener('mouseenter',()=>clearInterval(intervalo));carrossel.addEventListener('mouseleave',()=>intervalo=setInterval(mudarSlide,4000));</script>
+
+
 
 <br>
 
 
-<div style="display:flex;justify-content:center;">
-  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000001-627d3627d6/0EED9B08-7871-48BC-A4C9-1D765E5F962D.webp?ph=c2a6771173" style="width:TAMANHO_WIDTHpx;height:217px;">
-</div>
-<br><br>
+<style>
+.aluno-container {
+  background: rgba(255,255,255,0.9);
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: left;
+  font-family: Arial, sans-serif;
+  border: 1px solid #ddd;
+}
+.aluno-container h2 {
+  margin-bottom: 10px;
+  color: #333;
+  text-align: center;
+}
+.aluno-container p {
+  margin: 5px 0;
+  color: #555;
+  font-size: 14px;
+}
+</style>
 
-<script>
-const btn=document.getElementById('menuBtn');
-const menu=document.getElementById('menu');
-btn.onclick=()=>{btn.classList.toggle('active');menu.classList.toggle('active');};
-</script>
+<div class="aluno-container">
+  <h2>Meus dados</h2>
+  <p id="nomeAluno">Nome: Carregando...</p>
+  <p id="naAluno">NA: Carregando...</p>
+<hr>
+  <p>Não compartilhe essas informações com terceiros. Seu NA é  uma ferramenta de login e comprovante de inscrição.</p>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -108,28 +218,148 @@ btn.onclick=()=>{btn.classList.toggle('active');menu.classList.toggle('active');
 const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomain:"prefeitura-de-joao-camara.firebaseapp.com",projectId:"prefeitura-de-joao-camara",storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",messagingSenderId:"269299041577",appId:"1:269299041577:web:fd41b2939240e9eb476338",measurementId:"G-YT7NHR342J"};
 firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
-const serialEl=document.getElementById('serial');
-const loginBtn=document.getElementById('loginBtn');
-serialEl.addEventListener('input',e=>{
-  const v=e.target.value.replace(/\D/g,'').slice(0,5);
-  e.target.value=v;
-  if(v.length>0){loginBtn.classList.add('active');}
-  else{loginBtn.classList.remove('active');}
-});
-loginBtn.addEventListener('click',async()=>{
-  const raw=serialEl.value.replace(/\D/g,'');
-  if(raw.length!==5){alert('Número de Série inválido.');serialEl.focus();return;}
-  try{
-    const snapshot=await db.ref('users/'+raw).get();
-    if(!snapshot.exists()){alert('Usuário não encontrado.');return;}
-    const user=snapshot.val();
-    const today=new Date().toISOString().slice(0,10);
-    if(!user.active){alert('Plano inativo. Contate o administrador.');return;}
-    if(user.endDate&&user.endDate<today){alert('Plano expirado. Contate o administrador.');return;}
-    localStorage.setItem('loggedUser',raw);
-    window.location.href='dashboard.html';
-  }catch(err){console.error(err);alert('Erro ao conectar com o banco.');}
-});
+
+const nomeEl=document.getElementById('nomeAluno');
+const naEl=document.getElementById('naAluno');
+
+const loggedUser = localStorage.getItem('loggedUser');
+if(loggedUser){
+  db.ref('users/'+loggedUser).get().then(snapshot=>{
+    if(snapshot.exists()){
+      const user=snapshot.val();
+      nomeEl.textContent = 'Nome: ' + (user.name || 'Não informado');
+      naEl.textContent = 'NA: ' + loggedUser;
+    } else {
+      nomeEl.textContent = 'Nome: Não encontrado';
+      naEl.textContent = 'NA: Não encontrado';
+    }
+  }).catch(err=>{
+    console.error(err);
+    nomeEl.textContent = 'Erro ao carregar';
+    naEl.textContent = 'Erro ao carregar';
+  });
+} else {
+  nomeEl.textContent = 'Nenhum usuário logado';
+  naEl.textContent = '-';
+}
 </script>
+
+
+
+
+
+<br>
+
+<style>
+.nova-funcao-container {
+  background: rgba(255,255,255,0.9);
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  border: 1px solid #ddd;
+}
+.nova-funcao-container h2 {
+  margin-bottom: 10px;
+  color: #333;
+}
+.nova-funcao-container p {
+  margin: 5px 0;
+  color: #555;
+  font-size: 14px;
+}
+.nova-funcao-container ul {
+  text-align: left;
+  margin: 10px 0;
+  padding-left: 20px;
+  color: #555;
+}
+.nova-funcao-container button {
+  background-color: #90ee90;
+  color: #000;
+  border: 1px solid #777;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.nova-funcao-container button:hover {
+  background-color: #7fd47f;
+}
+</style>
+
+<div class="nova-funcao-container">
+  <h2>Nova funcionalidade</h2>
+  <p>Experimente nossa nova função de Corrida e Caminhada!</p>
+  <ul>
+    <li>Visualize tempo e hora em tempo real</li>
+    <li>Guarde suas atividades no histórico</li>
+    <li>Localização em tempo real</li>
+    <li>Segura e bem projetada</li>
+    <li>Formas de Corrida e Caminhada</li>
+  </ul>
+  <button onclick="window.location.href='corrida.html'">Acessar</button>
+</div>
+
+
+
+<div class="opcoes-treino">
+  <div class="opcao" data-link="perna.html"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzvunfVwFyBroGU9N1Ng-WlYghzF2HXUiqrP9BGY0IUQ&s=10"><span>Biceps</span></div>
+  <div class="opcao" data-link="triceps.html"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfEwnI5ET4r2byKwAhbGVzcyuNwzBMmtokPUJAxM8QAQ&s=10"><span>Tríceps</span></div>
+  <div class="opcao" data-link="perna.html"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVMEVpeoHxoAYSmtFRhKeRYvX1MrqtKdhK_iS19O6jVw&s=10"><span>Pernas</span></div>
+  <div class="opcao" data-link="panturrilha.html"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSOltnRg1off_xFjAC2D_9r_325BwLln5GJTl41b0XZQ&s=10"><span>Panturrilha</span></div>
+  <div class="opcao" data-link="tela.html"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkGS2X4rXO-4QVmHaCUPGZh9U_lNiKnK63SHp2do_Nzg&s=10"><span>Abdômen</span></div>
+  <div class="opcao" data-link="tela.html"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLF6iW8aoVsvtwgZFv9y0GJR9BdtsGpMlUgN-Ol-PPKQ&s=10"><span>Peito</span></div>
+  <div class="opcao" data-link="tela.html"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQja4z_LZ42DNTIYI3kz5TACwgZM65c8muClVx0boIiSw&s=10"><span>Costas</span></div>
+  <div class="opcao" data-link="tela.html"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzK6LxVaqqdxjOuNp1CLUoOHxCHH_bv-dRfwJyX7hIsg&s=10"><span>Ombros</span></div>
+  <div class="opcao" data-link="dashboard.html"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS52XZDKfKMu82FSEECx0gATGkL_Exv85b1LEzvzzLcR1LJ7UyXxNqU6uDE&s=10"><span>Meu Plano</span></div>
+  <div class="opcao" data-link="treino.html"><img src="https://horadotreino.com.br/wp-content/uploads/2024/03/tempo-de-duracao-do-treino.png"><span>Tempo de treino</span></div>
+
+
+<div class="opcao" data-link="re.html"><img src="https://improvefy.com/wp-content/uploads/2021/12/capa-feedback.jpg"><span>Feedback</span></div>
+
+
+</div>
+
+<div id="loader" class="loader"></div>
+
+<div class="social-float">
+  <a href="https://www.instagram.com/domusfit__/" target="_blank"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQ8lvQPDQap4DKzja4cuE31IvasKBPOhiXVogsr-d-bQ&s=10"></a>
+  <a href="https://wa.me/5584991078696" target="_blank"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcTFWb9z5hCYiLmqd3rMKjMumrbW8pcXUshmd_1l2Uvw&s=10"></a>
+</div>
+
+<div id="loadingScreen"><div id="loadingBox"><div class="spinner"></div></div></div>
+
+<script>
+const opcoes=document.querySelectorAll('.opcao');
+const loader=document.getElementById('loader');
+opcoes.forEach(opcao=>{
+  opcao.addEventListener('click',()=>{
+    loader.style.display='block';
+    setTimeout(()=>{window.location.href=opcao.dataset.link;},1000);
+  });
+});
+setTimeout(()=>{
+  const loading=document.getElementById('loadingScreen');
+  loading.style.opacity='0';
+  setTimeout(()=>{loading.style.display='none'},800);
+},2000);
+</script>
+
+
+
+
+
+
+<div style="display:flex;justify-content:center;margin-top:20px;">
+  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000001-627d3627d6/0EED9B08-7871-48BC-A4C9-1D765E5F962D.webp" style="width:TAMANHO_WIDTHpx;height:206px;">
+</div>
+
+
+
+<div style="display:flex;justify-content:center;margin-top:20px;">
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEghPJvETNgkQo6a1nD9jmTsxRSIOkoGqoC_Fp7AQqokzChyphenhyphen4QkSTHy55FxVcxPCFwblTbQ8Q8MRbdDET_AWt590cuTseLv0Ue2GnNtF-2IdUZ81q0HSwF0YCag4rquYcvXUtRKzgWv7x3D8JM6VLVKOOni5VAnPARxwpi9OCRbpRngLBVu-oXvUEzDB5_s/s723/BEDA8AD8-221B-4C2A-A9A1-62F0FE5283A5.jpeg" style="width:TAMANHO_WIDTHpx;height:98px;">
+</div>
+<br>
 </body>
 </html>
