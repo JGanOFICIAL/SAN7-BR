@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Login - Academia</title>
+<style>
+:root{
+  --bg:#fff;
+  --dark:#000;
+  --light:#f5f5f5;
+  --accent:#f0f0f0;
+  --green:#32CD32;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+body{background:var(--bg);color:var(--dark);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:100px}
+header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #eee;z-index:10}
+.logo-canto-esquerdo{height:38px;width:auto}
+.menu-container{position:relative}
+.menu-btn{width:32px;height:24px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between}
+.menu-btn div{width:100%;height:3px;background:#000;border-radius:2px;transition:all .3s}
+.menu-btn.active div:nth-child(1){transform:rotate(45deg) translateY(9px)}
+.menu-btn.active div:nth-child(2){opacity:0}
+.menu-btn.active div:nth-child(3){transform:rotate(-45deg) translateY(-9px)}
+.menu{position:absolute;top:40px;right:0;background:#fff;box-shadow:0 4px 15px rgba(0,0,0,.1);border-radius:6px;display:none;flex-direction:column;width:200px;overflow:hidden}
+.menu.active{display:flex}
+.menu a{text-decoration:none;color:#000;padding:12px 15px;transition:.3s}
+.menu a:hover{background:#f5f5f5}
+
+main{width:100%;max-width:400px;padding:20px}
+.container{margin-top:20px}
+h2{font-size:22px;font-weight:600;margin-bottom:25px}
+label{display:block;font-size:14px;color:#444;margin-bottom:8px}
+input[type="text"]{
+  width:100%;padding:14px;border:none;border-bottom:1px solid #ccc;font-size:17px;color:#000;background:transparent;outline:none;
+}
+input::placeholder{color:#aaa}
+.btn{margin-top:25px;width:100%;padding:14px;border-radius:8px;border:none;background:#e6e6e6;color:#999;font-weight:600;font-size:16px;cursor:pointer;transition:.3s}
+.btn:hover{background:#ddd}
+.btn.active{background:var(--green);color:#fff}
+.info{margin-top:20px;font-size:13px;color:#555}
+footer{margin-top:60px;font-size:12px;color:#888;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfpNssMlb0FEXHahE9QP1mIOh9ISzzz5RvuHFNCF4muXYY2TzPSbp_DpqXir7OnrUoRUr-uGpO0RWwJw-WisbxtZmSm0jBK4B1zzm6ddbg4iOBs0nzWFO6XwlNiZtJg7y3jEDGkcmYiCJ22W4E9rkdXzVnTgDpM0M5vYP-Lf32q__Nw4HUXFFOpf5CzV8/s433/B392849B-E68A-4EED-9FE0-52211BA37A65.jpeg" class="logo-canto-esquerdo">
+  
+
+<button onclick="window.location.href='index.html'" style="position:absolute;top:10px;right:20px;background:#7CFC00;color:#000;font-weight:bold;padding:12px 18px;border:none;cursor:pointer;">Voltar</button>
+
+
+</header>
+
+
+<div style="display:flex;justify-content:center;">
+  <img src="https://www.growthengineering.co.uk/wp-content/uploads/2017/07/Feedback-Blog-Ills_Feedback-emoji-crop.png" style="width:TAMANHO_WIDTHpx;height:130px;">
+</div>
+
+
+<style>
+.fale-conosco-container {
+  width: 100%;
+  max-width: 450
+  margin: 100px auto;
+  color: #fff;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.fale-conosco-step {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  backdrop-filter: blur(6px);
+  padding: 10px 15px;
+  box-sizing: border-box;
+}
+
+.fale-conosco-step.active {
+  display: flex;
+}
+
+.fale-conosco-input,
+.fale-conosco-select,
+.fale-conosco-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #bbb;
+  background: rgba(255, 255, 255, 0.85);
+  color: #000;
+  outline: none;
+  margin-bottom: 15px;
+  font-size: 15px;
+  transition: 0.2s;
+}
+
+.fale-conosco-input:focus,
+.fale-conosco-textarea:focus {
+  border-color: #7dfcb3;
+}
+
+.fale-conosco-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.fale-conosco-button {
+  background: #7dfcb3;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  color: #000;
+  font-weight: 600;
+  width: 48%;
+  transition: 0.2s;
+}
+
+.fale-conosco-button:hover {
+  opacity: 0.9;
+}
+
+.fale-conosco-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stars {
+  display: flex;
+  gap: 5px;
+  cursor: pointer;
+  font-size: 26px;
+  margin-top: 5px;
+}
+
+.star {
+  color: #777;
+  transition: 0.2s;
+}
+
+.star.selected {
+  color: gold;
+  transform: scale(1.1);
+}
+
+.hamburger-menu {
+  position: relative;
+}
+
+.hamburger-button {
+  background: #7dfcb3;
+  color: #000;
+  padding: 10px;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-weight: 600;
+}
+
+.hamburger-options {
+  display: none;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.hamburger-options button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  padding: 10px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.loading {
+  border: 3px solid #ccc;
+  border-top: 3px solid #7dfcb3;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  animation: spin 1s linear infinite;
+  margin: 10px auto;
+  display: none;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.checkbox-container input[type="checkbox"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #7dfcb3;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  background: transparent;
+}
+
+.checkbox-container input[type="checkbox"]:checked::before {
+  content: "✔";
+  position: absolute;
+  top: -1px;
+  left: 2px;
+  color: #000;
+  font-size: 14px;
+}
+
+.preview-box {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #000;
+  display: none;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.preview-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.preview-table td {
+  border-bottom: 1px dotted #999;
+  padding: 6px 4px;
+}
+</style>
+
+<div class="fale-conosco-container">
+  <div class="fale-conosco-step active" data-step="1">
+    <label>Nome completo</label>
+    <input type="text" class="fale-conosco-input" id="nome">
+    <div class="fale-conosco-buttons">
+      <button class="fale-conosco-button" id="next1">Próximo</button>
+    </div>
+  </div>
+
+  <div class="fale-conosco-step" data-step="2">
+    <label>Idade</label>
+    <input type="number" class="fale-conosco-input" id="idade">
+    <div class="fale-conosco-buttons">
+      <button class="fale-conosco-button" id="prev2">Anterior</button>
+      <button class="fale-conosco-button" id="next2">Próximo</button>
+    </div>
+  </div>
+
+  <div class="fale-conosco-step" data-step="3">
+    <label>Gênero</label>
+    <div class="hamburger-menu">
+      <button class="hamburger-button" id="generoButton">Selecionar gênero</button>
+      <div class="hamburger-options" id="generoOptions">
+        <button data-genero="Masculino">Masculino</button>
+        <button data-genero="Feminino">Feminino</button>
+        <button data-genero="Outro">Outro</button>
+      </div>
+    </div>
+    <div class="fale-conosco-buttons">
+      <button class="fale-conosco-button" id="prev3">Anterior</button>
+      <button class="fale-conosco-button" id="next3" disabled>Próximo</button>
+    </div>
+  </div>
+
+  <div class="fale-conosco-step" data-step="4">
+    <label>Avaliação (1 a 5 estrelas)</label>
+    <div class="stars" id="stars">
+      <span class="star" data-value="1">★</span>
+      <span class="star" data-value="2">★</span>
+      <span class="star" data-value="3">★</span>
+      <span class="star" data-value="4">★</span>
+      <span class="star" data-value="5">★</span>
+    </div>
+    <div class="fale-conosco-buttons">
+      <button class="fale-conosco-button" id="prev4">Anterior</button>
+      <button class="fale-conosco-button" id="next4" disabled>Próximo</button>
+    </div>
+  </div>
+
+  <div class="fale-conosco-step" data-step="5">
+    <label>Motivação</label>
+    <textarea id="motivacao" class="fale-conosco-textarea" rows="4"></textarea>
+    <div class="fale-conosco-buttons">
+      <button class="fale-conosco-button" id="prev5">Anterior</button>
+      <button class="fale-conosco-button" id="next5">Próximo</button>
+    </div>
+  </div>
+
+  <div class="fale-conosco-step" data-step="6">
+    <label>Número de telefone reserva (opcional)</label>
+    <input type="text" class="fale-conosco-input" id="telefone">
+    <div class="fale-conosco-buttons">
+      <button class="fale-conosco-button" id="prev6">Anterior</button>
+      <button class="fale-conosco-button" id="next6">Próximo</button>
+    </div>
+  </div>
+
+  <div class="fale-conosco-step" data-step="7">
+    <div class="checkbox-container">
+      <input type="checkbox" id="confirmacao">
+      <label for="confirmacao">Tenho noção do que escrevi e assumo responsabilidades futuras.</label>
+    </div>
+    <div class="fale-conosco-buttons">
+      <button class="fale-conosco-button" id="prev7">Anterior</button>
+      <button class="fale-conosco-button" id="next7" disabled>Próximo</button>
+    </div>
+  </div>
+
+  <div class="fale-conosco-step" data-step="8">
+    <div class="preview-box" id="previewBox"></div>
+    <div class="fale-conosco-buttons">
+      <button class="fale-conosco-button" id="prev8">Anterior</button>
+      <button class="fale-conosco-button" id="concluir">Acessar</button>
+    </div>
+    <div class="loading" id="loading"></div>
+  </div>
+</div>
+
+<script>
+const steps = document.querySelectorAll(".fale-conosco-step");
+let currentStep = 0;
+const nextBtns = document.querySelectorAll("[id^='next']");
+const prevBtns = document.querySelectorAll("[id^='prev']");
+const generoButton = document.getElementById("generoButton");
+const generoOptions = document.getElementById("generoOptions");
+const next3 = document.getElementById("next3");
+const stars = document.querySelectorAll(".star");
+const next4 = document.getElementById("next4");
+const confirmacao = document.getElementById("confirmacao");
+const next7 = document.getElementById("next7");
+const concluir = document.getElementById("concluir");
+const loading = document.getElementById("loading");
+const previewBox = document.getElementById("previewBox");
+
+function showStep(i) {
+  steps.forEach((step, idx) => step.classList.toggle("active", idx === i));
+}
+
+nextBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (currentStep < steps.length - 1) {
+      if (btn.id === "next7") gerarPreview();
+      currentStep++;
+      showStep(currentStep);
+    }
+  });
+});
+
+prevBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (currentStep > 0) {
+      currentStep--;
+      showStep(currentStep);
+    }
+  });
+});
+
+generoButton.addEventListener("click", () => {
+  generoOptions.style.display = generoOptions.style.display === "flex" ? "none" : "flex";
+});
+
+generoOptions.querySelectorAll("button").forEach(option => {
+  option.addEventListener("click", () => {
+    generoButton.textContent = option.dataset.genero;
+    generoOptions.style.display = "none";
+    next3.disabled = false;
+  });
+});
+
+stars.forEach(star => {
+  star.addEventListener("click", () => {
+    const val = star.dataset.value;
+    stars.forEach(s => s.classList.toggle("selected", s.dataset.value <= val));
+    next4.disabled = false;
+  });
+});
+
+confirmacao.addEventListener("change", () => {
+  next7.disabled = !confirmacao.checked;
+});
+
+function gerarPreview() {
+  const nome = document.getElementById("nome").value;
+  const idade = document.getElementById("idade").value;
+  const genero = generoButton.textContent;
+  const estrelas = document.querySelectorAll(".star.selected").length;
+  const motivacao = document.getElementById("motivacao").value;
+  const telefone = document.getElementById("telefone").value;
+  previewBox.innerHTML = `
+    <table class="preview-table">
+      <tr><td><strong>Nome</strong></td><td>${nome}</td></tr>
+      <tr><td><strong>Idade</strong></td><td>${idade}</td></tr>
+      <tr><td><strong>Gênero</strong></td><td>${genero}</td></tr>
+      <tr><td><strong>Avaliação</strong></td><td>${estrelas} estrelas</td></tr>
+      <tr><td><strong>Motivação</strong></td><td>${motivacao}</td></tr>
+      <tr><td><strong>Telefone reserva</strong></td><td>${telefone || "Não informado"}</td></tr>
+      <tr><td><strong>Mensagem</strong></td><td>SUPPORT DOMUSFIT</td></tr>
+    </table>
+  `;
+  previewBox.style.display = "block";
+}
+
+concluir.addEventListener("click", () => {
+  loading.style.display = "block";
+  concluir.disabled = true;
+  const nome = document.getElementById("nome").value;
+  const idade = document.getElementById("idade").value;
+  const genero = generoButton.textContent;
+  const estrelas = document.querySelectorAll(".star.selected").length;
+  const motivacao = document.getElementById("motivacao").value;
+  const telefone = document.getElementById("telefone").value;
+  const msg = `SUPPORT DOMUSFIT%0A%0ANome: ${nome}%0AIdade: ${idade}%0AGênero: ${genero}%0AAvaliação: ${estrelas} estrelas%0AMotivação: ${motivacao}%0ATelefone reserva: ${telefone}`;
+  setTimeout(() => {
+    window.location.href = `https://wa.me/5584991078696?text=${msg}`;
+  }, 1200);
+});
+</script>
