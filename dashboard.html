@@ -12,8 +12,28 @@
   --green:#32CD32;
 }
 *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
-body{background:var(--bg);color:var(--dark);min-height:100vh}
-header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #eee;z-index:10}
+body{
+  min-height:100vh;
+  position:relative;
+  color:var(--dark);
+  overflow-x:hidden;
+  background:url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjg2uC7y-ELYYY-bOQtvL1LZY3i-xGB27LLPucy8a3Cw8IAFDnCeGm5TwC2ki0NRz03Tg2we-BorZUvgsjzBrIKX2-liUmCw6n9QwzcCECdX4CMiY-ic4oMOSq0AWP_-jIb3BnDqbIlIMav2DYk4rf-tqBC3uPOjWDNOjVjyAgPuNRBSO2kDE6bwB240C8/s1078/E49B0C31-045A-451C-A029-627BE80C1AF3.jpeg") no-repeat center center/cover;
+}
+header{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:64px;
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(8px);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  border-bottom:1px solid #eee;
+  z-index:10;
+}
 .logo-canto-esquerdo{height:38px;width:auto}
 .menu-container{position:relative}
 .menu-btn{width:32px;height:24px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between}
@@ -25,22 +45,36 @@ header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:f
 .menu.active{display:flex}
 .menu a{text-decoration:none;color:#000;padding:12px 15px;transition:.3s}
 .menu a:hover{background:#f5f5f5}
-
-main{width:100%;max-width:400px;padding:20px;margin-top:100px}
-.card{background:var(--card);padding:20px;border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,.05)}
-.card h3{font-size:22px;font-weight:600;margin-bottom:10px}
-.meta{color:#555;font-size:14px;margin-bottom:6px}
+main{
+  width:100%;
+  max-width:400px;
+  padding:20px;
+  margin-top:100px;
+  background:rgba(255,255,255,0.85);
+  border-radius:12px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.1);
+  backdrop-filter:blur(8px);
+  margin-left:auto;
+  margin-right:auto;
+}
+.card{
+  background:rgba(255,255,255,0.9);
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 4px 15px rgba(0,0,0,.05);
+}
+.card h3{font-size:22px;font-weight:600;margin-bottom:10px;text-align:center}
+.meta{color:#555;font-size:14px;margin-bottom:6px;text-align:center}
 footer{margin-top:40px;font-size:12px;color:#888;text-align:center}
 </style>
 </head>
 <body>
 <header>
-  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjOvLMq7oeCH6uI1reiI3Gfa66OmBp_uYaQCObkOntfJHSA6PmMAKdIhyphenhyphenO0PGDP-cwWJvSOjtRw8rTkq311ROKf_kYNWLXIcn6gJSidqV3Fwygk1nqg6kWOChPAiPLNahew9orxaAXb0zGz1wE80cNsWkYyttaDRLJjF9D2YUwxJLa7d45cS1L68T_j3NY/s394/E94D78A0-32B2-4F58-AA91-C1BA1FC190A9.jpeg" class="logo-canto-esquerdo">
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfpNssMlb0FEXHahE9QP1mIOh9ISzzz5RvuHFNCF4muXYY2TzPSbp_DpqXir7OnrUoRUr-uGpO0RWwJw-WisbxtZmSm0jBK4B1zzm6ddbg4iOBs0nzWFO6XwlNiZtJg7y3jEDGkcmYiCJ22W4E9rkdXzVnTgDpM0M5vYP-Lf32q__Nw4HUXFFOpf5CzV8/s433/B392849B-E68A-4EED-9FE0-52211BA37A65.jpeg" class="logo-canto-esquerdo">
   <div class="menu-container">
     <div class="menu-btn" id="menuBtn"><div></div><div></div><div></div></div>
     <div class="menu" id="menu">
       <a href="chat.html">Entrar em contato</a>
-      
     </div>
   </div>
 </header>
@@ -51,21 +85,13 @@ footer{margin-top:40px;font-size:12px;color:#888;text-align:center}
     <div class="meta" id="userCpf"></div>
     <div class="meta" id="planInfo"></div>
   </div>
-  
 </main>
-
 
 <br><br>
 
-
 <div style="display: flex; justify-content: center;">
-  <img src="https://i.pinimg.com/736x/dc/31/2b/dc312b5e75a80047258250bb31b934dc.jpg" style="width: TAMANHO_WIDTHpx; height: 310px;">
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjMrHoQBjHgrF_EHZ3IQo1jzBWb_ZHp4Vj9Neo0VBU7pZcPHO25vwiSLdNvQv-qzVlIm32NkvMDECwc8jpSuKe0FpHhkIR0bpKpoclOTBjILjISuMJR23-zNy7ui7geDmfvI9_3JlaVEu5rgUS9CMXL7IO-vmRFSYRNCFDPcHpOAt_elYAO8P8-GA0iRLg/s567/97C2A30A-42E7-4AC4-8A36-884BD6A406E2.png" style="width:320px;height:325px;">
 </div>
-
-
-
-
-
 
 <script>
 const btn=document.getElementById('menuBtn');
@@ -92,7 +118,7 @@ userRef.on('value',snap=>{
   if(!snap.exists()){alert('Usuário removido.');localStorage.removeItem('loggedUser');location.href='index.html';return;}
   const u=snap.val();
   userNameEl.textContent=u.name||'Usuário';
-  userCpfEl.textContent='Número do Aluno (NA): '+(cpfDigits.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4'));
+  userCpfEl.textContent='Número do Aluno (NA): '+cpfDigits;
   let info='Plano: '+(u.planName||'—');
   if(u.startDate) info+=' • Início: '+u.startDate;
   if(u.endDate){
@@ -110,8 +136,6 @@ userRef.on('value',snap=>{
   }
 });
 </script>
-</body>
-</html>
 
 <style>
 #loadingScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.5);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:9999;opacity:1;transition:opacity .8s ease}
@@ -135,7 +159,7 @@ setTimeout(()=>{
 </script>
 
 <style>
-.footer-buttons{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #eee;z-index:15}
+.footer-buttons{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #eee;z-index:15}
 .footer-buttons button{flex:1;margin:0 5px;background:#32CD32;border:none;color:#fff;font-weight:600;font-size:16px;padding:12px;border-radius:8px;cursor:pointer;transition:.3s}
 .footer-buttons button:hover{opacity:.9}
 </style>
@@ -144,3 +168,5 @@ setTimeout(()=>{
   <button onclick="window.location.href='index.html'">Treinos</button>
   <button onclick="window.location.href='login.html'">Sair</button>
 </div>
+</body>
+</html>
