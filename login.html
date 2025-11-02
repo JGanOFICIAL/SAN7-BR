@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Login - Academia</title>
+<style>
+:root{
+  --bg:#fff;
+  --dark:#000;
+  --light:#f5f5f5;
+  --accent:#f0f0f0;
+  --green:#32CD32;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+body{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  padding-top:100px;
+  position:relative;
+  color:var(--dark);
+  background:url("https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000003-bb004bb006/327D58F7-EA95-465C-A2ED-93EFE48A1516.webp") no-repeat center center/cover;
+  overflow:hidden;
+}
+header{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:64px;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  border-bottom:1px solid #eee;
+  z-index:10;
+}
+.logo-canto-esquerdo{height:38px;width:auto}
+.menu-container{position:relative}
+.menu-btn{width:32px;height:24px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between}
+.menu-btn div{width:100%;height:3px;background:#000;border-radius:2px;transition:all .3s}
+.menu-btn.active div:nth-child(1){transform:rotate(45deg) translateY(9px)}
+.menu-btn.active div:nth-child(2){opacity:0}
+.menu-btn.active div:nth-child(3){transform:rotate(-45deg) translateY(-9px)}
+.menu{position:absolute;top:40px;right:0;background:#fff;box-shadow:0 4px 15px rgba(0,0,0,.1);border-radius:6px;display:none;flex-direction:column;width:200px;overflow:hidden}
+.menu.active{display:flex}
+.menu a{text-decoration:none;color:#000;padding:12px 15px;transition:.3s}
+.menu a:hover{background:#f5f5f5}
+main{width:100%;max-width:400px;padding:20px;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1)}
+.container{margin-top:20px}
+h2{font-size:22px;font-weight:600;margin-bottom:25px;text-align:center;color:#111}
+label{display:block;font-size:14px;color:#444;margin-bottom:8px}
+input[type="text"]{
+width:100%;padding:14px;border:none;border-bottom:1px solid #ccc;font-size:17px;color:#000;background:transparent;outline:none;
+}
+input::placeholder{color:#aaa}
+.btn{margin-top:25px;width:100%;padding:14px;border-radius:8px;border:none;background:#e6e6e6;color:#999;font-weight:600;font-size:16px;cursor:pointer;transition:.3s}
+.btn:hover,
+.btn.active{background:var(--green);color:#fff}
+.info{margin-top:20px;font-size:13px;color:#555;text-align:center}
+footer{margin-top:60px;font-size:12px;color:#888;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfpNssMlb0FEXHahE9QP1mIOh9ISzzz5RvuHFNCF4muXYY2TzPSbp_DpqXir7OnrUoRUr-uGpO0RWwJw-WisbxtZmSm0jBK4B1zzm6ddbg4iOBs0nzWFO6XwlNiZtJg7y3jEDGkcmYiCJ22W4E9rkdXzVnTgDpM0M5vYP-Lf32q__Nw4HUXFFOpf5CzV8/s433/B392849B-E68A-4EED-9FE0-52211BA37A65.jpeg" class="logo-canto-esquerdo">
+  <div class="menu-container">
+    <div class="menu-btn" id="menuBtn"><div></div><div></div><div></div></div>
+    <div class="menu" id="menu">
+      <a href="chat.html">Entrar em contato</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <h2>Digite seu NA para acessar</h2>
+    <label for="serial">Digite os 5 dígitos do seu NA</label>
+    <input id="serial" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Ex: 12345" maxlength="5" autocomplete="off"/>
+    <div class="info">Ao continuar, você aceita os termos de uso e política de privacidade da página.</div>
+    <button id="loginBtn" class="btn">Continuar</button>
+
+    <a href="na.html" style="display:block;text-align:center;font-size:18px;color:#333;text-decoration:none;font-weight:500;margin:20px 0;">Saiba mais sobre o NA</a>
+  </div>
+</main>
+
+<br>
+
+
+<div style="display:flex;justify-content:center;">
+  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000001-627d3627d6/0EED9B08-7871-48BC-A4C9-1D765E5F962D.webp?ph=c2a6771173" style="width:TAMANHO_WIDTHpx;height:217px;">
+</div>
+<br><br>
+
+<script>
+const btn=document.getElementById('menuBtn');
+const menu=document.getElementById('menu');
+btn.onclick=()=>{btn.classList.toggle('active');menu.classList.toggle('active');};
+</script>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomain:"prefeitura-de-joao-camara.firebaseapp.com",projectId:"prefeitura-de-joao-camara",storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",messagingSenderId:"269299041577",appId:"1:269299041577:web:fd41b2939240e9eb476338",measurementId:"G-YT7NHR342J"};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+const serialEl=document.getElementById('serial');
+const loginBtn=document.getElementById('loginBtn');
+serialEl.addEventListener('input',e=>{
+  const v=e.target.value.replace(/\D/g,'').slice(0,5);
+  e.target.value=v;
+  if(v.length>0){loginBtn.classList.add('active');}
+  else{loginBtn.classList.remove('active');}
+});
+loginBtn.addEventListener('click',async()=>{
+  const raw=serialEl.value.replace(/\D/g,'');
+  if(raw.length!==5){alert('Número de Série inválido.');serialEl.focus();return;}
+  try{
+    const snapshot=await db.ref('users/'+raw).get();
+    if(!snapshot.exists()){alert('Usuário não encontrado.');return;}
+    const user=snapshot.val();
+    const today=new Date().toISOString().slice(0,10);
+    if(!user.active){alert('Plano inativo. Contate o administrador.');return;}
+    if(user.endDate&&user.endDate<today){alert('Plano expirado. Contate o administrador.');return;}
+    localStorage.setItem('loggedUser',raw);
+    window.location.href='dashboard.html';
+  }catch(err){console.error(err);alert('Erro ao conectar com o banco.');}
+});
+</script>
+</body>
+</html>
