@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Corrida em Tempo Real</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,Roboto}
+html,body{height:100%;width:100%;overflow:hidden}
+header{
+  position:fixed;
+  top:0;left:0;right:0;
+  height:70px;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  padding:0 20px;
+  border-bottom:1px solid #ddd;
+  z-index:1000;
+}
+.logo{height:45px;width:auto;margin-right:15px;}
+.user-info{font-size:15px;color:#333;border-left:2px solid #32cd32;padding-left:12px;}
+.user-info div{margin:2px 0;}
+#map{position:absolute;top:70px;bottom:0;width:100%;}
+.leaflet-control-zoom{display:none!important}
+#corredor-img{
+  position:absolute;
+  top:90px;left:15px;
+  width:80px;height:80px;
+  background-size:cover;
+  background-position:center;
+  border:2px solid #fff;
+  border-radius:6px;
+  z-index:900;
+}
+#controls{
+  position:absolute;
+  bottom:0;left:0;right:0;
+  background:rgba(255,255,255,.95);
+  padding:15px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  z-index:999;
+}
+.btn-container{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+}
+.btn{
+  flex:1;
+  padding:14px;
+  font-size:16px;
+  font-weight:600;
+  border:none;
+  background:#32cd32;
+  color:#fff;
+  cursor:pointer;
+  border-radius:0;
+}
+#stopBtn{background:#e63946;display:none}
+#historyBtn{background:#0080ff}
+#info{
+  display:flex;
+  gap:12px;
+  font-size:14px;
+  color:#111;
+  margin-top:8px;
+  flex-wrap:wrap;
+  justify-content:center;
+  text-align:center;
+}
+#overlay,#historyOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  color:#fff;
+  z-index:2000;
+  text-align:center;
+}
+#overlay button,#historyOverlay button{
+  margin-top:20px;
+  padding:12px 28px;
+  font-size:16px;
+  border:none;
+  background:#32cd32;
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  border-radius:0;
+}
+#historyContent{
+  background:#fff;
+  color:#000;
+  padding:20px;
+  max-height:80%;
+  overflow-y:auto;
+  min-width:320px;
+  text-align:left;
+  position:relative;
+}
+#fecharHist{
+  position:absolute;
+  top:8px;
+  right:10px;
+  background:transparent;
+  color:#32cd32;
+  font-weight:bold;
+  font-size:22px;
+  border:none;
+  cursor:pointer;
+}
+input{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border:1px solid #ccc;
+  border-radius:0;
+  font-size:15px;
+  outline:none;
+}
+input:focus{border-color:#32cd32;outline:none;}
+#consultarBtn{
+  width:100%;
+  background:#32cd32;
+  color:#fff;
+  border:none;
+  padding:12px;
+  font-weight:600;
+  cursor:pointer;
+  border-radius:0;
+}
+.history-line{
+  border-left:3px solid #32cd32;
+  padding-left:10px;
+  margin:8px 0;
+  position:relative;
+}
+.delete-icon{
+  position:absolute;
+  right:10px;
+  top:10px;
+  width:20px;
+  height:20px;
+  cursor:pointer;
+  background-size:cover;
+  background-position:center;
+}
+</style>
+</head>
+<body>
+<header>
+  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfpNssMlb0FEXHahE9QP1mIOh9ISzzz5RvuHFNCF4muXYY2TzPSbp_DpqXir7OnrUoRUr-uGpO0RWwJw-WisbxtZmSm0jBK4B1zzm6ddbg4iOBs0nzWFO6XwlNiZtJg7y3jEDGkcmYiCJ22W4E9rkdXzVnTgDpM0M5vYP-Lf32q__Nw4HUXFFOpf5CzV8/s433/B392849B-E68A-4EED-9FE0-52211BA37A65.jpeg" class="logo">
+  <div class="user-info">
+    <div id="userName">Carregando...</div>
+    <div id="userNA">NA: -----</div>
+  </div>
+
+
+
+
+
+<div style="position:absolute;right:20px;top:50%;transform:translateY(-50%);">
+  <div id="menuBtn" style="cursor:pointer;width:36px;display:flex;flex-direction:column;justify-content:space-between;height:26px;">
+    <div style="height:4px;background:#000;border-radius:2px;"></div>
+    <div style="height:4px;background:#000;border-radius:2px;"></div>
+    <div style="height:4px;background:#000;border-radius:2px;"></div>
+  </div>
+</div>
+
+<div id="menuBox" style="position:fixed;top:0;right:-230px;width:210px;height:100%;background:#f2f2f2;padding:20px;box-shadow:-2px 0 6px rgba(0,0,0,.3);transition:.3s;font-family:sans-serif;">
+  <span id="closeBtn" style="position:absolute;top:10px;right:15px;cursor:pointer;font-size:22px;">&times;</span>
+  <h3 style="margin-top:0;margin-bottom:20px;font-size:18px;border-bottom:1px solid #ccc;padding-bottom:5px;">Menu</h3>
+  
+  <div style="display:flex;align-items:center;margin-bottom:20px;cursor:pointer;" onclick="location.href='login.html'">
+    <img src="https://www.iconpacks.net/icons/1/free-user-logout-icon-304-thumb.png" style="width:40px;height:40px;border-radius:50%;margin-right:10px;">
+    <span>Sair da conta</span>
+  </div>
+
+<div style="display:flex;align-items:center;margin-bottom:20px;cursor:pointer;" onclick="location.href='treino.html'">
+    <img src="https://images.vexels.com/media/users/3/138774/isolated/preview/827000c564e21e1ab79e0870ae44a134-silhueta-de-mulher-fitness-correndo.png" style="width:40px;height:40px;border-radius:50%;margin-right:10px;">
+    <span>Meus treinos</span>
+  </div>
+
+  <div style="border-bottom:1px solid #ccc;padding:12px 0;cursor:pointer;font-size:16px;" onclick="location.href='index.html'">Tela Inicial</div>
+  <div style="border-bottom:1px solid #ccc;padding:12px 0;cursor:pointer;font-size:16px;" onclick="location.href='dexboard.html'">Mensalidade</div>
+</div>
+
+<script>
+menuBtn.onclick=()=>menuBox.style.right='0';
+closeBtn.onclick=()=>menuBox.style.right='-230px';
+window.onclick=e=>{if(e.target==menuBox)menuBox.style.right='-230px';};
+</script>
+
+
+
+
+
+
+
+
+
+</header>
+<div id="map"></div>
+<div id="corredor-img" style="background-image:url('URL_DA_IMAGEM_DO_CORREDOR_AQUI');"></div>
+<div id="controls">
+  <div class="btn-container">
+    <button id="startBtn" class="btn">Iniciar</button>
+    <button id="historyBtn" class="btn">Histórico</button>
+  </div>
+  <button id="stopBtn" class="btn">Finalizar</button>
+  <div id="info">
+    <span id="timer">00:00:00</span> |
+    <span id="distance">0 m</span> |
+    <span id="city">Cidade: --</span> |
+    <span id="temp">Temp: --°C</span> |
+    <span id="today">Data: --/--/----</span>
+  </div>
+</div>
+<div id="overlay">
+  <h2 id="overlayText"></h2>
+  <div id="overlayDetails" style="margin-top:10px;font-size:15px;"></div>
+  <button id="overlayBtn">OK</button>
+</div>
+<div id="historyOverlay">
+  <div id="historyContent">
+    <button id="fecharHist">X</button>
+    <h3 style="margin-top:25px;">Consultar Histórico</h3>
+    <input type="number" id="mes" placeholder="Mês (1-12)">
+    <input type="number" id="ano" placeholder="Ano (ex: 2025)">
+    <button id="consultarBtn">Constar</button>
+    <div id="historyList" style="margin-top:15px;"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomain:"prefeitura-de-joao-camara.firebaseapp.com",projectId:"prefeitura-de-joao-camara",storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",messagingSenderId:"269299041577",appId:"1:269299041577:web:fd41b2939240e9eb476338",measurementId:"G-YT7NHR342J"};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+const userId=localStorage.getItem('loggedUser');
+let map,marker,pathLine,watchId,startTime,timerInterval,lastPos,totalDistance=0;
+function initUser(){
+  db.ref('users/'+userId).get().then(s=>{
+    if(s.exists()){
+      const u=s.val();
+      document.getElementById('userName').textContent=u.name||'Nome não cadastrado';
+      document.getElementById('userNA').textContent='NA: '+userId;
+    }
+  });
+}
+function formatTime(ms){
+  const totalSec=Math.floor(ms/1000);
+  const h=String(Math.floor(totalSec/3600)).padStart(2,'0');
+  const m=String(Math.floor((totalSec%3600)/60)).padStart(2,'0');
+  const s=String(totalSec%60).padStart(2,'0');
+  return `${h}:${m}:${s}`;
+}
+function formatDate(d){
+  const dt=new Date(d);
+  return `${String(dt.getDate()).padStart(2,'0')}/${String(dt.getMonth()+1).padStart(2,'0')}/${dt.getFullYear()}`;
+}
+function showOverlay(text,cb,details=''){
+  const ov=document.getElementById('overlay');
+  document.getElementById('overlayText').textContent=text;
+  document.getElementById('overlayDetails').innerHTML=details;
+  ov.style.display='flex';
+  document.getElementById('overlayBtn').onclick=()=>{ov.style.display='none';cb&&cb();}
+}
+function updateCityAndTemp(lat,lng){
+  fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
+  .then(r=>r.json()).then(d=>{
+    document.getElementById('city').textContent='Cidade: '+(d.address.city||d.address.town||d.address.village||'--');
+  });
+  fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true`)
+  .then(r=>r.json()).then(d=>{
+    document.getElementById('temp').textContent='Temp: '+(d.current_weather?.temperature||'--')+'°C';
+  });
+}
+function haversine(lat1,lon1,lat2,lon2){
+  const R=6371000;
+  const toRad=x=>x*Math.PI/180;
+  const dLat=toRad(lat2-lat1);
+  const dLon=toRad(lon2-lon1);
+  const a=Math.sin(dLat/2)**2+Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+  const c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  return R*c;
+}
+function initMap(){
+  map=L.map('map',{zoomControl:false}).setView([-5.535,-35.26],15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
+}
+function startTracking(){
+  startTime=Date.now();
+  totalDistance=0;lastPos=null;
+  pathLine=L.polyline([], {color:'lime',weight:5}).addTo(map);
+  document.getElementById('today').textContent='Data: '+formatDate(new Date());
+  timerInterval=setInterval(()=>{document.getElementById('timer').textContent=formatTime(Date.now()-startTime);},1000);
+  watchId=navigator.geolocation.watchPosition(pos=>{
+    const {latitude,longitude,accuracy}=pos.coords;
+    if(accuracy>15)return;
+    const latlng=[latitude,longitude];
+    if(!marker){
+      marker=L.marker(latlng).addTo(map);
+      map.setView(latlng,17);
+      updateCityAndTemp(latitude,longitude);
+    }else marker.setLatLng(latlng);
+    pathLine.addLatLng(latlng);
+    if(lastPos){
+      const dist=haversine(lastPos[0],lastPos[1],latitude,longitude);
+      if(dist>2){totalDistance+=dist;}
+      let d=totalDistance;
+      document.getElementById('distance').textContent=d<1000?`${d.toFixed(1)} m`:`${(d/1000).toFixed(2)} km`;
+    }
+    lastPos=[latitude,longitude];
+    updateCityAndTemp(latitude,longitude);
+  },()=>alert('Erro ao obter localização'),{enableHighAccuracy:true,maximumAge:0,timeout:5000});
+}
+function stopTracking(){
+  if(watchId)navigator.geolocation.clearWatch(watchId);
+  clearInterval(timerInterval);
+  const elapsed=Date.now()-startTime;
+  const now=new Date();
+  const dataObj={
+    tempo:formatTime(elapsed),
+    distancia:totalDistance,
+    dataCompleta:now.toISOString(),
+    dataFormatada:formatDate(now)
+  };
+  const ref=db.ref('historico/'+userId).push(dataObj);
+  showOverlay('Corrida finalizada!',null,`<p>Data: ${dataObj.dataFormatada}</p><p>Tempo: ${dataObj.tempo}</p><p>Distância: ${(totalDistance<1000?totalDistance.toFixed(1)+' m':(totalDistance/1000).toFixed(2)+' km')}</p>`);
+}
+function carregarHistorico(mes,ano){
+  const list=document.getElementById('historyList');
+  db.ref('historico/'+userId).on('value',s=>{
+    list.innerHTML='';
+    if(!s.exists()){list.innerHTML='<p>Nenhum histórico encontrado.</p>';return;}
+    const items=[];
+    s.forEach(i=>items.push({id:i.key,...i.val()}));
+    const filtrados=items.filter(v=>{
+      const d=new Date(v.dataCompleta);
+      return d.getMonth()+1===mes && d.getFullYear()===ano;
+    });
+    if(!filtrados.length){list.innerHTML='<p>Sem corridas neste período.</p>';return;}
+    filtrados.forEach(v=>{
+      const distText=v.distancia<1000?v.distancia.toFixed(1)+' m':(v.distancia/1000).toFixed(2)+' km';
+      const div=document.createElement('div');
+      div.className='history-line';
+      div.innerHTML=`<b>${v.dataFormatada}</b><br>Tempo: ${v.tempo}<br>Distância: ${distText}`;
+      const del=document.createElement('div');
+      del.className='delete-icon';
+      del.style.backgroundImage="url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4pZIq1lOpg2ME94NoNP3c7HhQZS50p_QRsbRsIpNCPQ&s=10')";
+      del.onclick=()=>{db.ref('historico/'+userId+'/'+v.id).remove();div.remove();};
+      div.appendChild(del);
+      list.appendChild(div);
+    });
+  });
+}
+document.getElementById('startBtn').onclick=()=>{
+  showOverlay('Confirma iniciar agora?',()=>{
+    document.getElementById('startBtn').style.display='none';
+    document.getElementById('historyBtn').style.display='none';
+    document.getElementById('stopBtn').style.display='block';
+    startTracking();
+  });
+};
+document.getElementById('stopBtn').onclick=()=>{
+  showOverlay('Deseja finalizar?',()=>{
+    stopTracking();
+    document.getElementById('stopBtn').style.display='none';
+    document.getElementById('startBtn').style.display='block';
+    document.getElementById('historyBtn').style.display='block';
+  });
+};
+document.getElementById('historyBtn').onclick=()=>{document.getElementById('historyOverlay').style.display='flex';};
+document.getElementById('fecharHist').onclick=()=>{document.getElementById('historyOverlay').style.display='none';};
+document.getElementById('consultarBtn').onclick=()=>{
+  const mes=parseInt(document.getElementById('mes').value);
+  const ano=parseInt(document.getElementById('ano').value);
+  if(!mes||!ano)return alert('Informe mês e ano.');
+  carregarHistorico(mes,ano);
+};
+window.onload=()=>{
+  initMap();initUser();
+  navigator.geolocation.getCurrentPosition(()=>{},()=>alert('Permita o acesso à localização.'));
+};
+</script>
+</body>
+</html>
