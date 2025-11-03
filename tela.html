@@ -1,828 +1,99 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-
+<meta charset="UTF-8">
 <title>Caixa - Sistema de Loja</title>
 <style>
-:root{
-  --white:#ffffff;
-  --black:#000000;
-  --yellow:#ffd500;
-  --gray:#f7f7f7;
-  --border:#e0e0e0;
-  --transparent-border: rgba(0,0,0,0.12);
-}
-*{box-sizing:border-box;margin:0;padding:0;font-family:Inter, Poppins, sans-serif}
-body{background:var(--gray);color:var(--black);-webkit-font-smoothing:antialiased;min-height:100vh}
-header{
-  position:fixed;top:0;left:0;width:100%;background:var(--white);
-  box-shadow:0 2px 8px rgba(0,0,0,0.08);display:flex;align-items:center;
-  justify-content:space-between;padding:12px 22px;z-index:120
-}
-header img{height:44px;object-fit:contain}
-.header-right{display:flex;gap:10px;align-items:center}
-header .saldo{font-weight:700;font-size:1rem}
-button{background:var(--yellow);border:none;padding:9px 14px;border-radius:8px;cursor:pointer;font-weight:600}
-button.ghost{background:transparent;border:1px solid var(--border);padding:8px 10px}
-button:hover{opacity:.95}
+:root{--white:#fff;--black:#000;--yellow:#ffd500;--gray:#f7f7f7;--border:#e0e0e0}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+body{background:var(--gray);color:var(--black)}
+header{position:fixed;top:0;left:0;width:100%;background:var(--white);box-shadow:0 2px 8px rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:space-between;padding:12px 22px;z-index:20}
+header img{height:44px}
+header .botoes-topo{display:flex;gap:10px;align-items:center}
+header .saldo{font-weight:600;font-size:1rem}
 main{margin-top:92px;padding:18px}
-.search-bar{
-  background:var(--white);padding:12px;border-radius:10px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;gap:10px;align-items:center;
-  flex-wrap:wrap;
-}
-.search-bar input{flex:1;padding:10px;border:1px solid var(--border);border-radius:8px;min-width:180px}
-.produtos{
-  margin-top:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;
-}
-.produto{
-  background:var(--white);padding:14px;border-radius:12px;border:1px solid var(--border);
-  display:flex;flex-direction:column;justify-content:space-between;min-height:120px;box-shadow:0 3px 10px rgba(0,0,0,0.03)
-}
+.search-bar{background:var(--white);padding:12px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;gap:10px;align-items:center}
+.search-bar input{flex:1;padding:10px;border:1px solid var(--border);border-radius:8px}
+button{background:var(--yellow);border:none;padding:9px 14px;border-radius:8px;cursor:pointer;font-weight:600}
+button:hover{opacity:.95}
+.produtos{margin-top:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.produto{background:var(--white);padding:14px;border-radius:12px;border:1px solid var(--border);display:flex;flex-direction:column;justify-content:space-between;min-height:120px;box-shadow:0 3px 10px rgba(0,0,0,0.03)}
 .produto h3{font-size:1rem;margin-bottom:4px}
 .produto small{color:#666}
 .produto .precos{border-top:1px solid var(--border);margin-top:10px;padding-top:10px;display:flex;flex-direction:column;gap:6px}
 .produto .preco-line{display:flex;justify-content:space-between;align-items:center;padding:6px;border-radius:8px;background:#fbfbfb;border:1px solid #f0f0f0}
-.produto .acao{margin-top:10px;align-self:stretch}
-.cart-btn{
-  position:fixed;right:22px;bottom:22px;background:#111;color:#fff;padding:14px;border-radius:12px;
-  display:flex;align-items:center;gap:8px;z-index:130;border:none;box-shadow:0 10px 30px rgba(0,0,0,0.18)
-}
-.cart-count{background:#fff;color:#111;padding:4px 8px;border-radius:999px;font-weight:700}
-.cart-panel{
-  position:fixed;right:22px;bottom:82px;width:360px;max-width:92vw;background:var(--white);
-  border-radius:12px;padding:14px;box-shadow:0 12px 40px rgba(0,0,0,0.18);z-index:130;border:1px solid var(--transparent-border);
-  display:flex;flex-direction:column;gap:10px;transition:transform .18s ease,opacity .18s ease;
-}
-.cart-header{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.cart-items{max-height:46vh;overflow:auto;padding-right:6px}
-.cart-item{display:flex;justify-content:space-between;gap:8px;padding:10px;border-radius:8px;border:1px dashed rgba(0,0,0,0.06);background:#fafafa;margin-bottom:8px}
-.cart-item .meta{flex:1}
-.cart-item .meta strong{display:block}
-.cart-actions{display:flex;gap:8px;justify-content:space-between;align-items:center}
-.small-muted{font-size:.85rem;color:#666}
-
-.modal{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;justify-content:center;align-items:center;z-index:140}
-.modal-content{background:var(--white);width:92%;max-width:540px;padding:18px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.18);position:relative}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;justify-content:center;align-items:center;z-index:40}
+.modal-content{background:var(--white);width:92%;max-width:440px;padding:18px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.18);position:relative}
 .modal-content h2{text-align:center;margin-bottom:12px;font-size:1.05rem}
-.modal-content input, .modal-content select{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;margin-bottom:10px}
+.modal-content input{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;margin-bottom:10px}
 .modal-content .close{position:absolute;right:12px;top:10px;font-size:20px;cursor:pointer;color:#444}
+.modal-precos{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.modal-precos .box{border:1px solid var(--border);padding:10px;border-radius:8px;background:#fbfbfb;display:flex;justify-content:space-between;align-items:center}
+.venda-item{background:#fafafa;border:1px solid #eee;padding:10px;border-radius:8px;margin-bottom:8px}
 .info-empty{text-align:center;color:#777;padding:25px;background:var(--white);border-radius:10px;border:1px dashed #eee;margin-top:16px}
-
-/* Cupom layout (print) - black & white, dotted border, responsive to paper */
-.cupom-wrap{
-width:100%;max-width:800px;margin:0 auto;padding:18px;background:#fff;color:#000;
-border:4px dotted rgba(0,0,0,0.12);box-sizing:border-box;
-position:relative;
-/* subtle anti-fraud lines (transparent) */
-background-image:
-linear-gradient(180deg, rgba(0,0,0,0.02) 1px, transparent 1px);
-background-size: 100% 14px;
-background-repeat:repeat-y;
-}
-
-/* Cupom inner styles */
-.cupom-head{text-align:center;margin-bottom:8px}
-.cupom-head h1{font-size:18px;margin-bottom:4px}
-.cupom-meta{font-size:12px;color:#111;margin-bottom:10px}
-.cupom-items{width:100%;border-top:1px dashed rgba(0,0,0,0.12);border-bottom:1px dashed rgba(0,0,0,0.12);margin:8px 0;padding:8px 0}
-.cupom-item{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
-.cupom-total{display:flex;justify-content:space-between;font-weight:800;font-size:1.05rem;margin-top:8px}
-.cupom-footer{text-align:center;margin-top:12px;font-size:11px;color:#111;opacity:.9;border-top:1px dashed rgba(0,0,0,0.08);padding-top:10px}
-.cnpj{font-weight:700;}
-
-/* Responsive print adjustments so it adapts to paper size */
+#carrinhoBtn{position:fixed;bottom:20px;right:20px;background:var(--black);color:#fff;border:none;padding:12px 20px;border-radius:50px;cursor:pointer;font-weight:700;z-index:100}
+#carrinhoQtd{background:red;color:#fff;border-radius:50%;padding:2px 7px;margin-left:6px;font-size:.8rem}
+#carrinhoModal .itens{max-height:50vh;overflow:auto;margin-top:10px}
+#cupomFiscal{display:none}
 @media print{
-body{background:#fff}
-header, .cart-btn, .cart-panel, .modal, .search-bar, .produtos, .botoes-topo, #cadastroProdutoBtn{display:none !important}
-.cupom-wrap{border-style:dotted;box-shadow:none;max-width:100%;margin:0;padding:10mm}
-.cupom-meta, .cupom-footer{font-size:10px}
-.no-print{display:none}
+body *{visibility:hidden}
+#cupomFiscal,#cupomFiscal *{visibility:visible}
+#cupomFiscal{position:absolute;left:0;top:0;width:100%}
 }
-
-/* Adjust when cart minimized */
-.cart-panel.minimized{transform:translateY(8px) scale(.98);opacity:.96;max-height:48px;overflow:hidden}
-.cart-minimize{background:transparent;border:1px dashed var(--transparent-border);padding:6px 8px;border-radius:6px}
-
-/* small screens */
-@media(max-width:520px){
-.cart-panel{right:12px;left:12px;width:auto;bottom:80px}
-}
-
-/* dotted adaptable border when printing on different paper sizes: use padding in mm */
-.cupom-wrap.adaptable{padding:10mm 8mm} </style>
-
+#cupomFiscal{background:#fff;color:#000;border:1px dotted rgba(0,0,0,0.3);padding:20px;width:100%;max-width:400px;margin:auto}
+#cupomFiscal h2{text-align:center;border-bottom:1px dotted rgba(0,0,0,0.4);padding-bottom:8px;margin-bottom:8px}
+#cupomFiscal table{width:100%;border-collapse:collapse;margin-bottom:10px}
+#cupomFiscal td{padding:4px 0;border-bottom:1px dotted rgba(0,0,0,0.2)}
+#cupomFiscal .rodape{text-align:center;border-top:1px dotted rgba(0,0,0,0.4);padding-top:8px;font-size:.9rem}
+</style>
 </head>
 <body>
-
 <header>
-  <img id="logoImg" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhjzHjhTIyqYoSZG8vev_6LnCfbU-ZtiuhmnwF4mg4tIpnRPqwGAJBeOLqDvNfjG1kr7f-XoHQAH6RuJZtIIZcYRud3Mj7MPslOGrhf9BVhGEpXH0JosziwhF2bEx6OLz6-6MI6IfuzyDOKuh_O_iDeGrz0pGc_UFZaXIB4Er6_wuzA1I8YFtgnfXgmjTg/s665/C7D9E909-0047-48E4-AC64-B95B76114751.jpeg" alt="Logo">
-  <div class="header-right">
-    <span class="saldo">Saldo: R$ <span id="saldoValor">0.00</span></span>
-    <button id="editarVendasBtn" class="ghost">Editar</button>
-    <button id="finalizarDiaBtn" class="ghost">Finalizar Dia</button>
-  </div>
+<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhjzHjhTIyqYoSZG8vev_6LnCfbU-ZtiuhmnwF4mg4tIpnRPqwGAJBeOLqDvNfjG1kr7f-XoHQAH6RuJZtIIZcYRud3Mj7MPslOGrhf9BVhGEpXH0JosziwhF2bEx6OLz6-6MI6IfuzyDOKuh_O_iDeGrz0pGc_UFZaXIB4Er6_wuzA1I8YFtgnfXgmjTg/s665/C7D9E909-0047-48E4-AC64-B95B76114751.jpeg">
+<div class="botoes-topo">
+<span class="saldo">Saldo: R$ <span id="saldoValor">0.00</span></span>
+<button id="editarVendasBtn">Editar</button>
+<button id="finalizarDiaBtn">Finalizar Dia</button>
+</div>
 </header>
-
 <main>
-  <div class="search-bar">
-    <input id="searchInput" placeholder="Pesquisar por nome ou marca...">
-    <button id="cadastroProdutoBtn" class="ghost">Cadastrar Produto</button>
-    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
-      <label class="small-muted">Aviso no cartão</label>
-      <input id="avisoCartaoCheckbox" type="checkbox" title="Marque se deseja ativar aviso no cartão para vendas no cartão">
-    </div>
-  </div>
-
-  <div id="listaProdutos" class="produtos"></div>
+<div class="search-bar">
+<input id="searchInput" placeholder="Pesquisar por nome ou marca...">
+<button id="cadastroProdutoBtn">Cadastrar Produto</button>
+</div>
+<div id="listaProdutos" class="produtos"></div>
 </main>
-
-<!-- Cart floating button -->
-
-<button id="cartBtn" class="cart-btn" title="Abrir carrinho">
-  <span style="font-weight:700">Carrinho</span>
-  <span class="cart-count" id="cartCount">0</span>
-</button>
-
-<!-- Cart panel -->
-
-<div id="cartPanel" class="cart-panel" style="display:none" aria-hidden="true">
-  <div class="cart-header">
-    <div><strong>Carrinho</strong><div class="small-muted" id="cartQtyInfo">0 itens</div></div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <button id="minimizeCartBtn" class="cart-minimize" title="Minimizar">_</button>
-      <button id="clearCartBtn" class="ghost">Cancelar venda</button>
-    </div>
-  </div>
-  <div class="cart-items" id="cartItems"></div>
-  <div class="cart-actions">
-    <div>
-      <div class="small-muted">Total</div>
-      <div style="font-weight:800;font-size:1.1rem">R$ <span id="cartTotal">0.00</span></div>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button id="finalizarVendaBtn">Finalizar Venda</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Cadastro -->
-
-<div id="modalCadastro" class="modal" aria-hidden="true">
-  <div class="modal-content" role="dialog" aria-modal="true">
-    <span id="closeCadastro" class="close">&times;</span>
-    <h2>Cadastrar Produto</h2>
-    <input id="nomeProduto" placeholder="Nome do Produto" />
-    <input id="marcaProduto" placeholder="Marca (opcional)" />
-    <input id="precoAvista" type="number" step="0.01" placeholder="Preço à vista (ex: 10.00)" />
-    <input id="precoCartao" type="number" step="0.01" placeholder="Preço no cartão (ex: 12.00)" />
-    <button id="salvarProduto">Salvar Produto</button>
-  </div>
-</div>
-
-<!-- Modal Vendas Realizadas (Editar) -->
-
-<div id="modalEditar" class="modal" aria-hidden="true">
-  <div class="modal-content" role="dialog" aria-modal="true">
-    <span id="closeEditar" class="close">&times;</span>
-    <h2>Vendas Realizadas</h2>
-    <div id="listaVendas" style="margin-top:12px;max-height:60vh;overflow:auto"></div>
-    <div style="margin-top:12px;text-align:center">
-      <button id="fecharEditar">Fechar</button>
-    </div>
-  </div>
-</div>
-
-<!-- Printer detection modal (best-effort) -->
-
-<div id="modalPrinters" class="modal" aria-hidden="true">
-  <div class="modal-content" role="dialog" aria-modal="true">
-    <span id="closePrinters" class="close">&times;</span>
-    <h2>Impressoras Detectadas (melhor esforço)</h2>
-    <div id="printersList" style="margin-top:12px;max-height:50vh;overflow:auto"></div>
-    <div style="margin-top:12px;text-align:center">
-      <button id="usarImpressoraSelecionada">Usar Impressora Selecionada</button>
-    </div>
-  </div>
-</div>
-
-<!-- Hidden iframe for printing without navigating away -->
-
-<iframe id="printFrame" style="display:none;width:0;height:0;border:0"></iframe>
-
-<!-- Firebase (compat libs) -->
-
+<button id="carrinhoBtn">Carrinho <span id="carrinhoQtd">0</span></button>
+<div id="modalCadastro" class="modal"><div class="modal-content"><span id="closeCadastro" class="close">&times;</span><h2>Cadastrar Produto</h2><input id="nomeProduto" placeholder="Nome do Produto"><input id="marcaProduto" placeholder="Marca (opcional)"><input id="precoAvista" type="number" step="0.01" placeholder="Preço à vista"><input id="precoCartao" type="number" step="0.01" placeholder="Preço no cartão"><button id="salvarProduto">Salvar Produto</button></div></div>
+<div id="modalEditar" class="modal"><div class="modal-content"><span id="closeEditar" class="close">&times;</span><h2>Vendas Realizadas</h2><div id="listaVendas" style="margin-top:12px;max-height:60vh;overflow:auto"></div><div style="margin-top:12px;text-align:center"><button id="fecharEditar">Fechar</button></div></div></div>
+<div id="carrinhoModal" class="modal"><div class="modal-content"><span id="closeCarrinho" class="close">&times;</span><h2>Carrinho</h2><div class="itens" id="carrinhoItens"></div><div style="margin-top:10px;text-align:center"><strong>Total: R$ <span id="carrinhoTotal">0.00</span></strong></div><div style="margin-top:14px;display:flex;gap:10px;justify-content:center"><button id="finalizarVendaBtn">Finalizar</button><button id="cancelarVendaBtn">Cancelar</button></div></div></div>
+<div id="cupomFiscal"></div>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
 <script>
-/* CONFIG FIREBASE - mantenha como fornecido */
-const firebaseConfig = {
-  apiKey: "AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",
-  authDomain: "login-you-see.firebaseapp.com",
-  databaseURL: "https://login-you-see-default-rtdb.firebaseio.com",
-  projectId: "login-you-see",
-  storageBucket: "login-you-see.firebasestorage.app",
-  messagingSenderId: "524877259374",
-  appId: "1:524877259374:web:9ff66b67c9c5bf0bb07c7f",
-  measurementId: "G-K7E00VXYHG"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-/* ELEMENTOS */
-const saldoValorEl = document.getElementById('saldoValor');
-const listaProdutosEl = document.getElementById('listaProdutos');
-const listaVendasEl = document.getElementById('listaVendas');
-
-const modalCadastro = document.getElementById('modalCadastro');
-const modalPrinters = document.getElementById('modalPrinters');
-const modalEditar = document.getElementById('modalEditar');
-
-const nomeProdutoInput = document.getElementById('nomeProduto');
-const marcaProdutoInput = document.getElementById('marcaProduto');
-const precoAvistaInput = document.getElementById('precoAvista');
-const precoCartaoInput = document.getElementById('precoCartao');
-
-const cartBtn = document.getElementById('cartBtn');
-const cartPanel = document.getElementById('cartPanel');
-const cartCountEl = document.getElementById('cartCount');
-const cartItemsEl = document.getElementById('cartItems');
-const cartTotalEl = document.getElementById('cartTotal');
-const cartQtyInfoEl = document.getElementById('cartQtyInfo');
-
-const avisoCartaoCheckbox = document.getElementById('avisoCartaoCheckbox');
-
-const printersListEl = document.getElementById('printersList');
-const printFrame = document.getElementById('printFrame');
-
-let produtoAtual = null; // product used for single sale modal (kept for compatibility)
-let CART = []; // [{id, nome, avista, cartao, qty}]
-let printersDetected = []; // best-effort list
-
-/* UTILITÁRIOS */
-function showModal(modal){ modal.style.display = 'flex'; modal.setAttribute('aria-hidden','false'); }
-function hideModal(modal){ modal.style.display = 'none'; modal.setAttribute('aria-hidden','true'); }
-
-/* SALDO EM TEMPO REAL */
-db.ref('saldo').on('value', snap => {
-  const v = Number(snap.val() || 0);
-  saldoValorEl.textContent = v.toFixed(2);
-});
-
-/* CARREGA PRODUTOS */
-function carregarProdutos(){
-  db.ref('produtos').on('value', snap => {
-    listaProdutosEl.innerHTML = '';
-    if(!snap.exists()){
-      listaProdutosEl.innerHTML = '<div class="info-empty">Nenhum produto cadastrado.</div>';
-      return;
-    }
-    snap.forEach(child => {
-      const p = child.val() || {};
-      const id = child.key;
-      const nome = (p.nome || '').toString();
-      const marca = (p.marca || '').toString();
-      const avista = Number(p.avista || 0);
-      const cartao = Number(p.cartao || 0);
-      const card = document.createElement('div');
-      card.className = 'produto';
-      card.innerHTML = `
-        <div>
-          <h3>${escapeHtml(nome)}</h3>
-          <small>${escapeHtml(marca)}</small>
-          <div class="precos">
-            <div class="preco-line"><span>À vista</span><strong>R$ ${avista.toFixed(2)}</strong></div>
-            <div class="preco-line"><span>Cartão</span><strong>R$ ${cartao.toFixed(2)}</strong></div>
-          </div>
-        </div>
-        <div class="acao">
-          <button type="button" data-id="${id}" data-nome="${escapeAttr(nome)}" data-avista="${avista}" data-cartao="${cartao}">Vender</button>
-          <button type="button" data-id-add="${id}" data-nome-add="${escapeAttr(nome)}" data-avista-add="${avista}" data-cartao-add="${cartao}" style="margin-top:8px" class="ghost">Adicionar ao carrinho</button>
-        </div>
-      `;
-      listaProdutosEl.appendChild(card);
-    });
-  });
-}
+const firebaseConfig={apiKey:"AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",authDomain:"login-you-see.firebaseapp.com",databaseURL:"https://login-you-see-default-rtdb.firebaseio.com",projectId:"login-you-see",storageBucket:"login-you-see.firebasestorage.app",messagingSenderId:"524877259374",appId:"1:524877259374:web:9ff66b67c9c5bf0bb07c7f",measurementId:"G-K7E00VXYHG"};firebase.initializeApp(firebaseConfig);const db=firebase.database();const saldoValorEl=document.getElementById('saldoValor'),listaProdutosEl=document.getElementById('listaProdutos'),listaVendasEl=document.getElementById('listaVendas');const modalCadastro=document.getElementById('modalCadastro'),modalEditar=document.getElementById('modalEditar');const carrinhoBtn=document.getElementById('carrinhoBtn'),carrinhoModal=document.getElementById('carrinhoModal'),carrinhoItens=document.getElementById('carrinhoItens'),carrinhoQtd=document.getElementById('carrinhoQtd'),carrinhoTotal=document.getElementById('carrinhoTotal');let carrinho=[];
+function showModal(m){m.style.display='flex'}
+function hideModal(m){m.style.display='none'}
+db.ref('saldo').on('value',s=>{saldoValorEl.textContent=Number(s.val()||0).toFixed(2)});
+function carregarProdutos(){db.ref('produtos').on('value',snap=>{listaProdutosEl.innerHTML='';if(!snap.exists()){listaProdutosEl.innerHTML='<div class="info-empty">Nenhum produto cadastrado.</div>';return;}snap.forEach(ch=>{const p=ch.val(),id=ch.key;const card=document.createElement('div');card.className='produto';card.innerHTML=`<div><h3>${p.nome}</h3><small>${p.marca||''}</small><div class="precos"><div class="preco-line"><span>À vista</span><strong>R$ ${Number(p.avista).toFixed(2)}</strong></div><div class="preco-line"><span>Cartão</span><strong>R$ ${Number(p.cartao).toFixed(2)}</strong></div></div></div><div class="acao"><button onclick="adicionarCarrinho('${id}','${p.nome}',${p.avista},${p.cartao})">Adicionar</button></div>`;listaProdutosEl.appendChild(card);});});}
 carregarProdutos();
-
-/* PESQUISA (em tempo real) */
-document.getElementById('searchInput').addEventListener('input', e=>{
-  const termo = e.target.value.trim().toLowerCase();
-  document.querySelectorAll('.produto').forEach(card => {
-    const nome = (card.querySelector('h3')?.textContent || '').toLowerCase();
-    const marca = (card.querySelector('small')?.textContent || '').toLowerCase();
-    card.style.display = (nome.includes(termo) || marca.includes(termo)) ? 'flex' : 'none';
-  });
-});
-
-/* ABRIR/FECHAR MODAIS */
-document.getElementById('cadastroProdutoBtn').addEventListener('click', ()=>{ resetCadastroForm(); showModal(modalCadastro); });
-document.getElementById('closeCadastro').addEventListener('click', ()=> hideModal(modalCadastro));
-document.getElementById('closeEditar').addEventListener('click', ()=> hideModal(modalEditar));
-document.getElementById('fecharEditar').addEventListener('click', ()=> hideModal(modalEditar));
-document.getElementById('closePrinters').addEventListener('click', ()=> hideModal(modalPrinters));
-
-window.addEventListener('click', (e)=>{
-  if(e.target === modalCadastro) hideModal(modalCadastro);
-  if(e.target === modalEditar) hideModal(modalEditar);
-  if(e.target === modalPrinters) hideModal(modalPrinters);
-});
-
-/* ESCAPE helpers to avoid injection */
-function escapeHtml(s){ return String(s).replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];}); }
-function escapeAttr(s){ return String(s).replace(/"/g,'&quot;'); }
-
-/* SALVAR PRODUTO */
-document.getElementById('salvarProduto').addEventListener('click', async ()=>{
-  const nome = nomeProdutoInput.value.trim();
-  const marca = marcaProdutoInput.value.trim();
-  const avista = parseFloat(precoAvistaInput.value);
-  const cartao = parseFloat(precoCartaoInput.value);
-
-  if(!nome){
-    alert('Preencha o nome do produto.');
-    return;
-  }
-  if(isNaN(avista) || isNaN(cartao)){
-    alert('Preencha preços válidos.');
-    return;
-  }
-
-  try{
-    const newRef = db.ref('produtos').push();
-    await newRef.set({
-      nome,
-      marca: marca || '',
-      avista: Number(avista),
-      cartao: Number(cartao)
-    });
-    resetCadastroForm();
-    hideModal(modalCadastro);
-  }catch(err){
-    console.error('Erro ao cadastrar produto:', err);
-    alert('Erro ao cadastrar produto. Verifique console.');
-  }
-});
-
-function resetCadastroForm(){
-  nomeProdutoInput.value = '';
-  marcaProdutoInput.value = '';
-  precoAvistaInput.value = '';
-  precoCartaoInput.value = '';
-}
-
-/* EVENTO DINÂMICO: abrir modal venda ao clicar no botão "Vender" dentro do card */
-listaProdutosEl.addEventListener('click', (e)=>{
-  const sellBtn = e.target.closest('button[data-id]');
-  if(sellBtn){
-    const id = sellBtn.getAttribute('data-id');
-    const nome = sellBtn.getAttribute('data-nome') || '';
-    const avista = Number(sellBtn.getAttribute('data-avista') || 0);
-    const cartao = Number(sellBtn.getAttribute('data-cartao') || 0);
-    // abrir modal simples de venda de 1 item: vamos adicionar ao carrinho 1x e abrir carrinho
-    addToCart({id, nome, avista, cartao}, 1);
-    openCart();
-    return;
-  }
-  const addBtn = e.target.closest('button[data-id-add]');
-  if(addBtn){
-    const id = addBtn.getAttribute('data-id-add');
-    const nome = addBtn.getAttribute('data-nome-add') || '';
-    const avista = Number(addBtn.getAttribute('data-avista-add') || 0);
-    const cartao = Number(addBtn.getAttribute('data-cartao-add') || 0);
-    addToCart({id, nome, avista, cartao}, 1);
-    openCart();
-    return;
-  }
-});
-
-/* CART MANAGEMENT */
-function findCartItem(id){
-  return CART.find(it => it.id === id);
-}
-function addToCart(product, qty=1){
-  const existing = findCartItem(product.id);
-  if(existing){
-    existing.qty += qty;
-  } else {
-    CART.push({ id: product.id, nome: product.nome, avista: Number(product.avista), cartao: Number(product.cartao), qty: qty });
-  }
-  renderCart();
-}
-function removeFromCart(id){
-  CART = CART.filter(it => it.id !== id);
-  renderCart();
-}
-function changeQty(id, newQty){
-  if(newQty <= 0){ removeFromCart(id); return; }
-  const it = findCartItem(id);
-  if(it) it.qty = newQty;
-  renderCart();
-}
-function clearCart(){
-  CART = [];
-  renderCart();
-}
-function cartTotals(){
-  let total = 0, items=0;
-  for(const it of CART){ total += (it.avista * it.qty); items += it.qty; }
-  return { total: Number(total.toFixed(2)), items };
-}
-function renderCart(){
-  cartItemsEl.innerHTML = '';
-  if(CART.length === 0){
-    cartItemsEl.innerHTML = '<div class="info-empty">Carrinho vazio.</div>';
-  } else {
-    CART.forEach(it => {
-      const div = document.createElement('div');
-      div.className = 'cart-item';
-      div.innerHTML = `
-        <div class="meta">
-          <strong>${escapeHtml(it.nome)}</strong>
-          <div class="small-muted">R$ ${Number(it.avista).toFixed(2)} (à vista) • R$ ${Number(it.cartao).toFixed(2)} (cartão)</div>
-          <div style="margin-top:6px"><label>Qtd: <input type="number" min="1" value="${it.qty}" data-qty-for="${it.id}" style="width:70px;padding:6px;border:1px solid var(--border);border-radius:6px"></label></div>
-        </div>
-        <div style="display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end">
-          <div>R$ ${(it.avista * it.qty).toFixed(2)}</div>
-          <div><button data-remove="${it.id}" class="ghost">X</button></div>
-        </div>
-      `;
-      cartItemsEl.appendChild(div);
-    });
-  }
-  const totals = cartTotals();
-  cartCountEl.textContent = totals.items;
-  cartTotalEl.textContent = totals.total.toFixed(2);
-  cartQtyInfoEl.textContent = `${totals.items} item${totals.items !== 1 ? 's' : ''}`;
-}
-
-/* Cart UI toggles */
-function openCart(){ cartPanel.style.display = 'flex'; cartPanel.classList.remove('minimized'); cartPanel.setAttribute('aria-hidden','false'); }
-function closeCart(){ cartPanel.style.display = 'none'; cartPanel.setAttribute('aria-hidden','true'); }
-
-/* Cart event delegations */
-cartBtn.addEventListener('click', ()=> {
-  if(cartPanel.style.display === 'none' || cartPanel.style.display === '') openCart();
-  else closeCart();
-});
-document.getElementById('minimizeCartBtn').addEventListener('click', ()=> {
-  cartPanel.classList.toggle('minimized');
-});
-document.getElementById('clearCartBtn').addEventListener('click', ()=>{
-  if(!confirm('Cancelar a venda atual? Isso removerá todos os itens do carrinho.')) return;
-  clearCart();
-});
-cartItemsEl.addEventListener('input', (e)=>{
-  const input = e.target.closest('input[data-qty-for]');
-  if(!input) return;
-  const id = input.getAttribute('data-qty-for');
-  const v = parseInt(input.value) || 1;
-  changeQty(id, v);
-});
-cartItemsEl.addEventListener('click', (e)=>{
-  const btn = e.target.closest('button[data-remove]');
-  if(!btn) return;
-  const id = btn.getAttribute('data-remove');
-  removeFromCart(id);
-});
-
-/* FINALIZAR VENDA flow:
-   1) click Finalizar Venda
-   2) ask payment type (avista / cartao)
-   3) if cartao and 'aviso no cartão' checked, we show aviso (as requested)
-   4) ask "Deseja imprimir?" -> if sim: detect printers (best-effort), print automatically to print dialog (can't force specific printer reliably), then finalize sale (record in Firebase and update saldo)
-   5) if não: finalize sale (record only) and close cart.
-*/
-
-/* util: generate 18-char alphanumeric ID */
-function genID18(){
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let s='';
-  for(let i=0;i<18;i++) s+=chars.charAt(Math.floor(Math.random()*chars.length));
-  return s;
-}
-
-/* prepare printable cupom HTML */
-function buildCupomHTML({empresaNome, datahora, id, total, itens, formaPagamento}){
-  const cnpj = 'CNPJ: 00.000.000/0000-00'; // placeholder (user can replace with real)
-  // items: [{nome, precoUnit, qty, subtotal}]
-  const itemsHtml = itens.map(it => `
-    <div class="cupom-item">
-      <div style="max-width:70%">${escapeHtml(it.nome)} ${it.qty>1?(' x'+it.qty):''}</div>
-      <div>R$ ${Number(it.subtotal).toFixed(2)}</div>
-    </div>
-  `).join('');
-  const html = `
-  <!doctype html>
-  <html>
-  <head>
-    <meta charset="utf-8"/>
-    <title>Cupom</title>
-    <style>
-      body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:6mm;background:#fff;color:#000}
-      .cupom-wrap{width:100%;max-width:720px;margin:0 auto;padding:8mm;background:#fff;border:4px dotted rgba(0,0,0,0.12);box-sizing:border-box;
-        background-image:linear-gradient(180deg, rgba(0,0,0,0.02) 1px, transparent 1px);background-size:100% 12px}
-      .cupom-head{text-align:center;margin-bottom:6px}
-      .cupom-head h1{font-size:18px;margin:0}
-      .cupom-meta{font-size:12px;margin-top:6px}
-      .cupom-items{margin-top:6px;border-top:1px dashed rgba(0,0,0,0.12);border-bottom:1px dashed rgba(0,0,0,0.12);padding:8px 0}
-      .cupom-item{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
-      .cupom-total{display:flex;justify-content:space-between;font-weight:800;font-size:1.05rem;margin-top:8px}
-      .cupom-footer{text-align:center;margin-top:12px;font-size:11px;color:#111;opacity:.9;border-top:1px dashed rgba(0,0,0,0.08);padding-top:10px}
-      .cnpj{font-weight:700}
-      @media print{
-        body{margin:0;padding:0}
-        .no-print{display:none}
-      }
-    </style>
-
-  </head>
-  <body>
-    <div class="cupom-wrap adaptable">
-      <div class="cupom-head">
-        <h1>${escapeHtml(empresaNome || '')}</h1>
-        <div class="cupom-meta">${escapeHtml(datahora)} • ID: ${escapeHtml(id)}</div>
-        <div class="cupom-meta">Forma: ${escapeHtml(formaPagamento)}</div>
-      </div>
-      <div class="cupom-items">
-        ${itemsHtml}
-      </div>
-      <div class="cupom-total">
-        <div>Total</div><div>R$ ${Number(total).toFixed(2)}</div>
-      </div>
-      <div class="cupom-footer">
-        Obrigado pela compra!<br/>
-        <div class="cnpj">${escapeHtml(cnpj)}</div>
-      </div>
-    </div>
-  </body>
-  </html>
-  `;
-  return html;
-}
-
-/* Attempt to detect printers - best effort using WebUSB to list devices of class 7 (printer)
-Note: browser cannot reliably enumerate system printers; this is a best-effort helper.
-*/
-async function detectPrintersBestEffort(){
-printersDetected = [];
-printersListEl.innerHTML = '<div class="small-muted">Buscando impressoras...</div>';
-// try navigator.usb (may require permissions)
-if(navigator.usb && navigator.usb.getDevices){
-try{
-const devices = await navigator.usb.getDevices();
-const printers = devices.filter(d => d.deviceClass === 7 || d.deviceSubclass === 1 || String(d.productName||'').toLowerCase().includes('printer'));
-if(printers.length){
-printersDetected = printers.map((d,idx)=>({name: d.productName || ('USB ' + (idx+1)), device: d}));
-}
-}catch(err){
-console.debug('WebUSB detect error', err);
-}
-}
-// If none found, try to hint via navigator.mediaDevices (some network printers expose media devices) - very unreliable
-if(printersDetected.length === 0 && navigator.mediaDevices && navigator.mediaDevices.enumerateDevices){
-try{
-const devices = await navigator.mediaDevices.enumerateDevices();
-// filter by label containing printer (only available if user granted)
-const found = devices.filter(d=>String(d.label||'').toLowerCase().includes('printer'));
-if(found.length){
-printersDetected = found.map((d,idx)=>({name: d.label || ('Device ' + (idx+1)), device: d}));
-}
-}catch(err){}
-}
-// populate UI
-if(printersDetected.length === 0){
-printersListEl.innerHTML = '<div class="info-empty">Nenhuma impressora conectada detectada via navegador. O sistema abrirá a caixa de impressão do navegador para você escolher a impressora e imprimir automaticamente.</div>';
-} else {
-printersListEl.innerHTML = '';
-printersDetected.forEach((p, i) => {
-const d = document.createElement('div');
-d.style.padding = '8px';
-d.style.borderBottom = '1px solid #eee';
-d.innerHTML = `<strong>${escapeHtml(String(p.name))}</strong><div class="small-muted">${String(p.device.productName||p.device.label||'Dispositivo USB')}</div><div style="margin-top:6px"><label><input type="radio" name="printerSelect" value="${i}" ${i===0?'checked':''}> Selecionar</label></div>`;
-printersListEl.appendChild(d);
-});
-}
-showModal(modalPrinters);
-}
-
-/* Fire printing into hidden iframe and try to auto-invoke print dialog.
-After printing (or immediately if user cancels), we finalize the sale (record to DB).
-Note: Browsers don't allow truly silent printing to a chosen printer without OS-level permission.
-*/
-function printCupomAndFinalize(htmlContent, vendaObj, finalizeCallback){
-const iframe = printFrame;
-const doc = iframe.contentDocument || iframe.contentWindow.document;
-doc.open();
-doc.write(htmlContent);
-doc.close();
-// Wait a little for rendering
-setTimeout(() => {
-try{
-// focus and print
-iframe.contentWindow.focus();
-// Attempt to call print
-iframe.contentWindow.print();
-// We cannot reliably detect print completion; finalize immediately after calling print()
-}catch(err){
-console.error('Erro ao tentar imprimir:', err);
-} finally {
-// finalize sale (record transaction & update saldo)
-finalizeCallback();
-}
-}, 600);
-}
-
-/* Finalize sale: record vendas in firebase (one entry per cart) and update saldo
-Important: cupom fiscal is NOT saved on server (we only store the venda summary for balance).
-*/
-async function finalizeSaleToServer(vendaResumo){
-// vendaResumo: {id, datahora, total, itens:[{nome, precoUnit, qty, subtotal}], formaPagamento}
-try{
-// push each sale as individual entries (or aggregated). We'll push aggregated sale entry to "vendas" with metadata
-const saleRef = db.ref('vendas').push();
-await saleRef.set({
-id: vendaResumo.id,
-datahora: vendaResumo.datahora,
-total: Number(vendaResumo.total),
-formaPagamento: vendaResumo.formaPagamento,
-itens: vendaResumo.itens
-});
-// update saldo (increment)
-const snap = await db.ref('saldo').once('value');
-const atual = Number(snap.val() || 0);
-await db.ref('saldo').set(Number((atual + Number(vendaResumo.total)).toFixed(2)));
-}catch(err){
-console.error('Erro ao registrar venda no servidor', err);
-alert('Erro ao registrar venda no servidor. Verifique console.');
-}
-}
-
-/* Flow when clicking "Finalizar Venda" - show payment dialog and printing choice */
-document.getElementById('finalizarVendaBtn').addEventListener('click', async ()=>{
-if(CART.length === 0){
-alert('Carrinho vazio.');
-return;
-}
-// Build a small payment selector modal (lightweight, using prompt/confirm for simplicity)
-// We will implement a custom modal to ask payment and printing to avoid extra clicks.
-const forma = prompt('Finalizar venda - informe forma de pagamento: "avista" ou "cartao"','avista');
-if(!forma) return;
-const formaLower = String(forma).toLowerCase();
-if(formaLower !== 'avista' && formaLower !== 'cartao'){
-alert('Forma inválida. Use "avista" ou "cartao".');
-return;
-}
-// If cartao and avisoCartao is checked, show an aviso modal/alert
-if(formaLower === 'cartao' && avisoCartaoCheckbox.checked){
-alert('Aviso: venda no cartão marcada. Prosseguindo com as instruções de aviso no cartão.');
-}
-
-// Prepare vendaResumo
-const id18 = genID18();
-const now = new Date();
-const datahora = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
-const itens = CART.map(it => ({ nome: it.nome, precoUnit: Number(it.avista), qty: it.qty, subtotal: Number((it.avista * it.qty).toFixed(2)) }));
-const totals = cartTotals();
-const vendaResumo = {
-id: id18,
-datahora,
-total: totals.total,
-formaPagamento: formaLower === 'avista' ? 'À vista' : 'Cartão',
-itens
-};
-
-// Ask if want to print
-const querImprimir = confirm('Deseja imprimir a nota fiscal (cupom) agora?');
-if(querImprimir){
-// Attempt to detect printers (best-effort) and show modal. After that, proceed to print.
-await detectPrintersBestEffort();
-// The user can choose an option in the modal and click "Usar Impressora Selecionada".
-// We'll wire that button now to proceed to printing with current selection.
-document.getElementById('usarImpressoraSelecionada').onclick = async () => {
-hideModal(modalPrinters);
-// Build cupom HTML
-const empresaNome = document.getElementById('logoImg')?.alt || 'Minha Empresa';
-const cupomHtml = buildCupomHTML({empresaNome, datahora, id: id18, total: totals.total, itens, formaPagamento: vendaResumo.formaPagamento});
-// print then finalize
-printCupomAndFinalize(cupomHtml, vendaResumo, async () => {
-await finalizeSaleToServer(vendaResumo);
-clearCart();
-closeCart();
-alert('Venda finalizada e registrada. Impressão solicitada.');
-});
-};
-} else {
-// No printing requested: finalize immediately
-await finalizeSaleToServer(vendaResumo);
-clearCart();
-closeCart();
-alert('Venda finalizada sem impressão.');
-}
-});
-
-/* EDITAR VENDAS - mostra vendas e permite excluir (recalcula saldo) */
-document.getElementById('editarVendasBtn').addEventListener('click', async ()=>{
-showModal(modalEditar);
-listaVendasEl.innerHTML = '';
-try{
-const snap = await db.ref('vendas').once('value');
-if(!snap.exists()){
-listaVendasEl.innerHTML = '<div class="info-empty">Nenhuma venda realizada hoje.</div>';
-return;
-}
-snap.forEach(child => {
-const v = child.val();
-const id = child.key;
-const item = document.createElement('div');
-item.className = 'venda-item';
-item.style.border='1px solid #eee';
-item.style.padding='8px';
-item.style.marginBottom='8px';
-item.innerHTML = `         <strong>${escapeHtml(v.id || '')}</strong>         <small>${escapeHtml(String(v.datahora || ''))} • ${escapeHtml(String(v.formaPagamento || ''))} — R$ ${Number(v.total || 0).toFixed(2)}</small>         <div style="margin-top:8px">           <button data-venda-id="${id}" data-venda-valor="${Number(v.total||0)}">Excluir</button>         </div>
-      `;
-listaVendasEl.appendChild(item);
-});
-}catch(err){
-console.error('Erro ao carregar vendas:', err);
-listaVendasEl.innerHTML = '<div class="info-empty">Erro ao carregar vendas.</div>';
-}
-});
-
-/* Delegação para exclusão de venda dentro do modal editar */
-listaVendasEl.addEventListener('click', async (e)=>{
-const btn = e.target.closest('button[data-venda-id]');
-if(!btn) return;
-const id = btn.getAttribute('data-venda-id');
-const valor = Number(btn.getAttribute('data-venda-valor') || 0);
-if(!confirm('Deseja realmente excluir esta venda?')) return;
-try{
-await db.ref('vendas/' + id).remove();
-// subtrai do saldo atual (não abaixo de zero)
-const snap = await db.ref('saldo').once('value');
-const atual = Number(snap.val() || 0);
-await db.ref('saldo').set(Number(Math.max(0, (atual - valor)).toFixed(2)));
-const parent = btn.closest('.venda-item');
-if(parent) parent.remove();
-if(!listaVendasEl.querySelector('.venda-item')) listaVendasEl.innerHTML = '<div class="info-empty">Nenhuma venda realizada hoje.</div>';
-}catch(err){
-console.error('Erro ao excluir venda:', err);
-alert('Erro ao excluir venda. Verifique console.');
-}
-});
-
-/* FINALIZAR DIA - salva histórico, limpa vendas e zera saldo */
-document.getElementById('finalizarDiaBtn').addEventListener('click', async ()=>{
-if(!confirm('Deseja realmente finalizar o dia? Isso salvará todas as vendas no histórico e limpará o saldo atual.')) return;
-try{
-const vendasSnap = await db.ref('vendas').once('value');
-if(!vendasSnap.exists()){
-alert('Nenhuma venda para finalizar.');
-return;
-}
-const vendasArr = [];
-vendasSnap.forEach(child => {
-const v = child.val();
-vendasArr.push(v);
-});
-const total = vendasArr.reduce((s,v)=> s + Number(v.total||0), 0);
-const id = db.ref('historicoDias').push().key;
-const now = new Date();
-const data = now.toLocaleDateString();
-const hora = now.toLocaleTimeString();
-await db.ref('historicoDias/' + id).set({ data, hora, total: Number(total.toFixed(2)), vendas: vendasArr });
-// limpa vendas e zera saldo
-await db.ref('vendas').remove();
-await db.ref('saldo').set(0);
-alert('Dia finalizado e salvo no histórico!');
-hideModal(modalEditar);
-}catch(err){
-console.error('Erro ao finalizar dia:', err);
-alert('Erro ao finalizar dia. Verifique console.');
-}
-});
-
-/* Garantias e inicializações */
-function safeToFixed(v){ const n = Number(v || 0); return (isNaN(n) ? 0 : n).toFixed(2); }
-db.ref('saldo').once('value').then(snap=>{ if(!snap.exists()) db.ref('saldo').set(0); }).catch(()=>{/* ignore */});
-
-/* Initial render */
-renderCart();
-
-/* Small UX: keyboard shortcut "c" to open cart */
-window.addEventListener('keydown', (e)=>{ if(e.key === 'c' || e.key === 'C') { openCart(); } });
-
-/* Accessibility: ensure printFrame exists */
-if(!printFrame){
-const f = document.createElement('iframe'); f.id='printFrame'; f.style.display='none'; document.body.appendChild(f);
-}
-
-/* End of script */ </script>
-
+document.getElementById('searchInput').addEventListener('input',e=>{const t=e.target.value.toLowerCase();document.querySelectorAll('.produto').forEach(c=>{const n=c.querySelector('h3').textContent.toLowerCase();const m=c.querySelector('small').textContent.toLowerCase();c.style.display=(n.includes(t)||m.includes(t))?'flex':'none'});});
+function adicionarCarrinho(id,nome,avista,cartao){carrinho.push({id,nome,avista,cartao});atualizarCarrinho();}
+function atualizarCarrinho(){carrinhoQtd.textContent=carrinho.length;let total=0;carrinhoItens.innerHTML='';carrinho.forEach((p,i)=>{total+=p.avista;const div=document.createElement('div');div.innerHTML=`${p.nome} - R$ ${p.avista.toFixed(2)} <button onclick="removerItem(${i})">x</button>`;carrinhoItens.appendChild(div);});carrinhoTotal.textContent=total.toFixed(2);}
+function removerItem(i){carrinho.splice(i,1);atualizarCarrinho();}
+carrinhoBtn.onclick=()=>showModal(carrinhoModal);
+document.getElementById('closeCarrinho').onclick=()=>hideModal(carrinhoModal);
+document.getElementById('cancelarVendaBtn').onclick=()=>{if(confirm('Cancelar a venda?')){carrinho=[];atualizarCarrinho();hideModal(carrinhoModal);}};
+document.getElementById('finalizarVendaBtn').onclick=async()=>{if(carrinho.length==0)return;const tipo=confirm('Pagamento no cartão? OK=Cartão / Cancel=À vista')?'cartao':'avista';const imprime=confirm('Deseja imprimir a nota?');let total=0;for(const p of carrinho){const valor=tipo==='avista'?p.avista:p.cartao;total+=valor;await db.ref('vendas').push({produto:p.nome,tipo,valor, hora:new Date().toLocaleTimeString(),data:new Date().toLocaleDateString()});const s=await db.ref('saldo').once('value');const a=Number(s.val()||0);await db.ref('saldo').set(Number((a+valor).toFixed(2)));}if(imprime){gerarCupom(carrinho,tipo,total);setTimeout(()=>{window.print()},300);}carrinho=[];atualizarCarrinho();hideModal(carrinhoModal);};
+function gerarCupom(lista,tipo,total){const c=document.getElementById('cupomFiscal');const id=Array(18).fill(0).map(()=>Math.random().toString(36)[2]).join('').toUpperCase();const data=new Date();c.innerHTML=`<h2>Ponto Certo JC</h2><div>ID: ${id}</div><div>Data: ${data.toLocaleDateString()} ${data.toLocaleTimeString()}</div><div>Pagamento: ${tipo==='avista'?'À Vista':'Cartão'}</div><table><tbody>${lista.map(p=>`<tr><td>${p.nome}</td><td>R$ ${p.avista.toFixed(2)}</td></tr>`).join('')}</tbody></table><div><strong>Total: R$ ${total.toFixed(2)}</strong></div><div class="rodape">Obrigado pela compra!<br>--- Linhas de segurança ---</div>`;c.style.display='block';}
+document.getElementById('cadastroProdutoBtn').onclick=()=>showModal(modalCadastro);
+document.getElementById('closeCadastro').onclick=()=>hideModal(modalCadastro);
+document.getElementById('salvarProduto').onclick=async()=>{const n=document.getElementById('nomeProduto').value.trim();const m=document.getElementById('marcaProduto').value.trim();const a=parseFloat(document.getElementById('precoAvista').value);const c=parseFloat(document.getElementById('precoCartao').value);if(!n||isNaN(a)||isNaN(c))return alert('Preencha corretamente');await db.ref('produtos').push({nome:n,marca:m,avista:a,cartao:c});hideModal(modalCadastro);}
+document.getElementById('editarVendasBtn').onclick=async()=>{showModal(modalEditar);listaVendasEl.innerHTML='';const s=await db.ref('vendas').once('value');if(!s.exists()){listaVendasEl.innerHTML='<div class="info-empty">Nenhuma venda.</div>';return;}s.forEach(ch=>{const v=ch.val();const id=ch.key;const d=document.createElement('div');d.className='venda-item';d.innerHTML=`<strong>${v.produto}</strong><small>${v.tipo} - R$ ${v.valor.toFixed(2)}</small><small>${v.hora} • ${v.data}</small><div><button onclick="excluirVenda('${id}',${v.valor})">Excluir</button></div>`;listaVendasEl.appendChild(d);});}
+async function excluirVenda(id,valor){if(!confirm('Excluir?'))return;await db.ref('vendas/'+id).remove();const s=await db.ref('saldo').once('value');const a=Number(s.val()||0);await db.ref('saldo').set(Math.max(0,(a-valor)).toFixed(2));document.querySelector(`[onclick="excluirVenda('${id}',${valor})"]`).parentElement.parentElement.remove();}
+document.getElementById('fecharEditar').onclick=()=>hideModal(modalEditar);
+document.getElementById('closeEditar').onclick=()=>hideModal(modalEditar);
+document.getElementById('finalizarDiaBtn').onclick=async()=>{if(!confirm('Finalizar dia?'))return;const v=await db.ref('vendas').once('value');if(!v.exists())return alert('Nenhuma venda.');const vendas=[];v.forEach(ch=>vendas.push(ch.val()));const total=vendas.reduce((s,v)=>s+v.valor,0);const id=db.ref('historicoDias').push().key;await db.ref('historicoDias/'+id).set({data:new Date().toLocaleDateString(),hora:new Date().toLocaleTimeString(),total,vendas});await db.ref('vendas').remove();await db.ref('saldo').set(0);alert('Dia finalizado!');};
+</script>
 </body>
 </html>
