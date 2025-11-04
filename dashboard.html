@@ -17,7 +17,7 @@ body{
   position:relative;
   color:var(--dark);
   overflow-x:hidden;
-  background:url("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjg2uC7y-ELYYY-bOQtvL1LZY3i-xGB27LLPucy8a3Cw8IAFDnCeGm5TwC2ki0NRz03Tg2we-BorZUvgsjzBrIKX2-liUmCw6n9QwzcCECdX4CMiY-ic4oMOSq0AWP_-jIb3BnDqbIlIMav2DYk4rf-tqBC3uPOjWDNOjVjyAgPuNRBSO2kDE6bwB240C8/s1078/E49B0C31-045A-451C-A029-627BE80C1AF3.jpeg") no-repeat center center/cover;
+  background:url("https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000009-6019860199/700/F9AE5F2E-C42C-4BD5-8DFF-7CF4761814EF.webp") no-repeat center center/cover;
 }
 header{
   position:fixed;
@@ -89,9 +89,61 @@ footer{margin-top:40px;font-size:12px;color:#888;text-align:center}
 
 <br><br>
 
-<div style="display: flex; justify-content: center;">
-  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjMrHoQBjHgrF_EHZ3IQo1jzBWb_ZHp4Vj9Neo0VBU7pZcPHO25vwiSLdNvQv-qzVlIm32NkvMDECwc8jpSuKe0FpHhkIR0bpKpoclOTBjILjISuMJR23-zNy7ui7geDmfvI9_3JlaVEu5rgUS9CMXL7IO-vmRFSYRNCFDPcHpOAt_elYAO8P8-GA0iRLg/s567/97C2A30A-42E7-4AC4-8A36-884BD6A406E2.png" style="width:320px;height:325px;">
-</div>
+
+
+
+
+
+
+
+<style>
+.topicos-container{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-start;
+  align-items:flex-start;
+  gap:25px;
+  background:transparent;
+  padding:10px;
+}
+.topico{
+  width:150px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  text-align:left;
+}
+.topico img{
+  width:50px;
+  height:auto;
+  border:none;
+  box-shadow:none;
+  background:transparent;
+  margin-bottom:8px;
+}
+.topico p{
+  font-size:15px;
+  color:#222;
+  line-height:1.4;
+  margin:0;
+}
+@media(max-width:768px){
+  .topico{width:45%;}
+}
+</style>
+
+<div class="topicos-container">
+  <div class="topico">
+    <img src="https://cdn-icons-png.flaticon.com/512/102/102649.png" alt="">
+    <p>O NA é mais seguro por usar identificador exclusivo em vez de CPF.
+</p>
+  </div>
+  <div class="topico">
+    <img src="https://cdn-icons-png.flaticon.com/512/281/281743.png" alt="">
+    <p>Suas informações podem ser recuperadas mais facilmente.</p>
+  </div>
+
+
 
 <script>
 const btn=document.getElementById('menuBtn');
@@ -165,7 +217,7 @@ setTimeout(()=>{
 </style>
 
 <div class="footer-buttons">
-  <button onclick="window.location.href='index.html'">Treinos</button>
+  <button onclick="window.location.href='index.html'">Tela inicial</button>
   <button onclick="window.location.href='login.html'">Sair</button>
 </div>
 </body>
