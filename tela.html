@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -40,11 +41,14 @@ body *{visibility:hidden}
 #cupomFiscal,#cupomFiscal *{visibility:visible}
 #cupomFiscal{position:absolute;left:0;top:0;width:100%}
 }
-#cupomFiscal{background:#fff;color:#000;border:1px dotted rgba(0,0,0,0.3);padding:20px;width:100%;max-width:400px;margin:auto}
-#cupomFiscal h2{text-align:center;border-bottom:1px dotted rgba(0,0,0,0.4);padding-bottom:8px;margin-bottom:8px}
+#cupomFiscal{background:#fff;color:#000;border:1px dotted rgba(0,0,0,0.3);padding:20px;width:100%;max-width:500px;margin:auto;font-size:12px;line-height:1.3}
+#cupomFiscal h2{text-align:left;border-bottom:1px dotted rgba(0,0,0,0.4);padding-bottom:8px;margin-bottom:8px}
 #cupomFiscal table{width:100%;border-collapse:collapse;margin-bottom:10px}
 #cupomFiscal td{padding:4px 0;border-bottom:1px dotted rgba(0,0,0,0.2)}
-#cupomFiscal .rodape{text-align:center;border-top:1px dotted rgba(0,0,0,0.4);padding-top:8px;font-size:.9rem}
+#cupomFiscal .rodape{text-align:left;border-top:1px dotted rgba(0,0,0,0.4);padding-top:8px;font-size:.9rem}
+.opcoes-pagamento{display:flex;justify-content:center;gap:10px;margin-top:10px}
+.opcoes-pagamento button{flex:1}
+.italic{font-style:italic;font-size:0.8rem;margin-top:4px}
 </style>
 </head>
 <body>
@@ -64,36 +68,170 @@ body *{visibility:hidden}
 <div id="listaProdutos" class="produtos"></div>
 </main>
 <button id="carrinhoBtn">Carrinho <span id="carrinhoQtd">0</span></button>
-<div id="modalCadastro" class="modal"><div class="modal-content"><span id="closeCadastro" class="close">&times;</span><h2>Cadastrar Produto</h2><input id="nomeProduto" placeholder="Nome do Produto"><input id="marcaProduto" placeholder="Marca (opcional)"><input id="precoAvista" type="number" step="0.01" placeholder="Preço à vista"><input id="precoCartao" type="number" step="0.01" placeholder="Preço no cartão"><button id="salvarProduto">Salvar Produto</button></div></div>
+
+<div id="modalCadastro" class="modal"><div class="modal-content"><span id="closeCadastro" class="close">&times;</span><h2>Cadastrar Produto</h2><input id="nomeProduto" placeholder="Nome do Produto"><input id="marcaProduto" placeholder="Marca (opcional)"><input id="precoAvista" type="number" step="0.01" placeholder="Preço à vista"><button id="salvarProduto">Salvar Produto</button></div></div>
+
 <div id="modalEditar" class="modal"><div class="modal-content"><span id="closeEditar" class="close">&times;</span><h2>Vendas Realizadas</h2><div id="listaVendas" style="margin-top:12px;max-height:60vh;overflow:auto"></div><div style="margin-top:12px;text-align:center"><button id="fecharEditar">Fechar</button></div></div></div>
-<div id="carrinhoModal" class="modal"><div class="modal-content"><span id="closeCarrinho" class="close">&times;</span><h2>Carrinho</h2><div class="itens" id="carrinhoItens"></div><div style="margin-top:10px;text-align:center"><strong>Total: R$ <span id="carrinhoTotal">0.00</span></strong></div><div style="margin-top:14px;display:flex;gap:10px;justify-content:center"><button id="finalizarVendaBtn">Finalizar</button><button id="cancelarVendaBtn">Cancelar</button></div></div></div>
+
+<div id="carrinhoModal" class="modal"><div class="modal-content"><span id="closeCarrinho" class="close">&times;</span><h2>Carrinho</h2><div class="itens" id="carrinhoItens"></div><div style="margin-top:10px;text-align:center"><strong>Total: R$ <span id="carrinhoTotal">0.00</span></strong></div><div class="opcoes-pagamento"><button id="btnAvista">À Vista</button><button id="btnCartao">Cartão</button></div><div style="margin-top:14px;display:flex;gap:10px;justify-content:center"><button id="cancelarVendaBtn">Cancelar</button></div></div></div>
+
 <div id="cupomFiscal"></div>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
 <script>
-const firebaseConfig={apiKey:"AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",authDomain:"login-you-see.firebaseapp.com",databaseURL:"https://login-you-see-default-rtdb.firebaseio.com",projectId:"login-you-see",storageBucket:"login-you-see.firebasestorage.app",messagingSenderId:"524877259374",appId:"1:524877259374:web:9ff66b67c9c5bf0bb07c7f",measurementId:"G-K7E00VXYHG"};firebase.initializeApp(firebaseConfig);const db=firebase.database();const saldoValorEl=document.getElementById('saldoValor'),listaProdutosEl=document.getElementById('listaProdutos'),listaVendasEl=document.getElementById('listaVendas');const modalCadastro=document.getElementById('modalCadastro'),modalEditar=document.getElementById('modalEditar');const carrinhoBtn=document.getElementById('carrinhoBtn'),carrinhoModal=document.getElementById('carrinhoModal'),carrinhoItens=document.getElementById('carrinhoItens'),carrinhoQtd=document.getElementById('carrinhoQtd'),carrinhoTotal=document.getElementById('carrinhoTotal');let carrinho=[];
+const firebaseConfig={apiKey:"AIzaSyCAlWxc7YxTMcTLCECUDuYfomO6QapreqY",authDomain:"login-you-see.firebaseapp.com",databaseURL:"https://login-you-see-default-rtdb.firebaseio.com",projectId:"login-you-see",storageBucket:"login-you-see.firebasestorage.app",messagingSenderId:"524877259374",appId:"1:524877259374:web:9ff66b67c9c5bf0bb07c7f",measurementId:"G-K7E00VXYHG"};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+const saldoValorEl=document.getElementById('saldoValor'),listaProdutosEl=document.getElementById('listaProdutos'),listaVendasEl=document.getElementById('listaVendas');
+const modalCadastro=document.getElementById('modalCadastro'),modalEditar=document.getElementById('modalEditar');
+const carrinhoBtn=document.getElementById('carrinhoBtn'),carrinhoModal=document.getElementById('carrinhoModal'),carrinhoItens=document.getElementById('carrinhoItens'),carrinhoQtd=document.getElementById('carrinhoQtd'),carrinhoTotal=document.getElementById('carrinhoTotal');
+let carrinho=[];
+
 function showModal(m){m.style.display='flex'}
 function hideModal(m){m.style.display='none'}
 db.ref('saldo').on('value',s=>{saldoValorEl.textContent=Number(s.val()||0).toFixed(2)});
-function carregarProdutos(){db.ref('produtos').on('value',snap=>{listaProdutosEl.innerHTML='';if(!snap.exists()){listaProdutosEl.innerHTML='<div class="info-empty">Nenhum produto cadastrado.</div>';return;}snap.forEach(ch=>{const p=ch.val(),id=ch.key;const card=document.createElement('div');card.className='produto';card.innerHTML=`<div><h3>${p.nome}</h3><small>${p.marca||''}</small><div class="precos"><div class="preco-line"><span>À vista</span><strong>R$ ${Number(p.avista).toFixed(2)}</strong></div><div class="preco-line"><span>Cartão</span><strong>R$ ${Number(p.cartao).toFixed(2)}</strong></div></div></div><div class="acao"><button onclick="adicionarCarrinho('${id}','${p.nome}',${p.avista},${p.cartao})">Adicionar</button></div>`;listaProdutosEl.appendChild(card);});});}
+function carregarProdutos(){
+db.ref('produtos').on('value',snap=>{
+listaProdutosEl.innerHTML='';
+if(!snap.exists()){listaProdutosEl.innerHTML='<div class="info-empty">Nenhum produto cadastrado.</div>';return;}
+snap.forEach(ch=>{
+const p=ch.val(),id=ch.key;
+const card=document.createElement('div');
+card.className='produto';
+card.innerHTML=`<div><h3>${p.nome}</h3><small>${p.marca||''}</small>
+<div class="precos">
+<div class="preco-line"><span>À vista</span><strong>R$ ${Number(p.avista).toFixed(2)}</strong></div>
+<div class="preco-line"><span>Cartão</span><strong>R$ ${(Number(p.avista)+1).toFixed(2)}</strong></div>
+</div></div>
+<div class="acao"><button onclick="adicionarCarrinho('${id}','${p.nome}',${p.avista},${p.avista+1})">Adicionar</button></div>`;
+listaProdutosEl.appendChild(card);
+});
+});
+}
 carregarProdutos();
-document.getElementById('searchInput').addEventListener('input',e=>{const t=e.target.value.toLowerCase();document.querySelectorAll('.produto').forEach(c=>{const n=c.querySelector('h3').textContent.toLowerCase();const m=c.querySelector('small').textContent.toLowerCase();c.style.display=(n.includes(t)||m.includes(t))?'flex':'none'});});
+document.getElementById('searchInput').addEventListener('input',e=>{
+const t=e.target.value.toLowerCase();
+document.querySelectorAll('.produto').forEach(c=>{
+const n=c.querySelector('h3').textContent.toLowerCase();
+const m=c.querySelector('small').textContent.toLowerCase();
+c.style.display=(n.includes(t)||m.includes(t))?'flex':'none';
+});
+});
 function adicionarCarrinho(id,nome,avista,cartao){carrinho.push({id,nome,avista,cartao});atualizarCarrinho();}
-function atualizarCarrinho(){carrinhoQtd.textContent=carrinho.length;let total=0;carrinhoItens.innerHTML='';carrinho.forEach((p,i)=>{total+=p.avista;const div=document.createElement('div');div.innerHTML=`${p.nome} - R$ ${p.avista.toFixed(2)} <button onclick="removerItem(${i})">x</button>`;carrinhoItens.appendChild(div);});carrinhoTotal.textContent=total.toFixed(2);}
+function atualizarCarrinho(){
+carrinhoQtd.textContent=carrinho.length;
+let total=0;
+carrinhoItens.innerHTML='';
+carrinho.forEach((p,i)=>{
+total+=p.avista;
+const div=document.createElement('div');
+div.innerHTML=`${p.nome} - R$ ${p.avista.toFixed(2)} <button onclick="removerItem(${i})">x</button>`;
+carrinhoItens.appendChild(div);
+});
+carrinhoTotal.textContent=total.toFixed(2);
+}
 function removerItem(i){carrinho.splice(i,1);atualizarCarrinho();}
 carrinhoBtn.onclick=()=>showModal(carrinhoModal);
 document.getElementById('closeCarrinho').onclick=()=>hideModal(carrinhoModal);
 document.getElementById('cancelarVendaBtn').onclick=()=>{if(confirm('Cancelar a venda?')){carrinho=[];atualizarCarrinho();hideModal(carrinhoModal);}};
-document.getElementById('finalizarVendaBtn').onclick=async()=>{if(carrinho.length==0)return;const tipo=confirm('Pagamento no cartão? OK=Cartão / Cancel=À vista')?'cartao':'avista';const imprime=confirm('Deseja imprimir a nota?');let total=0;for(const p of carrinho){const valor=tipo==='avista'?p.avista:p.cartao;total+=valor;await db.ref('vendas').push({produto:p.nome,tipo,valor, hora:new Date().toLocaleTimeString(),data:new Date().toLocaleDateString()});const s=await db.ref('saldo').once('value');const a=Number(s.val()||0);await db.ref('saldo').set(Number((a+valor).toFixed(2)));}if(imprime){gerarCupom(carrinho,tipo,total);setTimeout(()=>{window.print()},300);}carrinho=[];atualizarCarrinho();hideModal(carrinhoModal);};
-function gerarCupom(lista,tipo,total){const c=document.getElementById('cupomFiscal');const id=Array(18).fill(0).map(()=>Math.random().toString(36)[2]).join('').toUpperCase();const data=new Date();c.innerHTML=`<h2>Ponto Certo JC</h2><div>ID: ${id}</div><div>Data: ${data.toLocaleDateString()} ${data.toLocaleTimeString()}</div><div>Pagamento: ${tipo==='avista'?'À Vista':'Cartão'}</div><table><tbody>${lista.map(p=>`<tr><td>${p.nome}</td><td>R$ ${p.avista.toFixed(2)}</td></tr>`).join('')}</tbody></table><div><strong>Total: R$ ${total.toFixed(2)}</strong></div><div class="rodape">Obrigado pela compra!<br>TEMPO DE TROCA:__________</div>`;c.style.display='block';}
+
+async function finalizarVenda(tipo){
+if(carrinho.length==0)return;
+const imprime=confirm('Deseja imprimir a nota?');
+let total=0;
+for(const p of carrinho){
+const valor=tipo==='avista'?p.avista:p.cartao;
+total+=valor;
+await db.ref('vendas').push({produto:p.nome,tipo,valor,hora:new Date().toLocaleTimeString(),data:new Date().toLocaleDateString()});
+const s=await db.ref('saldo').once('value');
+const a=Number(s.val()||0);
+await db.ref('saldo').set(Number((a+valor).toFixed(2)));
+}
+if(imprime){gerarCupom(carrinho,tipo,total);setTimeout(()=>{window
+.print()},300);}
+carrinho=[];atualizarCarrinho();hideModal(carrinhoModal);
+}
+
+document.getElementById('btnAvista').onclick=()=>finalizarVenda('avista');
+document.getElementById('btnCartao').onclick=()=>finalizarVenda('cartao');
+
+function gerarCupom(lista,tipo,total){
+const c=document.getElementById('cupomFiscal');
+const id=Array(18).fill(0).map(()=>Math.random().toString(36)[2]).join('').toUpperCase();
+const data=new Date();
+let fontSize=12;
+if(lista.length>10) fontSize=11;
+if(lista.length>20) fontSize=10;
+c.style.fontSize=fontSize+'px';
+c.innerHTML=`<h2>Ponto Certo JC</h2>
+<div>ID: ${id}</div>
+<div>Data: ${data.toLocaleDateString()} ${data.toLocaleTimeString()}</div>
+<div>Pagamento: ${tipo==='avista'?'À Vista':'Cartão'}</div>
+<table><tbody>${lista.map(p=>`<tr><td>${p.nome}</td><td>R$ ${(tipo==='avista'?p.avista:p.cartao).toFixed(2)}</td></tr>`).join('')}</tbody></table>
+<div><strong>Total: R$ ${total.toFixed(2)}</strong></div>
+<div class="rodape">Obrigado pela compra!<br>
+ASSINATURA DE TROCA:________________<br>
+Tempo de troca: ________<br>
+_____________________________________<br>
+<div class="italic">As trocas são determinadas de acordo com o produto. Produtos como roupas, bonés e vestimentas só podem ser trocados se estiverem sem manchas, odores e exatamente como saíram da loja.</div>
+_____________________________________<br>
+Volte sempre! Esperamos você novamente.</div>`;
+c.style.display='block';
+}
+
 document.getElementById('cadastroProdutoBtn').onclick=()=>showModal(modalCadastro);
 document.getElementById('closeCadastro').onclick=()=>hideModal(modalCadastro);
-document.getElementById('salvarProduto').onclick=async()=>{const n=document.getElementById('nomeProduto').value.trim();const m=document.getElementById('marcaProduto').value.trim();const a=parseFloat(document.getElementById('precoAvista').value);const c=parseFloat(document.getElementById('precoCartao').value);if(!n||isNaN(a)||isNaN(c))return alert('Preencha corretamente');await db.ref('produtos').push({nome:n,marca:m,avista:a,cartao:c});hideModal(modalCadastro);}
-document.getElementById('editarVendasBtn').onclick=async()=>{showModal(modalEditar);listaVendasEl.innerHTML='';const s=await db.ref('vendas').once('value');if(!s.exists()){listaVendasEl.innerHTML='<div class="info-empty">Nenhuma venda.</div>';return;}s.forEach(ch=>{const v=ch.val();const id=ch.key;const d=document.createElement('div');d.className='venda-item';d.innerHTML=`<strong>${v.produto}</strong><small>${v.tipo} - R$ ${v.valor.toFixed(2)}</small><small>${v.hora} • ${v.data}</small><div><button onclick="excluirVenda('${id}',${v.valor})">Excluir</button></div>`;listaVendasEl.appendChild(d);});}
-async function excluirVenda(id,valor){if(!confirm('Excluir?'))return;await db.ref('vendas/'+id).remove();const s=await db.ref('saldo').once('value');const a=Number(s.val()||0);await db.ref('saldo').set(Math.max(0,(a-valor)).toFixed(2));document.querySelector(`[onclick="excluirVenda('${id}',${valor})"]`).parentElement.parentElement.remove();}
+document.getElementById('salvarProduto').onclick=async()=>{
+const n=document.getElementById('nomeProduto').value.trim();
+const m=document.getElementById('marcaProduto').value.trim();
+const a=parseFloat(document.getElementById('precoAvista').value);
+if(!n||isNaN(a))return alert('Preencha corretamente');
+await db.ref('produtos').push({nome:n,marca:m,avista:a});
+hideModal(modalCadastro);
+}
+
+document.getElementById('editarVendasBtn').onclick=async()=>{
+showModal(modalEditar);
+listaVendasEl.innerHTML='';
+const s=await db.ref('vendas').once('value');
+if(!s.exists()){listaVendasEl.innerHTML='<div class="info-empty">Nenhuma venda.</div>';return;}
+s.forEach(ch=>{
+const v=ch.val();const id=ch.key;
+const d=document.createElement('div');
+d.className='venda-item';
+d.innerHTML=`<strong>${v.produto}</strong><small>${v.tipo} - R$ ${v.valor.toFixed(2)}</small><small>${v.hora} • ${v.data}</small><div><button onclick="excluirVenda('${id}',${v.valor})">Excluir</button></div>`;
+listaVendasEl.appendChild(d);
+});
+}
+
+async function excluirVenda(id,valor){
+if(!confirm('Excluir?'))return;
+await db.ref('vendas/'+id).remove();
+const s=await db.ref('saldo').once('value');
+const a=Number(s.val()||0);
+await db.ref('saldo').set(Math.max(0,(a-valor)).toFixed(2));
+document.querySelector(`[onclick="excluirVenda('${id}',${valor})"]`).parentElement.parentElement.remove();
+}
+
 document.getElementById('fecharEditar').onclick=()=>hideModal(modalEditar);
 document.getElementById('closeEditar').onclick=()=>hideModal(modalEditar);
-document.getElementById('finalizarDiaBtn').onclick=async()=>{if(!confirm('Finalizar dia?'))return;const v=await db.ref('vendas').once('value');if(!v.exists())return alert('Nenhuma venda.');const vendas=[];v.forEach(ch=>vendas.push(ch.val()));const total=vendas.reduce((s,v)=>s+v.valor,0);const id=db.ref('historicoDias').push().key;await db.ref('historicoDias/'+id).set({data:new Date().toLocaleDateString(),hora:new Date().toLocaleTimeString(),total,vendas});await db.ref('vendas').remove();await db.ref('saldo').set(0);alert('Dia finalizado!');};
+
+document.getElementById('finalizarDiaBtn').onclick=async()=>{
+if(!confirm('Finalizar dia?'))return;
+const v=await db.ref('vendas').once('value');
+if(!v.exists())return alert('Nenhuma venda.');
+const vendas=[];v.forEach(ch=>vendas.push(ch.val()));
+const total=vendas.reduce((s,v)=>s+v.valor,0);
+const id=db.ref('historicoDias').push().key;
+await db.ref('historicoDias/'+id).set({data:new Date().toLocaleDateString(),hora:new Date().toLocaleTimeString(),total,vendas});
+await db.ref('vendas').remove();
+await db.ref('saldo').set(0);
+alert('Dia finalizado! Obrigado por fazer parte da nossa equipe de colaboradores!');
+};
 </script>
+
 </body>
 </html>
