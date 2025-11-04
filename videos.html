@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Login - Academia</title>
+<style>
+:root{
+  --bg:#fff;
+  --dark:#000;
+  --light:#f5f5f5;
+  --accent:#f0f0f0;
+  --green:#32CD32;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+body{background:var(--bg);color:var(--dark);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:100px}
+header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #eee;z-index:10}
+.logo-canto-esquerdo{height:38px;width:auto}
+.menu-container{position:relative}
+.menu-btn{width:32px;height:24px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between}
+.menu-btn div{width:100%;height:3px;background:#000;border-radius:2px;transition:all .3s}
+.menu-btn.active div:nth-child(1){transform:rotate(45deg) translateY(9px)}
+.menu-btn.active div:nth-child(2){opacity:0}
+.menu-btn.active div:nth-child(3){transform:rotate(-45deg) translateY(-9px)}
+.menu{position:absolute;top:40px;right:0;background:#fff;box-shadow:0 4px 15px rgba(0,0,0,.1);border-radius:6px;display:none;flex-direction:column;width:200px;overflow:hidden}
+.menu.active{display:flex}
+.menu a{text-decoration:none;color:#000;padding:12px 15px;transition:.3s}
+.menu a:hover{background:#f5f5f5}
+
+main{width:100%;max-width:400px;padding:20px}
+.container{margin-top:20px}
+h2{font-size:22px;font-weight:600;margin-bottom:25px}
+label{display:block;font-size:14px;color:#444;margin-bottom:8px}
+input[type="text"]{
+  width:100%;padding:14px;border:none;border-bottom:1px solid #ccc;font-size:17px;color:#000;background:transparent;outline:none;
+}
+input::placeholder{color:#aaa}
+.btn{margin-top:25px;width:100%;padding:14px;border-radius:8px;border:none;background:#e6e6e6;color:#999;font-weight:600;font-size:16px;cursor:pointer;transition:.3s}
+.btn:hover{background:#ddd}
+.btn.active{background:var(--green);color:#fff}
+.info{margin-top:20px;font-size:13px;color:#555}
+footer{margin-top:60px;font-size:12px;color:#888;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-canto-esquerdo">
+  
+
+
+
+<button onclick="window.location.href='index.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">Voltar</button>
+
+
+</header>
+
+<div class="area-videos">
+  <div class="topo">
+    <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000029-c1f42c1f44/4F63109C-E6C7-4687-B7DA-EEA76E69692D.webp" class="icone-topo">
+    <h2>MÁQUINAS DA DOMUS</h2>
+  </div>
+
+  <div class="grupos">
+    <button class="grupo" data-grupo="inferiores">MEMBROS INFERIORES – GLÚTEOS / PERNAS / PANTURRILHAS</button>
+    <button class="grupo" data-grupo="costas">MEMBROS SUPERIORES – COSTAS / DORSAIS</button>
+    <button class="grupo" data-grupo="peito">MEMBROS SUPERIORES – PEITO</button>
+    <button class="grupo" data-grupo="bracos">MEMBROS SUPERIORES – BRAÇOS</button>
+    <button class="grupo" data-grupo="ombros">MEMBROS SUPERIORES – OMBROS</button>
+  </div>
+
+  <div class="conteudos">
+    <div class="conteudo" id="inferiores">
+      <div class="item"><h3>ADUÇÃO-ABDUÇÃO</h3><div class="video" data-url="https://youtu.be/goQVyEGMYMM?si=oEnO5-0nifWG10bK"></div><p>Exercício que fortalece a parte interna e externa das coxas, promovendo equilíbrio muscular e estabilidade.</p></div>
+      <div class="item"><h3>GLÚTEO VERTICAL</h3><div class="video" data-url="https://youtu.be/TIFqWKFEfs8?si=i2FtqHBCEM99_Ven"></div><p>Focado no fortalecimento dos glúteos, proporcionando maior tonificação e sustentação do quadril.</p></div>
+      <div class="item"><h3>LEG 45</h3><div class="video" data-url="https://youtu.be/R2EIocKYdDY?si=w7bFyaYAKsIBTaqy"></div><p>Trabalha quadríceps e glúteos com carga controlada, excelente para ganho de força e volume muscular.</p></div>
+      <div class="item"><h3>AGACHAMENTO GUIADO</h3><div class="video" data-url="https://youtu.be/7NCRBu9j1ZA?si=-sRje7DAH7l-vPHb"></div><p>Versão assistida do agachamento que aumenta a segurança do movimento e melhora a técnica.</p></div>
+      <div class="item"><h3>PANTURRILHA SENTADA</h3><div class="video" data-url="https://youtu.be/1NBoneuGtQo?si=HTyC8ypRpPRz3O2p"></div><p>Foco direto nos músculos gastrocnêmios e sóleo, ajudando na definição e resistência da panturrilha.</p></div>
+    </div>
+
+    <div class="conteudo" id="costas">
+      <div class="item"><h3>PUXADA / REMADA BAIXA</h3><div class="video" data-url="https://youtu.be/jfNpC3DQHI0?si=yqGJQ4jGSI6zzseD"></div><p>Exercício essencial para fortalecer a região dorsal e melhorar a postura corporal.</p></div>
+      <div class="item"><h3>REMADA CAVALINHO</h3><div class="video" data-url="https://youtu.be/5N8jEo8DItc?si=dppALxqa3Y5GDi_P"></div><p>Desenvolve espessura nas costas e força nos dorsais, ideal para treinos avançados.</p></div>
+      <div class="item"><h3>CROSS GRANDES</h3><div class="video" data-url="https://youtu.be/pdMWt71MPlw?si=svqOUhalGQtbrogi"></div><p>Trabalha toda a cadeia posterior com movimentos funcionais e variados de tração.</p></div>
+    </div>
+
+    <div class="conteudo" id="peito">
+      <div class="item"><h3>PECK DECK</h3><div class="video" data-url="https://youtu.be/lSV3-8mlUnc?si=Gz-jwksUB0XQcGPc"></div><p>Isola os músculos peitorais para promover definição e simetria muscular.</p></div>
+      <div class="item"><h3>SUPINO RETO</h3><div class="video" data-url="https://youtu.be/YiP-Zhk5YMk?si=C5vre8Q8KLwWrMfb"></div><p>Exercício clássico que trabalha o peitoral médio e auxilia no ganho de força e massa.</p></div>
+      <div class="item"><h3>SUP INCLINADO MAQ</h3><div class="video" data-url="https://youtu.be/YiP-Zhk5YMk?si=3tUvWo-u0sRlKWCV"></div><p>Foco no peitoral superior, com movimento guiado que melhora a execução e segurança.</p></div>
+      <div class="item"><h3>BANCO RETO FIXO</h3><div class="video" data-url="https://youtu.be/NB_1mCfIOLU?si=g-fNzVn-tERc2Q68"></div><p>Base para diversos exercícios de peito e braços, essencial para um treino completo.</p></div>
+    </div>
+
+    <div class="conteudo" id="bracos">
+      <div class="item"><h3>ROSCA SCOT MÁQUINA</h3><div class="video" data-url="https://youtu.be/LIcKp31AvQY?si=N2-RFc5LC_TaDA6Q"></div><p>Concentra o esforço no bíceps, aprimorando o isolamento e o controle muscular.</p></div>
+      <div class="item"><h3>ROSCA SCOT LIVRE</h3><div class="video" data-url="https://youtu.be/Kh4G5N48EO8?si=NPziT5IkHVieYJPK"></div><p>Versão com barra ou halteres que estimula força e resistência de forma livre e natural.</p></div>
+    </div>
+
+    <div class="conteudo" id="ombros">
+      <div class="item"><h3>DESENV OMBRO LIVRE</h3><div class="video" data-url="https://youtu.be/axVz17o7yFM?si=jrvMRnwFWD35Jfmk"></div><p>Trabalha os deltoides de forma completa, promovendo força e estabilidade articular.</p></div>
+      <div class="item"><h3>BANCO SENTADO LIVRE</h3><div class="video" data-url="https://youtu.be/L-iQfHVeuVg?si=peNm1jkzY4R_gfv7"></div><p>Ideal para exercícios de ombro e braço, oferecendo suporte e postura correta.</p></div>
+    </div>
+  </div>
+</div>
+
+<style>
+.area-videos{width:100%;max-width:900px;margin:0 auto;font-family:Arial, sans-serif;padding:20px;}
+.topo{text-align:center;margin-bottom:20px;position:relative;}
+.icone-topo{width:100%;max-height:200px;object-fit:cover;border-radius:6px;margin-bottom:10px;}
+.grupos{display:flex;flex-direction:column;gap:10px;}
+.grupo{padding:15px;border:none;cursor:pointer;font-weight:bold;color:#222;background:linear-gradient(135deg,#fefefe,#dcdcdc);border:2px solid #ccc;text-transform:uppercase;transition:0.3s;box-shadow:0 3px 6px rgba(0,0,0,0.1);}
+.grupo:hover{background:linear-gradient(135deg,#e0e0e0,#ffffff);transform:scale(1.02);}
+.grupo:nth-child(1){border-left:8px solid #f54242;}
+.grupo:nth-child(2){border-left:8px solid #4287f5;}
+.grupo:nth-child(3){border-left:8px solid #42f56b;}
+.grupo:nth-child(4){border-left:8px solid #f5a142;}
+.grupo:nth-child(5){border-left:8px solid #b142f5;}
+.conteudos{margin-top:20px;}
+.conteudo{display:none;animation:fadeIn 0.5s ease-in-out;}
+.item{background:#fff;border:1px solid #ddd;padding:15px;margin-bottom:15px;box-shadow:0 2px 6px rgba(0,0,0,0.05);}
+.item h3{margin-bottom:8px;font-size:18px;border-bottom:1px solid #ddd;padding-bottom:5px;}
+.video iframe{width:100%;height:250px;border:none;border-radius:4px;margin-bottom:10px;}
+.item p{font-size:14px;line-height:1.4;color:#333;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+</style>
+
+<script>
+const botoes = document.querySelectorAll('.grupo');
+const conteudos = document.querySelectorAll('.conteudo');
+botoes.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    conteudos.forEach(c=>c.style.display='none');
+    document.getElementById(btn.dataset.grupo).style.display='block';
+    botoes.forEach(b=>b.style.transform='none');
+    btn.style.transform='scale(1.03)';
+  });
+});
+document.querySelectorAll('.video').forEach(v=>{
+  let url=v.dataset.url;
+  if(url.includes('youtu.be')){url=url.replace('https://youtu.be/','https://www.youtube.com/embed/').split('?')[0];}
+  if(url.includes('watch?v=')){url=url.replace('watch?v=','embed/').split('&')[0];}
+  v.innerHTML=`<iframe src="${url}" allowfullscreen></iframe>`;
+});
+</script>
