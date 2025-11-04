@@ -1,0 +1,813 @@
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" 
+<title>DOMUSFIT oi- CRIAR TREINO</title>
+<style>
+:root{
+  --bg: #FFFFFF;
+  --panel:#FAFAFA;
+  --card:#fff;
+  --muted:#666;
+  --accent:#32CD32;
+  --accent-weak:#DFF7DF;
+  --glass: rgba(255,255,255,0.6);
+  --shadow: 0 6px 18px rgba(15,15,15,0.08);
+  --radius:12px;
+  --gap:12px;
+  --foot-h:84px;
+  --text:#111;
+}
+*{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;color:var(--text);-webkit-font-smoothing:antialiased}
+html,body{height:100%;margin:0;background:linear-gradient(180deg,#F8FBF8 0%, #FFFFFF 100%);}
+.app{max-width:1100px;margin:18px auto;padding:18px;display:grid;grid-template-columns:340px 1fr;gap:18px}
+.header{position:fixed;left:0;right:0;top:0;height:64px;background:rgba(255,255,255,0.98);display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #eee;z-index:30}
+.header .userbox{display:flex;align-items:center;gap:14px}
+.user-pill{background:var(--card);padding:10px 12px;border-radius:10px;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.user-pill .name{font-weight:700;font-size:14px}
+.user-pill .na{font-size:12px;color:var(--muted)}
+.top-actions{display:flex;gap:10px;align-items:center}
+.btn{padding:10px 12px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-weight:700;cursor:pointer}
+.btn.ghost{background:transparent;border:1px solid #eee;color:#333}
+.searchbox{padding:12px;background:var(--card);border-radius:12px;box-shadow:var(--shadow);display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.searchbox input{border:none;outline:none;font-weight:700;font-size:15px;text-transform:uppercase;background:transparent;width:100%}
+.left-panel{position:relative;display:flex;flex-direction:column;gap:12px}
+.card{background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}
+.groups-list{display:flex;flex-direction:column;gap:8px;overflow:auto;max-height:72vh;padding-right:6px}
+.group-item{display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfbfb);cursor:pointer;border:1px solid #f0f0f0}
+.group-item .title{font-weight:800}
+.group-item .meta{font-size:12px;color:var(--muted)}
+.middle{display:flex;flex-direction:column;gap:12px}
+.main-panel{background:transparent;padding:0;min-height:70vh}
+.exercise-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.exercise-card{background:var(--card);padding:12px;border-radius:12px;border:1px solid #f0f0f0;display:flex;flex-direction:column;gap:8px;min-height:110px}
+.exercise-top{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.checkbox-custom{width:22px;height:22px;border-radius:6px;border:2px solid #d1d1d1;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.checkbox-custom.checked{background:var(--accent);border-color:var(--accent);color:#fff}
+.checkbox-custom.checked::after{content:'✓';font-weight:800}
+.exercise-name{font-weight:800;font-size:14px}
+.small{font-size:12px;color:var(--muted);text-transform:uppercase}
+.inputs{display:flex;gap:8px;align-items:center}
+.inputs input{width:68px;padding:8px;border-radius:8px;border:1px solid #e6e6e6;text-align:center;font-weight:700}
+.select-day{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:8px 10px;border-radius:8px;border:1px solid #eee;background:#fff;font-weight:700;cursor:pointer}
+.chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.intensity-list{display:flex;gap:8px;flex-wrap:wrap}
+.intensity-item{padding:8px 10px;border-radius:8px;border:1px dashed #ddd;font-weight:800;cursor:pointer}
+.intensity-item.active{background:var(--accent-weak);border-style:solid;border-color:var(--accent);color:var(--accent)}
+.footer-float{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;height:var(--foot-h);background:linear-gradient(90deg,#fff,#fff);border-radius:16px;padding:12px 16px;box-shadow:0 8px 30px rgba(0,0,0,0.12);display:flex;align-items:center;gap:12px;z-index:40;min-width:320px}
+.footer-info{display:flex;flex-direction:column;gap:2px}
+.count{font-weight:900;font-size:18px}
+.view-btn{padding:10px 12px;border-radius:10px;border:none;background:#222;color:#fff;cursor:pointer}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:60;padding:18px}
+.panel-modal{width:100%;max-width:980px;background:var(--card);border-radius:12px;padding:18px;max-height:86vh;overflow:auto}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.modal-grid{display:grid;grid-template-columns:1fr 360px;gap:12px;margin-top:12px}
+.sidebox{background:var(--panel);padding:12px;border-radius:10px;height:100%}
+.selected-list{display:flex;flex-direction:column;gap:8px}
+.sel-row{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px;border-radius:8px;background:#fff;border:1px solid #eee}
+.sel-left{display:flex;flex-direction:column}
+.tag{font-size:12px;color:var(--muted)}
+.actions{display:flex;gap:8px;align-items:center}
+.smallbtn{padding:8px 10px;border-radius:8px;border:none;background:#eee;cursor:pointer}
+.color-day{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px}
+.calendar-view{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:12px}
+.day-card{padding:10px;border-radius:10px;background:#fff;border:1px solid #eee;min-height:96px;display:flex;flex-direction:column;gap:6px}
+.day-title{font-weight:800;font-size:13px}
+.day-item{font-size:12px;border-top:1px dashed #f0f0f0;padding-top:6px;color:var(--muted)}
+.footer-actions{display:flex;gap:8px;align-items:center;margin-top:8px}
+.kv{font-weight:800}
+.note{font-size:13px;color:var(--muted);margin-top:8px}
+.empty{opacity:0.6;color:var(--muted);font-weight:700}
+
+/* responsive */
+@media(max-width:980px){.app{grid-template-columns:1fr;padding-top:90px}.header{padding:0 12px}.panel-modal{max-width:100%}.modal-grid{grid-template-columns:1fr}.footer-float{left:16px;transform:none;right:16px}}
+/* uppercase everything that is content */
+*{text-transform:uppercase}
+</style>
+<body>
+<!-- HEADER -->
+<div class="header">
+  <div style="display:flex;gap:12px;align-items:center">
+    <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" style="height:34px">
+    <div style="font-weight:900"></div>
+  </div>
+
+
+
+<button onclick="window.location.href='index.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">Voltar</button>
+
+
+
+  <div class="userbox">
+    <div class="user-pill">
+      <div class="name" id="userName">USUÁRIO</div>
+      <div class="na" id="userNA">NA: ----</div>
+    </div>
+    <div class="top-actions">
+      <button class="btn ghost" id="btnMeusTreinos">VER MEUS TREINOS</button>
+      <button class="btn" id="btnLogout">SAIR</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" style="padding-top:84px">
+  <!-- LEFT: SEARCH + GRUPOS -->
+  <div class="left-panel">
+    <div class="card searchbox">
+      <input id="searchInput" placeholder="PESQUISAR EXERCÍCIOS, MÁQUINA OU GRUPO">
+      <div style="font-weight:700;color:var(--muted);" id="searchCount">0</div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:900;margin-bottom:6px">GRUPOS MUSCULARES</div>
+      <div class="groups-list" id="groupsList"></div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:900">TÉCNICAS DE INTENSIFICAÇÃO</div>
+      <div class="intensity-list" id="intensityList"></div>
+      <div class="note">SELECIONE 1+ MODOS PARA MARCAR COMO TREINO INTENSIVO</div>
+    </div>
+  </div>
+
+  <!-- RIGHT: EXERCÍCIOS -->
+  <div class="main-panel">
+    <div class="middle">
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div style="font-weight:900">EXERCÍCIOS SELECIONÁVEIS</div>
+          <div style="font-size:13px;color:var(--muted)" id="currentGroupLabel">TODOS</div>
+        </div>
+        <div style="margin-top:6px;font-size:13px;color:var(--muted)">CLIQUE NO GRUPO PARA FILTRAR. PREENCHA REPETIÇÕES E SÉRIES PARA ATIVAR O CHECKBOX.</div>
+        <div style="height:12px"></div>
+        <div class="exercise-grid" id="exercisesGrid"></div>
+      </div>
+
+      <div style="display:flex;gap:12px;">
+        <div class="card" style="flex:1">
+          <div style="font-weight:900">CONFIGURAÇÃO DO TREINO</div>
+          <div style="margin-top:8px" class="small">DIA DA SEMANA</div>
+          <div class="select-day" id="selectDays">
+            <div class="chip" data-day="SEG">SEG</div>
+            <div class="chip" data-day="TER">TER</div>
+            <div class="chip" data-day="QUA">QUA</div>
+            <div class="chip" data-day="QUI">QUI</div>
+            <div class="chip" data-day="SEX">SEX</div>
+            <div class="chip" data-day="SAB">SAB</div>
+            <div class="chip" data-day="DOM">DOM</div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
+            <div style="flex:1">
+              <div class="small">DURAÇÃO (MESES)</div>
+              <input id="durationMonths" type="number" min="1" placeholder="1" style="width:100%;padding:10px;border-radius:8px;border:1px solid #eee;font-weight:800;text-align:center">
+            </div>
+            <div style="width:180px">
+              <div class="small">NOME DO TREINO (OPCIONAL)</div>
+              <input id="treinoName" placeholder="EX: PRIORIDADE PERNAS" style="width:100%;padding:10px;border-radius:8px;border:1px solid #eee;font-weight:800;text-align:center">
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
+            <button class="btn" id="btnCriar">CRIAR</button>
+            <button class="btn ghost" id="btnLimpar">LIMPAR</button>
+            <div style="flex:1"></div>
+            <div class="small" id="statusSave">NENHUMA SELEÇÃO</div>
+          </div>
+        </div>
+
+        <div class="card" style="width:360px">
+          <div style="font-weight:900">VISUALIZAÇÃO RÁPIDA</div>
+          <div style="margin-top:8px" class="small">ITENS SELECIONADOS</div>
+          <div style="height:8px"></div>
+          <div class="selected-list" id="selectedList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER FLOAT -->
+<div class="footer-float" id="footerFloat">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div style="width:48px;height:48px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900">OK</div>
+  </div>
+  <div class="footer-info">
+    <div class="count" id="selectedCount">0 ITENS</div>
+    <div class="tag" id="selectedSummary">SEM ITENS SELECIONADOS</div>
+  </div>
+  <div style="flex:1"></div>
+  <button class="view-btn" id="openPanel">VER CAIXA</button>
+</div>
+
+<!-- OVERLAY MODAL -->
+<div class="overlay" id="overlay">
+  <div class="panel-modal">
+    <div class="modal-head">
+      <div style="font-weight:900">CAIXA DE TREINOS - VISUALIZAÇÃO</div>
+      <div style="display:flex;gap:8px">
+        <button class="smallbtn" id="exportBtn">ID</button>
+        <button class="smallbtn" id="closePanel">FECHAR</button>
+      </div>
+    </div>
+
+    <div class="modal-grid">
+      <div>
+        <div style="font-weight:900;margin-top:12px">SELEÇÕES ATUAIS</div>
+        <div style="height:12px"></div>
+        <div class="selected-list" id="modalSelected"></div>
+
+        <div style="margin-top:12px" class="footer-actions">
+          <button class="btn" id="saveWorkoutBtn">SALVAR</button>
+          <button class="btn ghost" id="cancelSaveBtn">CANCELAR</button>
+        </div>
+
+        <div style="margin-top:12px" class="note">OBS: AO SALVAR, O TREINO FICARÁ DISPONÍVEL EM "MEUS TREINOS" PARA EDIÇÃO OU EXCLUSÃO.</div>
+      </div>
+
+      <div class="sidebox">
+        <div style="font-weight:900">RESUMO</div>
+        <div style="margin-top:8px" id="resumoMeta"></div>
+        <div style="margin-top:14px;font-weight:900">CALENDÁRIO PREVISTO</div>
+        <div id="calendarPreview" class="calendar-view"></div>
+
+        <div style="margin-top:12px" class="note">COR: CADA DIA COM COR PRÓPRIA; CLIQUE EM UM DIA PARA VER DETALHES.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MEUS TREINOS OVERLAY -->
+<div class="overlay" id="overlayMeus">
+  <div class="panel-modal">
+    <div class="modal-head">
+      <div style="font-weight:900">MEUS TREINOS</div>
+      <div style="display:flex;gap:8px">
+        <button class="smallbtn" id="closeMeus">FECHAR</button>
+      </div>
+    </div>
+
+    <div style="margin-top:12px" id="meusContainer">
+      <div style="font-weight:900">TREINOS SALVOS</div>
+      <div style="height:12px"></div>
+      <div id="savedList"></div>
+      <div style="margin-top:18px">
+        <div style="font-weight:900">VISUALIZAR CALENDÁRIO DO TREINO SELECIONADO</div>
+        <div id="meusCalendar" style="margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+/* FIREBASE CONFIG - utiliza as chaves do login fornecido */
+const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomain:"prefeitura-de-joao-camara.firebaseapp.com",projectId:"prefeitura-de-joao-camara",storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",messagingSenderId:"269299041577",appId:"1:269299041577:web:fd41b2939240e9eb476338",measurementId:"G-YT7NHR342J"};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+
+/* UTIL / ESTADO */
+const state={
+  userNA:null,
+  userName:'USUÁRIO',
+  groups: {},
+  exercises: [],
+  intensityOptions: [
+    'DROP-SET','SUPER-SÉRIE','TRI-SET','BI-SET','REST-PAUSE','PIRÂMIDE','PIRÂMIDE TRUNCADA','GANGORRA',
+    'PRÉ-EXAUSTÃO','TREINAMENTO DE CHOQUE','REPETIÇÕES FORÇADAS','GVT','ISOMÉTRICO','HIIT'
+  ],
+  selected: {}, // key: exId -> {group, name, reps, sets}
+  selectedDays: [],
+  selectedIntensities: new Set(),
+  durationMonths:1,
+  treinoName:'',
+  savedWorkouts: {}
+};
+
+/* MÁQUINAS E GRUPOS - conforme lista do usuário */
+const RAW_GROUPS = {
+  "MEMBROS INFERIORES – GLÚTEOS / PERNAS / PANTURRILHAS":[
+"ADUÇÃO-ABDUÇÃO","GLÚTEO VERTICAL","HACK","LEG 45","LEG 90","MESA FLEXORA","EXTENSORA","EXTENSORA/FLEXORA",
+"ELEVAÇÃO PÉLVICA","APOLETE","AGACHAMENTO LIVRE","AGACHAMENTO GUIADO","AGACHAMENTO GAIOLA","CROSS SMITH",
+"MULTI TREINO","PANTURRILHA EM PÉ","PANTURRILHA SENTADA"
+  ],
+  "MEMBROS SUPERIORES – COSTAS / DORSAIS":[
+"PUXADA / REMADA BAIXA","PUXADA DORSAL","REMADA BAIXA DORSAL","REMADA NO APARELHO","REMADA CAVALINHO","CROSS GRANDES"
+  ],
+  "MEMBROS SUPERIORES – PEITO":[
+"PECK DECK","PECK DECK VOADOR","SUPINO RETO","SUPINO INCL ARTICU","SUPINO RETO ARTICU","SUP INCLINADO MAQ",
+"SUP DECLINADO","SUP RETO/INCLINADO","BANCO SUP REGULÁVEIS","BANCO RETO FIXO"
+  ],
+  "MEMBROS SUPERIORES – BRAÇOS":[
+"ROSCA SCOT MÁQUINA","ROSCA SCOT LIVRE"
+  ],
+  "MEMBROS SUPERIORES – OMBROS":[
+"DESENV OMBRO LIVRE","BANCO SENTADO LIVRE"
+  ]
+};
+
+/* DADOS INICIAIS: monta exercises com ids */
+(function initData(){
+  let id=0;
+  for(const g in RAW_GROUPS){
+    RAW_GROUPS[g].forEach(name=>{
+      const ex={id:'ex'+(id++), group:g, name:name};
+      state.exercises.push(ex);
+    });
+  }
+  // groups meta counts
+  for(const g in RAW_GROUPS){
+    state.groups[g]=RAW_GROUPS[g].length;
+  }
+})();
+
+/* DOM refs */
+const groupsList = document.getElementById('groupsList');
+const exercisesGrid = document.getElementById('exercisesGrid');
+const searchInput = document.getElementById('searchInput');
+const searchCount = document.getElementById('searchCount');
+const currentGroupLabel = document.getElementById('currentGroupLabel');
+const intensityList = document.getElementById('intensityList');
+const selectedList = document.getElementById('selectedList');
+const selectedCount = document.getElementById('selectedCount');
+const selectedSummary = document.getElementById('selectedSummary');
+const footerFloat = document.getElementById('footerFloat');
+const openPanel = document.getElementById('openPanel');
+const overlay = document.getElementById('overlay');
+const modalSelected = document.getElementById('modalSelected');
+const resumoMeta = document.getElementById('resumoMeta');
+const calendarPreview = document.getElementById('calendarPreview');
+const saveWorkoutBtn = document.getElementById('saveWorkoutBtn');
+const closePanel = document.getElementById('closePanel');
+const btnCriar = document.getElementById('btnCriar');
+const btnLimpar = document.getElementById('btnLimpar');
+const selectDays = document.getElementById('selectDays');
+const durationMonths = document.getElementById('durationMonths');
+const treinoName = document.getElementById('treinoName');
+const statusSave = document.getElementById('statusSave');
+const userNameEl = document.getElementById('userName');
+const userNAEl = document.getElementById('userNA');
+const btnMeusTreinos = document.getElementById('btnMeusTreinos');
+const overlayMeus = document.getElementById('overlayMeus');
+const savedList = document.getElementById('savedList');
+const meusCalendar = document.getElementById('meusCalendar');
+const btnLogout = document.getElementById('btnLogout');
+const exportBtn = document.getElementById('exportBtn');
+const searchLabel = document.getElementById('searchCount');
+
+/* UTIL FUNCTIONS */
+function toKey(str){ return (str||'').replace(/\s+/g,'_').replace(/[^\w\-]/g,'').toUpperCase(); }
+function uid(){ return 'w_'+Math.random().toString(36).slice(2,9); }
+function formatCount(n){ return n + (n===1?' ITEM':' ITENS'); }
+
+/* RENDER GROUPS */
+function renderGroups(){
+  groupsList.innerHTML='';
+  for(const g in state.groups){
+    const div = document.createElement('div');
+    div.className='group-item';
+    div.innerHTML = `<div><div class="title">${g}</div><div class="meta">${state.groups[g]} MÁQUINAS</div></div><div class="meta">VER</div>`;
+    div.addEventListener('click',()=>{ filterByGroup(g); });
+    groupsList.appendChild(div);
+  }
+}
+
+/* RENDER INTENSITIES */
+function renderIntensity(){
+  intensityList.innerHTML='';
+  state.intensityOptions.forEach(opt=>{
+    const d=document.createElement('div');
+    d.className='intensity-item';
+    d.innerText=opt;
+    d.addEventListener('click',()=>{
+      if(d.classList.contains('active')){ d.classList.remove('active'); state.selectedIntensities.delete(opt); }
+      else{ d.classList.add('active'); state.selectedIntensities.add(opt); }
+    });
+    intensityList.appendChild(d);
+  });
+}
+
+/* RENDER EXERCISES (filtered) */
+let CURRENT_FILTER_GROUP = null;
+function renderExercises(filterText=''){
+  exercisesGrid.innerHTML='';
+  const ft = (filterText||'').toUpperCase();
+  let filtered = state.exercises.filter(e=>{
+    const okGroup = !CURRENT_FILTER_GROUP || e.group===CURRENT_FILTER_GROUP;
+    const okText = ft==='' || e.name.includes(ft) || e.group.includes(ft);
+    return okGroup && okText;
+  });
+  searchCount.innerText = filtered.length + ' RESULTADOS';
+  currentGroupLabel.innerText = CURRENT_FILTER_GROUP ? CURRENT_FILTER_GROUP : 'TODOS';
+
+  filtered.forEach(ex=>{
+    const card = document.createElement('div');
+    card.className='exercise-card';
+    card.dataset.exid = ex.id;
+    card.innerHTML = `
+      <div class="exercise-top">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="checkbox-custom" data-exid="${ex.id}"></div>
+          <div>
+            <div class="exercise-name">${ex.name}</div>
+            <div class="small">${ex.group}</div>
+          </div>
+        </div>
+        <div class="small">MÁQUINA</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="inputs" style="display:flex;align-items:center">
+          <div style="font-weight:800">REP</div>
+          <input type="number" min="1" placeholder="10" data-rep="${ex.id}">
+          <div style="width:8px"></div>
+          <div style="font-weight:800">SÉR</div>
+          <input type="number" min="1" placeholder="3" data-set="${ex.id}">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+          <div class="small" style="color:var(--muted)">ADICIONAR</div>
+          <div style="font-size:12px;color:var(--muted)">TOCAR CAIXA</div>
+        </div>
+      </div>
+    `;
+    // checkbox click
+    const chk = card.querySelector('.checkbox-custom');
+    const repInput = card.querySelector(`input[data-rep="${ex.id}"]`);
+    const setInput = card.querySelector(`input[data-set="${ex.id}"]`);
+    chk.addEventListener('click',()=>{
+      // require reps and sets
+      const reps = parseInt(repInput.value||repInput.placeholder||'0',10);
+      const sets = parseInt(setInput.value||setInput.placeholder||'0',10);
+      if(!reps||!sets){
+        // highlight inputs quickly
+        repInput.style.borderColor='crimson';
+        setInput.style.borderColor='crimson';
+        setTimeout(()=>{ repInput.style.borderColor=''; setInput.style.borderColor=''; },900);
+        return;
+      }
+      if(chk.classList.contains('checked')){
+        // unselect
+        chk.classList.remove('checked');
+        delete state.selected[ex.id];
+      } else {
+        chk.classList.add('checked');
+        state.selected[ex.id]={
+          id:ex.id,
+          group:ex.group,
+          name:ex.name,
+          reps:reps,
+          sets:sets
+        };
+      }
+      syncSelectedUI();
+    });
+    // if values changed and was previously selected, update
+    repInput.addEventListener('input',()=>{ if(state.selected[ex.id]) state.selected[ex.id].reps = parseInt(repInput.value||repInput.placeholder||'0',10); syncSelectedUI();});
+    setInput.addEventListener('input',()=>{ if(state.selected[ex.id]) state.selected[ex.id].sets = parseInt(setInput.value||setInput.placeholder||'0',10); syncSelectedUI();});
+
+    exercisesGrid.appendChild(card);
+  });
+}
+
+/* FILTER BY GROUP */
+function filterByGroup(group){
+  CURRENT_FILTER_GROUP = group;
+  renderExercises(searchInput.value);
+}
+
+/* SEARCH */
+searchInput.addEventListener('input',e=>{
+  renderExercises(e.target.value);
+});
+
+/* SELECT DAYS */
+selectDays.querySelectorAll('.chip').forEach(ch=>{
+  ch.addEventListener('click',()=>{
+    const day = ch.dataset.day;
+    if(ch.classList.contains('active')){
+      ch.classList.remove('active');
+      state.selectedDays = state.selectedDays.filter(d=>d!==day);
+    } else {
+      ch.classList.add('active');
+      state.selectedDays.push(day);
+    }
+  });
+});
+
+/* SYNC selected UI */
+function syncSelectedUI(){
+  // update selected list quick view
+  selectedList.innerHTML='';
+  modalSelected.innerHTML='';
+  const keys = Object.keys(state.selected);
+  selectedCount.innerText = keys.length + (keys.length===1? ' ITEM':' ITENS');
+  selectedSummary.innerText = keys.length ? (keys.length + ' ITENS • ' + Array.from(new Set(keys.map(k=>state.selected[k].group))).length + ' GRUPOS') : 'SEM ITENS SELECIONADOS';
+
+  if(keys.length===0){
+    selectedList.innerHTML = '<div class="empty">NENHUM EXERCÍCIO SELECIONADO</div>';
+    modalSelected.innerHTML = '<div class="empty">NENHUMA SELEÇÃO</div>';
+    statusSave.innerText = 'NENHUMA SELEÇÃO';
+    return;
+  }
+  keys.forEach(k=>{
+    const it = state.selected[k];
+    const srow = document.createElement('div');
+    srow.className='sel-row';
+    srow.innerHTML = `<div class="sel-left"><div style="font-weight:900">${it.name}</div><div class="tag">${it.group} • ${it.sets} SÉR X ${it.reps} REP</div></div>
+    <div class="actions"><button class="smallbtn" data-rm="${k}">REMOVER</button></div>`;
+    selectedList.appendChild(srow);
+    // modal
+    const mrow = srow.cloneNode(true);
+    mrow.querySelector('button').addEventListener('click',()=>{ delete state.selected[k]; // uncheck the checkbox
+      const chk = document.querySelector(`.checkbox-custom[data-exid="${k}"]`);
+      if(chk) chk.classList.remove('checked');
+      syncSelectedUI();
+    });
+    modalSelected.appendChild(mrow);
+  });
+  statusSave.innerText = keys.length + ' SELECIONADOS';
+}
+
+/* OPEN PANEL */
+openPanel.addEventListener('click',()=>{
+  overlay.style.display='flex';
+  renderModalSummary();
+});
+
+/* CLOSE PANEL */
+closePanel.addEventListener('click',()=>{ overlay.style.display='none'; });
+
+/* RENDER MODAL SUMMARY and calendar preview */
+function renderModalSummary(){
+  // resumo
+  const keys = Object.keys(state.selected);
+  resumoMeta.innerHTML = '';
+  const gnames = Array.from(new Set(keys.map(k=>state.selected[k].group)));
+  resumoMeta.innerHTML += `<div class="kv">${keys.length} ITENS</div>`;
+  resumoMeta.innerHTML += `<div class="tag">${gnames.length} GRUPOS</div>`;
+  resumoMeta.innerHTML += `<div style="margin-top:8px" class="tag">INTENSIDADE: ${Array.from(state.selectedIntensities).join(', ') || 'NENHUMA'}</div>`;
+  resumoMeta.innerHTML += `<div style="margin-top:8px" class="tag">DIAS: ${state.selectedDays.join(', ') || 'NÃO DEFINIDO'}</div>`;
+  resumoMeta.innerHTML += `<div style="margin-top:8px" class="tag">DURAÇÃO: ${ (parseInt(durationMonths.value||durationMonths.placeholder||'1')) } MÊS(ES)</div>`;
+
+  // calendar preview: generate boxes for selected days repeating across 4 weeks (months count approximated)
+  calendarPreview.innerHTML='';
+  const dayColors = {'SEG':'#FFB3BA','TER':'#FFDFBA','QUA':'#FFFFBA','QUI':'#BAFFC9','SEX':'#BAE1FF','SAB':'#E1BAFF','DOM':'#F2D7BA'};
+  const days = ['SEG','TER','QUA','QUI','SEX','SAB','DOM'];
+  days.forEach(d=>{
+    const dc = document.createElement('div');
+    dc.className='day-card';
+    dc.innerHTML = `<div class="day-title"><span class="color-day" style="background:${dayColors[d]||'#ddd'}"></span>${d}</div>`;
+    if(state.selectedDays.includes(d)){
+      // list exercises for that day: evenly split selections among chosen days in order (simple distribution)
+      const arr = Object.values(state.selected);
+      if(arr.length===0){ dc.innerHTML += `<div class="day-item empty">SEM EXERCÍCIOS</div>`;}
+      else{
+        // assign all exercises to each selected day (as user expected to follow routine each selected day)
+        arr.forEach(it=>{
+          const div = document.createElement('div');
+          div.className='day-item';
+          div.innerText = `${it.group} • ${it.name} • ${it.sets}X${it.reps}`;
+          dc.appendChild(div);
+        });
+      }
+    } else {
+      dc.innerHTML += `<div class="day-item empty">NÃO PROGRAMADO</div>`;
+    }
+    calendarPreview.appendChild(dc);
+  });
+}
+
+/* SALVAR TREINO NO FIREBASE */
+saveWorkoutBtn.addEventListener('click',async()=>{
+  if(!state.userNA){ alert('USUÁRIO NÃO LOGADO'); return; }
+  const keys = Object.keys(state.selected);
+  if(keys.length===0){ alert('SELECIONE PELO MENOS UM EXERCÍCIO'); return; }
+  if(state.selectedDays.length===0){ alert('SELECIONE PELO MENOS UM DIA DA SEMANA'); return; }
+  const duration = parseInt(durationMonths.value||durationMonths.placeholder||'1',10) || 1;
+  const payload = {
+    id: uid(),
+    name: treinoName.value.trim().toUpperCase() || `TREINO ${new Date().toISOString().slice(0,10)}`,
+    createdAt: new Date().toISOString(),
+    durationMonths: duration,
+    days: state.selectedDays,
+    intensities: Array.from(state.selectedIntensities),
+    exercises: Object.values(state.selected).map(it=>({id:it.id,group:it.group,name:it.name,reps:it.reps,sets:it.sets}))
+  };
+  // save under /workouts/{userNA}/{payload.id}
+  try{
+    await db.ref(`workouts/${state.userNA}/${payload.id}`).set(payload);
+    // also add to local savedWorkouts
+    state.savedWorkouts[payload.id]=payload;
+    alert('TREINO SALVO COM SUCESSO!');
+    overlay.style.display='none';
+    limparSelecoes();
+    loadSavedWorkouts(); // refresh view
+  }catch(err){ console.error(err); alert('ERRO AO SALVAR: '+err.message); }
+});
+
+/* LIMPAR SELEÇÕES */
+function limparSelecoes(){
+  state.selected = {};
+  state.selectedDays = [];
+  state.selectedIntensities = new Set();
+  durationMonths.value = '';
+  treinoName.value = '';
+  // uncheck UI
+  document.querySelectorAll('.checkbox-custom.checked').forEach(el=>el.classList.remove('checked'));
+  document.querySelectorAll('.chip.active').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.intensity-item.active').forEach(el=>el.classList.remove('active'));
+  syncSelectedUI();
+}
+
+/* BTN LIMPAR */
+btnLimpar.addEventListener('click',()=>{ if(confirm('LIMPAR SELEÇÕES?')) limparSelecoes(); });
+
+/* BTN CRIAR = abrir modal também */
+btnCriar.addEventListener('click',()=>{
+  // copy some fields to state
+  state.durationMonths = parseInt(durationMonths.value||durationMonths.placeholder||'1',10) || 1;
+  state.treinoName = treinoName.value.trim().toUpperCase();
+  if(Object.keys(state.selected).length===0){ alert('SELECIONE EXERCÍCIOS PRIMEIRO'); return; }
+  if(state.selectedDays.length===0){ alert('SELECIONE DIAS DA SEMANA'); return; }
+  renderModalSummary();
+  overlay.style.display='flex';
+});
+
+/* EXPORT JSON */
+exportBtn.addEventListener('click',()=>{
+  const payload = {
+    meta:{user:state.userNA, name:state.treinoName, savedAt:new Date().toISOString()},
+    selected: state.selected,
+    days: state.selectedDays,
+    intensities: Array.from(state.selectedIntensities)
+  };
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(payload,null,2));
+  const a = document.createElement('a');
+  a.href = dataStr; a.download = 'treino_export_'+(state.userNA||'anon')+'.json';
+  document.body.appendChild(a); a.click(); a.remove();
+});
+
+/* LOAD AUTHENTICATED USER FROM localStorage (login.html sets loggedUser) */
+function initUser(){
+  const na = localStorage.getItem('loggedUser') || null;
+  if(!na){
+    userNameEl.innerText = 'GUEST';
+    userNAEl.innerText = 'NA: ----';
+    // try redirect to login
+    // window.location.href='login.html'; // not redirecting automatically to keep embed
+    return;
+  }
+  state.userNA = na;
+  // fetch user info from firebase /users/{na}
+  db.ref(`users/${na}`).get().then(snap=>{
+    if(snap.exists()){
+      const u=snap.val();
+      state.userName = (u.name||u.nome||'USUÁRIO').toString().toUpperCase();
+      userNameEl.innerText = state.userName;
+      userNAEl.innerText = 'NA: ' + na;
+    } else {
+      userNameEl.innerText = 'USUÁRIO';
+      userNAEl.innerText = 'NA: ' + na;
+    }
+  }).catch(err=>{ console.error(err); userNameEl.innerText='USUÁRIO'; userNAEl.innerText='NA: '+na;});
+}
+
+/* LOAD SAVED WORKOUTS */
+async function loadSavedWorkouts(){
+  if(!state.userNA) return;
+  const snap = await db.ref(`workouts/${state.userNA}`).get();
+  state.savedWorkouts = {};
+  if(snap.exists()){
+    const data = snap.val();
+    Object.keys(data).forEach(k=> state.savedWorkouts[k]=data[k]);
+  }
+  renderSavedList();
+}
+
+/* RENDER SAVED LIST */
+function renderSavedList(){
+  savedList.innerHTML='';
+  const keys = Object.keys(state.savedWorkouts).sort((a,b)=> (state.savedWorkouts[b].createdAt||'').localeCompare(state.savedWorkouts[a].createdAt||''));
+  if(keys.length===0){ savedList.innerHTML='<div class="empty">NENHUM TREINO SALVO</div>'; return; }
+  keys.forEach(k=>{
+    const w = state.savedWorkouts[k];
+    const box = document.createElement('div');
+    box.className='sel-row';
+    box.innerHTML = `<div class="sel-left"><div style="font-weight:900">${w.name}</div><div class="tag">CRIAÇÃO: ${w.createdAt.slice(0,10)} • ${w.durationMonths} MÊS(ES)</div></div>
+    <div class="actions">
+      <button class="smallbtn" data-view="${k}">VER</button>
+      <button class="smallbtn" data-edit="${k}">EDITAR</button>
+      <button class="smallbtn" data-del="${k}">EXCLUIR</button>
+    </div>`;
+    savedList.appendChild(box);
+    box.querySelector('[data-view]').addEventListener('click',()=>{ viewWorkout(k); });
+    box.querySelector('[data-edit]').addEventListener('click',()=>{ editWorkout(k); });
+    box.querySelector('[data-del]').addEventListener('click',()=>{ deleteWorkout(k); });
+  });
+}
+
+/* VIEW workout -> show calendar and details in meusCalendar */
+function viewWorkout(id){
+  const w = state.savedWorkouts[id];
+  if(!w) return;
+  overlayMeus.style.display='flex';
+  meusCalendar.innerHTML = `<div style="font-weight:900">${w.name}</div><div style="margin-top:8px" class="tag">DIAS: ${w.days.join(', ')}</div><div style="margin-top:8px" class="tag">INTENSIDADE: ${ (w.intensities||[]).join(', ') || 'NENHUMA'}</div>`;
+  // show list grouped
+  const groups = {};
+  (w.exercises||[]).forEach(ex=>{
+    if(!groups[ex.group]) groups[ex.group]=[];
+    groups[ex.group].push(ex);
+  });
+  const container = document.createElement('div');
+  container.style.marginTop='12px';
+  for(const g in groups){
+    const gbox = document.createElement('div');
+    gbox.style.marginBottom='10px';
+    gbox.innerHTML = `<div style="font-weight:900">${g}</div>`;
+    groups[g].forEach(it=>{
+      const div = document.createElement('div');
+      div.className='day-item';
+      div.innerText = `${it.name} • ${it.sets}X${it.reps}`;
+      gbox.appendChild(div);
+    });
+    container.appendChild(gbox);
+  }
+  meusCalendar.appendChild(container);
+}
+
+/* EDIT workout -> populate selection UI from saved workout */
+function editWorkout(id){
+  const w = state.savedWorkouts[id];
+  if(!w) return;
+  // clear and set
+  limparSelecoes();
+  // fill selected
+  (w.exercises||[]).forEach(it=>{
+    state.selected[it.id] = { id:it.id, group:it.group, name:it.name, reps:it.reps, sets:it.sets };
+    // set inputs in the grid if visible
+    const rep = document.querySelector(`input[data-rep="${it.id}"]`);
+    const set = document.querySelector(`input[data-set="${it.id}"]`);
+    const chk = document.querySelector(`.checkbox-custom[data-exid="${it.id}"]`);
+    if(rep) rep.value = it.reps;
+    if(set) set.value = it.sets;
+    if(chk) chk.classList.add('checked');
+  });
+  // days
+  state.selectedDays = (w.days||[]).slice();
+  document.querySelectorAll('.chip').forEach(ch=>{
+    ch.classList.toggle('active', state.selectedDays.includes(ch.dataset.day));
+  });
+  // intensities
+  state.selectedIntensities = new Set((w.intensities||[]));
+  document.querySelectorAll('.intensity-item').forEach(it=>{
+    it.classList.toggle('active', state.selectedIntensities.has(it.innerText));
+  });
+  durationMonths.value = w.durationMonths;
+  treinoName.value = w.name;
+  syncSelectedUI();
+  // open modal to let personal finish edits
+  overlay.style.display='flex';
+  renderModalSummary();
+}
+
+/* DELETE workout */
+async function deleteWorkout(id){
+  if(!confirm('EXCLUIR TREINO? ESTA AÇÃO NÃO PODE SER DESFEITA')) return;
+  try{
+    await db.ref(`workouts/${state.userNA}/${id}`).remove();
+    delete state.savedWorkouts[id];
+    renderSavedList();
+    alert('TREINO EXCLUÍDO');
+  }catch(err){ console.error(err); alert('ERRO: '+err.message); }
+}
+
+/* BTN abrir MEUS TREINOS */
+btnMeusTreinos.addEventListener('click', async()=>{
+  if(!state.userNA){ alert('USUÁRIO NÃO LOGADO'); return; }
+  await loadSavedWorkouts();
+  overlayMeus.style.display='flex';
+});
+
+/* CLOSE meus */
+document.getElementById('closeMeus').addEventListener('click',()=>{ overlayMeus.style.display='none'; });
+
+/* LOGOUT */
+btnLogout.addEventListener('click',()=>{
+  localStorage.removeItem('loggedUser');
+  alert('DESLOGADO'); location.href='login.html';
+});
+
+/* INIT */
+renderGroups();
+renderIntensity();
+renderExercises();
+syncSelectedUI();
+initUser();
+loadSavedWorkouts();
+
+</script>
+</body>
+</html>
