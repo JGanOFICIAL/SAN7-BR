@@ -133,7 +133,85 @@ function enviar(){
 
 
 
+<div id="geo-permission" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(180deg,#f5f9ff,#e8f3ff);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:'Arial',sans-serif;transition:opacity 0.5s;">
+  <img src="URL_DA_SUA_IMAGEM_AQUI" alt="Imagem" style="width:140px;height:140px;object-fit:contain;margin-bottom:25px;">
+  <h2 style="margin-bottom:10px;color:#2c3e50;font-size:22px;">Permissão de Localização</h2>
+  <p style="color:#555;margin-bottom:25px;font-size:15px;max-width:300px;">Precisamos da sua localização para validar o ponto. Clique em continuar e permita o acesso.</p>
+  <div style="display:flex;gap:12px;">
+    <button id="btnContinuar" style="background:#4da6ff;color:white;border:none;padding:12px 25px;cursor:pointer;font-size:16px;font-weight:600;box-shadow:0 3px 8px rgba(0,0,0,0.1);transition:0.3s;">Continuar</button>
+    <button onclick="window.location.href='login.html'" style="border:2px solid #4CAF50;background:transparent;color:#4CAF50;padding:12px 25px;cursor:pointer;font-size:16px;font-weight:600;transition:0.3s;">Voltar</button>
+  </div>
+</div>
 
+<div id="geo-block" style="position:fixed;top:0;left:0;width:100%;height:100%;background:white;z-index:10000;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:'Arial',sans-serif;">
+  <h2 style="color:red;margin-bottom:10px;font-size:22px;">Acesso Negado</h2>
+  <p style="color:#444;margin-bottom:25px;font-size:15px;">Você não está dentro da área permitida para bater o ponto.</p>
+  <button onclick="window.location.href='login.html'" style="border:2px solid #4CAF50;background:transparent;color:#4CAF50;padding:12px 25px;cursor:pointer;font-size:16px;font-weight:600;">Voltar</button>
+</div>
 
+<script>
+const localLatitude = -5.536936;
+const localLongitude = -35.816788;
+const raioPermitido = 400;
 
+function calcularDistancia(lat1, lon1, lat2, lon2) {
+  const R = 6371e3;
+  const φ1 = lat1 * Math.PI/180;
+  const φ2 = lat2 * Math.PI/180;
+  const Δφ = (lat2 - lat1) * Math.PI/180;
+  const Δλ = (lon2 - lon1) * Math.PI/180;
+  const a = Math.sin(Δφ/2)**2 + Math.cos(φ1)*Math.cos(φ2)*Math.sin(Δλ/2)**2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
 
+document.getElementById("btnContinuar").addEventListener("click", () => {
+  const btn = document.getElementById("btnContinuar");
+  btn.disabled = true;
+  btn.textContent = "Validando...";
+  const spinner = document.createElement("div");
+  spinner.style.width = "45px";
+  spinner.style.height = "45px";
+  spinner.style.border = "5px solid #cce6ff";
+  spinner.style.borderTop = "5px solid #4da6ff";
+  spinner.style.borderRadius = "50%";
+  spinner.style.animation = "spin 1s linear infinite";
+  spinner.style.margin = "25px auto 0";
+  document.getElementById("geo-permission").appendChild(spinner);
+
+  navigator.geolocation.getCurrentPosition(pos => {
+    const { latitude, longitude } = pos.coords;
+
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`)
+      .then(res => res.json())
+      .then(() => {
+        const distancia = calcularDistancia(localLatitude, localLongitude, latitude, longitude);
+        setTimeout(() => {
+          if (distancia <= raioPermitido) {
+            document.getElementById("geo-permission").style.opacity = "0";
+            setTimeout(() => {
+              document.getElementById("geo-permission").style.display = "none";
+            }, 500);
+          } else {
+            document.getElementById("geo-block").style.display = "flex";
+          }
+        }, 4000);
+      })
+      .catch(() => {
+        document.getElementById("geo-block").style.display = "flex";
+      });
+  }, () => {
+    alert("Não foi possível obter sua localização.");
+    btn.disabled = false;
+    btn.textContent = "Continuar";
+    document.querySelector("#geo-permission div:last-child").remove();
+  });
+});
+
+const style = document.createElement("style");
+style.innerHTML = `
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+button:hover { transform: scale(1.03); opacity:0.9; }
+`;
+document.head.appendChild(style);
+</script>
