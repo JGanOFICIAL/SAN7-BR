@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Avaliação</title>
+<style>
+:root{
+  --bg:#fff;
+  --dark:#000;
+  --light:#f5f5f5;
+  --accent:#f0f0f0;
+  --green:#32CD32;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+body{background:var(--bg);color:var(--dark);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:100px}
+header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #eee;z-index:10}
+.logo-canto-esquerdo{height:38px;width:auto}
+.menu-container{position:relative}
+.menu-btn{width:32px;height:24px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between}
+.menu-btn div{width:100%;height:3px;background:#000;border-radius:2px;transition:all .3s}
+.menu-btn.active div:nth-child(1){transform:rotate(45deg) translateY(9px)}
+.menu-btn.active div:nth-child(2){opacity:0}
+.menu-btn.active div:nth-child(3){transform:rotate(-45deg) translateY(-9px)}
+.menu{position:absolute;top:40px;right:0;background:#fff;box-shadow:0 4px 15px rgba(0,0,0,.1);border-radius:6px;display:none;flex-direction:column;width:200px;overflow:hidden}
+.menu.active{display:flex}
+.menu a{text-decoration:none;color:#000;padding:12px 15px;transition:.3s}
+.menu a:hover{background:#f5f5f5}
+
+main{width:100%;max-width:400px;padding:20px}
+.container{margin-top:20px}
+h2{font-size:22px;font-weight:600;margin-bottom:25px}
+label{display:block;font-size:14px;color:#444;margin-bottom:8px}
+input[type="text"]{
+  width:100%;padding:14px;border:none;border-bottom:1px solid #ccc;font-size:17px;color:#000;background:transparent;outline:none;
+}
+input::placeholder{color:#aaa}
+.btn{margin-top:25px;width:100%;padding:14px;border-radius:8px;border:none;background:#e6e6e6;color:#999;font-weight:600;font-size:16px;cursor:pointer;transition:.3s}
+.btn:hover{background:#ddd}
+.btn.active{background:var(--green);color:#fff}
+.info{margin-top:20px;font-size:13px;color:#555}
+footer{margin-top:60px;font-size:12px;color:#888;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-canto-esquerdo">
+ 
+
+
+
+
+<button onclick="window.location.href='index.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">Voltar</button>
+
+</header>
+
+<div style="display:flex;justify-content:center;">
+  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000105-6548d6548f/700/2C268A28-6B8B-45B8-877A-C5FC59C77D72.webp" style="width:TAMANHO_WIDTHpx;height:80px;">
+</div>
+
+
+
+
+
+
+
+
+
+<style>
+    :root{
+        --cor-botao:#8DC63F;
+        --cor-borda:#dcdcdc;
+        --cor-fundo:#f2f4f7;
+        --cor-texto:#222;
+        --cor-alternativa:#ffffff;
+        --cor-alternativa-hover:#eef3e5;
+        --cor-progresso:#8DC63F;
+    }
+
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:Arial, sans-serif;
+    }
+
+    body{
+        background:var(--cor-fundo);
+    }
+
+    #quiz-container{
+        width:100%;
+        max-width:900px;
+        margin:0 auto;
+        padding:25px;
+        animation:fade .4s ease;
+    }
+
+    @keyframes fade{from{opacity:0;}to{opacity:1;}}
+
+    .quadrado{
+        border-radius:0 !important;
+    }
+
+    .botao{
+        background:var(--cor-botao);
+        border:none;
+        padding:15px 22px;
+        cursor:pointer;
+        color:#fff;
+        font-weight:bold;
+        margin-top:22px;
+        display:inline-block;
+        text-align:center;
+        border-radius:6px;
+        box-shadow:0 3px 6px rgba(0,0,0,.15);
+        transition:.2s;
+        letter-spacing:.5px;
+    }
+    .botao:hover{opacity:.9; transform:scale(1.02);}
+
+    .questao{
+        background:#fff;
+        border:1px solid var(--cor-borda);
+        padding:25px;
+        margin-bottom:32px;
+        box-shadow:0 4px 12px rgba(0,0,0,.08);
+        border-radius:10px;
+        transition:.25s;
+    }
+    .questao:hover{
+        transform:translateY(-3px);
+    }
+
+    .questao img{
+        width:100%;
+        max-height:260px;
+        object-fit:cover;
+        margin-bottom:20px;
+        border-radius:8px;
+        border:1px solid var(--cor-borda);
+    }
+
+    .opcao{
+        display:flex;
+        align-items:center;
+        padding:14px;
+        border:1px solid var(--cor-borda);
+        margin-bottom:14px;
+        cursor:pointer;
+        background:var(--cor-alternativa);
+        transition:.15s;
+        border-radius:8px;
+        font-size:15px;
+    }
+    .opcao:hover{
+        background:var(--cor-alternativa-hover);
+        transform:scale(1.01);
+    }
+
+    .opcao input{
+        margin-right:12px;
+        width:20px;
+        height:20px;
+    }
+
+    #resultado-planilha, #resultado-final, #carregamento, #carregamento-final{
+        display:none;
+        animation:fade .4s ease;
+    }
+
+    table{
+        width:100%;
+        border-collapse:collapse;
+        background:white;
+        margin-top:25px;
+        box-shadow:0 4px 12px rgba(0,0,0,.08);
+        border-radius:8px;
+        overflow:hidden;
+    }
+
+    table th{
+        background:var(--cor-botao);
+        color:white;
+        padding:14px;
+        letter-spacing:.5px;
+        font-size:15px;
+    }
+
+    table td{
+        border-bottom:1px solid var(--cor-borda);
+        padding:14px;
+        font-size:14px;
+    }
+
+    .status-img{
+        width:26px;
+        height:26px;
+        margin-left:10px;
+    }
+
+    #loading-spinner{
+        width:60px;
+        height:60px;
+        border:6px solid var(--cor-botao);
+        border-top-color:transparent;
+        border-radius:50%;
+        margin:50px auto;
+        animation:spin 1s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg);}}
+
+    #barra-progresso{
+        width:100%;
+        height:30px;
+        background:#e6e6e6;
+        margin-top:40px;
+        overflow:hidden;
+        border-radius:8px;
+        box-shadow:inset 0 1px 4px rgba(0,0,0,.15);
+    }
+    #barra-progresso .fill{
+        height:100%;
+        background:var(--cor-progresso);
+        width:0%;
+        transition:width .4s ease;
+    }
+
+    .card-final{
+        background:white;
+        border:1px solid var(--cor-borda);
+        padding:20px;
+        margin-bottom:20px;
+        box-shadow:0 4px 12px rgba(0,0,0,.08);
+        border-radius:10px;
+    }
+
+    #titulo-resultado{
+        margin-bottom:12px;
+    }
+
+    #mensagem-resultado{
+        background:#fff;
+        padding:18px;
+        border:1px solid var(--cor-borda);
+        margin-bottom:22px;
+        border-radius:8px;
+        box-shadow:0 3px 6px rgba(0,0,0,.05);
+    }
+</style>
+
+<div id="quiz-container">
+
+    <div id="bloco-questoes">
+
+        <div class="questao" data-q="1">
+            <img src="https://s2-ge.glbimg.com/_nYXvPfRD9yaSGH2c0BWFh9zLKU=/0x0:5400x3604/924x0/smart/filters:strip_icc()/s.glbimg.com/es/ge/f/original/2015/08/17/gettyimages-470627135.jpg">
+            <p><b>1) Durante treinos de musculação, muitos praticantes encontram dificuldade em manter estabilidade e alinhamento corporal em movimentos fundamentais como o agachamento. Considerando biomecânica, ativação muscular e segurança articular, qual componente é o mais determinante para preservar a neutralidade da coluna e evitar sobrecarga lombar?</b></p>
+
+            <label class="opcao quadrado"><input type="radio" name="q1" value="A">A) Aumentar amplitude sem controle para ativar mais fibras.</label>
+            <label class="opcao quadrado"><input type="radio" name="q1" value="B">B) Descer ao máximo mesmo perdendo a curvatura neutra.</label>
+            <label class="opcao quadrado"><input type="radio" name="q1" value="C">C) Manter o core firme e a coluna neutra durante todo o movimento.</label>
+            <label class="opcao quadrado"><input type="radio" name="q1" value="D">D) Flexionar a coluna para frente para compensar mobilidade.</label>
+            <label class="opcao quadrado"><input type="radio" name="q1" value="E">E) Fazer rapidamente para evitar fadiga.</label>
+        </div>
+
+        <div class="questao" data-q="2">
+            <img src="https://p2.trrsf.com/image/fget/cf/1200/630/middle/images.terra.com/2025/01/22/740134533-frequencia-de-treinos.jpg">
+            <p><b>2) Em treinos de alta intensidade, diversas adaptações fisiológicas ocorrem no sistema cardiovascular. Entre elas, qual representa uma mudança real e benéfica decorrente de prática consistente?</b></p>
+
+            <label class="opcao quadrado"><input type="radio" name="q2" value="A">A) Volume sistólico reduzido devido ao aumento da FC de repouso.</label>
+            <label class="opcao quadrado"><input type="radio" name="q2" value="B">B) Maior capacidade pulmonar sem melhora na eficiência respiratória.</label>
+            <label class="opcao quadrado"><input type="radio" name="q2" value="C">C) Aumento do volume sistólico e redução da FC de repouso.</label>
+            <label class="opcao quadrado"><input type="radio" name="q2" value="D">D) Redução do débito cardíaco devido ao esforço repetido.</label>
+            <label class="opcao quadrado"><input type="radio" name="q2" value="E">E) Maior consumo de oxigênio apenas em repouso.</label>
+        </div>
+
+        <div class="questao" data-q="3">
+            <img src="https://blog.gsuplementos.com.br/wp-content/uploads/2024/03/emagrecimento-scaled.jpg">
+            <p><b>3) Em programas de emagrecimento, manter déficit calórico é essencial para progressão contínua. Nesse contexto, qual elemento é o mais determinante para sustentar o déficit de forma saudável e duradoura?</b></p>
+
+            <label class="opcao quadrado"><input type="radio" name="q3" value="A">A) Comer o mínimo possível ignorando qualidade nutricional.</label>
+            <label class="opcao quadrado"><input type="radio" name="q3" value="B">B) Priorizar industrializados pela contagem exata de calorias.</label>
+            <label class="opcao quadrado"><input type="radio" name="q3" value="C">C) Ajustar calorias de forma sustentável, respeitando preferências.</label>
+            <label class="opcao quadrado"><input type="radio" name="q3" value="D">D) Eliminar todos os carboidratos.</label>
+            <label class="opcao quadrado"><input type="radio" name="q3" value="E">E) Comer uma vez ao dia para “acelerar” o metabolismo.</label>
+        </div>
+
+        <div class="questao" data-q="4">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4MlPOt-taRPS0gmmt_-1R-bWRxLNfMoFu8ZdTbibfiw&s=10">
+            <p><b>4) No treinamento resistido, a cadência controla o tempo sob tensão, diretamente influenciando hipertrofia. Qual opção refere-se à cadência mais adequada para maximizar estímulo e controle muscular?</b></p>
+
+            <label class="opcao quadrado"><input type="radio" name="q4" value="A">A) Execução extremamente rápida.</label>
+            <label class="opcao quadrado"><input type="radio" name="q4" value="B">B) Concentração lenta e excêntrica muito rápida.</label>
+            <label class="opcao quadrado"><input type="radio" name="q4" value="C">C) Concentração controlada e excêntrica mais lenta.</label>
+            <label class="opcao quadrado"><input type="radio" name="q4" value="D">D) Pausar totalmente entre cada repetição.</label>
+            <label class="opcao quadrado"><input type="radio" name="q4" value="E">E) Fazer tudo rapidamente para evitar fadiga.</label>
+        </div>
+
+        <div class="questao" data-q="5">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0W0dAV5RuWx459ezoDTCso9Dvcxq5Qg8pZ7ZjwIU8SA&s=10">
+            <p><b>5) Em treinos intensos, a mobilidade articular ajuda a prevenir lesões e melhorar eficiência do movimento. Qual afirmação melhor descreve seu papel?</b></p>
+
+            <label class="opcao quadrado"><input type="radio" name="q5" value="A">A) Permite forçar articulações ao máximo.</label>
+            <label class="opcao quadrado"><input type="radio" name="q5" value="B">B) Substitui totalmente o aquecimento.</label>
+            <label class="opcao quadrado"><input type="radio" name="q5" value="C">C) Aumenta amplitude segura, reduzindo compensações.</label>
+            <label class="opcao quadrado"><input type="radio" name="q5" value="D">D) Deixa o corpo mais rígido para gerar força.</label>
+            <label class="opcao quadrado"><input type="radio" name="q5" value="E">E) Evita a necessidade de alongamentos.</label>
+        </div>
+
+        <button class="botao quadrado" id="finalizar">Finalizar</button>
+    </div>
+
+    <div id="carregamento">
+        <div id="loading-spinner"></div>
+    </div>
+
+    <div id="resultado-planilha">
+        <h3>Respostas Selecionadas</h3>
+
+        <table id="tabela-respostas"></table>
+
+        <button class="botao quadrado" id="voltar-questoes">Voltar</button>
+        <button class="botao quadrado" id="continuar-final">Continuar</button>
+    </div>
+
+    <div id="carregamento-final">
+        <p style="text-align:center;">Processando resultado...</p>
+        <div id="barra-progresso" class="quadrado">
+            <div class="fill"></div>
+        </div>
+    </div>
+
+    <div id="resultado-final">
+        <h2 id="titulo-resultado"></h2>
+        <div id="mensagem-resultado"></div>
+
+        <button class="botao quadrado" id="nova-tentativa">Nova tentativa</button>
+
+        <h3 style="margin-top:25px;">Questões Respondidas</h3>
+        <div id="lista-questoes-final"></div>
+    </div>
+
+</div>
+
+<script>
+    const corretas = {q1:"C",q2:"C",q3:"C",q4:"C",q5:"C"};
+
+    const mensagens = [
+        "Você teve um excelente desempenho! Continue assim.",
+        "Ótimo resultado! Seu foco está evidente.",
+        "Bom trabalho! Você está progrindindo muito bem.",
+        "Você foi bem, mas ainda pode melhorar!",
+        "Continue tentando! Sua evolução está no caminho certo."
+    ];
+
+    const finalizar = document.getElementById("finalizar");
+    const blocoQuestoes = document.getElementById("bloco-questoes");
+    const carregamento = document.getElementById("carregamento");
+    const planilha = document.getElementById("resultado-planilha");
+    const tabela = document.getElementById("tabela-respostas");
+    const continuarFinal = document.getElementById("continuar-final");
+    const voltarQuestoes = document.getElementById("voltar-questoes");
+    const carregamentoFinal = document.getElementById("carregamento-final");
+    const barraProgresso = document.querySelector("#barra-progresso .fill");
+    const resultadoFinal = document.getElementById("resultado-final");
+    const tituloResultado = document.getElementById("titulo-resultado");
+    const mensagemResultado = document.getElementById("mensagem-resultado");
+    const listaFinal = document.getElementById("lista-questoes-final");
+    const novaTentativa = document.getElementById("nova-tentativa");
+
+    let respostas={};
+
+    finalizar.onclick=()=>{
+        respostas={};
+        document.querySelectorAll(".questao").forEach(q=>{
+            const name="q"+q.dataset.q;
+            const checked=q.querySelector("input:checked");
+            respostas[name]=checked?checked.value:"-";
+        });
+
+        blocoQuestoes.style.display="none";
+        carregamento.style.display="block";
+
+        setTimeout(()=>{
+            carregamento.style.display="none";
+            preencherTabela();
+            planilha.style.display="block";
+        },2000);
+    };
+
+    function preencherTabela(){
+        tabela.innerHTML=`<tr><th>Questão</th><th>Alternativa Selecionada</th></tr>`;
+        for(let q in respostas){
+            tabela.innerHTML+=`<tr><td>${q.toUpperCase()}</td><td>${respostas[q]}</td></tr>`;
+        }
+    }
+
+    voltarQuestoes.onclick=()=>{
+        planilha.style.display="none";
+        blocoQuestoes.style.display="block";
+    };
+
+    continuarFinal.onclick=()=>{
+        planilha.style.display="none";
+        carregamentoFinal.style.display="block";
+        barraProgresso.style.width="0%";
+
+        let tempo=0;
+        let interval=setInterval(()=>{
+            tempo++;
+            barraProgresso.style.width=(tempo/8*100)+"%";
+            if(tempo>=8){
+                clearInterval(interval);
+                carregamentoFinal.style.display="none";
+                exibirResultadoFinal();
+            }
+        },1000);
+    };
+
+    function exibirResultadoFinal(){
+        resultadoFinal.style.display="block";
+        let acertos=0;
+
+        for(let q in respostas){
+            if(respostas[q]===corretas[q]) acertos++;
+        }
+
+        let porcentagem=(acertos/5*100).toFixed(0);
+
+        tituloResultado.innerText=`Resultado Final: ${acertos}/5 (${porcentagem}%)`;
+
+        mensagemResultado.innerHTML = `
+            <b>Avaliação Geral:</b><br>
+            ${mensagens[Math.floor(Math.random()*mensagens.length)]}<br><br>
+            <b>Desempenho:</b> ${porcentagem}% de acerto <br>
+            <b>Status:</b> ${acertos >= 4 ? "Excelente!" : acertos == 3 ? "Bom!" : "Pode melhorar!"}
+        `;
+
+        listaFinal.innerHTML="";
+        let n=1;
+
+        for(let q in respostas){
+            const correto=respostas[q]===corretas[q];
+            listaFinal.innerHTML+=`
+                <div class="card-final quadrado">
+                    <p><b>Questão ${n}</b></p>
+                    <p><b>Marcada:</b> ${respostas[q]}</p>
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyBHYgqru0vgAVave002Jcu-010kRp57gJykYQpCxWlg&s=10" class="status-img" style="display:${correto?'inline-block':'none'};">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Nuvola_apps_error.svg/2048px-Nuvola_apps_error.svg.png" class="status-img" style="display:${!correto?'inline-block':'none'};">
+                </div>
+            `;
+            n++;
+        }
+    }
+
+    novaTentativa.onclick=()=>location.reload();
+</script>
+
+<div id="notifBox">
+  <img id="notifImg" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1UHVtTfm5BBxYQ_PceIApoQI0YXmUh51zl8i2mrxD2g&s=10" alt="">
+  <div id="notifText">
+    <h3 id="notifTitle">Educação Física</h3>
+    <p id="notifDesc">Conquiste seu sonho de graduação na área que mais cresce no Brasil. Na Uninta você encontra vários cursos, incluindo educação física.</p>
+    <a id="notifLink" href="https://wa.me/5584991778690" target="_blank">Acessar</a>
+  </div>
+  <span id="notifClose">✕</span>
+</div>
+
+<style>
+  #notifBox {
+    position: fixed;
+    top: -200px;
+    left: 0;
+    width: 100%;
+    background: rgba(255,0,0,0.8);
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 9999;
+    transition: all .4s ease;
+    box-sizing: border-box;
+  }
+  #notifImg {
+    width: 50px;
+    height: 50px;
+    border-radius: 6px;
+    object-fit: cover;
+  }
+  #notifText {
+    flex: 1;
+    color: #fff;
+    font-family: Arial, sans-serif;
+  }
+  #notifText h3 {
+    margin: 0;
+    font-size: 17px;
+  }
+  #notifText p {
+    margin: 2px 0 6px 0;
+    font-size: 14px;
+  }
+  #notifLink {
+    font-size: 15px;
+    color: #fff;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  #notifClose {
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 6px;
+  }
+</style>
+
+<script>
+  window.onload = () => {
+    setTimeout(() => {
+      document.getElementById("notifBox").style.top = "60px";
+    }, 2000);
+  };
+
+  document.getElementById("notifClose").onclick = () => {
+    document.getElementById("notifBox").style.top = "-200px";
+  };
+</script>
