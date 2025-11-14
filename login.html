@@ -201,3 +201,352 @@ loginBtn.addEventListener('click',async()=>{
 </script>
 </body>
 </html>
+
+
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+.chat-floating-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: #8BC34A;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 22px rgba(0,0,0,0.25);
+  z-index: 99999;
+}
+
+.chat-floating-btn img {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
+}
+
+#chatFull {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  display: none;
+  flex-direction: column;
+  z-index: 999999;
+}
+
+.chat-header {
+  width: 100%;
+  height: 65px;
+  background: #8BC34A;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+}
+
+.chat-header img {
+  height: 80px;
+  width: 100px;
+  object-fit: contain;
+}
+
+.chat-close {
+  font-size: 32px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #fff;
+}
+
+.chat-body {
+  flex: 1;
+  padding: 22px;
+  overflow-y: auto;
+}
+
+.msg-left,
+.msg-right {
+  max-width: 80%;
+  margin-bottom: 18px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  line-height: 1.45;
+  font-size: 15px;
+  display: inline-block;
+  white-space: pre-line;
+}
+
+.msg-left {
+  background: #f0f0f0;
+  color: #333;
+  text-align: left;
+}
+
+.msg-right {
+  background: #d9ffd0;
+  color: #111;
+  margin-left: auto;
+  text-align: right;
+}
+
+.chat-input-area {
+  width: 100%;
+  padding: 12px;
+  background: white;
+  border-top: 1px solid #ddd;
+  display: flex;
+  gap: 10px;
+}
+
+.chat-input-area input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 15px;
+}
+
+.chat-input-area button {
+  padding: 12px 18px;
+  border: none;
+  background: #8BC34A;
+  color: white;
+  font-size: 15px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.block {
+  width: 100%;
+  padding: 18px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  background: #e8f5e9;
+  border: 1px solid #c8e6c9;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.block:hover {
+  background: #d0ebd3;
+}
+
+.nav-chrome { color: #4285F4; font-weight: bold; }
+.nav-firefox { color: #FF7139; font-weight: bold; }
+.nav-edge { color: #0A85D9; font-weight: bold; }
+.nav-safari { color: #888; font-weight: bold; }
+</style>
+
+<div class="chat-floating-btn" id="openChat">
+  <img src="https://www.eadsimples.com.br/wp-content/uploads/2021/09/suporte.png">
+</div>
+
+<div id="chatFull">
+  <div class="chat-header">
+    <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000091-0dc360dc38/700/9F1D4798-68F2-4D19-89B9-7E7FACEAEEFC.webp">
+    <div class="chat-close" id="closeChat">×</div>
+  </div>
+
+  <div class="chat-body" id="chatBody"></div>
+
+  <div class="chat-input-area">
+    <input type="text" id="msgInput" placeholder="Digite aqui...">
+    <button id="sendBtn">Enviar</button>
+  </div>
+</div>
+
+<script>
+const openChat = document.getElementById("openChat");
+const closeChat = document.getElementById("closeChat");
+const chatFull = document.getElementById("chatFull");
+const chatBody = document.getElementById("chatBody");
+const msgInput = document.getElementById("msgInput");
+const sendBtn = document.getElementById("sendBtn");
+
+let askedName = false;
+let userName = "";
+
+openChat.onclick = () => {
+  chatFull.style.display = "flex";
+  chatBody.innerHTML = "";
+  askedName = false;
+  userName = "";
+  bot("Olá! Para começarmos, qual é seu nome?");
+};
+
+closeChat.onclick = () => chatFull.style.display = "none";
+
+function user(msg) {
+  chatBody.innerHTML += `<div class="msg-right">${msg}</div>`;
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function bot(msg, speed = 25) {
+  let div = document.createElement("div");
+  div.className = "msg-left";
+  chatBody.appendChild(div);
+
+  let i = 0;
+  function type() {
+    if (i < msg.length) {
+      div.innerHTML += msg.charAt(i);
+      i++;
+      setTimeout(type, speed);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+  }
+  type();
+}
+
+sendBtn.onclick = process;
+msgInput.addEventListener("keypress", e => { if (e.key === "Enter") process(); });
+
+function process() {
+  let msg = msgInput.value.trim();
+  if (msg === "") return;
+  user(msg);
+  msgInput.value = "";
+
+  if (!askedName) {
+    userName = msg;
+    askedName = true;
+    setTimeout(() => {
+      bot(`Prazer, ${userName}! Aqui estão as opções:`); 
+      setTimeout(() => showMainOptions(), 600);
+    }, 400);
+    return;
+  }
+
+  handleOptions(msg);
+}
+
+function showMainOptions() {
+  chatBody.innerHTML += `
+  <div class="block">1 — Sobre o NA</div>
+  <div class="block">2 — Renovar matrícula online</div>
+  <div class="block">3 — Dicas de segurança</div>
+  <div class="block">4 — Sou Funcionário</div>
+  <div class="block">5 — Recuperar acesso ao NA</div>
+  `;
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function handleOptions(msg) {
+
+  switch (msg) {
+
+    case "1":
+      bot(
+`O NA (Número do Aluno) é um identificador único utilizado na academia para manter segurança e privacidade.
+
+Aqui estão algumas informações importantes:
+• Substitui documentos como CPF, RG e telefone.
+• Facilita consultas internas e acesso ao sistema.
+• Evita exposição de dados sensíveis.
+• É rápido, prático e seguro.
+
+O NA é essencial para garantir mais sigilo e agilidade no atendimento.`
+      );
+      break;
+
+    case "2":
+      bot(
+`Para renovar sua matrícula, você pode escolher entre:
+
+• Solicitar pelo WhatsApp oficial da academia.
+• Realizar diretamente na recepção — método mais recomendado.
+• Nossa equipe garante atualização e segurança durante o processo.
+
+Assim, sua matrícula é renovada com total tranquilidade.`
+      );
+      break;
+
+    case "3":
+      bot(
+`Aqui estão algumas dicas importantes de segurança digital:
+
+• Mantenha seu dispositivo sempre atualizado.
+• Utilize navegadores seguros como:
+  - <span class="nav-chrome">Google Chrome</span>
+  - <span class="nav-firefox">Mozilla Firefox</span>
+  - <span class="nav-edge">Microsoft Edge</span>
+  - <span class="nav-safari">Safari</span>
+• Evite redes Wi-Fi públicas.
+• Ative verificação em duas etapas sempre que possível.
+• Utilize senhas fortes e únicas.
+
+Seguindo essas práticas, sua navegação se mantém muito mais protegida.`
+      );
+      break;
+
+    case "4":
+      showFuncOptions();
+      break;
+
+    case "5":
+      bot(
+`Antes de tudo, recomendamos manter seus dados sempre protegidos e utilizar dispositivos atualizados.
+
+Para recuperar seu NA:
+• Solicite ao time técnico de suporte.
+• Ou vá até a recepção da academia.
+• Informe seu nome para localizar o número.
+• O NA é composto por 5 dígitos.
+
+Contato via WhatsApp:
+(84) 99177-8690`
+      );
+      break;
+
+    case "1f":
+      bot(
+`Informações sobre o batimento de ponto eletrônico:
+
+• É feito por reconhecimento facial.
+• O processo é 100% seguro.
+• Segue todas as normas da LGPD.
+• A tecnologia utiliza criptografia e validações internas.
+
+Assim, o registro é rápido, seguro e eficiente.`
+      );
+      break;
+
+    case "2f":
+      bot(
+`Para consultar suas horas trabalhadas:
+
+• Acesse a Área do Funcionário.
+• Escolha o mês desejado.
+• Escolha o ano.
+• Tudo é exibido de forma simples e rápida.
+
+Prático e fácil de acompanhar.`
+      );
+      break;
+
+    default:
+      bot("Opção inválida. Escolha uma das opções acima.");
+  }
+}
+
+function showFuncOptions() {
+  bot("Setor exclusivo para funcionários. Escolha uma opção:");
+  chatBody.innerHTML += `
+    <div class="block">1f — Batimento de ponto eletrônico</div>
+    <div class="block">2f — Consultar horas trabalhadas</div>
+  `;
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+</script>
