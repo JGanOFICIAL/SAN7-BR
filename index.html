@@ -593,3 +593,84 @@ setTimeout(()=>{
 
 </body>
 </html>
+
+
+
+
+
+
+
+<!-- BLOQUEIO DE ACESSO -->
+<div id="lockScreen" style="
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background:#fff;
+  z-index:999999;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:30px;
+  font-family:Inter,system-ui,Segoe UI,Roboto;
+  opacity:0;
+  transition:.3s ease;
+">
+  <h2 style="font-size:26px;margin-bottom:18px;color:#000;font-weight:700;">Acesso restrito</h2>
+
+  <p style="max-width:360px;font-size:15px;color:#444;line-height:1.5;margin-bottom:28px;">
+    Para acessar esta página, é necessário fazer login primeiro.
+  </p>
+
+  <p style="max-width:360px;font-size:13px;color:#777;line-height:1.5;margin-bottom:35px;">
+    Dicas de segurança:<br><br>
+    • Não compartilhe seu NA<br>
+    • Evite acessar em dispositivos públicos<br>
+    • Sempre finalize a sessão ao sair
+  </p>
+
+  <button onclick="window.location.href='login.html'" style="
+    padding:12px 28px;
+    background:transparent;
+    border:1.5px solid #000;
+    color:#000;
+    font-size:16px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.25s;
+  " onmouseover="this.style.background='#000';this.style.color='#fff'"
+     onmouseout="this.style.background='transparent';this.style.color='#000'">
+    Voltar para Login
+  </button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+  authDomain:"prefeitura-de-joao-camara.firebaseapp.com",
+  projectId:"prefeitura-de-joao-camara",
+  storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",
+  messagingSenderId:"269299041577",
+  appId:"1:269299041577:web:fd41b2939240e9eb476338",
+  measurementId:"G-YT7NHR342J"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+(function(){
+  const logged = localStorage.getItem('loggedUser');
+
+  if(!logged){
+    const lock = document.getElementById("lockScreen");
+    lock.style.display = "flex";
+    setTimeout(()=>{ lock.style.opacity = "1"; },50);
+    return;
+  }
+
+  document.getElementById("lockScreen").remove();
+})();
+</script>
