@@ -128,6 +128,15 @@ margin-left:5px;
 border-radius:0;
 outline:none;
 }
+.obs{
+width:100%;
+margin-top:5px;
+padding:5px;
+border:1px solid #ccc;
+font-size:14px;
+outline:none;
+border-radius:0;
+}
 footer{
 position:fixed;
 bottom:20px;
@@ -225,8 +234,6 @@ font-weight:bold;
 <body>
 <header><div class="logo"></div>
 
-
-
 <button onclick="window.location.href='index.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">Voltar</button>
 
 </header>
@@ -249,7 +256,6 @@ font-weight:bold;
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
@@ -288,6 +294,7 @@ Object.keys(groupsData).forEach(g=>{
       <input class="duration" type="number" placeholder="MESES" min="1">
       <select class="day-select"><option>SEGUNDA</option><option>TERÇA</option><option>QUARTA</option><option>QUINTA</option><option>SEXTA</option><option>SÁBADO</option><option>DOMINGO</option></select>
       <select class="intensity-select">${intensidades.map(i=>`<option>${i}</option>`).join('')}</select>
+      <textarea class="obs" placeholder="Observação (opcional)"></textarea>
     </div>`;
     list.appendChild(item);
   });
@@ -298,6 +305,7 @@ Object.keys(groupsData).forEach(g=>{
 });
 
 document.addEventListener('click',e=>{if(e.target.classList.contains('checkbox-modern'))e.target.classList.toggle('active');});
+
 document.getElementById('search').addEventListener('input',e=>{
   const val=e.target.value.toUpperCase();
   document.querySelectorAll('.exercise-item').forEach(i=>{
@@ -316,6 +324,7 @@ document.getElementById('createBtn').onclick=async()=>{
         duracao:i.querySelector('.duration').value,
         dia:i.querySelector('.day-select').value,
         intensidade:i.querySelector('.intensity-select').value,
+        observacao:i.querySelector('.obs').value || "",
         cor:cores[corIndex%cores.length]
       });
     }
@@ -347,7 +356,11 @@ document.getElementById('viewBtn').onclick=async()=>{
       items.forEach((e,i)=>{
         const div=document.createElement('div');
         div.className='exercise-entry';
-        div.innerHTML=`<div><strong>${e.exercicio}</strong><br>SÉRIES: ${e.series} | REPETIÇÕES: ${e.reps} | DURAÇÃO: ${e.duracao} MÊS(ES)<br>INTENSIDADE: ${e.intensidade}</div>
+        div.innerHTML=`<div><strong>${e.exercicio}</strong>
+        <br>SÉRIES: ${e.series} | REPETIÇÕES: ${e.reps} | DURAÇÃO: ${e.duracao} MÊS(ES)
+        <br>INTENSIDADE: ${e.intensidade}
+        ${e.observacao ? `<br><strong>OBS:</strong> ${e.observacao}` : ""}
+        </div>
         <button class="delete-btn" onclick="deleteExercise('${d}',${i})">EXCLUIR</button>`;
         sec.appendChild(div);
       });
