@@ -37,6 +37,147 @@
     <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='36' height='36'><rect rx='6' width='36' height='36' fill='%23bfeccb'/><text x='50%' y='55%' font-size='16' text-anchor='middle' fill='%23000' font-family='Arial' font-weight='700'>A</text></svg>" alt="logo" style="height:36px">
     <h1>DomusFit - Recp.</h1>
   </div>
+
+
+
+
+
+
+
+
+
+<div id="btnChaves" style="background:#000;color:#fff;padding:12px 20px;font-size:16px;border:1px solid #000;cursor:pointer;z-index:999999;display:inline-block;font-family:sans-serif;border-radius:6px;box-shadow:0 3px 8px rgba(0,0,0,0.2);">
+    Chaves
+</div>
+
+<div id="overlayChaves" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:92%;max-width:470px;background:#fff;z-index:999998;padding:20px;box-sizing:border-box;font-family:sans-serif;border:1px solid #000;border-radius:8px;box-shadow:0 0 30px rgba(0,0,0,0.25);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h2 style="margin:0;font-size:22px;font-weight:600;">Chaves</h2>
+        <div id="fecharChaves" style="cursor:pointer;font-size:18px;padding:6px 10px;border:1px solid #000;border-radius:4px;">X</div>
+    </div>
+
+    <div id="listaChaves" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(95px,1fr));gap:14px;max-height:310px;overflow:auto;"></div>
+
+    <div id="painelNome" style="display:none;margin-top:15px;border-top:1px solid #000;padding-top:15px;">
+        <div style="margin-bottom:8px;font-size:16px;">Nome:</div>
+        <input id="inputNome" style="width:100%;padding:12px;border:1px solid #000;font-size:16px;box-sizing:border-box;border-radius:6px;">
+        <button id="btnSalvarNome" style="margin-top:12px;width:100%;padding:14px;background:#000;color:#fff;font-size:16px;border:0;cursor:pointer;border-radius:6px;box-shadow:0 3px 8px rgba(0,0,0,0.2);">
+            Salvar
+        </button>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+(()=>{
+
+const URL_IMAGEM_CHAVE = "https://icones.pro/wp-content/uploads/2022/01/cle-vert.png";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+  authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
+  projectId: "prefeitura-de-joao-camara",
+  storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
+  messagingSenderId: "269299041577",
+  appId: "1:269299041577:web:fd41b2939240e9eb476338",
+  measurementId: "G-YT7NHR342J"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const btn = document.getElementById("btnChaves");
+const overlay = document.getElementById("overlayChaves");
+const fechar = document.getElementById("fecharChaves");
+const lista = document.getElementById("listaChaves");
+const painel = document.getElementById("painelNome");
+const input = document.getElementById("inputNome");
+const salvar = document.getElementById("btnSalvarNome");
+
+let chaveSelecionada = null;
+
+btn.onclick = ()=> overlay.style.display="block";
+fechar.onclick = ()=>{ overlay.style.display="none"; painel.style.display="none"; };
+
+function gerarChaves(){
+    for(let i=1;i<=24;i++){
+        db.ref("chaves/"+i).once("value",snap=>{
+            if(!snap.exists()){
+                db.ref("chaves/"+i).set({nome:"",inicio:"",fim:""});
+            }
+        });
+
+        const div = document.createElement("div");
+        div.id="chave"+i;
+        div.style="border:1px solid #000;padding:12px;text-align:center;cursor:pointer;font-size:14px;border-radius:6px;transition:0.2s;box-shadow:0 2px 6px rgba(0,0,0,0.15);";
+        div.onmouseover=()=>div.style.transform="scale(1.03)";
+        div.onmouseout=()=>div.style.transform="scale(1)";
+
+        div.innerHTML=`
+            <div class="imgChave" style="width:38px;height:38px;background:#f2f2f2;margin:auto;margin-bottom:8px;background-size:cover;background-position:center;border-radius:4px;background-image:url('${URL_IMAGEM_CHAVE}');"></div>
+            <div style="font-weight:600;">Chave ${i}</div>
+            <div class="status" style="font-size:11px;margin-top:4px;color:#333;"></div>
+        `;
+        div.onclick = ()=> abrirPainel(i);
+        lista.appendChild(div);
+    }
+}
+
+function abrirPainel(n){
+    chaveSelecionada = n;
+    painel.style.display="block";
+}
+
+salvar.onclick = ()=>{
+    const nome = input.value.trim();
+    if(!nome) return;
+
+    const agora = new Date().toLocaleString("pt-BR");
+    db.ref("chaves/"+chaveSelecionada).update({ nome, inicio:agora, fim:"" });
+
+    input.value="";
+    painel.style.display="none";
+}
+
+function atualizar(){
+    db.ref("chaves").on("value",snap=>{
+        const dados = snap.val();
+        if(!dados) return;
+
+        for(let i in dados){
+            const c = dados[i];
+            const div = document.getElementById("chave"+i);
+            if(!div) continue;
+
+            div.style.background = c.nome ? "#d8ffd8" : "#fff";
+
+            div.querySelector(".status").innerHTML = 
+                c.nome 
+                ? `Com: ${c.nome}<br><span style="font-size:10px;">${c.inicio}</span><br><span style="cursor:pointer;color:#000;text-decoration:underline;" onclick="encerrar(${i})">Encerrar</span>`
+                : "Livre";
+        }
+    });
+}
+
+window.encerrar = (i)=>{
+    const agora = new Date().toLocaleString("pt-BR");
+    db.ref("chaves/"+i).update({ fim:agora, nome:"", inicio:"" });
+};
+
+gerarChaves();
+atualizar();
+
+})();
+</script>
+
+
+
+
+
+
+
+
 </header>
 
 <main class="wrap">
