@@ -248,7 +248,7 @@ font-weight:bold;
 
 
 
-<button id="cardioBtn" class="bottom-btn" style="width:95%;margin:0 auto;display:block;background:#fff;color:#000;border:1px solid #ccc;">MEU CARDIO</button>
+<button id="cardioBtn" class="bottom-btn" style="width:95%;margin:0 auto;display:block;background:#fff;color:#000;border:1px solid #ccc;">VER MEU CARDIO</button>
 
 <div id="cardioOverlay" class="overlay" style="background:#fff;display:none;padding:80px 20px;z-index:40;">
 <button id="closeCardio" class="close-btn" style="color:#000;">×</button>
@@ -411,6 +411,103 @@ db.ref("cardio/"+na).set(data).then(()=>loadCardio());
 });
 }
 </script>
+
+
+<style>
+.cardio_area_custom {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    user-select: none;
+    text-align: center;
+}
+.cardio_item_custom {
+    cursor: pointer;
+    max-width: 135px;
+    line-height: 17px;
+}
+.cardio_divider_custom {
+    opacity: 0.5;
+    color: white;
+}
+.cardio_overlay_custom {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: none;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 60px;
+    padding-left: 18px;
+    padding-right: 18px;
+    z-index: 999999;
+}
+.cardio_box_custom {
+    width: 100%;
+    max-width: 420px;
+    font-size: 14px;
+    font-weight: 500;
+    color: black;
+    line-height: 20px;
+}
+.cardio_close_custom {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    font-size: 22px;
+    font-weight: 900;
+    cursor: pointer;
+    user-select: none;
+    color: black;
+}
+</style>
+
+<div class="cardio_area_custom">
+    <div class="cardio_item_custom" onclick="openCardioCustom(1)">O que é intensidade?</div>
+    <div class="cardio_divider_custom">•</div>
+    <div class="cardio_item_custom" onclick="openCardioCustom(2)">Devo me alongar?</div>
+</div>
+
+<div id="cardioOverlayCustom" class="cardio_overlay_custom">
+    <div class="cardio_close_custom" onclick="closeCardioCustom()">X</div>
+    <div id="cardioContentCustom" class="cardio_box_custom"></div>
+</div>
+
+<script>
+const cardioDataCustom = {
+    1: { 
+        titulo: "O que é intensidade?",
+        descricao: "Intensidade de treino é o nível de esforço aplicado em cada exercício, variando de acordo com a carga, velocidade, descanso e técnica utilizada, influenciando diretamente nos resultados e na adaptação do corpo. Em treinos mais avançados, entram métodos como dropset, onde você reduz o peso e continua a série além da falha, elevando o estímulo muscular. Isso aumenta o estresse metabólico e a fadiga, sendo ideal para quem já possui base e controle do movimento. A intensidade certa acelera a evolução, mas deve ser aplicada com cautela para evitar lesões e garantir progresso seguro."
+    },
+    2: { 
+        titulo: "Devo fazer alongamento?",
+        descricao: "O alongamento é essencial para melhorar a flexibilidade e manter a amplitude natural dos movimentos, evitando rigidez muscular. Ele ajuda a preparar o corpo para treinos e atividades diárias, reduzindo o risco de lesões. Também contribui para aliviar tensões acumuladas, promovendo relaxamento e bem-estar geral. Com a prática constante, melhora a postura, a circulação e o desempenho nos exercícios."
+    }
+};
+
+function openCardioCustom(id) {
+    const data = cardioDataCustom[id];
+    document.getElementById("cardioContentCustom").innerHTML = `
+        <h2 style='margin-bottom:6px; font-size:17px;'>${data.titulo}</h2>
+        <p>${data.descricao}</p>
+    `;
+    document.getElementById("cardioOverlayCustom").style.display = "flex";
+}
+
+function closeCardioCustom() {
+    document.getElementById("cardioOverlayCustom").style.display = "none";
+}
+</script>
+
+
 
 
 
