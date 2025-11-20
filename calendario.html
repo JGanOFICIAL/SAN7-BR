@@ -238,15 +238,201 @@ font-weight:bold;
   <button onclick="window.location.href='index.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">Voltar</button>
 </header>
 
+
+<br><br><br><br><br>
+
+
+
+
+
+
+
+
+<button id="cardioBtn" class="bottom-btn" style="width:95%;margin:0 auto;display:block;background:#fff;color:#000;border:1px solid #ccc;">MEU CARDIO</button>
+
+<div id="cardioOverlay" class="overlay" style="background:#fff;display:none;padding:80px 20px;z-index:40;">
+<button id="closeCardio" class="close-btn" style="color:#000;">×</button>
+<h2 style="text-align:center;margin-bottom:20px;">CARDIO</h2>
+
+<div id="cardioDias"></div>
+
+<button id="newCardio" class="bottom-btn" style="width:95%;margin:20px auto 0 auto;display:block;background:#fff;color:#000;border:1px solid #ccc;">CRIAR</button>
+
+<div id="cardioForm" style="display:none;margin-top:20px;border:1px solid #ccc;padding:15px;background:#fafafa;">
+<select id="diaCardio" style="width:100%;padding:10px;font-size:16px;border:1px solid #ccc;">
+<option>SEGUNDA</option><option>TERÇA</option><option>QUARTA</option>
+<option>QUINTA</option><option>SEXTA</option><option>SÁBADO</option><option>DOMINGO</option>
+</select>
+
+<div style="margin-top:10px;width:100%;padding:10px;border:1px solid #ccc;">
+<label style="font-weight:bold;">SELECIONAR MÁQUINAS</label>
+<div>
+<label><input type="checkbox" class="maq" value="Esteira"> ESTEIRA</label><br>
+<label><input type="checkbox" class="maq" value="Bicicleta"> BICICLETA</label><br>
+<label><input type="checkbox" class="maq" value="Elíptico"> ELÍPTICO</label>
+</div>
+</div>
+
+<div id="maqInputs"></div>
+
+<button id="saveCardio" class="bottom-btn" style="width:95%;margin:15px auto 0 auto;display:block;background:#000;color:#fff;border:1px solid #000;">SALVAR</button>
+</div>
+</div>
+
+<script>
+const IMG_ESTEIRA = "https://img.freepik.com/vetores-premium/icone-preto-de-batimento-cardiaco-sinal-de-cardio-simbolo-de-saude_53562-19766.jpg?w=360";
+const IMG_BICICLETA = "https://img.freepik.com/vetores-premium/icone-preto-de-batimento-cardiaco-sinal-de-cardio-simbolo-de-saude_53562-19766.jpg?w=360";
+const IMG_ELIPTICO = "https://img.freepik.com/vetores-premium/icone-preto-de-batimento-cardiaco-sinal-de-cardio-simbolo-de-saude_53562-19766.jpg?w=360";
+
+const coresCardio={
+"SEGUNDA":"#4caf50",
+"TERÇA":"#2196f3",
+"QUARTA":"#ff9800",
+"QUINTA":"#9c27b0",
+"SEXTA":"#f44336",
+"SÁBADO":"#009688",
+"DOMINGO":"#607d8b"
+};
+
+const imgsFixas={
+"Esteira":IMG_ESTEIRA,
+"Bicicleta":IMG_BICICLETA,
+"Elíptico":IMG_ELIPTICO
+};
+
+document.getElementById("cardioBtn").onclick=()=>{document.getElementById("cardioOverlay").style.display="block";loadCardio();};
+document.getElementById("closeCardio").onclick=()=>{document.getElementById("cardioOverlay").style.display="none";};
+
+function loadCardio(){
+const dias=["SEGUNDA","TERÇA","QUARTA","QUINTA","SEXTA","SÁBADO","DOMINGO"];
+db.ref("cardio/"+na).get().then(s=>{
+let data=s.exists()?s.val():[];
+let box=document.getElementById("cardioDias");
+box.innerHTML="";
+dias.forEach(d=>{
+let items=data.filter(x=>x.dia===d);
+let cor=coresCardio[d];
+let div=document.createElement("div");
+div.style.border="1px solid #ccc";
+div.style.marginBottom="10px";
+div.innerHTML=`<div style="padding:10px;background:${cor};color:#fff;font-weight:bold;">${d}</div>`;
+items.forEach((e,i)=>{
+div.innerHTML+=`
+<div style="padding:10px;border-top:1px solid #eee;display:flex;justify-content:space-between;">
+<div style="display:flex;gap:10px;align-items:center;">
+<img src="${e.img}" style="width:30px;height:30px;object-fit:contain;">
+<div>
+<b>${e.maquina}</b><br>
+TEMPO: ${e.tempo} MIN<br>
+QUANDO FAZER: ${e.quando}
+${e.obs?`<br>OBS: ${e.obs}`:""}
+</div>
+</div>
+<button style="background:#f44336;color:#fff;border:none;padding:5px 10px;font-weight:bold;" onclick="delCardio('${d}',${i})">EXCLUIR</button>
+</div>`;
+});
+box.appendChild(div);
+});
+});
+}
+
+document.getElementById("newCardio").onclick=()=>{
+document.getElementById("cardioForm").style.display="block";
+document.getElementById("maqInputs").innerHTML="";
+document.querySelectorAll(".maq").forEach(m=>m.checked=false);
+};
+
+document.querySelectorAll(".maq").forEach(c=>{
+c.onchange=()=>{
+let cont=document.getElementById("maqInputs");
+if(c.checked){
+let id="i_"+c.value;
+cont.innerHTML+=`
+<div id="${id}" style="margin-top:10px;border:1px solid #ddd;padding:10px;">
+<b>${c.value}</b><br>
+<input placeholder="Tempo (min)" type="number" class="tempo" data-m="${c.value}" style="width:100%;padding:8px;border:1px solid:#ccc;margin-top:5px;">
+<select class="quando" data-m="${c.value}" style="width:100%;padding:8px;border:1px solid:#ccc;margin-top:5px;">
+<option>INÍCIO</option><option>MEIO</option><option>FIM</option>
+</select>
+<textarea class="obsC" data-m="${c.value}" placeholder="Observação (opcional)" style="width:100%;padding:8px;border:1px solid:#ccc;margin-top:5px;"></textarea>
+</div>`;
+}else{
+document.getElementById("i_"+c.value)?.remove();
+}
+};
+});
+
+document.getElementById("saveCardio").onclick=()=>{
+const dia=document.getElementById("diaCardio").value;
+const tempos=document.querySelectorAll(".tempo");
+let salvar=[];
+tempos.forEach(t=>{
+let m=t.dataset.m;
+let tempo=t.value;
+let quando=document.querySelector(`.quando[data-m="${m}"]`).value;
+let obs=document.querySelector(`.obsC[data-m="${m}"]`).value;
+
+if(tempo){
+salvar.push({
+dia:dia,
+maquina:m,
+tempo:tempo,
+quando:quando,
+obs:obs,
+img:imgsFixas[m],
+cor:coresCardio[dia]
+});
+}
+});
+
+db.ref("cardio/"+na).get().then(s=>{
+let data=s.exists()?s.val():[];
+salvar.forEach(n=>data.push(n));
+db.ref("cardio/"+na).set(data).then(()=>{
+document.getElementById("cardioForm").style.display="none";
+loadCardio();
+});
+});
+};
+
+function delCardio(d,i){
+db.ref("cardio/"+na).get().then(s=>{
+if(!s.exists())return;
+let data=s.val();
+let count=0;
+data=data.filter(x=>{
+if(x.dia===d){
+if(count===i){count++;return false;}
+count++;
+}
+return true;
+});
+db.ref("cardio/"+na).set(data).then(()=>loadCardio());
+});
+}
+</script>
+
+
+
+
+
+
 <main>
   <input type="text" id="search" class="search-box" placeholder="PESQUISAR...">
   <div id="groups"></div>
+
 </main>
+
+
 
 <footer>
   <button id="createBtn" class="bottom-btn">CRIAR TREINO</button>
   <button id="viewBtn" class="bottom-btn">MEUS TREINOS</button>
 </footer>
+
+
+
+
 
 <div class="overlay" id="overlay">
   <button class="close-btn" onclick="closeOverlay()">×</button>
