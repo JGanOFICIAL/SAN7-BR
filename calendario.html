@@ -113,7 +113,7 @@ transform:translate(-50%,-50%) scale(1);
 input.reps,input.series,input.duration{
 width:65px;
 padding:5px;
-border:1px solid #ccc;
+border:1px solid:#ccc;
 font-size:14px;
 text-align:center;
 margin-left:5px;
@@ -231,21 +231,21 @@ font-weight:bold;
 }
 </style>
 </head>
+
 <body>
-<header><div class="logo"></div>
-
-<button onclick="window.location.href='index.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">Voltar</button>
-
+<header>
+  <div class="logo"></div>
+  <button onclick="window.location.href='index.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">Voltar</button>
 </header>
 
 <main>
-<input type="text" id="search" class="search-box" placeholder="PESQUISAR...">
-<div id="groups"></div>
+  <input type="text" id="search" class="search-box" placeholder="PESQUISAR...">
+  <div id="groups"></div>
 </main>
 
 <footer>
-<button id="createBtn" class="bottom-btn">CRIAR TREINO</button>
-<button id="viewBtn" class="bottom-btn">MEUS TREINOS</button>
+  <button id="createBtn" class="bottom-btn">CRIAR TREINO</button>
+  <button id="viewBtn" class="bottom-btn">MEUS TREINOS</button>
 </footer>
 
 <div class="overlay" id="overlay">
@@ -261,19 +261,66 @@ font-weight:bold;
 <script>
 const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomain:"prefeitura-de-joao-camara.firebaseapp.com",projectId:"prefeitura-de-joao-camara",storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",messagingSenderId:"269299041577",appId:"1:269299041577:web:fd41b2939240e9eb476338",measurementId:"G-YT7NHR342J"};
 firebase.initializeApp(firebaseConfig);
+
 const db=firebase.database();
 const na=localStorage.getItem('loggedUser')||'0000';
+
 const cores=["#4caf50","#2196f3","#ff9800","#9c27b0","#f44336","#009688","#607d8b","#8bc34a","#3f51b5","#ff5722"];
 let corIndex=0;
 
 const groupsData={
-"MEMBROS INFERIORES – GLÚTEOS / PERNAS / PANTURRILHAS":["ADUÇÃO-ABDUÇÃO","GLÚTEO VERTICAL","HACK","LEG 45","LEG 90","MESA FLEXORA","EXTENSORA","ELEVAÇÃO PÉLVICA","AGACHAMENTO LIVRE","AGACHAMENTO GUIADO","CROSS SMITH","PANTURRILHA EM PÉ","PANTURRILHA SENTADA"],
-"MEMBROS SUPERIORES – COSTAS / DORSAIS":["PUXADA / REMADA BAIXA","PUXADA DORSAL","REMADA BAIXA DORSAL","REMADA NO APARELHO","REMADA CAVALINHO"],
-"MEMBROS SUPERIORES – PEITO":["PECK DECK","SUPINO RETO","SUPINO INCL ARTICU","SUPINO RETO ARTICU","SUP INCLINADO MAQ","SUP DECLINADO"],
-"MEMBROS SUPERIORES – BRAÇOS":["ROSCA SCOT MÁQUINA","ROSCA SCOT LIVRE"],
-"MEMBROS SUPERIORES – OMBROS":["DESENV OMBRO LIVRE","BANCO SENTADO LIVRE"]
+"MEMBROS INFERIORES – GLÚTEOS / PERNAS / PANTURRILHAS":[
+"ADUÇÃO-ABDUÇÃO","GLÚTEO VERTICAL","HACK","LEG 45","LEG 90","MESA FLEXORA",
+"EXTENSORA","ELEVAÇÃO PÉLVICA","AGACHAMENTO LIVRE","AGACHAMENTO GUIADO",
+"CROSS SMITH","PANTURRILHA EM PÉ","PANTURRILHA SENTADA",
+"BÚLGARO","AFUNDO","CADEIRA FLEXORA","AGACHAMENTO SUMÔ"
+],
+
+"MEMBROS SUPERIORES – COSTAS / DORSAIS":[
+"PUXADA / REMADA BAIXA",
+"PUXADA DORSAL",
+"REMADA BAIXA DORSAL",
+"REMADA NO APARELHO",
+"REMADA CAVALINHO",
+
+/* NOVOS EXERCÍCIOS SOLICITADOS */
+"REMADA CURVADA COM BARRA",
+"REMADA CURVADA COM HALTERES",
+"REMADA UNILATERAL (SERROTE)",
+"PUXADA FRENTE COM TRIÂNGULO",
+"PULL DOWN",
+"PULLOVER"
+],
+
+"MEMBROS SUPERIORES – PEITO":[
+"PECK DECK","SUPINO RETO","SUPINO INCL ARTICU","SUPINO RETO ARTICU",
+"SUP INCLINADO MAQ","SUP DECLINADO",
+"SUPINO DECLINADO MÁQUINA","CRUCIFIXO RETO COM HALTERES",
+"CRUCIFIXO INCLINADO COM HALTERES","SUPINO RETO HALTERES",
+"SUPINO INCLINADO HALTERES"
+],
+
+"MEMBROS SUPERIORES – BRAÇOS":[
+"ROSCA SCOT MÁQUINA","ROSCA SCOT LIVRE",
+"ROSCA DIRETA","ROSCA MARTELO",
+"ROSCA ALTERNADA","ROSCA COM HALTERES - BANCO 46°","ROSCA CONCENTRADA UNILATERAL","TRÍCEPS CORDA NA POLIA","TRICEPS BARRA NA POLIA","TRICEPS FRANCÊS","TRICEPS TESTA","TRICEPS COISE UNILATERAL"
+
+
+
+
+
+],
+
+"MEMBROS SUPERIORES – OMBROS":[
+"DESENV OMBRO LIVRE","BANCO SENTADO LIVRE","DESENVOLVIMENTO COM HALTERES","ELEVAÇÃO LATERAL","ELEVAÇÃO FRONTAL","CRUSIFIXO INVERSO","REMADA BAIXA","ENCOLHIMENTO","PUXADA / REMADA ALTA"
+
+
+
+]
 };
+
 const intensidades=["NENHUMA","DROP-SET","SUPER-SÉRIE","TRI-SET","BI-SET","REST-PAUSE","PIRÂMIDE","GANGORRA","PRÉ-EXAUSTÃO"];
+
 const groupsContainer=document.getElementById('groups');
 
 Object.keys(groupsData).forEach(g=>{
@@ -282,34 +329,46 @@ Object.keys(groupsData).forEach(g=>{
   const header=document.createElement('div');
   header.className='group-header';
   header.textContent=g;
+
   const list=document.createElement('div');
   list.className='exercise-list';
+
   groupsData[g].forEach(ex=>{
     const item=document.createElement('div');
     item.className='exercise-item';
-    item.innerHTML=`<div class="checkbox-modern"></div><span>${ex}</span>
-    <div>
-      <input class="reps" type="number" placeholder="REP" min="1">
-      <input class="series" type="number" placeholder="SÉR" min="1">
-      <input class="duration" type="number" placeholder="MESES" min="1">
-      <select class="day-select"><option>SEGUNDA</option><option>TERÇA</option><option>QUARTA</option><option>QUINTA</option><option>SEXTA</option><option>SÁBADO</option><option>DOMINGO</option></select>
-      <select class="intensity-select">${intensidades.map(i=>`<option>${i}</option>`).join('')}</select>
-      <textarea class="obs" placeholder="Observação (opcional)"></textarea>
-    </div>`;
+    item.innerHTML=`
+      <div class="checkbox-modern"></div><span>${ex}</span>
+      <div>
+        <input class="reps" type="number" placeholder="REP" min="1">
+        <input class="series" type="number" placeholder="SÉR" min="1">
+        <input class="duration" type="number" placeholder="MESES" min="1">
+        <select class="day-select">
+          <option>SEGUNDA</option><option>TERÇA</option><option>QUARTA</option>
+          <option>QUINTA</option><option>SEXTA</option><option>SÁBADO</option><option>DOMINGO</option>
+        </select>
+        <select class="intensity-select">
+          ${intensidades.map(i=>`<option>${i}</option>`).join('')}
+        </select>
+        <textarea class="obs" placeholder="Observação (opcional)"></textarea>
+      </div>`;
     list.appendChild(item);
   });
+
   header.onclick=()=>list.style.display=list.style.display==='block'?'none':'block';
   group.appendChild(header);
   group.appendChild(list);
   groupsContainer.appendChild(group);
 });
 
-document.addEventListener('click',e=>{if(e.target.classList.contains('checkbox-modern'))e.target.classList.toggle('active');});
+document.addEventListener('click',e=>{
+  if(e.target.classList.contains('checkbox-modern'))
+    e.target.classList.toggle('active');
+});
 
 document.getElementById('search').addEventListener('input',e=>{
   const val=e.target.value.toUpperCase();
   document.querySelectorAll('.exercise-item').forEach(i=>{
-    i.style.display=i.innerText.includes(val)?'flex':'none';
+    i.style.display=i.innerText.toUpperCase().includes(val)?'flex':'none';
   });
 });
 
@@ -329,41 +388,62 @@ document.getElementById('createBtn').onclick=async()=>{
       });
     }
   });
-  if(!selected.length){alert('Nenhum exercício selecionado.');return;}
+
+  if(!selected.length){
+    alert('Nenhum exercício selecionado.');
+    return;
+  }
+
   const snap=await db.ref('treinos/'+na).get();
   let data=snap.exists()?snap.val():[];
-  data=data.concat(selected);
+
+  selected.forEach(sel=>{
+    const existe=data.some(x=>x.exercicio===sel.exercicio && x.dia===sel.dia);
+    if(!existe) data.push(sel);
+  });
+
   await db.ref('treinos/'+na).set(data);
   corIndex++;
   alert('Treino criado com sucesso!');
 };
 
 const overlay=document.getElementById('overlay');
+
 document.getElementById('viewBtn').onclick=async()=>{
   overlay.style.display='block';
   const tDiv=document.getElementById('trainings');
   tDiv.innerHTML='';
+
   const snap=await db.ref('treinos/'+na).get();
-  if(!snap.exists()){tDiv.innerHTML='<p style="text-align:center;">Nenhum treino criado.</p>';return;}
+  if(!snap.exists()){
+    tDiv.innerHTML='<p style="text-align:center;">Nenhum treino criado.</p>';
+    return;
+  }
+
   const data=snap.val();
   const dias=['SEGUNDA','TERÇA','QUARTA','QUINTA','SEXTA','SÁBADO','DOMINGO'];
+
   dias.forEach(d=>{
     const items=data.filter(x=>x.dia===d);
     if(items.length>0){
       const sec=document.createElement('div');
       sec.className='day-section';
       sec.innerHTML=`<div class='day-title' style="background:${items[0].cor}">${d}</div>`;
+
       items.forEach((e,i)=>{
         const div=document.createElement('div');
         div.className='exercise-entry';
-        div.innerHTML=`<div><strong>${e.exercicio}</strong>
-        <br>SÉRIES: ${e.series} | REPETIÇÕES: ${e.reps} | DURAÇÃO: ${e.duracao} MÊS(ES)
-        <br>INTENSIDADE: ${e.intensidade}
-        ${e.observacao ? `<br><strong>OBS:</strong> ${e.observacao}` : ""}
-        </div>
-        <button class="delete-btn" onclick="deleteExercise('${d}',${i})">EXCLUIR</button>`;
+        div.innerHTML=`
+          <div>
+            <strong>${e.exercicio}</strong>
+            <br>SÉRIES: ${e.series} | REPETIÇÕES: ${e.reps} | DURAÇÃO: ${e.duracao} MÊS(ES)
+            <br>INTENSIDADE: ${e.intensidade}
+            ${e.observacao ? `<br><strong>OBS:</strong> ${e.observacao}` : ""}
+          </div>
+          <button class="delete-btn" onclick="deleteExercise('${d}',${i})">EXCLUIR</button>`;
         sec.appendChild(div);
       });
+
       tDiv.appendChild(sec);
     }
   });
@@ -376,13 +456,17 @@ document.getElementById('clearAll').onclick=async()=>{
   }
 };
 
-function closeOverlay(){overlay.style.display='none';}
+function closeOverlay(){
+  overlay.style.display='none';
+}
 
 async function deleteExercise(dia,index){
   const snap=await db.ref('treinos/'+na).get();
   if(!snap.exists())return;
+
   let data=snap.val();
   let count=0;
+
   data=data.filter(x=>{
     if(x.dia===dia){
       if(count===index){count++;return false;}
@@ -390,6 +474,7 @@ async function deleteExercise(dia,index){
     }
     return true;
   });
+
   await db.ref('treinos/'+na).set(data);
   document.getElementById('viewBtn').click();
 }
