@@ -283,3 +283,172 @@ function fecharAlerta() {
 </script>
 </body>
 </html>
+
+
+
+
+
+
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(22px);
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial;
+  overflow: hidden;
+}
+
+#overlayCaptcha {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#captchaBox {
+  width: 340px;
+  background: #fff;
+  padding: 22px 22px 26px 22px;
+  border: 2px solid #e5e5e5;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 0 25px rgba(0,0,0,0.35);
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+
+#titleCaptcha {
+  font-size: 16px;
+  color: #444;
+  border-bottom: 1px solid #dcdcdc;
+  padding-bottom: 8px;
+}
+
+#captchaRow {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.checkArea {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #bcbcbc;
+  background: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid #bdbdbd;
+  border-top-color: #333;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: none;
+  position: absolute;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.checkmark {
+  width: 26px;
+  height: 26px;
+  display: none;
+}
+
+.fadeOut {
+  opacity: 0;
+}
+
+#infoField {
+  border-top: 2px dotted #999;
+  border-bottom: 2px dotted #999;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #444;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+</style>
+
+<div id="overlayCaptcha">
+  <div id="captchaBox">
+
+    <div id="titleCaptcha">Confirme que você não é um robô</div>
+
+    <div id="captchaRow">
+      <div class="checkArea" id="checkArea" onclick="startCaptcha()">
+        <div class="spinner" id="spinner"></div>
+        <svg id="check" class="checkmark" viewBox="0 0 24 24">
+          <path d="M4 12l5 5L20 6" stroke="#0a0" stroke-width="3" fill="none"/>
+        </svg>
+      </div>
+      <span style="font-size:18px;color:#222;">Marque o captcha para continuar</span>
+    </div>
+
+    <div id="infoField">
+      <div id="sessionId"></div>
+      <div>Desenvolvedor: San7Doc</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function generateId() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let r = "";
+  for (let i = 0; i < 24; i++) r += chars[Math.floor(Math.random() * chars.length)];
+  return "#0000" + r;
+}
+
+document.getElementById("sessionId").innerText = generateId();
+
+let clicked = false;
+
+function startCaptcha() {
+  if (clicked) return;
+  clicked = true;
+
+  const area = document.getElementById("checkArea");
+  const spinner = document.getElementById("spinner");
+  const check = document.getElementById("check");
+  const box = document.getElementById("captchaBox");
+
+  area.style.border = "none";
+  area.style.background = "transparent";
+
+  spinner.style.display = "block";
+
+  setTimeout(() => {
+    spinner.style.display = "none";
+    check.style.display = "block";
+
+    box.classList.add("fadeOut");
+
+    setTimeout(() => {
+      document.getElementById("overlayCaptcha").style.display = "none";
+    }, 400);
+
+  }, 2000);
+}
+</script>
