@@ -1,22 +1,49 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login - Sistema de Ponto</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
+/* VARIÁVEIS DE CORES */
+:root {
+  --primary-color: #003366; /* Azul Escuro DomusFit */
+  --secondary-color: #0066cc; /* Azul Claro para Destaques */
+  --background-light: #f5f8ff; /* Fundo Levemente Azulado */
+  --text-dark: #333;
+  --text-light: #fff;
+  --border-color: #ddd;
+  --input-border-focus: var(--secondary-color);
+  --button-hover-bg: var(--primary-color);
+  --button-hover-text: var(--text-light);
+}
+
+/* ESTILO GERAL */
 body {
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(to right, #ffffff 55%, #f5f8ff 45%);
+  background: var(--background-light);
   margin: 0; padding: 0;
-  display: flex; flex-direction: column; align-items: center; height: 100vh;
+  display: flex; 
+  flex-direction: column; 
+  /* Alinhamento removido para que o header ocupe a largura total */
+  min-height: 100vh;
+  color: var(--text-dark);
 }
+
+/* CABEÇALHO (FIXO/STICKY E DE PONTA A PONTA) */
 header {
-  position: fixed; top: 0; left: 0; right: 0;
-  background: #fff; height: 70px; display: flex; align-items: center; justify-content: flex-start;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  padding-left: 20px; z-index: 10;
+  position: sticky; /* Fixo no topo */
+  top: 0; left: 0; right: 0;
+  width: 100%; /* Garante de canto a canto */
+  background: var(--text-light); height: 70px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; /* Logo esquerda, menu direita */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 0 30px; 
+  z-index: 20;
+  box-sizing: border-box; /* Garante que o padding não afete a largura total */
 }
 header .logo {
   width: 220px; height: 45px;
@@ -25,214 +52,434 @@ header .logo {
   background-size: contain;
   background-position: left;
 }
+/* Estilo do botão de menu no Header */
+.header-menu-btn {
+  cursor: pointer; font-size: 32px; 
+  color: #000; 
+  line-height: 1;
+  transition: color 0.3s;
+  padding: 5px; 
+}
+.header-menu-btn:hover {
+  color: var(--primary-color);
+}
+#menu {
+  display: none; 
+  position: absolute; 
+  right: 30px; 
+  top: 60px;
+  background: var(--text-light); padding: 15px 20px; 
+  border-radius: 0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  min-width: 150px;
+  z-index: 10;
+}
+#menu a {
+  color: var(--primary-color); text-decoration: none; font-size: 16px;
+  font-weight: 600; display: block; padding: 5px 0;
+  transition: color 0.3s;
+}
+#menu a:hover {
+  color: var(--secondary-color);
+}
+
+/* CONTAINER PRINCIPAL (Split Screen - Colado abaixo do header) */
 .main-container {
   display: flex;
   justify-content: center;
   align-items: stretch;
   width: 100%;
-  height: 100%;
-  margin-top: 70px;
+  flex-grow: 1;
+  margin-top: 0; /* Colado no header sticky */
 }
+
+/* SEÇÃO DE IMAGEM (Lado esquerdo do Split Screen) */
 .image-section {
-  flex: 1;
+  flex: 1.2;
   background-image: url('https://s2-oglobo.glbimg.com/wpF9B9sKEL6PMjHhIIfCJSDzhwE=/0x0:826x551/888x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_da025474c0c44edd99332dddb09cabe8/internal_photos/bs/2023/e/V/4Wg98xQVeM6KBREjlDpA/mulher-fazendo-agachamento-na-ma.jpg');
   background-size: cover;
   background-position: center center;
-  background-repeat: no-repeat;
   display: flex; flex-direction: column;
   justify-content: center; align-items: center;
-  color: #fff;
+  color: var(--text-light);
   text-align: center;
   padding: 60px;
   position: relative;
   overflow: hidden;
 }
+/* Sobreposição de Gradiente */
 .image-section::after {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.55);
+  background: linear-gradient(135deg, rgba(0, 51, 102, 0.75) 0%, rgba(0, 102, 204, 0.55) 100%);
 }
 .image-section h1, .image-section p {
   position: relative;
   z-index: 1;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
 }
 .image-section h1 {
-  font-size: 36px;
+  font-size: 44px;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 .image-section p {
   font-size: 18px;
-  max-width: 420px;
+  font-weight: 300;
+  max-width: 450px;
 }
+
+/* SEÇÃO DE LOGIN (Lado direito do Split Screen) */
 .login-section {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 0 70px;
+  padding: 40px 70px;
   position: relative;
-  background: #fff;
-  border-left: 1px solid rgba(0,0,0,0.1);
+  background: var(--text-light);
 }
 .login-box {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 320px;
+  max-width: 360px;
+  padding: 30px;
+  border-radius: 0;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  background: var(--text-light);
 }
+
+/* CAMPOS E BOTÃO */
 .login-box input, .login-box button {
   width: 100%;
-  height: 52px;
-  border: 2px solid #003366;
+  height: 54px;
+  border: 1px solid var(--border-color);
   border-radius: 0;
-  background: transparent;
-  font-size: 18px;
+  background: var(--background-light);
+  font-size: 16px;
   outline: none;
-  transition: 0.3s;
-  margin-bottom: 18px;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
   box-sizing: border-box;
   text-align: center;
+  padding: 0 15px;
+}
+.login-box input::placeholder {
+    color: #999;
 }
 .login-box input:focus {
-  border-color: #0066cc;
+  border-color: var(--input-border-focus);
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
+  background: var(--text-light);
 }
 .login-box button {
-  color: #003366;
+  background-color: var(--primary-color);
+  color: var(--text-light);
   font-weight: 600;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
+  border: none;
 }
 .login-box button:hover {
-  background-color: #003366;
-  color: #fff;
+  background-color: var(--secondary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 51, 102, 0.3);
 }
 button.loading {
   pointer-events: none;
-  opacity: 0.7;
+  opacity: 0.8;
+  background-color: var(--primary-color);
 }
+
+/* SPINNER */
 .spinner {
-  border: 3px solid transparent;
-  border-top: 3px solid #003366;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid var(--text-light);
   border-radius: 50%;
-  width: 22px; height: 22px;
+  width: 24px; height: 24px;
   animation: spin 0.8s linear infinite;
 }
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* ALERTA (MODAL) */
 .alerta {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.6);
   display: none; align-items: center; justify-content: center;
+  z-index: 100;
 }
 .alerta .box {
-  background: #fff; padding: 30px; border-radius: 8px;
-  text-align: center; width: 300px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  background: var(--text-light); padding: 35px; 
+  border-radius: 0;
+  text-align: center; width: 90%; max-width: 350px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+.alerta .box p {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: var(--text-dark);
 }
 .alerta .box button {
-  margin-top: 15px; width: 100px;
+  margin-top: 0; width: 120px;
+  height: 45px;
+  background-color: var(--secondary-color);
+  color: var(--text-light);
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 0;
 }
+.alerta .box button:hover {
+    background-color: var(--primary-color);
+}
+
+/* ESTILOS PARA CHECKBOX MODERNO */
+.remember-me {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+    justify-content: flex-start; 
+}
+.remember-me label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-dark);
+}
+.remember-me input[type="checkbox"] {
+    display: none; /* Esconde o checkbox nativo */
+}
+.custom-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--primary-color);
+    margin-right: 10px;
+    display: inline-block;
+    position: relative;
+    flex-shrink: 0;
+    transition: background-color 0.2s, border-color 0.2s;
+    border-radius: 3px; 
+}
+.remember-me input[type="checkbox"]:checked + .custom-checkbox {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+.remember-me input[type="checkbox"]:checked + .custom-checkbox::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
+
+
+/* CARROSSEL DE DICAS (MENU SCROLL) */
+.menu-scroll{
+    position:relative;width:100%;margin-top: 30px;
+    box-shadow:none;border:none;background:transparent;
+    padding: 0; box-sizing:border-box;
+}
+.menu-container{
+    display:flex;gap:15px;overflow-x:auto;
+    scroll-behavior:smooth;width:100%;padding:10px 0;
+    scroll-snap-type:x mandatory;-ms-overflow-style:none;scrollbar-width:none
+}
+.menu-container::-webkit-scrollbar{display:none}
+.menu-item{
+    position:relative;min-width:280px;height:160px;
+    background:#ccc;flex:0 0 auto;border:none;
+    border-radius: 0;
+    box-shadow:0 4px 10px rgba(0,0,0,.1);
+    display:flex;align-items:flex-end;justify-content:flex-start;
+    background-size:cover;background-position:center;
+    scroll-snap-align:start;
+    overflow: hidden;
+}
+.menu-item::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+}
+.menu-item span{
+    position:relative;
+    z-index: 1;
+    bottom:10px;left:10px;color:var(--text-light);
+    padding:4px 8px;font-size:13px;font-weight:600;
+}
+.menu-dots{
+    display:flex;justify-content:center;gap:6px;margin-top:15px
+}
+.menu-dots div{
+    width:8px;height:8px;background:var(--border-color);
+    border-radius: 50%;
+    transition: background-color 0.3s;
+}
+.menu-dots div.active {
+    background: var(--primary-color);
+}
+
+/* MEDIA QUERIES (Responsividade) */
 @media (max-width: 1024px) {
-  .image-section h1 {font-size: 28px;}
+  .image-section h1 {font-size: 36px;}
   .image-section p {font-size: 16px;}
+  .login-section {padding: 30px 40px;}
+  .image-section {flex: 1;}
 }
 @media (max-width: 900px) {
-  body {background: #fff;}
-  .main-container {flex-direction: column;}
+  /* Alinhamento no mobile: Logo esquerda e menu direita */
+  header {padding: 0 20px;}
+  /* Aqui o main-container empilha a imagem e o login */
+  .main-container {flex-direction: column; flex-grow: 1;}
+  /* A imagem ocupa 100% da largura em mobile e tem altura fixa */
   .image-section {
     width: 100%;
-    padding: 60px 30px;
-    text-align: center;
-    align-items: center;
-    background-position: center center;
-    background-size: cover;
+    height: 30vh;
+    min-height: 200px;
+    padding: 30px 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
+  .image-section h1 {font-size: 32px;}
   .login-section {
-    align-items: center;
     padding: 40px 20px;
     border-left: none;
+    flex-grow: 1;
   }
+  .login-box {
+    padding: 20px;
+    box-shadow: none;
+    max-width: 100%;
+  }
+  .menu-item{min-width:85vw;}
 }
 @media (max-width: 500px) {
-  .login-box input, .login-box button {width: 100%;}
-  .image-section h1 {font-size: 24px;}
+  #menu {right: 20px;}
+  .login-box {max-width: 100%;}
+  .image-section h1 {font-size: 28px;}
 }
 </style>
 </head>
 <body>
-<header>
-<div style="position:absolute;top:50%;right:20px;transform:translateY(-60%);">
-  <div id="menuBtn" style="cursor:pointer;font-size:48px;color:#000;line-height:1;">☰</div>
-  <div id="menu" style="display:none;position:absolute;right:0;top:70px;background:#fff;padding:10px 15px;border:1px solid #ccc;">
-    <a href="https://wa.me/5584991778690" target="_blank" style="color:#000;text-decoration:none;font-size:18px;">Suporte</a>
-  </div>
+<div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+    </div>
 </div>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
 <script>
+    new window.VLibras.Widget('https://vlibras.gov.br/app');
+</script>
+<header>
+  <div class="logo"></div>
+
+  <div>
+    <div id="menuBtn" class="header-menu-btn">☰</div>
+    <div id="menu">
+      <a href="https://wa.me/5584991778690" target="_blank">Suporte</a>
+    </div>
+  </div>
+
+<script>
+// JS para o botão de menu (abrir/fechar)
+const menuBtn = document.getElementById('menuBtn');
+const menu = document.getElementById('menu');
 menuBtn.onclick = () => {
-  const m = menu;
-  if (m.style.display === 'block') {
-    m.style.display = 'none';
+  if (menu.style.display === 'block') {
+    menu.style.display = 'none';
     menuBtn.textContent = '☰';
   } else {
-    m.style.display = 'block';
+    menu.style.display = 'block';
     menuBtn.textContent = '✕';
   }
 };
 </script>
-<div class="logo"></div>
 </header>
+
 <div class="main-container">
   <div class="image-section">
     <h1>#EuSouDomusFit</h1>
-    <p>Colaborador, é um prazer ter você conosco.</p>
+    <p>Colaborador, é um prazer ter você conosco. Faça seu login com a chave de acesso.</p>
   </div>
+  
   <div class="login-section">
     <div class="login-box">
-      <input type="text" id="serie" maxlength="5" placeholder="SUA CHAVE DE ACESSO...">
+      <input type="text" id="serie" maxlength="5" placeholder="Sua Chave de Acesso (5 dígitos)">
+      
+      <div class="remember-me">
+          <label for="rememberAccess">
+              <input type="checkbox" id="rememberAccess">
+              <span class="custom-checkbox"></span>
+              Lembrar Chave de Acesso
+          </label>
+      </div>
+      
       <button id="entrarBtn">Acessar</button>
     </div>
-<br>
-<style>
-.menu-scroll{position:relative;width:95%;margin:20px auto;overflow:hidden;background:#fff;box-shadow:0 0 10px rgba(0,0,0,.1);border:1px solid #ddd;display:flex;flex-direction:column;align-items:center;padding:10px;box-sizing:border-box}
-.menu-container{display:flex;gap:20px;overflow-x:auto;scroll-behavior:smooth;width:100%;padding:10px 0;scroll-snap-type:x mandatory;-ms-overflow-style:none;scrollbar-width:none}
-.menu-container::-webkit-scrollbar{display:none}
-.menu-item{position:relative;min-width:340px;height:180px;background:#ccc;flex:0 0 auto;border:2px solid #eee;box-shadow:inset 0 -50px 80px rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:flex-start;background-size:cover;background-position:center;scroll-snap-align:center}
-.menu-item span{position:absolute;bottom:10px;left:10px;color:#fff;background:rgba(0,0,0,.5);padding:4px 8px;font-size:14px;font-weight:bold}
-.menu-dots{display:flex;justify-content:center;gap:5px;margin-top:10px}
-.menu-dots div{width:8px;height:8px;background:#004d00}
-@media(max-width:768px){.menu-item{min-width:240px;height:140px}}
-</style>
+Mantenha seus dados protejidos e utilize esse sistema somente em locais permitidos.
 <div class="menu-scroll">
   <div class="menu-container" id="menuContainer">
     <div class="menu-item" style="background-image:url('https://blog.agenciaamp.com/wp-content/uploads/2024/04/LGPD.jpg');"><span>A LGPD vale para qualquer tratamento de dados pessoais, físicos ou digitais.</span></div>
     <div class="menu-item" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtr-gUCLPBV87Jn6xBCb6up6BCBkAujcg2D8edeGthmQ&s=10');"><span>Guarde sua chave de acesso em sigilo e não o compartilhe com ninguém. Mantenha seus dados protegidos.</span></div>
     <div class="menu-item" style="background-image:url('https://www.politicaetc.com.br/wp-content/uploads/2025/01/00-2.jpg');"><span>Sua chave de acesso só pode ser compartilhada com a equipe técnica oficial.</span></div>
   </div>
-  <div class="menu-dots"><div></div><div></div><div></div></div>
+  <div class="menu-dots" id="menuDots">
+    <div class="active"></div><div></div><div></div>
+  </div>
 </div>
+
 <script>
-const menuContainer=document.getElementById('menuContainer');
-menuContainer.addEventListener('wheel',e=>{
-  if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){
+// JS para o carrossel de dicas
+const menuContainer = document.getElementById('menuContainer');
+const menuDots = document.getElementById('menuDots').children;
+const updateDots = () => {
+    const scrollPosition = menuContainer.scrollLeft;
+    const itemWidth = menuContainer.children[0].offsetWidth + 15; // Largura do item + gap
+    const activeIndex = Math.round(scrollPosition / itemWidth);
+
+    for (let i = 0; i < menuDots.length; i++) {
+        menuDots[i].classList.remove('active');
+    }
+    if (menuDots[activeIndex]) {
+        menuDots[activeIndex].classList.add('active');
+    }
+};
+
+menuContainer.addEventListener('scroll', updateDots);
+// Previna o scroll vertical indesejado, permitindo apenas o horizontal
+menuContainer.addEventListener('wheel', e => {
+  if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
     e.preventDefault();
-    menuContainer.scrollLeft+=e.deltaY;
+    menuContainer.scrollLeft += e.deltaY;
   }
 });
+// Inicializa o estado dos pontos
+updateDots();
 </script>
   </div>
 </div>
+
 <div class="alerta" id="alertBox">
   <div class="box">
     <p id="alertMsg"></p>
-    <button onclick="fecharAlerta()">OK</button>
+    <button onclick="fecharAlerta()">Entendi</button>
   </div>
 </div>
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
@@ -249,30 +496,46 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const entrarBtn = document.getElementById("entrarBtn");
 const serieInput = document.getElementById("serie");
+
 entrarBtn.addEventListener("click", () => {
   const serie = serieInput.value.trim();
   if (serie.length !== 5) {
-    mostrarAlerta("Digite um número de série válido (5 dígitos)");
+    mostrarAlerta("Digite uma chave de acesso válida (5 dígitos)");
     return;
   }
+  
+  // LOGÍSTICA DE CARREGAMENTO
   entrarBtn.classList.add("loading");
   entrarBtn.innerHTML = '<div class="spinner"></div>';
+  
   setTimeout(() => {
+    // LOGÍSTICA DE FIREBASE
     db.ref("usuarios/" + serie).once("value").then(snapshot => {
       if (snapshot.exists()) {
         localStorage.setItem("usuarioAtual", serie);
+        // Lógica para lembrar a chave de acesso (se o checkbox estiver marcado)
+        const rememberCheckbox = document.getElementById('rememberAccess');
+        if (rememberCheckbox.checked) {
+             // Implementar lógica de LocalStorage para salvar a chave aqui, se necessário.
+             // Exemplo: localStorage.setItem("savedSerie", serie);
+        } else {
+             // Exemplo: localStorage.removeItem("savedSerie");
+        }
         window.location.href = "index2.html";
       } else {
-        mostrarAlerta("Número de série não encontrado");
+        mostrarAlerta("Chave de acesso não encontrada");
       }
     }).catch(() => {
-      mostrarAlerta("Erro ao conectar ao banco de dados");
+      mostrarAlerta("Erro ao conectar ao banco de dados. Tente novamente.");
     }).finally(() => {
+      // RESET DO BOTÃO
       entrarBtn.classList.remove("loading");
       entrarBtn.textContent = "Acessar";
     });
   }, 800);
 });
+
+// FUNÇÕES DE ALERTA
 function mostrarAlerta(msg) {
   document.getElementById("alertMsg").innerText = msg;
   document.getElementById("alertBox").style.display = "flex";
