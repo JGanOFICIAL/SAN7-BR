@@ -119,19 +119,19 @@ header .logo {
   text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
 }
 .image-section h1 {
-  font-size: 40px; 
+  font-size: 40px; /* Leve redução no tamanho da fonte */
   font-weight: 700;
   margin-bottom: 15px;
 }
 .image-section p {
-  font-size: 16px; 
+  font-size: 16px; /* Leve redução no tamanho da fonte */
   font-weight: 300;
   max-width: 450px;
 }
 
 /* SEÇÃO PRINCIPAL (Painel - Lado direito do Split Screen) */
 .main-section {
-  flex: 1.2; 
+  flex: 1.2; /* Aumenta o espaço da seção principal no desktop */
   display: flex;
   flex-direction: column;
   padding: 40px 70px;
@@ -295,26 +295,14 @@ button.loading {
     background-color: var(--primary-color);
 }
 
-/* Câmera e Confirmação Facial - NOVO FORMATO OVAL */
+/* Câmera e Confirmação Facial */
 #cameraView {
-  /* Largura menor, altura maior para formato de rosto */
-  width: 180px; 
-  height: 250px; 
-  /* Raio de borda horizontal de 50%, vertical maior para o oval */
-  border-radius: 50% / 60%; 
+  width: 200px; height: 200px; border-radius: 50%; 
   overflow: hidden;
-  position: relative; 
-  display: block; /* Garante que o div seja visível no modal */
-  margin: 20px auto;
+  position: relative; display: none; margin: 20px auto;
   border: 5px solid var(--primary-color);
-  box-shadow: 0 0 10px rgba(0, 51, 102, 0.5); /* Sombra para destacar */
 }
-#cameraView video { 
-    /* Garante que o vídeo preencha o container oval */
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; 
-}
+#cameraView video { width: 100%; height: 100%; object-fit: cover; }
 #dadosConfirma { white-space: pre-wrap; margin-bottom: 10px; }
 
 /* MEDIA QUERIES (Responsividade) */
@@ -332,12 +320,12 @@ button.loading {
   /* A imagem ocupa 100% da largura em mobile e tem altura fixa REDUZIDA */
   .image-section {
     width: 100%;
-    height: 25vh; 
-    min-height: 180px; 
+    height: 25vh; /* Altura reduzida de 30vh para 25vh */
+    min-height: 180px; /* Altura mínima reduzida de 200px para 180px */
     padding: 30px 20px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
-  .image-section h1 {font-size: 30px;} 
+  .image-section h1 {font-size: 30px;} /* Fonte ligeiramente reduzida */
   .main-section {
     padding: 40px 20px;
     border-left: none;
@@ -380,11 +368,7 @@ menuBtn.onclick = () => {
 </script>
 </header>
 
-<div class="main-container">
-  <div class="image-section">
-    <h1>Painel de Controle</h1>
-    <p>Bem-vindo(a) de volta! Gerencie seu ponto de forma rápida e segura.</p>
-  </div>
+
   
   <div class="main-section">
     <div class="perfil">
@@ -434,7 +418,7 @@ menuBtn.onclick = () => {
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-// LOGÍSTICA (NÃO ALTERADA)
+// LOGÍSTICA (SEM ALTERAÇÕES)
 const firebaseConfig = {
   apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
   authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
@@ -490,15 +474,11 @@ document.getElementById("iniciarBtn").onclick = ()=>{
   if(ativo){ mostrarAlerta("Ponto já iniciado."); return; }
   document.getElementById("dadosConfirma").innerText = `Reconhecimento facial em andamento...\nNA: ${serie}\nData: ${new Date().toLocaleString()}`;
   document.getElementById("cameraBox").style.display = "flex";
-  
-  // INÍCIO DA CÂMERA IMEDIATO
   const video = document.getElementById("video");
   navigator.mediaDevices.getUserMedia({video:true})
   .then(stream=>{
     video.srcObject = stream;
-    // O #cameraView não precisa de display:block aqui, pois já está como 'display: block' no CSS,
-    // mas deixamos o código de stream aqui.
-    
+    document.getElementById("cameraView").style.display="block";
     setTimeout(()=>{
       const tracks = stream.getTracks();
       tracks.forEach(t=>t.stop());
@@ -508,7 +488,7 @@ document.getElementById("iniciarBtn").onclick = ()=>{
       db.ref("historico/"+serie+"/"+dataChaveAtual()+"/inicio").set(agora);
       mostrarAlerta("Reconhecimento concluído e ponto iniciado automaticamente.");
     },3800);
-  }).catch(()=>mostrarAlerta("Permissão da câmera negada ou não disponível no dispositivo."));
+  }).catch(()=>mostrarAlerta("Permissão da câmera negada"));
 };
 
 document.getElementById("finalizarBtn").onclick = ()=>{
