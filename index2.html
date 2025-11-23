@@ -4,155 +4,421 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel do Funcionário</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
+/* VARIÁVEIS DE CORES */
+:root {
+  --primary-color: #003366; /* Azul Escuro DomusFit */
+  --secondary-color: #0066cc; /* Azul Claro para Destaques */
+  --background-light: #f5f8ff; /* Fundo Levemente Azulado */
+  --text-dark: #333;
+  --text-light: #fff;
+  --border-color: #ddd;
+  --input-border-focus: var(--secondary-color);
+  --button-hover-bg: var(--primary-color);
+  --button-hover-text: var(--text-light);
+}
+
+/* ESTILO GERAL */
 body {
   font-family: 'Poppins', sans-serif;
-  background: #fff;
+  background: var(--background-light);
   margin: 0; padding: 0;
+  display: flex; 
+  flex-direction: column; 
+  min-height: 100vh;
+  color: var(--text-dark);
 }
+
+/* CABEÇALHO (FIXO/STICKY E DE PONTA A PONTA) */
 header {
-  position: fixed; top: 0; left: 0; right: 0;
-  background: #fff; height: 70px; display: flex; align-items: center; justify-content: flex-start;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  padding-left: 20px; z-index: 10;
+  position: sticky; /* Fixo no topo */
+  top: 0; left: 0; right: 0;
+  width: 100%; /* Garante de canto a canto */
+  background: var(--text-light); height: 70px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; /* Logo esquerda, menu direita */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 0 30px; 
+  z-index: 20;
+  box-sizing: border-box; /* Garante que o padding não afete a largura total */
 }
-header .logo { width: 140px; height: 40px; background: #ddd; }
-main { margin-top: 100px; padding: 20px; }
-.perfil { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
-.perfil img { width: 80px; height: 80px; border-radius: 50%; border: 2px solid #0066cc; object-fit: cover; }
-.perfil-info p { margin: 3px 0; }
-input, select {
-  border: 2px solid #003366; border-radius: 6px; padding: 8px 10px;
-  font-size: 16px; outline: none; background: transparent;
+header .logo {
+  width: 220px; height: 45px;
+  background-image: url('https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000083-d9fb4d9fb6/700/3F36BE85-5E12-4237-844C-9BD82571F2C4.webp');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: left;
 }
-button {
-  border: 2px solid #003366; background: transparent; color: #003366;
-  border-radius: 6px; font-size: 16px; padding: 10px 20px;
-  cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; justify-content: center;
+/* Estilo do botão de menu no Header */
+.header-menu-btn {
+  cursor: pointer; font-size: 32px; 
+  color: #000; 
+  line-height: 1;
+  transition: color 0.3s;
+  padding: 5px; 
 }
-button.loading { pointer-events: none; opacity: 0.7; }
-.spinner {
-  border: 3px solid transparent; border-top: 3px solid #003366;
-  border-radius: 50%; width: 20px; height: 20px; animation: spin 0.8s linear infinite;
+.header-menu-btn:hover {
+  color: var(--primary-color);
 }
-@keyframes spin { from {transform: rotate(0);} to {transform: rotate(360deg);} }
+#menu {
+  display: none; 
+  position: absolute; 
+  right: 30px; 
+  top: 60px;
+  background: var(--text-light); padding: 15px 20px; 
+  border-radius: 0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  min-width: 150px;
+  z-index: 10;
+}
+#menu a {
+  color: var(--primary-color); text-decoration: none; font-size: 16px;
+  font-weight: 600; display: block; padding: 5px 0;
+  transition: color 0.3s;
+}
+#menu a:hover {
+  color: var(--secondary-color);
+}
+
+/* CONTAINER PRINCIPAL (Split Screen - Colado abaixo do header) */
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+  flex-grow: 1;
+  margin-top: 0; /* Colado no header sticky */
+}
+
+/* SEÇÃO DE IMAGEM (Lado esquerdo do Split Screen) */
+.image-section {
+  flex: 1; /* Reduzido de 1.2 para 1 para ocupar menos espaço horizontal */
+  background-image: url('https://s2-oglobo.glbimg.com/wpF9B9sKEL6PMjHhIIfCJSDzhwE=/0x0:826x551/888x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_da025474c0c44edd99332dddb09cabe8/internal_photos/bs/2023/e/V/4Wg98xVVeM6KBREjlDpA/mulher-fazendo-agachamento-na-ma.jpg');
+  background-size: cover;
+  background-position: center center;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  color: var(--text-light);
+  text-align: center;
+  padding: 60px;
+  position: relative;
+  overflow: hidden;
+}
+/* Sobreposição de Gradiente */
+.image-section::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 51, 102, 0.75) 0%, rgba(0, 102, 204, 0.55) 100%);
+}
+.image-section h1, .image-section p {
+  position: relative;
+  z-index: 1;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+}
+.image-section h1 {
+  font-size: 40px; /* Leve redução no tamanho da fonte */
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+.image-section p {
+  font-size: 16px; /* Leve redução no tamanho da fonte */
+  font-weight: 300;
+  max-width: 450px;
+}
+
+/* SEÇÃO PRINCIPAL (Painel - Lado direito do Split Screen) */
+.main-section {
+  flex: 1.2; /* Aumenta o espaço da seção principal no desktop */
+  display: flex;
+  flex-direction: column;
+  padding: 40px 70px;
+  position: relative;
+  background: var(--text-light);
+}
+
+/* ESTILOS DO CONTEÚDO (index.html) */
+.perfil { 
+    display: flex; align-items: center; gap: 20px; margin-bottom: 30px; 
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 0;
+}
+.perfil img { 
+    width: 80px; height: 80px; border-radius: 50%; 
+    border: 3px solid var(--secondary-color); 
+    object-fit: cover; 
+}
+.perfil-info p { margin: 3px 0; font-size: 15px; }
+
+/* Cronômetro e Botões */
 .cronometro {
-  font-size: 30px; color: #003366; font-weight: bold; margin: 25px 0; text-align: center;
+    font-size: 44px; color: var(--primary-color); font-weight: 700; 
+    margin: 25px 0; text-align: center;
 }
+.action-buttons {
+    display: flex; justify-content: center; gap: 20px;
+    margin-top: 20px;
+}
+.action-buttons button, .main-section input, .main-section select {
+  height: 54px;
+  border: 1px solid var(--border-color);
+  border-radius: 0;
+  background: var(--background-light);
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  text-align: center;
+  padding: 0 15px;
+  font-weight: 600;
+}
+.action-buttons button {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  cursor: pointer;
+  border: none;
+  padding: 0 30px;
+  width: 180px;
+}
+.action-buttons button:hover {
+  background-color: var(--secondary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 51, 102, 0.3);
+}
+#finalizarBtn { 
+  background-color: #c00; 
+  color: var(--text-light); 
+  border: none; 
+}
+#finalizarBtn:hover {
+  background-color: #e00;
+}
+
+/* Busca Histórico */
+.search-form {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 25px;
+}
+.search-form input {
+  width: 120px;
+  background: var(--text-light);
+  border: 1px solid var(--primary-color);
+}
+.search-form input:focus {
+  border-color: var(--input-border-focus);
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
+}
+.search-form button {
+  width: 100px;
+  background-color: var(--secondary-color);
+  color: var(--text-light);
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 0;
+}
+.search-form button:hover {
+    background-color: var(--primary-color);
+}
+
+/* Histórico */
 .hist { margin-top: 30px; }
-.hist table { width: 100%; border-collapse: collapse; }
-.hist th, .hist td { border-bottom: 1px solid #ccc; padding: 10px; text-align: center; }
-.hist th { background: #e9f3ff; color: #003366; }
+.hist h3 { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 5px; margin-bottom: 15px; }
+.hist table { width: 100%; border-collapse: collapse; border: 1px solid var(--border-color); }
+.hist th, .hist td { 
+    border-bottom: 1px solid var(--border-color); 
+    padding: 12px 8px; 
+    text-align: center; 
+    font-size: 14px;
+}
+.hist th { 
+    background: var(--primary-color); 
+    color: var(--text-light); 
+    font-weight: 600;
+    border-bottom: 1px solid var(--primary-color); 
+}
+.hist tr:last-child td { border-bottom: none; }
+.hist tr:nth-child(even) td { background-color: #f9f9f9; }
+
+/* SPINNER */
+button.loading {
+  pointer-events: none;
+  opacity: 0.8;
+  background-color: var(--primary-color);
+}
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid var(--text-light);
+  border-radius: 50%;
+  width: 24px; height: 24px;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ALERTA (MODAL) - Padronizado com login.html */
 .alerta, .sobrepor {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; z-index: 1000;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 1000;
 }
 .alerta .box, .sobrepor .box {
-  background: #fff; padding: 25px; border-radius: 8px; text-align: center; width: 320px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  background: var(--text-light); padding: 35px; 
+  border-radius: 0;
+  text-align: center; width: 90%; max-width: 350px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
-.alerta .box button, .sobrepor .box button { margin-top: 15px; }
+.alerta .box p, .sobrepor .box p {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: var(--text-dark);
+}
+.alerta .box button, .sobrepor .box button {
+  margin-top: 0; width: 120px;
+  height: 45px;
+  background-color: var(--secondary-color);
+  color: var(--text-light);
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 0;
+}
+.alerta .box button:hover, .sobrepor .box button:hover {
+    background-color: var(--primary-color);
+}
+
+/* Câmera e Confirmação Facial */
 #cameraView {
-  width: 260px; height: 260px; border-radius: 50%; overflow: hidden;
+  width: 200px; height: 200px; border-radius: 50%; 
+  overflow: hidden;
   position: relative; display: none; margin: 20px auto;
+  border: 5px solid var(--primary-color);
 }
 #cameraView video { width: 100%; height: 100%; object-fit: cover; }
-#finalizarBtn { border: 2px solid #c00; color: #c00; }
+#dadosConfirma { white-space: pre-wrap; margin-bottom: 10px; }
+
+/* MEDIA QUERIES (Responsividade) */
+@media (max-width: 1024px) {
+  .image-section h1 {font-size: 36px;}
+  .image-section p {font-size: 16px;}
+  .main-section {padding: 30px 40px;}
+  .image-section {flex: 1;}
+}
+@media (max-width: 900px) {
+  /* Alinhamento no mobile: Logo esquerda e menu direita */
+  header {padding: 0 20px;}
+  /* Aqui o main-container empilha a imagem e o painel */
+  .main-container {flex-direction: column; flex-grow: 1;}
+  /* A imagem ocupa 100% da largura em mobile e tem altura fixa REDUZIDA */
+  .image-section {
+    width: 100%;
+    height: 25vh; /* Altura reduzida de 30vh para 25vh */
+    min-height: 180px; /* Altura mínima reduzida de 200px para 180px */
+    padding: 30px 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  .image-section h1 {font-size: 30px;} /* Fonte ligeiramente reduzida */
+  .main-section {
+    padding: 40px 20px;
+    border-left: none;
+    flex-grow: 1;
+  }
+}
+@media (max-width: 500px) {
+  #menu {right: 20px;}
+  .image-section h1 {font-size: 26px;}
+  .action-buttons { flex-direction: column; gap: 15px; }
+  .action-buttons button { width: 100%; }
+}
 </style>
 </head>
 <body>
-<header><div class="logo">
 
+<header>
+  <div class="logo"></div>
 
-
-
-
-
-<div style="position:absolute;top:50%;right:20px;transform:translateY(-60%);">
-  <div id="menuBtn" style="cursor:pointer;font-size:56px;color:#000;line-height:1;">☰</div>
-  <div id="menu" style="display:none;position:absolute;right:0;top:70px;background:#fff;padding:10px 15px;border:1px solid #ccc;">
-    <a href="login2.html" target="_blank" style="color:#000;text-decoration:none;font-size:18px;">Sair</a>
+  <div>
+    <div id="menuBtn" class="header-menu-btn">☰</div>
+    <div id="menu">
+      <a href="login2.html">Sair</a>
+    </div>
   </div>
-</div>
 
 <script>
+// JS para o botão de menu (abrir/fechar)
+const menuBtn = document.getElementById('menuBtn');
+const menu = document.getElementById('menu');
 menuBtn.onclick = () => {
-  const m = menu;
-  if (m.style.display === 'block') {
-    m.style.display = 'none';
+  if (menu.style.display === 'block') {
+    menu.style.display = 'none';
     menuBtn.textContent = '☰';
   } else {
-    m.style.display = 'block';
+    menu.style.display = 'block';
     menuBtn.textContent = '✕';
   }
 };
 </script>
-
-
-
-
-
-
-   <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000083-d9fb4d9fb6/700/3F36BE85-5E12-4237-844C-9BD82571F2C4.webp?ph=c2a6771173" alt="Logo" style="background:transparent; width:240px; height:auto; object-fit:contain;">
-
-
-
-
-
-</div>
-
-
 </header>
 
 
+  
+  <div class="main-section">
+    <div class="perfil">
+      <img id="fotoPerfil" src="">
+      <div class="perfil-info">
+        <p><strong>Nome:</strong> <span id="nome"></span></p>
+        <p><strong>NA:</strong> <span id="na"></span></p>
+        <p><strong>Telefone:</strong> <span id="tel"></span></p>
+      </div>
+    </div>
 
-<main>
-  <div class="perfil">
-    <img id="fotoPerfil" src="">
-    <div class="perfil-info">
-      <p><strong>Nome:</strong> <span id="nome"></span></p>
-      <p><strong>NA:</strong> <span id="na"></span></p>
-      <p><strong>Telefone:</strong> <span id="tel"></span></p>
+    <div class="cronometro" id="cronometro">00:00:00</div>
+    <div class="action-buttons">
+      <button id="iniciarBtn">Iniciar Ponto</button>
+      <button id="finalizarBtn">Finalizar Dia</button>
+    </div>
+
+    <div class="search-form">
+      <input type="number" id="mesInput" placeholder="Mês (1-12)" min="1" max="12">
+      <input type="number" id="anoInput" placeholder="Ano (2025)">
+      <button id="buscarMes">Buscar</button>
+    </div>
+
+    <div class="hist" id="hist">
+      <h3>Histórico do Mês</h3>
+      <table>
+        <thead><tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr></thead>
+        <tbody id="histBody"></tbody>
+      </table>
     </div>
   </div>
-
-  <div class="cronometro" id="cronometro">00:00:00</div>
-  <div style="text-align:center;">
-    <button id="iniciarBtn">Iniciar Ponto</button>
-    <button id="finalizarBtn">Finalizar Dia</button>
-  </div>
-
-  <div style="margin-top:25px; text-align:center;">
-    <input type="number" id="mesInput" placeholder="Mês (1-12)" style="width:120px;">
-    <input type="number" id="anoInput" placeholder="Ano (2025)" style="width:120px;">
-    <button id="buscarMes">Buscar</button>
-  </div>
-
-  <div class="hist" id="hist">
-    <h3>Histórico do Mês Atual</h3>
-    <table>
-      <thead><tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr></thead>
-      <tbody id="histBody"></tbody>
-    </table>
-  </div>
-</main>
+</div>
 
 <div class="alerta" id="alertBox">
-  <div class="box"><p id="alertMsg"></p><button onclick="fecharAlerta()">OK</button></div>
+  <div class="box"><p id="alertMsg"></p><button onclick="fecharAlerta()">Entendi</button></div>
 </div>
 
 <div class="sobrepor" id="cameraBox">
   <div class="box">
     <h3>Reconhecimento Facial</h3>
     <p id="dadosConfirma"></p>
-    <button onclick="fecharCamera()">X</button>
     <div id="cameraView"><video id="video" autoplay></video></div>
+    <button onclick="fecharCamera()">Cancelar</button>
   </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
+// LOGÍSTICA (SEM ALTERAÇÕES)
 const firebaseConfig = {
   apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
   authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
@@ -287,96 +553,13 @@ function mostrarAlerta(msg){
   document.getElementById("alertBox").style.display = "flex";
 }
 function fecharAlerta(){ document.getElementById("alertBox").style.display = "none"; }
-function fecharCamera(){ document.getElementById("cameraBox").style.display = "none"; }
+function fecharCamera(){ 
+  const video = document.getElementById("video");
+  if(video.srcObject){
+    video.srcObject.getTracks().forEach(track => track.stop());
+  }
+  document.getElementById("cameraBox").style.display = "none"; 
+}
 </script>
 </body>
 </html>
-
-
-
-<div id="geo-permission" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(180deg,#f5f9ff,#e8f3ff);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:'Arial',sans-serif;transition:opacity 0.5s;">
-  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000087-563985639a/450/F9CFD25C-348F-4E42-AA1B-5F4A5FBC5335.webp" alt="Imagem" style="width:140px;height:140px;object-fit:contain;margin-bottom:25px;">
-  <h2 style="margin-bottom:10px;color:#2c3e50;font-size:22px;">Permissão de Localização</h2>
-  <p style="color:#555;margin-bottom:25px;font-size:15px;max-width:300px;">Precisamos da sua localização para validar o ponto. Clique em continuar e permita o acesso.</p>
-  <div style="display:flex;gap:12px;">
-    <button id="btnContinuar" style="background:#4da6ff;color:white;border:none;padding:12px 25px;cursor:pointer;font-size:16px;font-weight:600;box-shadow:0 3px 8px rgba(0,0,0,0.1);transition:0.3s;">Continuar</button>
-    <button onclick="window.location.href='login2.html'" style="border:2px solid #4CAF50;background:transparent;color:#4CAF50;padding:12px 25px;cursor:pointer;font-size:16px;font-weight:600;transition:0.3s;">Voltar</button>
-  </div>
-</div>
-
-<div id="geo-block" style="position:fixed;top:0;left:0;width:100%;height:100%;background:white;z-index:10000;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:'Arial',sans-serif;">
-  <h2 style="color:red;margin-bottom:10px;font-size:22px;">Acesso Negado</h2>
-  <p style="color:#444;margin-bottom:25px;font-size:15px;">Você não está dentro da área permitida.</p>
-  <button onclick="window.location.href='login2.html'" style="border:2px solid #4CAF50;background:transparent;color:#4CAF50;padding:12px 25px;cursor:pointer;font-size:16px;font-weight:600;">Voltar</button>
-</div>
-
-<script>
-const localLatitude = -5.540111;
-const localLongitude = -35.818720;
-const raioPermitido = 80;
-
-function calcularDistancia(lat1, lon1, lat2, lon2) {
-  const R = 6371e3;
-  const φ1 = lat1 * Math.PI/180;
-  const φ2 = lat2 * Math.PI/180;
-  const Δφ = (lat2 - lat1) * Math.PI/180;
-  const Δλ = (lon2 - lon1) * Math.PI/180;
-  const a = Math.sin(Δφ/2)**2 + Math.cos(φ1)*Math.cos(φ2)*Math.sin(Δλ/2)**2;
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  return R * c;
-}
-
-async function validarLocalizacao(latitude, longitude) {
-  try {
-    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
-    if (!response.ok) throw new Error("API não respondeu");
-    const distancia = calcularDistancia(localLatitude, localLongitude, latitude, longitude);
-    return distancia <= raioPermitido;
-  } catch {
-    return false;
-  }
-}
-
-document.getElementById("btnContinuar").addEventListener("click", async () => {
-  const btn = document.getElementById("btnContinuar");
-  btn.disabled = true;
-  btn.textContent = "Validando...";
-  const spinner = document.createElement("div");
-  spinner.style.width = "45px";
-  spinner.style.height = "45px";
-  spinner.style.border = "5px solid #cce6ff";
-  spinner.style.borderTop = "5px solid #4da6ff";
-  spinner.style.borderRadius = "50%";
-  spinner.style.animation = "spin 1s linear infinite";
-  spinner.style.margin = "25px auto 0";
-  document.getElementById("geo-permission").appendChild(spinner);
-
-  navigator.geolocation.getCurrentPosition(async pos => {
-    const { latitude, longitude } = pos.coords;
-    const autorizado = await validarLocalizacao(latitude, longitude);
-    setTimeout(() => {
-      spinner.remove();
-      if (autorizado) {
-        document.getElementById("geo-permission").style.opacity = "0";
-        setTimeout(() => {
-          document.getElementById("geo-permission").style.display = "none";
-        }, 500);
-      } else {
-        document.getElementById("geo-block").style.display = "flex";
-      }
-    }, 4000);
-  }, () => {
-    alert("Não foi possível obter sua localização.");
-    btn.disabled = false;
-    btn.textContent = "Continuar";
-    spinner.remove();
-  }, { enableHighAccuracy: true });
-});
-
-const style = document.createElement("style");
-style.innerHTML = `
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-button:hover { transform: scale(1.03); opacity:0.9; }
-`;
-document.head.appendChild(style);
-</script>
