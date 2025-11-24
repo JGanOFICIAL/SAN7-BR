@@ -618,28 +618,44 @@ const db=firebase.database();
 const nomeEl=document.getElementById('nomeAluno');
 const naEl=document.getElementById('naAluno');
 
+// 1. OBTÉM O NA SALVO NO LOCAL STORAGE
 const loggedUser = localStorage.getItem('loggedUser');
-if(loggedUser){
+
+// Função de Redirecionamento
+function redirectToLogin() {
+  // Limpa o NA salvo, para garantir que o login seja refeito
+  localStorage.removeItem('loggedUser'); 
+  window.location.href = 'login.html';
+}
+
+// 2. VERIFICA SE EXISTE UM NA SALVO
+if(!loggedUser){
+  // Se não houver NA no localStorage, redireciona imediatamente
+  redirectToLogin();
+} else {
+  // 3. SE EXISTE, VERIFICA SE É UM NA VÁLIDO NO FIREBASE
   db.ref('users/'+loggedUser).get().then(snapshot=>{
     if(snapshot.exists()){
+      // Usuário logado e NA válido: carrega os dados
       const user=snapshot.val();
       nomeEl.textContent = 'Nome: ' + (user.name || 'Não informado');
       naEl.textContent = 'NA: ' + loggedUser;
     } else {
+      // Usuário logado mas NA não existe ou é inválido no banco: redireciona
+      console.log('NA encontrado no localStorage, mas não é válido no Firebase. Redirecionando.');
       nomeEl.textContent = 'Nome: Não encontrado';
       naEl.textContent = 'NA: Não encontrado';
+      redirectToLogin(); 
     }
   }).catch(err=>{
-    console.error(err);
+    // Erro ao conectar/buscar no Firebase (falha de rede/config): redireciona para garantir segurança
+    console.error('Erro ao buscar dados no Firebase, redirecionando:', err);
     nomeEl.textContent = 'Erro ao carregar';
     naEl.textContent = 'Erro ao carregar';
+    redirectToLogin();
   });
-} else {
-  nomeEl.textContent = 'Nenhum usuário logado';
-  naEl.textContent = '-';
 }
 </script>
-
 <br>
 
 <div class="nova-funcao-container">
