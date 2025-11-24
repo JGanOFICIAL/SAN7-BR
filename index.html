@@ -14,6 +14,7 @@
   --primary-dark: #222;
   --shadow-light: 0 1px 4px rgba(0,0,0,0.08); /* Sombra mais sutil */
   --shadow-medium: 0 4px 12px rgba(0,0,0,0.1);
+  --shadow-bold: 0 6px 15px rgba(0,0,0,0.2);
 }
 /* Estilo para bordas quadradas em inputs/buttons/containers */
 input, button, .aluno-container, .nova-funcao-container, .opcao, .menu-scroll, .footer-image {
@@ -284,36 +285,124 @@ header{
   .texto-slide p{font-size:0.9rem;}
 }
 
-/* ALUNO CONTAINER */
+/* ALUNO CONTAINER - MODERNO */
 .aluno-container {
   background: #fff;
-  padding: 20px;
+  padding: 25px;
   max-width: 450px;
   width: 90%;
-  margin: 20px auto;
-  text-align: left;
-  border-radius: 0; /* Borda quadrada */
-  box-shadow: var(--shadow-light);
-  border: 1px solid #eee;
+  margin: 25px auto;
+  border-radius: 0;
+  box-shadow: var(--shadow-medium);
+  border: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
 }
-.aluno-container h2 {
-  margin-bottom: 15px;
-  color: var(--primary-dark);
-  text-align: center;
-  border-bottom: 2px solid var(--green);
-  padding-bottom: 5px;
+.aluno-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+    border-bottom: 2px solid var(--green);
+    padding-bottom: 15px;
+}
+.aluno-header h2 {
+    color: var(--primary-dark);
+    font-size: 22px;
+    margin: 0;
+    margin-left: 20px;
+}
+.aluno-info {
+    width: 100%;
+    text-align: left;
 }
 .aluno-container p {
   margin: 8px 0;
   color: #444;
   font-size: 15px;
+  line-height: 1.4;
+  padding-left: 5px;
 }
 .aluno-container hr {
   border: 0;
   height: 1px;
   background: #ddd;
   margin: 15px 0;
+  width: 100%;
 }
+.aluno-container .nota {
+  font-size: 13px; 
+  font-style: italic; 
+  color: #777;
+  text-align: center;
+}
+/* FOTO DE PERFIL */
+#fotoPerfil {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    border: 4px solid var(--green);
+    box-shadow: var(--shadow-medium);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+#fotoPerfil:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-bold);
+}
+
+/* MODAL DE SELEÇÃO DE FOTO */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 0;
+    box-shadow: var(--shadow-bold);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.modal-content h3 {
+    text-align: center;
+    color: var(--primary-dark);
+    margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+.imagens-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+}
+.imagem-opcao {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: border 0.2s, transform 0.2s;
+}
+.imagem-opcao:hover {
+    border-color: var(--green);
+    transform: scale(1.05);
+}
+
 
 /* NOVA FUNÇÃO CONTAINER */
 .nova-funcao-container {
@@ -520,6 +609,7 @@ header{
   <div class="modern-menu-link" onclick="location.href='treino.html'">
     <img src="https://images.vexels.com/media/users/3/138774/isolated/preview/827000c564e21e1ab79e0870ae44a134-silhueta-de-mulher-fitness-correndo.png" alt="Meus Treinos">
     <span>Meus treinos</span>
+
   </div>
 
   <div style="margin-top: 15px;">
@@ -601,60 +691,166 @@ carrossel.addEventListener('mouseleave', ()=>intervalo=setInterval(mudarSlide, 5
 <br>
 
 <div class="aluno-container">
-  <h2>Meus Dados</h2>
-  <p id="nomeAluno">Nome: Carregando...</p>
-  <p id="naAluno">NA: Carregando...</p>
-<hr>
-  <p style="font-size: 13px; font-style: italic; color: #777;">Não compartilhe essas informações com terceiros. Seu NA é uma ferramenta de login e comprovante de inscrição, exclusivo a você.</p>
+    <div class="aluno-header">
+        <img id="fotoPerfil" src="" alt="Foto de Perfil">
+        <h2>Meus Dados</h2>
+adcione sua foto de perfil em IA.
+    </div>
+    <div class="aluno-info">
+        <p id="nomeAluno">Nome: Carregando...</p>
+        <p id="naAluno">NA: Carregando...</p>
+    </div>
+    <hr>
+    <p class="nota">Não compartilhe essas informações com terceiros. Seu NA é uma ferramenta de login e comprovante de inscrição, exclusivo a você.</p>
 </div>
 
+<div class="modal-overlay" id="modalFoto">
+    <div class="modal-content">
+        <span style="float: right; font-size: 25px; cursor: pointer;" onclick="document.getElementById('modalFoto').style.display='none'">&times;</span>
+        <h3>Selecione sua Foto de Perfil</h3>
+        <div class="imagens-grid" id="imagensGrid">
+            </div>
+    </div>
+</div>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
+// --- LOCAIS PARA AS IMAGENS DO PERFIL ---
+// 1. URL da imagem padrão (quando o usuário não escolheu uma)
+const DEFAULT_PROFILE_IMAGE_URL = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZLeQkjYJrfLadQMV47rVTFDt-UGb3SCcd-_4GEl2IDQ&s=10'; // Exemplo de perfil padrão
+
+// 2. Array com as URLs das 20 opções de imagem
+const IMAGE_OPTIONS = [
+    'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691505.jpg?semt=ais_incoming&w=740&q=80',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJN1lHhM68w8n8VIGmiUGzO59Y_BiHfJXt86m94_wH-Q&s=10',
+    'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691491.jpg?semt=ais_hybrid&w=740&q=80',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTecuIAp5S0xUeEEw1aVvfdERFYmkOzSrHNnmt5HCCl-g&s=10',
+    'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666670.jpg?semt=ais_hybrid&w=740&q=80',
+    'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666661.jpg?semt=ais_hybrid&w=740&q=80',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRe9uWfgvRM-afv5rw3X2aWR-1njImjPVPmKYnjmG7nTg&s=10',
+    'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666664.jpg?t=st=1763843635~exp=1763847235~hmac=32ec32fa8d825b0b9c5992e9cdcd4f60468eefb1005590302ee28ac00c3946e1',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQME5j8LTjIK3djuBJAoThzmjxPSaQm4xKZmuJkkL2Zg&s=10',
+    'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666658.jpg?t=st=1761732403~exp=1761736003~hmac=e8ab36448a5a3186a9a27dc21c4a13f7fde69a235dbde1ffd224365c7bec6dd8',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWyLuxokYGHoes2CTsZY35kxr0AoBtklklSash7qE9qQ&s=10',
+    'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691385.jpg',
+    'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691377.jpg?semt=ais_hybrid&w=740&q=80',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMFLuN0I_uPtGRR2Mb7zkf_eKpmSSknQrI_sxSt_shrw&s=10',
+    'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691457.jpg?semt=ais_hybrid&w=740&q=80',
+    'https://64.media.tumblr.com/badc82a2f1ade24ed34d3de251e21f7f/582f7acddc2418d8-f6/s540x810/f92ee2a43e1f4dcfc989886e91ce6ff934173465.jpg',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyOlFEluzKTe_KXdzF7oCg3kbh63G9EkmRsKGJ5xc-Eg&s=10',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpKi_6slFAGAV0DBmXWcD2BluGhgmEdZsNppI_GLFc1Q&s=10',
+    'https://img.freepik.com/free-photo/portrait-anime-character-doing-fitness-exercising_23-2151666659.jpg',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTApOa8fmlisFHwqVYpdE3MN1eBEyYOHOZXRffwWRqWbg&s=10',
+];
+// --- FIM LOCAIS PARA AS IMAGENS DO PERFIL ---
+
+
 const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomain:"prefeitura-de-joao-camara.firebaseapp.com",projectId:"prefeitura-de-joao-camara",storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",messagingSenderId:"269299041577",appId:"1:269299041577:web:fd41b2939240e9eb476338",measurementId:"G-YT7NHR342J"};
 firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 
 const nomeEl=document.getElementById('nomeAluno');
 const naEl=document.getElementById('naAluno');
+const fotoPerfilEl=document.getElementById('fotoPerfil');
+const modalFotoEl=document.getElementById('modalFoto');
+const imagensGridEl=document.getElementById('imagensGrid');
 
-// 1. OBTÉM O NA SALVO NO LOCAL STORAGE
-const loggedUser = localStorage.getItem('loggedUser');
+let loggedUser = localStorage.getItem('loggedUser');
+let userRef = loggedUser ? db.ref('users/' + loggedUser) : null;
 
 // Função de Redirecionamento
 function redirectToLogin() {
-  // Limpa o NA salvo, para garantir que o login seja refeito
   localStorage.removeItem('loggedUser'); 
   window.location.href = 'login.html';
 }
 
-// 2. VERIFICA SE EXISTE UM NA SALVO
+// Função para atualizar a foto de perfil
+function updateProfileImage(url) {
+    fotoPerfilEl.src = url || DEFAULT_PROFILE_IMAGE_URL;
+}
+
+// 1. OBTÉM O NA SALVO E CARREGA DADOS/FOTO
 if(!loggedUser){
-  // Se não houver NA no localStorage, redireciona imediatamente
   redirectToLogin();
 } else {
-  // 3. SE EXISTE, VERIFICA SE É UM NA VÁLIDO NO FIREBASE
-  db.ref('users/'+loggedUser).get().then(snapshot=>{
+  // 2. VERIFICA SE É UM NA VÁLIDO NO FIREBASE
+  userRef.get().then(snapshot=>{
     if(snapshot.exists()){
-      // Usuário logado e NA válido: carrega os dados
       const user=snapshot.val();
       nomeEl.textContent = 'Nome: ' + (user.name || 'Não informado');
       naEl.textContent = 'NA: ' + loggedUser;
+      
+      // Carrega a foto de perfil salva no Firebase, ou a padrão
+      updateProfileImage(user.profileImageUrl);
+
+      // Ouve mudanças na foto de perfil em tempo real (opcional, mas bom)
+      userRef.on('value', (snap) => {
+          const updatedUser = snap.val();
+          if (updatedUser) {
+              updateProfileImage(updatedUser.profileImageUrl);
+          }
+      });
+
     } else {
-      // Usuário logado mas NA não existe ou é inválido no banco: redireciona
       console.log('NA encontrado no localStorage, mas não é válido no Firebase. Redirecionando.');
       nomeEl.textContent = 'Nome: Não encontrado';
       naEl.textContent = 'NA: Não encontrado';
+      updateProfileImage(DEFAULT_PROFILE_IMAGE_URL); // Exibe a foto padrão
       redirectToLogin(); 
     }
   }).catch(err=>{
-    // Erro ao conectar/buscar no Firebase (falha de rede/config): redireciona para garantir segurança
     console.error('Erro ao buscar dados no Firebase, redirecionando:', err);
     nomeEl.textContent = 'Erro ao carregar';
     naEl.textContent = 'Erro ao carregar';
+    updateProfileImage(DEFAULT_PROFILE_IMAGE_URL); // Exibe a foto padrão
     redirectToLogin();
   });
 }
+
+// 3. Lógica do Modal de Fotos
+
+// Preenche o modal com as opções de imagem
+function fillImageGrid() {
+    imagensGridEl.innerHTML = ''; // Limpa antes de preencher
+    IMAGE_OPTIONS.forEach(url => {
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = 'Opção de Perfil';
+        img.classList.add('imagem-opcao');
+        img.onclick = () => selectProfileImage(url); // Define a ação de clique
+        imagensGridEl.appendChild(img);
+    });
+}
+
+// Abre o modal
+fotoPerfilEl.onclick = () => {
+    if (loggedUser) { // Só abre se o usuário estiver logado
+        fillImageGrid();
+        modalFotoEl.style.display = 'flex';
+    }
+};
+
+// Seleciona e salva a imagem no Firebase
+function selectProfileImage(url) {
+    if (!loggedUser) return; // Segurança básica
+    
+    // 1. Salva a URL no Firebase
+    userRef.update({ profileImageUrl: url })
+        .then(() => {
+            console.log('Foto de perfil salva com sucesso no Firebase!');
+            // A função `updateProfileImage` será chamada pelo listener do on('value'), mas forçamos aqui também para feedback imediato
+            updateProfileImage(url); 
+            // 2. Fecha o modal
+            modalFotoEl.style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Erro ao salvar foto de perfil no Firebase:', error);
+            alert('Erro ao salvar a foto. Tente novamente.');
+        });
+}
+
+// Configura a foto inicial caso o script do Firebase demore
+updateProfileImage(''); // Chama com string vazia para forçar o uso da DEFAULT_PROFILE_IMAGE_URL
 </script>
 <br>
 
