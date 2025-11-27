@@ -1,211 +1,177 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dados do Funcionário</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
+:root {
+  --primary-color: #003366;
+  --secondary-color: #0066cc;
+  --background-light: #f5f8ff;
+  --text-dark: #333;
+  --text-light: #fff;
+  --border-color: #ddd;
+}
 body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    background: #f5f5f5;
+  font-family: 'Poppins', sans-serif;
+  margin:0; padding:0;
+  background: var(--background-light);
+  color: var(--text-dark);
+  display:flex; flex-direction:column; min-height:100vh;
 }
 header {
-    width: 100%;
-    background: #0A3D62;
-    padding: 15px 20px;
-    color: white;
-    font-size: 20px;
-    font-weight: 600;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-sizing: border-box;
+  position: sticky; top:0; left:0; right:0;
+  width:100%; background: var(--text-light); height:70px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 30px; box-shadow:0 4px 12px rgba(0,0,0,0.08); z-index:20;
 }
-header h1 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 600;
+header .logo {
+  width:220px; height:45px;
+  background-image:url('https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000083-d9fb4d9fb6/700/3F36BE85-5E12-4237-844C-9BD82571F2C4.webp');
+  background-repeat:no-repeat; background-size:contain; background-position:left;
 }
-#voltarBtn {
-    background: white;
-    color: #0A3D62;
-    border: none;
-    padding: 8px 12px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 0;
+.header-menu-btn { cursor:pointer; font-size:32px; color:#000; }
+.header-menu-btn:hover { color: var(--primary-color); }
+#menu { display:none; position:absolute; right:30px; top:60px; background:var(--text-light); padding:15px 20px; box-shadow:0 4px 15px rgba(0,0,0,0.15); min-width:150px; z-index:10; }
+#menu a { color: var(--primary-color); text-decoration:none; font-weight:600; display:block; padding:5px 0; }
+#menu a:hover { color: var(--secondary-color); }
+
+.main-section {
+flex:1; display:flex; flex-direction:column;
+padding:40px 70px; background:var(--text-light);
 }
-.container {
-    width: 90%;
-    margin: 30px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 0;
+
+.perfil {
+display:flex; align-items:center; gap:20px; margin-bottom:30px;
+padding:20px; border:1px solid var(--border-color);
 }
-.foto-perfil {
-    width: 120px;
-    height: 120px;
-    border-radius: 0;
-    object-fit: cover;
-    background: #ddd;
-}
-.linha {
-    width: 100%;
-    height: 1px;
-    background: #ccc;
-    margin: 15px 0;
-}
-.item {
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-button {
-    width: 100%;
-    padding: 12px;
-    background: #0A3D62;
-    border: none;
-    color: white;
-    font-size: 16px;
-    margin-top: 20px;
-    border-radius: 0;
-    cursor: pointer;
-}
-#overlay-confirmacao {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.65);
-    display: none;
-    justify-content: center;
-    align-items: center;
-}
-.box-confirmacao {
-    width: 90%;
-    max-width: 350px;
-    background: white;
-    padding: 20px;
-    font-size: 16px;
-    border-radius: 0;
-}
-.box-confirmacao button {
-    margin-top: 15px;
-    border-radius: 0;
-}
+.perfil img { width:100px; height:100px; border-radius:50%; border:3px solid var(--secondary-color); object-fit:cover; }
+.perfil-info p { margin:5px 0; font-size:15px; }
+
+#baixarBtn { margin-top:20px; background-color: var(--primary-color); color: var(--text-light); border:none; padding:10px 25px; cursor:pointer; font-weight:600; }
+#baixarBtn:hover { background-color: var(--secondary-color); }
+
+#termosBox { display:none; margin-top:20px; border:1px solid var(--border-color); padding:15px; font-size:14px; background:rgba(0,0,0,0.03); }
+#termosBox li { margin:5px 0; cursor:pointer; list-style-type:disc; color:var(--primary-color); font-weight:600; }
+
+#pdfContainer { display:none; }
+
 </style>
 </head>
 <body>
 
 <header>
-    <h1>Dados do Funcionário</h1>
-    
-
-
-
+  <div class="logo"></div>
+  <div>
+    <div id="menuBtn" class="header-menu-btn">☰</div>
+    <div id="menu">
+      <a href="login2.html">Sair</a>
+    </div>
+  </div>
 </header>
 
-<div class="container">
-    <center>
-        <img id="fotoPerfil" class="foto-perfil">
-    </center>
-
-    <div class="linha"></div>
-
-    <div class="item"><b>Nome:</b> <span id="nomeFuncionario"></span></div>
-    <div class="item"><b>CPF:</b> <span id="cpfFuncionario"></span></div>
-    <div class="item"><b>Telefone:</b> <span id="telefoneFuncionario"></span></div>
-    <div class="item"><b>NA:</b> <span id="naFuncionario"></span></div>
-
-    <button onclick="abrirConfirmacao()">Baixar Documento</button>
-</div>
-
-<div id="overlay-confirmacao">
-    <div class="box-confirmacao">
-        Estou ciente de que o compartilhamento deste documento é de minha inteira responsabilidade.
-        <button onclick="gerarPDF()">Fazer Download</button>
-        <button onclick="fecharConfirmacao()" style="background:#555;">Cancelar</button>
+<div class="main-section">
+  <div class="perfil">
+    <img id="fotoPerfil" src="">
+    <div class="perfil-info">
+      <p><strong>Nome:</strong> <span id="nome"></span></p>
+      <p><strong>NA:</strong> <span id="na"></span></p>
+      <p><strong>Telefone:</strong> <span id="tel"></span></p>
+      <button id="baixarBtn">Baixar Dados PDF</button>
+      <ul id="termosBox">
+        <li id="concordo">Concordo com os termos de não compartilhamento.</li>
+      </ul>
     </div>
+  </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<div id="pdfContainer"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 
 <script>
-// FIREBASE
+// Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
   authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
   projectId: "prefeitura-de-joao-camara",
   storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
   messagingSenderId: "269299041577",
-  appId: "1:269299041577:web:fd41b2939240e9eb476338"
+  appId: "1:269299041577:web:fd41b2939240e9eb476338",
+  measurementId: "G-YT7NHR342J"
 };
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
 const db = firebase.database();
+const serie = localStorage.getItem("usuarioAtual");
+if(!serie) window.location.href="login2.html";
+const nomeEl=document.getElementById("nome");
+const naEl=document.getElementById("na");
+const telEl=document.getElementById("tel");
+const fotoEl=document.getElementById("fotoPerfil");
 
-let dadosUser = {};
-
-auth.onAuthStateChanged(user => {
-    if (!user) return;
-    db.ref("usuarios/" + user.uid).once("value").then(snap => {
-        dadosUser = snap.val();
-        document.getElementById("nomeFuncionario").innerText = dadosUser.nome || "";
-        document.getElementById("cpfFuncionario").innerText = dadosUser.cpf || "";
-        document.getElementById("telefoneFuncionario").innerText = dadosUser.telefone || "";
-        document.getElementById("naFuncionario").innerText = dadosUser.na || "";
-        document.getElementById("fotoPerfil").src = dadosUser.foto || "https://via.placeholder.com/120";
-    });
+db.ref("usuarios/"+serie).on("value", snap=>{
+  if(snap.exists()){
+    const d=snap.val();
+    nomeEl.textContent=d.nome;
+    naEl.textContent=serie;
+    telEl.textContent=d.telefone||"—";
+    fotoEl.src=d.foto||"";
+  }
 });
 
-function abrirConfirmacao(){
-    document.getElementById("overlay-confirmacao").style.display = "flex";
-}
-function fecharConfirmacao(){
-    document.getElementById("overlay-confirmacao").style.display = "none";
-}
-
-async function gerarPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ unit: "mm", format: "a4" });
-
-    doc.setFillColor(235,235,235);
-    doc.rect(10,10,190,277,"F");
-
-    doc.setFontSize(20);
-    doc.text("Documento do Funcionário", 60, 25);
-
-    const foto = document.getElementById("fotoPerfil").src;
-    const img = await toDataURL(foto);
-    doc.addImage(img, "JPEG", 20, 40, 40, 40);
-
-    doc.setFontSize(14);
-    doc.text("Nome: " + (dadosUser.nome || ""), 20, 95);
-    doc.text("CPF: " + (dadosUser.cpf || ""), 20, 110);
-    doc.text("Telefone: " + (dadosUser.telefone || ""), 20, 125);
-    doc.text("NA: " + (dadosUser.na || ""), 20, 140);
-
-    const qrCanvas = document.createElement("canvas");
-    await QRCode.toCanvas(qrCanvas, "https://domusfit.site/login2.html");
-    const qrData = qrCanvas.toDataURL("image/png");
-    doc.addImage(qrData, "PNG", 140, 40, 50, 50);
-
-    doc.save((dadosUser.nome || "Documento") + ".pdf");
+// Menu toggle
+const menuBtn = document.getElementById('menuBtn');
+const menu = document.getElementById('menu');
+menuBtn.onclick = () => {
+  if(menu.style.display==='block'){ menu.style.display='none'; menuBtn.textContent='☰'; }
+  else{ menu.style.display='block'; menuBtn.textContent='✕'; }
 }
 
-function toDataURL(url){
-    return fetch(url)
-        .then(res => res.blob())
-        .then(blob => new Promise((resolve)=>{
-            const reader = new FileReader();
-            reader.onloadend = ()=> resolve(reader.result);
-            reader.readAsDataURL(blob);
-        }));
+// PDF Download
+const baixarBtn=document.getElementById("baixarBtn");
+const termosBox=document.getElementById("termosBox");
+const concordo=document.getElementById("concordo");
+baixarBtn.onclick=()=>{
+  termosBox.style.display="block";
+}
+concordo.onclick=()=>{
+  termosBox.style.display="none";
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  // Fundo com linhas transparentes
+  for(let i=0;i<400;i+=20){
+    doc.setDrawColor(0,51,102,30); doc.line(0,i,210,i);
+    doc.setDrawColor(0,204,102,30); doc.line(i,0,i,297);
+  }
+  // Foto
+  const foto = document.getElementById("fotoPerfil");
+  if(foto.src){
+    const img = new Image();
+    img.crossOrigin="anonymous";
+    img.onload=()=>{ doc.addImage(img, 'JPEG', 80, 10, 50, 50); gerarPDF(doc); }
+    img.src=foto.src;
+  }else gerarPDF(doc);
+
+  function gerarPDF(doc){
+    // Nome, NA, Telefone
+    doc.setFontSize(14); doc.setTextColor(0,0,0);
+    doc.text(`Nome: ${nomeEl.textContent}`, 20, 80);
+    doc.text(`NA: ${naEl.textContent}`, 20, 90);
+    doc.text(`Telefone: ${telEl.textContent}`, 20, 100);
+    // QR Code
+    const qr = new QRious({value:'https://domusfit.site/login2.html', size:80});
+    doc.addImage(qr.toDataURL(), 'PNG', 150, 10, 50,50);
+    doc.save(`${nomeEl.textContent}_dados.pdf`);
+  }
 }
 </script>
 
