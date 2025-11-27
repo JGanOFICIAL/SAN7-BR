@@ -13,8 +13,6 @@
   --text-dark: #333;
   --text-light: #fff;
   --border-color: #ddd;
-  --button-hover-bg: var(--primary-color);
-  --button-hover-text: var(--text-light);
 }
 body {
   font-family: 'Poppins', sans-serif;
@@ -75,16 +73,8 @@ header .logo {
   color:white;
 }
 
-/* Botão baixar */
 #baixarBtn{ display:none; width:180px; height:50px; background:var(--primary-color); color:#fff; border:none; cursor:pointer; font-weight:600;}
 #baixarBtn:hover{ background: var(--secondary-color);}
-
-/* PDF estilo documento */
-.pdf-container{ display:none;}
-.pdf-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:2px solid rgba(0,0,0,0.2); padding-bottom:10px;}
-.pdf-header img{ width:80px; height:80px; border-radius:50%; border:2px solid var(--secondary-color);}
-.pdf-body{ margin-top:15px;}
-.pdf-row{ display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid rgba(0,0,0,0.1); padding-bottom:5px;}
 </style>
 </head>
 <body>
@@ -111,18 +101,6 @@ header .logo {
   </label>
 
   <button id="baixarBtn">Baixar PDF</button>
-
-  <div class="pdf-container" id="pdfContent">
-    <div class="pdf-header">
-      <img id="pdfFoto" src="">
-      <img src="" id="qrCode" alt="QR Code">
-    </div>
-    <div class="pdf-body">
-      <div class="pdf-row"><strong>Nome:</strong><span id="pdfNome"></span></div>
-      <div class="pdf-row"><strong>NA:</strong><span id="pdfNA"></span></div>
-      <div class="pdf-row"><strong>Telefone:</strong><span id="pdfTel"></span></div>
-    </div>
-  </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -163,12 +141,6 @@ const fotoEl = document.getElementById("fotoPerfil");
 const concordoCheck = document.getElementById("concordoCheck");
 const baixarBtn = document.getElementById("baixarBtn");
 
-const pdfNome = document.getElementById("pdfNome");
-const pdfNA = document.getElementById("pdfNA");
-const pdfTel = document.getElementById("pdfTel");
-const pdfFoto = document.getElementById("pdfFoto");
-const qrCodeEl = document.getElementById("qrCode");
-
 db.ref("usuarios/"+serie).on("value", snap=>{
   if(snap.exists()){
     const d = snap.val();
@@ -176,11 +148,6 @@ db.ref("usuarios/"+serie).on("value", snap=>{
     naEl.textContent = serie;
     telEl.textContent = d.telefone||"—";
     fotoEl.src = d.foto||"";
-    pdfNome.textContent = d.nome;
-    pdfNA.textContent = serie;
-    pdfTel.textContent = d.telefone||"—";
-    pdfFoto.src = d.foto||"";
-    new QRCode(qrCodeEl,{text:"https://domusfit.site/login2.html", width:80, height:80});
   }
 });
 
@@ -188,33 +155,46 @@ concordoCheck.addEventListener('change',()=>{
   baixarBtn.style.display = concordoCheck.checked ? 'block':'none';
 });
 
-// Gerar PDF
 baixarBtn.addEventListener('click',()=>{
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-  const foto = pdfFoto.src;
-  const nome = pdfNome.textContent;
-  const na = pdfNA.textContent;
-  const tel = pdfTel.textContent;
 
-  // Fundo "criptografado" com linhas transparentes
-  for(let i=0;i<10;i++){
-    doc.setDrawColor(0, 102, 204, 20);
-    doc.setLineWidth(0.5);
-    doc.line(10,20+i*10,190,20+i*10);
+  const nome = nomeEl.textContent;
+  const na = naEl.textContent;
+  const tel = telEl.textContent;
+  const foto = fotoEl.src;
+
+  // Título
+  doc.setFontSize(22);
+  doc.setTextColor(0,0,50);
+  doc.text("Funcionario DomusFit", 105, 20, null, null, "center");
+
+  // Foto central
+  if(foto) doc.addImage(foto,'JPEG',85,30,40,40);
+
+  doc.setFontSize(14);
+  doc.setTextColor(0,0,0);
+
+  // Dados abaixo da foto
+  doc.text(`Nome: ${nome}`, 105, 80, null, null, "center");
+  doc.text(`NA: ${na}`, 105, 90, null, null, "center");
+  doc.text(`Telefone: ${tel}`, 105, 100, null, null, "center");
+
+  // Linha divisória pontilhada
+  doc.setLineWidth(0.5);
+  doc.setDrawColor(0);
+  const startX = 20, endX = 190, yLine = 110;
+  for(let x=startX; x<endX; x+=3){
+    doc.line(x, yLine, x+1, yLine);
   }
 
-  if(foto) doc.addImage(foto,'JPEG',15,15,30,30);
-  doc.setFontSize(16);
-  doc.text(`Nome: ${nome}`, 15, 60);
-  doc.text(`NA: ${na}`, 15, 70);
-  doc.text(`Telefone: ${tel}`, 15, 80);
-
-  // QR Code
+  // QR Code lado esquerdo abaixo
   const qrCanvas = document.createElement('canvas');
-  new QRCode(qrCanvas,{text:"https://domusfit.site/login2.html", width:60, height:60});
+  new QRCode(qrCanvas,{text:"https://domusfit.site/login2.html", width:50, height:50});
   setTimeout(()=>{
-    doc.addImage(qrCanvas.toDataURL('image/png'), 'PNG', 150, 20, 40, 40);
+    doc.addImage(qrCanvas.toDataURL('image/png'), 'PNG', 20, 120, 50, 50);
+    doc.setFontSize(10);
+    doc.text("https://domusfit.site/login2.html", 20, 180);
     doc.save(`${nome.replace(/\s+/g,'_')}.pdf`);
   },300);
 });
