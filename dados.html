@@ -41,16 +41,50 @@ header .logo {
 .perfil{ display:flex; align-items:center; gap:20px; padding:20px; border:1px solid var(--border-color);}
 .perfil img{ width:100px; height:100px; border-radius:50%; border:3px solid var(--secondary-color); object-fit:cover;}
 .perfil-info p{ margin:5px 0; font-size:15px;}
-#liConcordo{ display:flex; align-items:center; gap:10px; margin:20px 0;}
-#liConcordo input{ width:18px; height:18px;}
+
+/* Checkbox moderno */
+.checkbox-container {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:20px 0;
+  cursor:pointer;
+  user-select:none;
+}
+.checkbox-container input[type="checkbox"]{
+  appearance:none;
+  -webkit-appearance:none;
+  width:20px;
+  height:20px;
+  border:2px solid var(--primary-color);
+  border-radius:4px;
+  position:relative;
+  cursor:pointer;
+  transition: all 0.2s;
+}
+.checkbox-container input[type="checkbox"]:checked{
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+.checkbox-container input[type="checkbox"]:checked::after{
+  content: '✔';
+  position:absolute;
+  top:0;
+  left:2px;
+  font-size:16px;
+  color:white;
+}
+
+/* Botão baixar */
 #baixarBtn{ display:none; width:180px; height:50px; background:var(--primary-color); color:#fff; border:none; cursor:pointer; font-weight:600;}
 #baixarBtn:hover{ background: var(--secondary-color);}
+
+/* PDF estilo documento */
 .pdf-container{ display:none;}
-.pdf-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;}
+.pdf-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:2px solid rgba(0,0,0,0.2); padding-bottom:10px;}
 .pdf-header img{ width:80px; height:80px; border-radius:50%; border:2px solid var(--secondary-color);}
-.pdf-body{ border-top:2px solid #003366; padding-top:10px;}
-.pdf-row{ display:flex; justify-content:space-between; margin-bottom:8px; border-bottom:1px solid rgba(0,0,0,0.1); padding-bottom:5px;}
-.pdf-qr{ margin-top:20px;}
+.pdf-body{ margin-top:15px;}
+.pdf-row{ display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid rgba(0,0,0,0.1); padding-bottom:5px;}
 </style>
 </head>
 <body>
@@ -72,16 +106,16 @@ header .logo {
     </div>
   </div>
 
-  <div id="liConcordo">
-    <input type="checkbox" id="concordoCheck"><label for="concordoCheck">Li e concordo com os termos de não compartilhamento dos dados e LGPD.</label>
-  </div>
+  <label class="checkbox-container">Li e concordo com os termos de não compartilhamento e LGPD
+    <input type="checkbox" id="concordoCheck">
+  </label>
 
   <button id="baixarBtn">Baixar PDF</button>
 
   <div class="pdf-container" id="pdfContent">
     <div class="pdf-header">
       <img id="pdfFoto" src="">
-      <img src="" id="qrCode" alt="QR Code" style="width:80px;height:80px;">
+      <img src="" id="qrCode" alt="QR Code">
     </div>
     <div class="pdf-body">
       <div class="pdf-row"><strong>Nome:</strong><span id="pdfNome"></span></div>
@@ -163,15 +197,22 @@ baixarBtn.addEventListener('click',()=>{
   const na = pdfNA.textContent;
   const tel = pdfTel.textContent;
 
-  doc.setFontSize(16);
+  // Fundo "criptografado" com linhas transparentes
+  for(let i=0;i<10;i++){
+    doc.setDrawColor(0, 102, 204, 20);
+    doc.setLineWidth(0.5);
+    doc.line(10,20+i*10,190,20+i*10);
+  }
+
   if(foto) doc.addImage(foto,'JPEG',15,15,30,30);
+  doc.setFontSize(16);
   doc.text(`Nome: ${nome}`, 15, 60);
   doc.text(`NA: ${na}`, 15, 70);
   doc.text(`Telefone: ${tel}`, 15, 80);
 
   // QR Code
   const qrCanvas = document.createElement('canvas');
-  const qr = new QRCode(qrCanvas,{text:"https://domusfit.site/login2.html", width:60, height:60});
+  new QRCode(qrCanvas,{text:"https://domusfit.site/login2.html", width:60, height:60});
   setTimeout(()=>{
     doc.addImage(qrCanvas.toDataURL('image/png'), 'PNG', 150, 20, 40, 40);
     doc.save(`${nome.replace(/\s+/g,'_')}.pdf`);
