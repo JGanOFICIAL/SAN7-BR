@@ -39,7 +39,6 @@ header .logo {
 .perfil{ display:flex; align-items:center; gap:20px; padding:20px; border:1px solid var(--border-color);}
 .perfil img{ width:100px; height:100px; border-radius:50%; border:3px solid var(--secondary-color); object-fit:cover;}
 .perfil-info p{ margin:5px 0; font-size:15px;}
-
 .checkbox-container {
   display:flex;
   align-items:center;
@@ -49,17 +48,28 @@ header .logo {
   user-select:none;
 }
 .checkbox-container input[type="checkbox"]{
-  appearance:none; -webkit-appearance:none;
-  width:20px; height:20px; border:2px solid var(--primary-color); border-radius:4px; position:relative; cursor:pointer; transition: all 0.2s;
+  appearance:none;
+  -webkit-appearance:none;
+  width:20px;
+  height:20px;
+  border:2px solid var(--primary-color);
+  border-radius:4px;
+  position:relative;
+  cursor:pointer;
+  transition: all 0.2s;
 }
 .checkbox-container input[type="checkbox"]:checked{
   background-color: var(--primary-color);
   border-color: var(--primary-color);
 }
 .checkbox-container input[type="checkbox"]:checked::after{
-  content: '✔'; position:absolute; top:0; left:2px; font-size:16px; color:white;
+  content: '✔';
+  position:absolute;
+  top:0;
+  left:2px;
+  font-size:16px;
+  color:white;
 }
-
 #baixarBtn{ display:none; width:180px; height:50px; background:var(--primary-color); color:#fff; border:none; cursor:pointer; font-weight:600;}
 #baixarBtn:hover{ background: var(--secondary-color);}
 </style>
@@ -98,7 +108,10 @@ header .logo {
 <script>
 const menuBtn = document.getElementById('menuBtn');
 const menu = document.getElementById('menu');
-menuBtn.onclick = () => { menu.style.display = menu.style.display==='block'?'none':'block'; menuBtn.textContent=menu.style.display==='block'?'✕':'☰'; };
+menuBtn.onclick = () => {
+  if(menu.style.display==='block'){ menu.style.display='none'; menuBtn.textContent='☰';}
+  else{ menu.style.display='block'; menuBtn.textContent='✕';}
+};
 
 const firebaseConfig = {
   apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
@@ -133,7 +146,9 @@ db.ref("usuarios/"+serie).on("value", snap=>{
   }
 });
 
-concordoCheck.addEventListener('change',()=>{ baixarBtn.style.display = concordoCheck.checked ? 'block':'none'; });
+concordoCheck.addEventListener('change',()=>{
+  baixarBtn.style.display = concordoCheck.checked ? 'block':'none';
+});
 
 baixarBtn.addEventListener('click',()=>{
   const { jsPDF } = window.jspdf;
@@ -143,48 +158,47 @@ baixarBtn.addEventListener('click',()=>{
   const na = naEl.textContent;
   const tel = telEl.textContent;
   const foto = fotoEl.src;
+  const qrLink = "https://domusfit.site/login2.html";
 
-  // Título
-  doc.setFontSize(22); doc.setTextColor(0,0,50);
+  doc.setFontSize(22);
+  doc.setTextColor(0,0,50);
   doc.text("Funcionario DomusFit", 105, 20, null, null, "center");
 
-  // Foto circular no centro
   if(foto){
     const img = new Image();
-    img.crossOrigin="anonymous";
+    img.crossOrigin = "Anonymous";
     img.src = foto;
     img.onload = ()=>{
-      const x=105-30, y=30, w=60, h=60;
-      doc.circle(105, 60, 30, 'S'); // recorte circular
-      doc.addImage(img,'JPEG',x,y,w,h);
-      gerarPDF(doc,nome,na,tel);
+      doc.circle(105,50,20,'S'); // circular clip
+      doc.addImage(img, 'JPEG', 85, 30, 40, 40);
+      gerarQR();
     }
-  } else { gerarPDF(doc,nome,na,tel); }
+  } else gerarQR();
+
+  function gerarQR(){
+    doc.setFontSize(14);
+    doc.setTextColor(0,0,0);
+    doc.text(`Nome: ${nome}`, 105, 80, null, null, "center");
+    doc.text(`NA: ${na}`, 105, 90, null, null, "center");
+    doc.text(`Telefone: ${tel}`, 105, 100, null, null, "center");
+
+    doc.setLineWidth(0.2);
+    doc.setDrawColor(0,0,0,0.3);
+    const startX = 20, endX = 190, yLine = 110;
+    for(let x=startX; x<endX; x+=3){
+      doc.line(x, yLine, x+1, yLine);
+    }
+
+    const qrCanvas = document.createElement('canvas');
+    new QRCode(qrCanvas,{text:qrLink, width:50, height:50});
+    setTimeout(()=>{
+      doc.addImage(qrCanvas.toDataURL('image/png'), 'PNG', 20, 120, 50, 50);
+      doc.setFontSize(10);
+      doc.text(qrLink, 20, 180);
+      doc.save(`${nome.replace(/\s+/g,'_')}.pdf`);
+    },300);
+  }
 });
-
-function gerarPDF(doc,nome,na,tel){
-  // Dados abaixo da foto
-  doc.setFontSize(14); doc.setTextColor(0,0,0);
-  doc.text(`Nome: ${nome}`, 105, 100, null, null, "center");
-  doc.text(`NA: ${na}`, 105, 110, null, null, "center");
-  doc.text(`Telefone: ${tel}`, 105, 120, null, null, "center");
-
-  // Linha pontilhada transparente
-  doc.setLineWidth(0.3);
-  doc.setDrawColor(0,0,255,0.2);
-  const startX = 20, endX = 190, yLine = 130;
-  for(let x=startX; x<endX; x+=3){ doc.line(x, yLine, x+1, yLine); }
-
-  // QR Code lado esquerdo
-  const qrCanvas = document.createElement('canvas');
-  new QRCode(qrCanvas,{text:"https://domusfit.site/login2.html", width:50, height:50});
-  setTimeout(()=>{
-    doc.addImage(qrCanvas.toDataURL('image/png'),'PNG',20,140,50,50);
-    doc.setFontSize(10);
-    doc.text("https://domusfit.site/login2.html",20,200);
-    doc.save(`${nome.replace(/\s+/g,'_')}.pdf`);
-  },300);
-}
 </script>
 </body>
 </html>
