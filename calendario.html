@@ -385,6 +385,46 @@ z-index:25;
 #previewOverlay h2 {
     margin-top: 0;
 }
+
+/* NOVO: Estilo para o Overlay de Consulta */
+#queryOverlay {
+    z-index: 50; /* Fica acima de tudo */
+    padding-top: 60px;
+}
+#queryOverlay h2 {
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+#queryOverlay .consulted-na {
+    font-size: 18px;
+    color: #555;
+    font-weight: normal;
+}
+#queryOverlay .day-title {
+    background: var(--secondary-color) !important; /* Cor de destaque para o treino consultado */
+}
+
+/* NOVO: Estilo do Spinner de Carregamento */
+.spinner {
+  display: none; /* Escondido por padrão */
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--secondary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 30px auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* --- FIM DA MODERNIZAÇÃO: ÁREA MEUS TREINOS (OVERLAY) e PRÉVIA --- */
 
 
@@ -463,12 +503,42 @@ z-index:25;
 #diaCardio, .tempo, .quando, .obsC {
     border-radius: 0 !important;
 }
+
+/* Novo estilo para o formulário de consulta NA */
+#queryNAForm {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    border-radius: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+#inputNA {
+    flex-grow: 1;
+    border-radius: 0;
+}
+#consultarBtn {
+    background: var(--secondary-color);
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0;
+    transition: background 0.3s;
+}
+#consultarBtn:hover {
+    background: #1e88e5;
+}
 </style>
 </head>
 
 <body>
 <header>
   <div class="logo"></div>
+  <button onclick="document.getElementById('queryNAOverlay').style.display='block'; document.getElementById('inputNA').focus();" style="background-color:var(--secondary-color);color:#fff;border:none;width:120px;height:35px;position:absolute;top:50%;right:100px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">COPIAR TREINO DE ALGUEM</button>
   <button onclick="window.location.href='index.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">Voltar</button>
 </header>
 
@@ -520,6 +590,7 @@ const IMG_ESTEIRA = "https://img.freepik.com/vetores-premium/icone-preto-de-bati
 const IMG_BICICLETA = "https://img.freepik.com/vetores-premium/icone-preto-de-batimento-cardiaco-sinal-de-cardio-simbolo-de-saude_53562-19766.jpg?w=360";
 const IMG_ELIPTICO = "https://img.freepik.com/vetores-premium/icone-preto-de-batimento-cardiaco-sinal-de-cardio-simbolo-de-saude_53562-19766.jpg?w=360";
 
+// CORES FIXAS POR DIA (Mantido como no seu código para o CARDIO)
 const coresCardio={
 "SEGUNDA":"#4caf50",
 "TERÇA":"#2196f3",
@@ -750,6 +821,26 @@ function closeCardioCustom() {
 
 
 <main>
+  
+  <div id="queryNAOverlay" class="overlay" style="z-index: 50; padding-top: 20px;">
+    <button class="close-btn" onclick="document.getElementById('queryNAOverlay').style.display='none';">×</button>
+    
+    <div style="max-width: 400px; margin: 40px auto 20px;">
+        <div id="queryNAForm">
+            <input type="number" id="inputNA" class="search-box" placeholder="NA DA OUTRA PESSOA">
+            <button id="consultarBtn" onclick="consultarNA()">CONSULTAR</button>
+        </div>
+        
+        <h2>Treinos de NA: <span id="consultedNAHeader" class="consulted-na">...</span></h2>
+        
+        <div id="queryContent">
+            <div id="loadingSpinner" class="spinner"></div>
+            <p id="initialMessage" style="text-align:center; padding: 20px 0; color: #777;">Aguardando consulta...</p>
+            
+            <button id="pegarTreinoBtn" class="bottom-btn" style="width:100%; margin-top: 0; background: var(--green); display: none;" onclick="pegarTreino()">PEGAR TREINO</button>
+        </div>
+    </div>
+  </div>
   <input type="text" id="search" class="search-box" placeholder="PESQUISAR...">
   <div id="groups"></div>
 </main>
@@ -785,10 +876,23 @@ const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomai
 firebase.initializeApp(firebaseConfig);
 
 const db=firebase.database();
-const na=localStorage.getItem('loggedUser')||'0000';
+const na=localStorage.getItem('loggedUser')||'0000'; // NA do usuário LOGADO
+let consultedNA = null; // NA do aluno CONSULTADO
 
+// NOVO: MAPA DE CORES FIXAS POR DIA DA SEMANA
+const dayColorMap = {
+    "SEGUNDA": "#4CAF50", // Verde
+    "TERÇA": "#2196F3", // Azul
+    "QUARTA": "#FF9800", // Laranja
+    "QUINTA": "#9C27B0", // Roxo
+    "SEXTA": "#F44336", // Vermelho
+    "SÁBADO": "#009688", // Ciano/Verde Água
+    "DOMINGO": "#607D8B" // Cinza/Azul Escuro
+};
+
+// Array de cores original (Mantido, mas menos usado agora para a cor do dia)
 const cores=["#4caf50","#2196f3","#ff9800","#9c27b0","#f44336","#009688","#607d8b","#8bc34a","#3f51b5","#ff5722"];
-let corIndex=0;
+let corIndex=0; // Mantido para a lógica de "pegar treino"
 
 const groupsData={
 "MEMBROS INFERIORES – GLÚTEOS / PERNAS / PANTURRILHAS":[
@@ -922,15 +1026,18 @@ document.getElementById('createBtn').onclick=async()=>{
   const selected=[];
   document.querySelectorAll('.exercise-item').forEach(i=>{
     if(i.querySelector('.checkbox-modern').classList.contains('active')){
+        const diaSelecionado = i.querySelector('.day-select').value;
+        const corFixa = dayColorMap[diaSelecionado] || cores[0]; // Pega a cor fixa do dia
+        
       selected.push({
         exercicio:i.querySelector('span').innerText,
         reps:i.querySelector('.reps').value,
         series:i.querySelector('.series').value,
         duracao:i.querySelector('.duration').value,
-        dia:i.querySelector('.day-select').value,
+        dia:diaSelecionado,
         intensidade:i.querySelector('.intensity-select').value,
         observacao:i.querySelector('.obs').value || "",
-        cor:cores[corIndex%cores.length]
+        cor:corFixa // Usa a cor fixa do dia
       });
     }
   });
@@ -944,12 +1051,13 @@ document.getElementById('createBtn').onclick=async()=>{
   let data=snap.exists()?snap.val():[];
 
   selected.forEach(sel=>{
+    // Garante que a cor seja a cor fixa do dia para novos treinos
     const existe=data.some(x=>x.exercicio===sel.exercicio && x.dia===sel.dia);
     if(!existe) data.push(sel);
   });
 
   await db.ref('treinos/'+na).set(data);
-  corIndex++;
+  corIndex++; // Mantido, mas só afeta a cor de cópia/próximo PT
   alert('Treino criado com sucesso!');
   
   // Limpa as seleções e esconde o botão de prévia após criar
@@ -985,20 +1093,24 @@ function closePreview(){
     previewOverlay.style.display='none';
 }
 
-// NOVO: Função para carregar a prévia do treino com cores distintas por dia
+// ATUALIZADO: Função para carregar a prévia do treino com cores distintas por dia
 function loadPreview() {
     previewContent.innerHTML = '';
     const selected = [];
     document.querySelectorAll('.exercise-item').forEach(i => {
         if (i.querySelector('.checkbox-modern').classList.contains('active')) {
+            const diaSelecionado = i.querySelector('.day-select').value;
+            const corFixa = dayColorMap[diaSelecionado] || 'var(--firebase-orange)'; // Cor fixa ou fallback
+            
             selected.push({
                 exercicio: i.querySelector('span').innerText,
                 reps: i.querySelector('.reps').value,
                 series: i.querySelector('.series').value,
                 duracao: i.querySelector('.duration').value,
-                dia: i.querySelector('.day-select').value,
+                dia: diaSelecionado,
                 intensidade: i.querySelector('.intensity-select').value,
-                observacao: i.querySelector('.obs').value || ""
+                observacao: i.querySelector('.obs').value || "",
+                cor: corFixa // Usa a cor fixa do dia
             });
         }
     });
@@ -1009,30 +1121,15 @@ function loadPreview() {
     }
 
     const dias = ['SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA', 'SÁBADO', 'DOMINGO'];
-    const diasSelecionados = [...new Set(selected.map(x => x.dia))];
-    const isSingleDay = diasSelecionados.length <= 1;
     
-    // Mapeamento de cores para dias
-    const dayColorMap = {};
-    let colorIndex = 0;
-    
-    diasSelecionados.forEach(d => {
-        if (isSingleDay) {
-            dayColorMap[d] = 'var(--firebase-orange)'; // Cor única para destacar
-        } else {
-            dayColorMap[d] = cores[colorIndex % cores.length]; // Cores diferentes
-            colorIndex++;
-        }
-    });
-
     dias.forEach(d => {
         const items = selected.filter(x => x.dia === d);
         if (items.length > 0) {
             const sec = document.createElement('div');
             sec.className = 'day-section';
             
-            // Atribui a cor mapeada
-            const dayColor = dayColorMap[d];
+            // Atribui a cor fixa do dia (ou a cor do primeiro item se estiver faltando)
+            const dayColor = dayColorMap[d] || items[0].cor || 'var(--firebase-orange)'; 
             sec.innerHTML = `<div class='day-title' style="background:${dayColor}">${d} (PRÉVIA)</div>`;
 
             items.forEach((e) => {
@@ -1057,6 +1154,7 @@ function loadPreview() {
 }
 
 
+// ATUALIZADO: Função para carregar os treinos salvos com cores distintas por dia
 async function loadTrainings(){
     const tDiv=document.getElementById('trainings');
     tDiv.innerHTML='';
@@ -1076,7 +1174,9 @@ async function loadTrainings(){
         const sec=document.createElement('div');
         sec.className='day-section';
         
-        sec.innerHTML=`<div class='day-title' style="background:${items[0].cor}">${d}</div>`;
+        // Usa a cor fixa do dia ou a cor salva no primeiro item como fallback
+        const dayColor = dayColorMap[d] || items[0].cor || cores[0];
+        sec.innerHTML=`<div class='day-title' style="background:${dayColor}">${d}</div>`;
 
         items.forEach((e,i)=>{
           const div=document.createElement('div');
@@ -1164,6 +1264,143 @@ function moveUp(dia, index) {
 
 function moveDown(dia, index) {
     reorderExercise(dia, index, 1);
+}
+
+// ==========================================================
+// FUNÇÕES DE CONSULTA NA E COPIAR TREINO (ATUALIZADAS)
+// ==========================================================
+
+async function consultarNA() {
+    const inputNA = document.getElementById('inputNA').value.trim();
+    const queryContent = document.getElementById('queryContent');
+    const pegarTreinoBtn = document.getElementById('pegarTreinoBtn');
+    const consultedNAHeader = document.getElementById('consultedNAHeader');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const initialMessage = document.getElementById('initialMessage');
+    
+    // 1. Limpa o conteúdo anterior e mostra o spinner
+    queryContent.innerHTML = '';
+    queryContent.appendChild(loadingSpinner);
+    loadingSpinner.style.display = 'block';
+    pegarTreinoBtn.style.display = 'none';
+    consultedNAHeader.innerText = inputNA;
+    consultedNA = inputNA;
+
+    if (!inputNA) {
+        loadingSpinner.style.display = 'none';
+        queryContent.innerHTML = '<p style="text-align:center; padding: 20px 0; color: #F44336; font-weight: bold;">Por favor, insira um NA.</p>';
+        return;
+    }
+
+    if (inputNA === na) {
+        loadingSpinner.style.display = 'none';
+        queryContent.innerHTML = '<p style="text-align:center; padding: 20px 0; color: #F44336; font-weight: bold;">Este é o seu próprio NA!</p>';
+        return;
+    }
+    
+    // Mostra o NA de quem está logado/consultando no topo do overlay
+    document.getElementById('queryNAOverlay').querySelector('h2').innerHTML = `Treinos de ${consultedNA} <span class="consulted-na">(Consultado por NA: ${na})</span>`;
+
+    // 2. Realiza a consulta (simula um tempo de espera para ver o spinner)
+    const snap = await db.ref('treinos/' + inputNA).get();
+
+    // 3. Esconde o spinner
+    loadingSpinner.style.display = 'none';
+
+    if (!snap.exists() || snap.val().length === 0) {
+        queryContent.innerHTML = `<p style="text-align:center; padding: 20px 0; color: #777;">O aluno **${inputNA}** não possui treinos cadastrados.</p>`;
+        return;
+    }
+
+    const allData = snap.val();
+    const dias = ['SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA', 'SÁBADO', 'DOMINGO'];
+    
+    // 4. Cria um novo container para os treinos
+    const trainingsContainer = document.createElement('div');
+    
+    // 5. Adiciona o botão de cópia NO TOPO do container de treinos
+    pegarTreinoBtn.style.display = 'block';
+    trainingsContainer.appendChild(pegarTreinoBtn);
+    
+    // 6. Renderiza os treinos do NA consultado
+    dias.forEach(d => {
+        const items = allData.filter(x => x.dia === d);
+        if (items.length > 0) {
+            const sec = document.createElement('div');
+            sec.className = 'day-section';
+            
+            // Cor de destaque (secondary-color) para indicar que é um treino consultado
+            sec.innerHTML = `<div class='day-title' style="background:var(--secondary-color)">${d} (NA: ${inputNA})</div>`;
+
+            items.forEach((e) => {
+                const div = document.createElement('div');
+                div.className = 'exercise-entry';
+                
+                div.innerHTML = `
+                    <div class="details-container" style="max-width: 100%;">
+                      <strong>${e.exercicio}</strong>
+                      <div class="exercise-details">
+                          SÉRIES: ${e.series} | REPETIÇÕES: ${e.reps} | DURAÇÃO: ${e.duracao} MÊS(ES)
+                          <br>INTENSIDADE: ${e.intensidade}
+                          ${e.observacao ? `<br><strong>OBS:</strong> ${e.observacao}` : ""}
+                      </div>
+                    </div>`;
+                sec.appendChild(div);
+            });
+
+            trainingsContainer.appendChild(sec);
+        }
+    });
+    
+    // 7. Substitui o conteúdo da queryContent pelo novo container
+    queryContent.innerHTML = '';
+    queryContent.appendChild(trainingsContainer);
+}
+
+async function pegarTreino() {
+    if (!consultedNA) {
+        alert('Nenhum NA consultado para pegar o treino.');
+        return;
+    }
+    
+    if (!confirm(`Deseja COPIAR todos os treinos do aluno NA: ${consultedNA} para o seu NA: ${na}?`)) {
+        return;
+    }
+
+    const snapConsultado = await db.ref('treinos/' + consultedNA).get();
+    if (!snapConsultado.exists()) {
+        alert('Erro: Treino do aluno consultado não encontrado.');
+        return;
+    }
+
+    const treinosConsultado = snapConsultado.val();
+    const snapLogado = await db.ref('treinos/' + na).get();
+    let treinosLogado = snapLogado.exists() ? snapLogado.val() : [];
+    
+    
+    const treinosParaAdicionar = treinosConsultado.map(treino => ({
+        ...treino,
+        // Garante que a cor seja a cor fixa do dia para o aluno que está copiando
+        cor: dayColorMap[treino.dia] || cores[0] 
+    }));
+
+    // Filtra para não adicionar treinos duplicados (mesmo exercício no mesmo dia)
+    treinosParaAdicionar.forEach(novoTreino => {
+        const existe = treinosLogado.some(
+            t => t.exercicio === novoTreino.exercicio && t.dia === novoTreino.dia
+        );
+        if (!existe) {
+            treinosLogado.push(novoTreino);
+        }
+    });
+
+    // Salva os treinos atualizados para o usuário logado
+    await db.ref('treinos/' + na).set(treinosLogado);
+    
+    corIndex++; // Mantido
+    document.getElementById('queryNAOverlay').style.display='none'; // Fecha o overlay
+    
+    alert(`Treino do NA: ${consultedNA} copiado com sucesso para o seu NA: ${na}!`);
 }
 </script>
 
