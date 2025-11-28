@@ -10,6 +10,13 @@
 --border:#ccc;
 --bg-url:url('https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000035-6240c6240e/700/24B77FF0-45F8-444B-9BF7-74B3B06B2E86.webp?ph=c2a6771173');
 --logo-url:url('https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp');
+/* Novas variáveis para modernização */
+--primary-color: #4CAF50; /* Verde principal para botões */
+--secondary-color: #2196F3; /* Azul para destaque secundário */
+--danger-color: #F44336; /* Vermelho para exclusão */
+--card-bg: rgba(255, 255, 255, 0.95);
+/* Cor Laranja Firebase para o estilo da tag/laminado de dia (fallback/dia único) */
+--firebase-orange: #FF9100; 
 }
 body{
 font-family:Inter,Arial,sans-serif;
@@ -42,11 +49,15 @@ background-size:contain;
 background-repeat:no-repeat;
 background-position:left;
 }
+header button {
+    border-radius: 0 !important; /* Retangular */
+}
 main{
 padding:80px 15px 160px;
 max-width:800px;
 margin:auto;
 }
+/* Estilo Quadrado/Retangular: Área de seleção e pesquisa */
 .search-box{
 width:100%;
 padding:10px 12px;
@@ -54,20 +65,25 @@ border:1px solid var(--border);
 font-size:16px;
 outline:none;
 margin-bottom:15px;
-border-radius:0;
+border-radius:0; /* Retangular */
 }
 .group{
 margin-bottom:15px;
 border:1px solid var(--border);
-background:rgba(255,255,255,0.9);
+background:var(--card-bg);
 backdrop-filter:blur(5px);
-box-shadow:0 0 10px rgba(0,0,0,0.1);
+box-shadow:0 4px 12px rgba(0,0,0,0.1); 
+border-radius: 8px; 
+overflow: hidden; 
 }
 .group-header{
 background:#f0f0f0;
 padding:12px;
 cursor:pointer;
 font-weight:bold;
+display: flex;
+justify-content: space-between;
+align-items: center;
 }
 .exercise-list{
 display:none;
@@ -75,11 +91,25 @@ padding:10px;
 }
 .exercise-item{
 display:flex;
-align-items:center;
+align-items:flex-start; 
 justify-content:space-between;
 border-bottom:1px solid #eee;
-padding:8px 0;
+padding:12px 0; 
 flex-wrap:wrap;
+gap: 10px; 
+}
+.exercise-item > span {
+    font-weight: 500;
+    flex-grow: 1; 
+    max-width: 40%;
+}
+.exercise-item > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-end;
+    flex-grow: 2;
+    max-width: 55%;
 }
 .checkbox-modern{
 width:24px;
@@ -90,6 +120,8 @@ cursor:pointer;
 position:relative;
 transition:.3s;
 box-sizing:border-box;
+border-radius: 0; /* Retangular */
+min-width: 24px;
 }
 .checkbox-modern.active{
 background:var(--green);
@@ -104,38 +136,46 @@ width:8px;
 height:8px;
 background:#fff;
 transform:translate(-50%,-50%) scale(0);
-border-radius:2px;
+border-radius: 0; /* Retangular */
 transition:.2s;
 }
 .checkbox-modern.active::after{
 transform:translate(-50%,-50%) scale(1);
 }
-input.reps,input.series,input.duration{
-width:65px;
+/* INPUTS COM BORDA QUADRADA/RETANGULAR */
+input.reps,input.series,input.duration,
+.day-select,.intensity-select{
 padding:5px;
 border:1px solid:#ccc;
 font-size:14px;
 text-align:center;
-margin-left:5px;
-border-radius:0;
+margin-left:0;
+border-radius:0; /* Retangular */
 outline:none;
+box-sizing: border-box;
+flex-grow: 1;
+}
+input.reps,input.series,input.duration {
+    max-width: 65px;
 }
 .day-select,.intensity-select{
-padding:5px;
-font-size:14px;
-border:1px solid #ccc;
-margin-left:5px;
-border-radius:0;
-outline:none;
+    max-width: 100%;
+}
+.input-row {
+    display: flex;
+    gap: 5px;
+    width: 100%;
+    justify-content: flex-end;
 }
 .obs{
 width:100%;
 margin-top:5px;
-padding:5px;
+padding:8px;
 border:1px solid #ccc;
 font-size:14px;
 outline:none;
-border-radius:0;
+border-radius:0; /* Retangular */
+resize: vertical;
 }
 footer{
 position:fixed;
@@ -144,9 +184,11 @@ left:50%;
 transform:translateX(-50%);
 display:flex;
 justify-content:center;
-gap:10px;
+gap:15px; 
 padding:0 10px;
 z-index:5;
+width: 90%;
+max-width: 400px;
 }
 .bottom-btn{
 background:var(--green);
@@ -156,78 +198,270 @@ font-weight:bold;
 padding:12px 25px;
 cursor:pointer;
 font-size:16px;
-box-shadow:0 0 15px #0003;
-width:170px;
+box-shadow:0 4px 15px rgba(0,0,0,0.2);
+width:50%; 
 text-align:center;
 transition:.3s;
+border-radius: 0; /* Botão Retangular */
 }
 .bottom-btn:hover{background:#7cb342;}
+
+/* --- INÍCIO DA MODERNIZAÇÃO: ÁREA MEUS TREINOS (OVERLAY) e PRÉVIA --- */
+
 .overlay{
 position:fixed;
 top:0;
 left:0;
 right:0;
 bottom:0;
-background:rgba(255,255,255,0.97);
+background:rgba(255,255,255,0.98); 
 display:none;
 overflow:auto;
-padding:80px 20px;
-color:#000;
+padding:20px 15px; 
+color:var(--dark);
 z-index:20;
 }
 .overlay h2{
 text-align:center;
-margin-bottom:15px;
+margin: 40px 0 20px; 
+font-size: 24px;
+color: var(--dark);
 }
+
+/* Botão EXCLUIR TUDO */
+#clearAll{
+display:block;
+margin:10px auto 30px; 
+padding:10px 20px;
+background:var(--danger-color);
+color:#fff;
+border:none;
+cursor:pointer;
+font-weight:bold;
+border-radius: 0; /* Retangular */
+transition: background 0.3s;
+box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+#clearAll:hover {
+    background: #d32f2f;
+}
+
+/* Container do Treino (Card) */
 .day-section{
-border:1px solid #ddd;
-margin-bottom:10px;
+border:1px solid #ddd; /* Adiciona borda leve para separar */
+margin-bottom:15px;
 background:#fff;
-box-shadow:0 0 10px #0001;
+box-shadow:0 6px 16px rgba(0,0,0,0.15); 
+border-radius: 0; /* Retangular */
+overflow: hidden;
 }
+
+/* Título do Dia (Estilo Laminado/Tag) */
 .day-title{
-padding:10px;
+padding:10px 15px;
 font-weight:bold;
 color:#fff;
+text-transform: uppercase;
+font-size: 16px;
+/* Estilo laminado/tag */
+box-shadow: 0 2px 5px rgba(0,0,0,0.15); 
+position: relative;
+z-index: 1;
 }
+
+/* Item do Exercício */
 .exercise-entry{
-padding:10px;
+padding:15px; 
 border-top:1px solid #eee;
 display:flex;
 justify-content:space-between;
-align-items:center;
+align-items:flex-start; /* Alinha o texto ao topo */
+position: relative; 
+}
+.exercise-entry:last-child {
+    border-bottom: none;
+}
+.exercise-entry div.details-container {
+    max-width: calc(100% - 70px); /* Espaço para botões de ordem e exclusão */
+}
+.exercise-entry strong {
+    font-size: 16px;
+    color: var(--dark);
+    line-height: 1.4;
+}
+.exercise-details {
+    font-size: 14px;
+    color: #555;
+    margin-top: 4px;
+}
+.exercise-details strong {
+    font-weight: bold; /* Garante que 'OBS' seja bold */
+    color: #333;
+}
+
+/* Botões de Reordenação e Exclusão */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px; /* Espaço entre os botões */
+    position: absolute;
+    right: 15px;
+    top: 10px;
+}
+.move-btn {
+    background: none;
+    color: var(--secondary-color);
+    border: 1px solid var(--secondary-color);
+    padding: 2px 5px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    border-radius: 4px;
+}
+.move-btn:hover:not(:disabled) {
+    background: var(--secondary-color);
+    color: #fff;
+}
+.move-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: #ddd;
+    color: #aaa;
 }
 .delete-btn{
-background:#f44336;
-color:#fff;
-border:none;
-padding:6px 10px;
-font-weight:bold;
-cursor:pointer;
-transition:.3s;
+    background: none;
+    color: var(--danger-color);
+    border: none;
+    padding: 0;
+    font-weight: normal;
+    cursor:pointer;
+    transition:.3s;
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    margin-top: 5px;
 }
-.delete-btn:hover{background:#d32f2f;}
+.delete-btn::before {
+    content: '×'; 
+    font-weight: bold;
+    display: block;
+    transform: translateY(-1px);
+}
+.delete-btn:hover{
+    background: rgba(244, 67, 54, 0.1); 
+    color: var(--danger-color);
+}
+
 .close-btn{
 position:fixed;
 top:15px;
 right:15px;
 background:none;
-color:var(--green);
-font-size:28px;
+color:var(--dark); 
+font-size:32px; 
 border:none;
-font-weight:bold;
+font-weight:100; 
 cursor:pointer;
 z-index:25;
 }
-#clearAll{
-display:block;
-margin:20px auto;
-padding:10px 20px;
-background:#f44336;
-color:#fff;
-border:none;
-cursor:pointer;
-font-weight:bold;
+/* Estilo específico para o overlay de Prévia */
+#previewOverlay {
+    z-index: 30; /* Fica acima do overlay de MEUS TREINOS */
+    padding-top: 60px; /* Ajusta espaço para o botão X */
+}
+#previewOverlay h2 {
+    margin-top: 0;
+}
+/* --- FIM DA MODERNIZAÇÃO: ÁREA MEUS TREINOS (OVERLAY) e PRÉVIA --- */
+
+
+/* Estilos Cardio (Mantidos) */
+#cardioBtn {
+    border-radius: 0; /* Retangular */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+#cardioOverlay {
+    background: #fff;
+    z-index: 40;
+}
+#closeCardio {
+    color: var(--dark);
+}
+#newCardio, #saveCardio {
+    border-radius: 0; /* Retangular */
+    box-shadow: none;
+    width: 100%;
+}
+.cardio_area_custom {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    user-select: none;
+    text-align: center;
+}
+.cardio_item_custom {
+    cursor: pointer;
+    max-width: 135px;
+    line-height: 17px;
+}
+.cardio_divider_custom {
+    opacity: 0.5;
+    color: white;
+}
+.cardio_overlay_custom {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: none;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 60px;
+    padding-left: 18px;
+    padding-right: 18px;
+    z-index: 999999;
+}
+.cardio_box_custom {
+    width: 100%;
+    max-width: 420px;
+    font-size: 14px;
+    font-weight: 500;
+    color: black;
+    line-height: 20px;
+}
+.cardio_close_custom {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    font-size: 22px;
+    font-weight: 900;
+    cursor: pointer;
+    user-select: none;
+    color: black;
+}
+/* Inputs e selects do Cardio com borda quadrada */
+#diaCardio, .tempo, .quando, .obsC {
+    border-radius: 0 !important;
 }
 </style>
 </head>
@@ -263,14 +497,11 @@ font-weight:bold;
 
 <button id="newCardio" class="bottom-btn" style="width:95%;margin:20px auto 0 auto;display:block;background:#fff;color:#000;border:1px solid #ccc;">CRIAR</button>
 
-<div id="cardioForm" style="display:none;margin-top:20px;border:1px solid #ccc;padding:15px;background:#fafafa;">
-<select id="diaCardio" style="width:100%;padding:10px;font-size:16px;border:1px solid #ccc;">
-<option>SEGUNDA</option><option>TERÇA</option><option>QUARTA</option>
+<div id="cardioForm" style="display:none;margin-top:20px;border:1px solid #ccc;padding:15px;background:#fafafa;border-radius: 0;"> <select id="diaCardio" style="width:100%;padding:10px;font-size:16px;border:1px solid #ccc;border-radius: 0;"> <option>SEGUNDA</option><option>TERÇA</option><option>QUARTA</option>
 <option>QUINTA</option><option>SEXTA</option><option>SÁBADO</option><option>DOMINGO</option>
 </select>
 
-<div style="margin-top:10px;width:100%;padding:10px;border:1px solid #ccc;">
-<label style="font-weight:bold;">SELECIONAR MÁQUINAS</label>
+<div style="margin-top:10px;width:100%;padding:10px;border:1px solid #ccc;border-radius: 0;"> <label style="font-weight:bold;">SELECIONAR MÁQUINAS</label>
 <div>
 <label><input type="checkbox" class="maq" value="Esteira"> ESTEIRA</label><br>
 <label><input type="checkbox" class="maq" value="Bicicleta"> BICICLETA</label><br>
@@ -320,6 +551,8 @@ let cor=coresCardio[d];
 let div=document.createElement("div");
 div.style.border="1px solid #ccc";
 div.style.marginBottom="10px";
+div.style.borderRadius="0"; 
+div.style.overflow="hidden"; 
 div.innerHTML=`<div style="padding:10px;background:${cor};color:#fff;font-weight:bold;">${d}</div>`;
 items.forEach((e,i)=>{
 div.innerHTML+=`
@@ -333,7 +566,7 @@ QUANDO FAZER: ${e.quando}
 ${e.obs?`<br>OBS: ${e.obs}`:""}
 </div>
 </div>
-<button style="background:#f44336;color:#fff;border:none;padding:5px 10px;font-weight:bold;" onclick="delCardio('${d}',${i})">EXCLUIR</button>
+<button style="background:#f44336;color:#fff;border:none;padding:5px 10px;font-weight:bold;border-radius: 0;" onclick="delCardio('${d}',${i})">EXCLUIR</button>
 </div>`;
 });
 box.appendChild(div);
@@ -353,14 +586,10 @@ let cont=document.getElementById("maqInputs");
 if(c.checked){
 let id="i_"+c.value;
 cont.innerHTML+=`
-<div id="${id}" style="margin-top:10px;border:1px solid #ddd;padding:10px;">
-<b>${c.value}</b><br>
-<input placeholder="Tempo (min)" type="number" class="tempo" data-m="${c.value}" style="width:100%;padding:8px;border:1px solid:#ccc;margin-top:5px;">
-<select class="quando" data-m="${c.value}" style="width:100%;padding:8px;border:1px solid:#ccc;margin-top:5px;">
-<option>INÍCIO</option><option>MEIO</option><option>FIM</option>
+<div id="${id}" style="margin-top:10px;border:1px solid #ddd;padding:10px;border-radius: 0;"> <b>${c.value}</b><br>
+<input placeholder="Tempo (min)" type="number" class="tempo" data-m="${c.value}" style="width:100%;padding:8px;border:1px solid:#ccc;margin-top:5px;border-radius: 0;"> <select class="quando" data-m="${c.value}" style="width:100%;padding:8px;border:1px solid:#ccc;margin-top:5px;border-radius: 0;"> <option>INÍCIO</option><option>MEIO</option><option>FIM</option>
 </select>
-<textarea class="obsC" data-m="${c.value}" placeholder="Observação (opcional)" style="width:100%;padding:8px;border:1px solid:#ccc;margin-top:5px;"></textarea>
-</div>`;
+<textarea class="obsC" data-m="${c.value}" placeholder="Observação (opcional)" style="width:100%;padding:8px;border:1px solid:#ccc;margin-top:5px;border-radius: 0;"></textarea> </div>`;
 }else{
 document.getElementById("i_"+c.value)?.remove();
 }
@@ -531,7 +760,8 @@ function closeCardioCustom() {
 
 <footer>
   <button id="createBtn" class="bottom-btn">CRIAR TREINO</button>
-  <button id="viewBtn" class="bottom-btn">MEUS TREINOS</button>
+  <button id="viewCardBtn" class="bottom-btn" style="display:none; background: var(--firebase-orange); width: 45%;">VER PRÉVIA</button>
+  <button id="viewBtn" class="bottom-btn" style="width: 45%;">MEUS TREINOS</button>
 </footer>
 
 <div class="overlay" id="overlay">
@@ -539,6 +769,12 @@ function closeCardioCustom() {
   <h2>MEUS TREINOS</h2>
   <button id="clearAll">EXCLUIR TUDO</button>
   <div id="trainings"></div>
+</div>
+
+<div class="overlay" id="previewOverlay">
+  <button class="close-btn" onclick="closePreview()">×</button>
+  <h2>PRÉVIA DO CARD</h2>
+  <div id="previewContent"></div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -569,7 +805,6 @@ const groupsData={
 "REMADA NO APARELHO",
 "REMADA CAVALINHO",
 
-/* NOVOS EXERCÍCIOS SOLICITADOS */
 "REMADA CURVADA COM BARRA",
 "REMADA CURVADA COM HALTERES",
 "REMADA UNILATERAL (SERROTE)",
@@ -590,24 +825,19 @@ const groupsData={
 "ROSCA SCOT MÁQUINA","ROSCA SCOT LIVRE",
 "ROSCA DIRETA","ROSCA MARTELO",
 "ROSCA ALTERNADA","ROSCA COM HALTERES - BANCO 46°","ROSCA CONCENTRADA UNILATERAL","TRÍCEPS CORDA NA POLIA","TRICEPS BARRA NA POLIA","TRICEPS FRANCÊS","TRICEPS TESTA","TRICEPS COISE UNILATERAL"
-
-
-
-
-
 ],
 
 "MEMBROS SUPERIORES – OMBROS":[
 "DESENV OMBRO LIVRE","BANCO SENTADO LIVRE","DESENVOLVIMENTO COM HALTERES","ELEVAÇÃO LATERAL","ELEVAÇÃO FRONTAL","CRUSIFIXO INVERSO","REMADA BAIXA","ENCOLHIMENTO","PUXADA / REMADA ALTA"
-
-
-
 ]
 };
 
 const intensidades=["NENHUMA","DROP-SET","SUPER-SÉRIE","TRI-SET","BI-SET","REST-PAUSE","PIRÂMIDE","GANGORRA","PRÉ-EXAUSTÃO"];
 
 const groupsContainer=document.getElementById('groups');
+const viewCardBtn = document.getElementById('viewCardBtn');
+const previewOverlay = document.getElementById('previewOverlay');
+const previewContent = document.getElementById('previewContent');
 
 Object.keys(groupsData).forEach(g=>{
   const group=document.createElement('div');
@@ -623,11 +853,16 @@ Object.keys(groupsData).forEach(g=>{
     const item=document.createElement('div');
     item.className='exercise-item';
     item.innerHTML=`
-      <div class="checkbox-modern"></div><span>${ex}</span>
+      <div style="display: flex; gap: 8px; align-items: flex-start;">
+        <div class="checkbox-modern"></div>
+        <span>${ex}</span>
+      </div>
       <div>
-        <input class="reps" type="number" placeholder="REP" min="1">
-        <input class="series" type="number" placeholder="SÉR" min="1">
-        <input class="duration" type="number" placeholder="MESES" min="1">
+        <div class="input-row">
+          <input class="reps" type="number" placeholder="REP" min="1">
+          <input class="series" type="number" placeholder="SÉR" min="1">
+          <input class="duration" type="number" placeholder="MESES" min="1">
+        </div>
         <select class="day-select">
           <option>SEGUNDA</option><option>TERÇA</option><option>QUARTA</option>
           <option>QUINTA</option><option>SEXTA</option><option>SÁBADO</option><option>DOMINGO</option>
@@ -646,10 +881,35 @@ Object.keys(groupsData).forEach(g=>{
   groupsContainer.appendChild(group);
 });
 
+// NOVO: Atualiza a visibilidade do botão de prévia e adiciona listener
 document.addEventListener('click',e=>{
-  if(e.target.classList.contains('checkbox-modern'))
+  if(e.target.classList.contains('checkbox-modern')){
     e.target.classList.toggle('active');
+    updatePreviewButtonVisibility();
+  }
 });
+
+function updatePreviewButtonVisibility() {
+    const anySelected = document.querySelector('.checkbox-modern.active');
+    viewCardBtn.style.display = anySelected ? 'block' : 'none';
+    
+    const createBtn = document.getElementById('createBtn');
+    const viewBtn = document.getElementById('viewBtn');
+    
+    // Ajusta a largura dos botões 'CRIAR' e 'MEUS TREINOS' se o VER PRÉVIA estiver visível
+    if (anySelected) {
+        createBtn.style.width = '45%';
+        viewBtn.style.width = '45%';
+        createBtn.style.marginRight = '0'; // Ajuste de margem se necessário
+    } else {
+        createBtn.style.width = '50%';
+        viewBtn.style.width = '50%';
+        createBtn.style.marginRight = '15px'; // Volta à margem padrão do flex
+    }
+}
+
+// Inicializa a visibilidade do botão de prévia
+updatePreviewButtonVisibility(); 
 
 document.getElementById('search').addEventListener('input',e=>{
   const val=e.target.value.toUpperCase();
@@ -691,54 +951,29 @@ document.getElementById('createBtn').onclick=async()=>{
   await db.ref('treinos/'+na).set(data);
   corIndex++;
   alert('Treino criado com sucesso!');
+  
+  // Limpa as seleções e esconde o botão de prévia após criar
+  document.querySelectorAll('.checkbox-modern.active').forEach(c => c.classList.remove('active'));
+  updatePreviewButtonVisibility(); 
 };
 
 const overlay=document.getElementById('overlay');
 
 document.getElementById('viewBtn').onclick=async()=>{
   overlay.style.display='block';
-  const tDiv=document.getElementById('trainings');
-  tDiv.innerHTML='';
+  loadTrainings();
+};
 
-  const snap=await db.ref('treinos/'+na).get();
-  if(!snap.exists()){
-    tDiv.innerHTML='<p style="text-align:center;">Nenhum treino criado.</p>';
-    return;
-  }
-
-  const data=snap.val();
-  const dias=['SEGUNDA','TERÇA','QUARTA','QUINTA','SEXTA','SÁBADO','DOMINGO'];
-
-  dias.forEach(d=>{
-    const items=data.filter(x=>x.dia===d);
-    if(items.length>0){
-      const sec=document.createElement('div');
-      sec.className='day-section';
-      sec.innerHTML=`<div class='day-title' style="background:${items[0].cor}">${d}</div>`;
-
-      items.forEach((e,i)=>{
-        const div=document.createElement('div');
-        div.className='exercise-entry';
-        div.innerHTML=`
-          <div>
-            <strong>${e.exercicio}</strong>
-            <br>SÉRIES: ${e.series} | REPETIÇÕES: ${e.reps} | DURAÇÃO: ${e.duracao} MÊS(ES)
-            <br>INTENSIDADE: ${e.intensidade}
-            ${e.observacao ? `<br><strong>OBS:</strong> ${e.observacao}` : ""}
-          </div>
-          <button class="delete-btn" onclick="deleteExercise('${d}',${i})">EXCLUIR</button>`;
-        sec.appendChild(div);
-      });
-
-      tDiv.appendChild(sec);
-    }
-  });
+// NOVO: Ação do botão de prévia
+document.getElementById('viewCardBtn').onclick=()=>{
+    previewOverlay.style.display='block';
+    loadPreview();
 };
 
 document.getElementById('clearAll').onclick=async()=>{
   if(confirm('Deseja excluir todos os treinos?')){
     await db.ref('treinos/'+na).remove();
-    document.getElementById('trainings').innerHTML='<p style="text-align:center;">Nenhum treino criado.</p>';
+    document.getElementById('trainings').innerHTML='<p style="text-align:center; padding: 20px 0; color: #777;">Nenhum treino criado.</p>';
   }
 };
 
@@ -746,13 +981,142 @@ function closeOverlay(){
   overlay.style.display='none';
 }
 
+function closePreview(){
+    previewOverlay.style.display='none';
+}
+
+// NOVO: Função para carregar a prévia do treino com cores distintas por dia
+function loadPreview() {
+    previewContent.innerHTML = '';
+    const selected = [];
+    document.querySelectorAll('.exercise-item').forEach(i => {
+        if (i.querySelector('.checkbox-modern').classList.contains('active')) {
+            selected.push({
+                exercicio: i.querySelector('span').innerText,
+                reps: i.querySelector('.reps').value,
+                series: i.querySelector('.series').value,
+                duracao: i.querySelector('.duration').value,
+                dia: i.querySelector('.day-select').value,
+                intensidade: i.querySelector('.intensity-select').value,
+                observacao: i.querySelector('.obs').value || ""
+            });
+        }
+    });
+
+    if (selected.length === 0) {
+        previewContent.innerHTML = '<p style="text-align:center; padding: 20px 0; color: #777;">Nenhum exercício selecionado para prévia.</p>';
+        return;
+    }
+
+    const dias = ['SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA', 'SÁBADO', 'DOMINGO'];
+    const diasSelecionados = [...new Set(selected.map(x => x.dia))];
+    const isSingleDay = diasSelecionados.length <= 1;
+    
+    // Mapeamento de cores para dias
+    const dayColorMap = {};
+    let colorIndex = 0;
+    
+    diasSelecionados.forEach(d => {
+        if (isSingleDay) {
+            dayColorMap[d] = 'var(--firebase-orange)'; // Cor única para destacar
+        } else {
+            dayColorMap[d] = cores[colorIndex % cores.length]; // Cores diferentes
+            colorIndex++;
+        }
+    });
+
+    dias.forEach(d => {
+        const items = selected.filter(x => x.dia === d);
+        if (items.length > 0) {
+            const sec = document.createElement('div');
+            sec.className = 'day-section';
+            
+            // Atribui a cor mapeada
+            const dayColor = dayColorMap[d];
+            sec.innerHTML = `<div class='day-title' style="background:${dayColor}">${d} (PRÉVIA)</div>`;
+
+            items.forEach((e) => {
+                const div = document.createElement('div');
+                div.className = 'exercise-entry';
+                
+                div.innerHTML = `
+                    <div class="details-container" style="max-width: 100%;">
+                      <strong>${e.exercicio}</strong>
+                      <div class="exercise-details">
+                          SÉRIES: ${e.series} | REPETIÇÕES: ${e.reps} | DURAÇÃO: ${e.duracao} MÊS(ES)
+                          <br>INTENSIDADE: ${e.intensidade}
+                          ${e.observacao ? `<br><strong>OBS:</strong> ${e.observacao}` : ""}
+                      </div>
+                    </div>`;
+                sec.appendChild(div);
+            });
+
+            previewContent.appendChild(sec);
+        }
+    });
+}
+
+
+async function loadTrainings(){
+    const tDiv=document.getElementById('trainings');
+    tDiv.innerHTML='';
+
+    const snap=await db.ref('treinos/'+na).get();
+    if(!snap.exists()){
+      tDiv.innerHTML='<p style="text-align:center; padding: 20px 0; color: #777;">Nenhum treino criado.</p>';
+      return;
+    }
+
+    const allData=snap.val();
+    const dias=['SEGUNDA','TERÇA','QUARTA','QUINTA','SEXTA','SÁBADO','DOMINGO'];
+
+    dias.forEach(d=>{
+      const items=allData.filter(x=>x.dia===d);
+      if(items.length>0){
+        const sec=document.createElement('div');
+        sec.className='day-section';
+        
+        sec.innerHTML=`<div class='day-title' style="background:${items[0].cor}">${d}</div>`;
+
+        items.forEach((e,i)=>{
+          const div=document.createElement('div');
+          div.className='exercise-entry';
+          
+          const isFirst = i === 0;
+          const isLast = i === items.length - 1;
+          
+          div.innerHTML=`
+            <div class="details-container">
+              <strong>${e.exercicio}</strong>
+              <div class="exercise-details">
+                  SÉRIES: ${e.series} | REPETIÇÕES: ${e.reps} | DURAÇÃO: ${e.duracao} MÊS(ES)
+                  <br>INTENSIDADE: ${e.intensidade}
+                  ${e.observacao ? `<br><strong>OBS:</strong> ${e.observacao}` : ""}
+              </div>
+            </div>
+            <div class="action-buttons">
+                <button class="move-btn" onclick="moveUp('${d}',${i})" ${isFirst ? 'disabled' : ''}>▲</button>
+                <button class="move-btn" onclick="moveDown('${d}',${i})" ${isLast ? 'disabled' : ''}>▼</button>
+                <button class="delete-btn" onclick="deleteExercise('${d}',${i})"></button>
+            </div>`;
+          sec.appendChild(div);
+        });
+
+        tDiv.appendChild(sec);
+      }
+    });
+}
+
 async function deleteExercise(dia,index){
+  if(!confirm('Tem certeza que deseja excluir este exercício?')) return;
+  
   const snap=await db.ref('treinos/'+na).get();
   if(!snap.exists())return;
 
   let data=snap.val();
   let count=0;
 
+  // Filtra o treino a ser removido (usando o índice dentro do dia)
   data=data.filter(x=>{
     if(x.dia===dia){
       if(count===index){count++;return false;}
@@ -762,7 +1126,44 @@ async function deleteExercise(dia,index){
   });
 
   await db.ref('treinos/'+na).set(data);
-  document.getElementById('viewBtn').click();
+  loadTrainings(); 
+}
+
+async function reorderExercise(dia, index, direction){
+    const snap = await db.ref('treinos/' + na).get();
+    if (!snap.exists()) return;
+
+    let allData = snap.val();
+    let currentDayData = allData.filter(x => x.dia === dia);
+    
+    const newIndex = index + direction;
+
+    if (newIndex < 0 || newIndex >= currentDayData.length) return; // Limite
+
+    // Encontra o item a ser movido no array do dia
+    const [movedItem] = currentDayData.splice(index, 1);
+    currentDayData.splice(newIndex, 0, movedItem);
+
+    // Constrói o novo array de dados completo
+    let newData = [];
+    allData.forEach(item => {
+        if (item.dia !== dia) {
+            newData.push(item);
+        }
+    });
+    newData.push(...currentDayData);
+
+    // Salva no Firebase
+    await db.ref('treinos/' + na).set(newData);
+    loadTrainings();
+}
+
+function moveUp(dia, index) {
+    reorderExercise(dia, index, -1);
+}
+
+function moveDown(dia, index) {
+    reorderExercise(dia, index, 1);
 }
 </script>
 
