@@ -244,7 +244,32 @@ header .logo {
 
 /* Histórico de Ponto */
 .hist { margin-top: 30px; }
-.hist h3 { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 5px; margin-bottom: 15px; }
+.hist h3 { 
+    color: var(--primary-color); 
+    border-bottom: 2px solid var(--primary-color); 
+    padding-bottom: 5px; 
+    margin-bottom: 5px; /* Reduzir margem para acomodar o total */
+}
+
+/* NOVO ESTILO: Total de Horas Acima da Tabela */
+#totalHorasDisplay {
+    background-color: var(--background-light);
+    border: 1px solid var(--border-color);
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary-color);
+    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#totalHorasDisplay strong {
+    font-size: 18px;
+    color: #c00; /* Cor de destaque para o total */
+}
+
 .hist table { width: 100%; border-collapse: collapse; border: 1px solid var(--border-color); }
 .hist th, .hist td { 
     border-bottom: 1px solid var(--border-color); 
@@ -260,6 +285,10 @@ header .logo {
 }
 .hist tr:last-child td { border-bottom: none; }
 .hist tr:nth-child(even) td { background-color: #f9f9f9; }
+
+/* Remove o estilo do rodapé anterior (tfoot) */
+.hist tfoot { display: none; } 
+
 
 /* SPINNER */
 button.loading {
@@ -543,6 +572,13 @@ button.loading {
   #historicoSearchForm input, #historicoSearchForm button {
       width: 48%;
   }
+  #totalHorasDisplay {
+        flex-direction: column;
+        align-items: flex-start;
+  }
+  #totalHorasDisplay strong {
+        margin-top: 5px;
+  }
 }
 @media (max-width: 500px) {
   #menu {right: 20px;}
@@ -614,10 +650,12 @@ menuBtn.onclick = () => {
 
     <div class="hist" id="hist">
       <h3>Histórico do Mês</h3>
+      <div id="totalHorasDisplay"></div> 
+      
       <table>
         <thead><tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr></thead>
         <tbody id="histBody"></tbody>
-      </table>
+        </table>
     </div>
   </div>
 </div>
@@ -720,6 +758,7 @@ const telEl = document.getElementById("tel");
 const fotoEl = document.getElementById("fotoPerfil");
 const cronEl = document.getElementById("cronometro");
 const histBody = document.getElementById("histBody");
+const totalHorasDisplay = document.getElementById("totalHorasDisplay"); // NOVO: Elemento de exibição do total
 let startTime = null, interval = null, ativo = false;
 
 // Variáveis para a nova funcionalidade
@@ -793,49 +832,104 @@ function dataChaveAtual(){
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
-db.ref("historico/"+serie).on("value", s=>{
+// ====================================================================
+// FUNÇÕES DE CÁLCULO E EXIBIÇÃO DE TEMPO (AJUSTADAS)
+// ====================================================================
+
+/**
+ * Filtra e exibe o histórico de pontos e calcula o total de horas.
+ * @param {object} snapshot Dados do histórico de pontos do Firebase.
+ * @param {number|null} mes O mês a ser filtrado (1-12). Se null, exibe o mês atual.
+ * @param {number|null} ano O ano a ser filtrado. Se null, exibe o ano atual.
+ */
+function exibirHistoricoEcalcularTotal(snapshot, mes = null, ano = null) {
   histBody.innerHTML = "";
-  if(s.exists()){
-    Object.entries(s.val()).sort(([dA],[dB]) => new Date(dB) - new Date(dA)).forEach(([data,val])=>{
+  totalHorasDisplay.innerHTML = ""; // Limpa a área do total
+  
+  const hoje = new Date();
+  const mesFiltro = mes || hoje.getMonth() + 1;
+  const anoFiltro = ano || hoje.getFullYear();
+  
+  let totalDuracaoMs = 0;
+
+  if (snapshot.exists()) {
+    const pontos = snapshot.val();
+    
+    // 1. Filtrar, processar e ordenar os pontos
+    const pontosFiltrados = Object.entries(pontos)
+      .filter(([data, val]) => {
+        const [yy, mm] = data.split("-").map(Number);
+        return yy === anoFiltro && mm === mesFiltro;
+      })
+      .sort(([dA], [dB]) => new Date(dB) - new Date(dA)); // Ordena do mais recente para o mais antigo
+
+    pontosFiltrados.forEach(([data, val]) => {
       const ini = val.inicio ? new Date(val.inicio).toLocaleTimeString() : "--";
       const fim = val.fim ? new Date(val.fim).toLocaleTimeString() : "--";
       let dur = "--";
-      if(val.inicio && val.fim){
+      
+      if (val.inicio && val.fim) {
         const diff = val.fim - val.inicio;
-        const h = Math.floor(diff/3600000);
-        const m = Math.floor((diff%3600000)/60000);
+        totalDuracaoMs += diff; // Soma a duração em milissegundos
+        
+        const h = Math.floor(diff / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
         dur = `${h}h ${m}m`;
       }
+      
       histBody.innerHTML += `<tr><td>${data}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td></tr>`;
     });
   }
+
+  // 2. Calcular e exibir o total de horas ACIMA da tabela
+  if (totalDuracaoMs > 0) {
+    const totalH = Math.floor(totalDuracaoMs / 3600000);
+    const totalM = Math.floor((totalDuracaoMs % 3600000) / 60000);
+    
+    // Formatação H:M
+    const totalFormatado = `${String(totalH).padStart(2, '0')}h ${String(totalM).padStart(2, '0')}m`;
+    
+    // Adiciona a informação de total ao novo elemento #totalHorasDisplay
+    totalHorasDisplay.innerHTML = `
+        <span>Total de Horas Trabalhadas no Mês:</span> 
+        <strong>${totalFormatado}</strong>
+    `;
+  } else {
+    // Exibe mensagem de erro ou de não encontrado no corpo da tabela
+    if (mesFiltro !== hoje.getMonth() + 1 || anoFiltro !== hoje.getFullYear()) {
+      histBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum ponto registrado para o mês/ano consultado.</td></tr>';
+    } else if (!snapshot.exists()) {
+       histBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum histórico de ponto encontrado.</td></tr>';
+    }
+    // O totalHorasDisplay fica vazio se for 0
+  }
+}
+
+// 3. Listener principal para carregar o mês atual ao entrar na página
+db.ref("historico/"+serie).on("value", s=>{
+  // O listener inicial não recebe parâmetros de filtro (mes/ano), exibindo o mês atual.
+  exibirHistoricoEcalcularTotal(s);
 });
 
+// 4. Evento do botão de busca
 document.getElementById("buscarMes").onclick = ()=>{
   const mes = parseInt(document.getElementById("mesInput").value);
   const ano = parseInt(document.getElementById("anoInput").value);
-  if(!mes || !ano){ mostrarAlerta("Preencha mês e ano corretamente."); return; }
+  
+  if(!mes || !ano || mes < 1 || mes > 12 || ano < 2020){ 
+    mostrarAlerta("Preencha mês (1-12) e ano corretamente."); 
+    return; 
+  }
+  
   db.ref("historico/"+serie).once("value").then(s=>{
-    histBody.innerHTML="";
-    if(s.exists()){
-      Object.entries(s.val()).sort(([dA],[dB]) => new Date(dB) - new Date(dA)).forEach(([data,val])=>{
-        const [yy,mm] = data.split("-").map(Number);
-        if(yy===ano && mm===mes){
-          const ini = val.inicio?new Date(val.inicio).toLocaleTimeString():"--";
-          const fim = val.fim?new Date(val.fim).toLocaleTimeString():"--";
-          let dur="--";
-          if(val.inicio&&val.fim){
-            const diff=val.fim-val.inicio;
-            const h=Math.floor(diff/3600000);
-            const m=Math.floor((diff%3600000)/60000);
-            dur=`${h}h ${m}m`;
-          }
-          histBody.innerHTML += `<tr><td>${data}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td></tr>`;
-        }
-      });
-    }
+    // A função de busca usa os parâmetros informados pelo usuário.
+    exibirHistoricoEcalcularTotal(s, mes, ano);
   });
 };
+
+// ====================================================================
+// FUNÇÕES DE ALERTAS E CÂMERA (SEM ALTERAÇÕES)
+// ====================================================================
 
 function mostrarAlerta(msg){
   document.getElementById("alertMsg").innerText = msg;
@@ -851,7 +945,7 @@ function fecharCamera(){
 }
 
 // ====================================================================
-// NOVO CÓDIGO PARA CHAMADA DE EDIÇÃO E HISTÓRICO (ATUALIZADO)
+// CÓDIGO CHAMADA DE EDIÇÃO E HISTÓRICO (SEM ALTERAÇÕES)
 // ====================================================================
 
 // --- Funções de Modal ---
