@@ -153,6 +153,22 @@ header .logo {
 }
 .perfil-info p { margin: 3px 0; font-size: 15px; }
 
+/* Novo botão de Chamada de Edição */
+#abrirChamadaBtn {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #ff9900; /* Laranja para destaque */
+  color: var(--text-light);
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+#abrirChamadaBtn:hover {
+  background-color: #cc7a00;
+}
+
 /* Cronômetro e Botões */
 .cronometro {
     font-size: 44px; color: var(--primary-color); font-weight: 700; 
@@ -226,7 +242,7 @@ header .logo {
     background-color: var(--primary-color);
 }
 
-/* Histórico */
+/* Histórico de Ponto */
 .hist { margin-top: 30px; }
 .hist h3 { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 5px; margin-bottom: 15px; }
 .hist table { width: 100%; border-collapse: collapse; border: 1px solid var(--border-color); }
@@ -270,11 +286,26 @@ button.loading {
   display: none; align-items: center; justify-content: center;
   z-index: 1000;
 }
+/* Estilo para o D no topo (Minimizar/Fechar) */
+.close-btn {
+    position: absolute;
+    top: 15px; right: 15px;
+    font-size: 28px;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+    font-weight: 700;
+    transition: color 0.3s;
+}
+.close-btn:hover {
+    color: var(--primary-color);
+}
 .alerta .box, .sobrepor .box {
   background: var(--text-light); padding: 35px; 
   border-radius: 0;
   text-align: center; width: 90%; max-width: 350px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  position: relative; /* Para o botão 'D' */
 }
 .alerta .box p, .sobrepor .box p {
     font-size: 18px;
@@ -305,6 +336,165 @@ button.loading {
 #cameraView video { width: 100%; height: 100%; object-fit: cover; }
 #dadosConfirma { white-space: pre-wrap; margin-bottom: 10px; }
 
+
+/* NOVO: Modal Chamada de Edição */
+#chamadaEdicaoBox .box {
+    max-width: 700px; /* Aumentado para o histórico */
+    padding: 30px 40px;
+    text-align: left;
+    max-height: 90vh; 
+    overflow-y: auto; 
+}
+#chamadaEdicaoBox .box h3 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-top: 0;
+}
+.chamada-form label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+.chamada-form input[type="text"],
+.chamada-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--primary-color);
+    border-radius: 0; /* Borda quadrada */
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+.chamada-form textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+.chamada-form input[type="text"]:focus,
+.chamada-form textarea:focus {
+    border-color: var(--secondary-color);
+    outline: none;
+}
+
+/* Botões de Ação no Formulário */
+#gerarProtocoloBtn, #continuarWhatsAppBtn, #verHistoricoBtn {
+    width: 100%;
+    margin-top: 15px;
+    height: 50px;
+    border-radius: 0;
+}
+#verHistoricoBtn {
+    background-color: var(--secondary-color);
+    margin-bottom: 20px;
+}
+#verHistoricoBtn:hover {
+    background-color: var(--primary-color);
+}
+#continuarWhatsAppBtn {
+    background-color: #25D366; /* Cor do WhatsApp */
+}
+#continuarWhatsAppBtn:hover {
+    background-color: #1FAF59;
+}
+/* Novo: Área de Protocolo Gerado */
+#protocoloGeradoArea {
+    margin-top: 20px;
+    padding: 15px;
+    background: var(--background-light);
+    border: 1px dashed var(--primary-color);
+    text-align: center;
+    display: none;
+}
+#protocoloGeradoArea p {
+    margin: 5px 0;
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--text-dark);
+}
+#protocoloNum {
+    color: #c00;
+    font-size: 20px;
+}
+
+/* Novo: Área de Histórico de Chamados dentro do Modal */
+#historicoChamadosArea {
+    display: none;
+    padding-top: 10px;
+}
+#historicoChamadosArea h3 {
+    text-align: center;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+/* Formulário de Pesquisa no Histórico */
+#historicoSearchForm {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+#historicoSearchForm input {
+    width: 120px;
+    background: var(--background-light);
+    border: 1px solid var(--primary-color);
+    height: 40px;
+    padding: 0 10px;
+}
+#historicoSearchForm button {
+    width: 120px;
+    background-color: var(--secondary-color);
+    color: var(--text-light);
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 0;
+    height: 40px;
+}
+
+/* Tabela de Histórico de Chamados */
+#historicoChamadosTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+#historicoChamadosTable th, #historicoChamadosTable td {
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+    text-align: left;
+    font-size: 14px;
+}
+#historicoChamadosTable th {
+    background: var(--primary-color);
+    color: var(--text-light);
+    font-weight: 600;
+    text-align: center;
+}
+#historicoChamadosTable tr:nth-child(even) td { background-color: #f9f9f9; }
+#historicoChamadosTable .prot-cell { font-weight: 600; color: #c00; text-align: center;}
+#historicoChamadosTable .data-cell { text-align: center; }
+
+/* Botão Voltar/Download */
+#historicoChamadosArea .action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+#historicoChamadosArea .action-buttons button {
+    width: 48%;
+    height: 45px;
+    margin: 0;
+}
+#voltarFormularioBtn {
+    background-color: #999;
+}
+#voltarFormularioBtn:hover {
+    background-color: #777;
+}
+
 /* MEDIA QUERIES (Responsividade) */
 @media (max-width: 1024px) {
   .image-section h1 {font-size: 36px;}
@@ -331,6 +521,28 @@ button.loading {
     border-left: none;
     flex-grow: 1;
   }
+  #chamadaEdicaoBox .box {
+      padding: 30px 15px;
+  }
+  #historicoChamadosTable th, #historicoChamadosTable td {
+      padding: 8px 5px;
+      font-size: 12px;
+  }
+  #historicoChamadosTable .prot-cell { font-size: 13px; }
+  #historicoChamadosArea .action-buttons button {
+        width: 100%;
+        margin-top: 10px;
+  }
+  #historicoChamadosArea .action-buttons {
+    flex-direction: column;
+  }
+  #historicoSearchForm {
+      flex-wrap: wrap;
+      justify-content: space-between;
+  }
+  #historicoSearchForm input, #historicoSearchForm button {
+      width: 48%;
+  }
 }
 @media (max-width: 500px) {
   #menu {right: 20px;}
@@ -346,9 +558,15 @@ button.loading {
   <div class="logo"></div>
 
   <div>
+
+
+
     <div id="menuBtn" class="header-menu-btn">☰</div>
     <div id="menu">
       <a href="login2.html">Sair</a>
+
+
+
     </div>
   </div>
 
@@ -377,15 +595,9 @@ menuBtn.onclick = () => {
         <p><strong>Nome:</strong> <span id="nome"></span></p>
         <p><strong>NA:</strong> <span id="na"></span></p>
         <p><strong>Telefone:</strong> <span id="tel"></span></p>
-
-
-
-
-
-
       </div>
     </div>
-
+    <button id="abrirChamadaBtn">Abrir Chamada de ajuste ou correção erros</button>
 
 
     <div class="cronometro" id="cronometro">00:00:00</div>
@@ -416,17 +628,77 @@ menuBtn.onclick = () => {
 
 <div class="sobrepor" id="cameraBox">
   <div class="box">
-    <h3>Reconhecimento Facial</h3>
+    <span class="close-btn" onclick="fecharCamera()">✕</span> <h3>Reconhecimento Facial</h3>
     <p id="dadosConfirma"></p>
     <div id="cameraView"><video id="video" autoplay></video></div>
     <button onclick="fecharCamera()">Cancelar</button>
   </div>
 </div>
 
+<div class="sobrepor" id="chamadaEdicaoBox">
+    <div class="box">
+        <span class="close-btn" onclick="fecharChamadaEdicao()">✕</span> <div id="chamadaFormArea">
+            <h3>Abrir Chamada de Edição</h3>
+            <div class="chamada-form">
+                <label for="nomeChamada">Nome</label>
+                <input type="text" id="nomeChamada" readonly>
+                
+                <label for="naChamada">NA</label>
+                <input type="text" id="naChamada" readonly>
+
+                <label for="telChamada">Número de Telefone</label>
+                <input type="text" id="telChamada" readonly>
+                
+                <label for="motivacaoChamada">Motivação do Envio do Chamado</label>
+                <textarea id="motivacaoChamada" placeholder="Descreva aqui o motivo da edição de ponto, data(s) e horários corretos." required></textarea>
+                
+                <button id="gerarProtocoloBtn">Gerar Protocolo</button>
+                <button id="verHistoricoBtn">Ver Histórico de Chamados</button>
+            </div>
+            <div id="protocoloGeradoArea" style="display: none;">
+                <p>Protocolo Gerado com Sucesso!</p>
+                <p>Número do Protocolo:</p>
+                <p id="protocoloNum"></p>
+                <button id="continuarWhatsAppBtn">Continuar para o WhatsApp</button>
+            </div>
+        </div>
+
+        <div id="historicoChamadosArea">
+            <h3>Histórico de Chamados de Edição</h3>
+
+            <div id="historicoSearchForm">
+                <input type="number" id="histMesInput" placeholder="Mês (1-12)" min="1" max="12">
+                <input type="number" id="histAnoInput" placeholder="Ano (2025)">
+                <button id="consultarHistBtn">Consultar</button>
+            </div>
+
+            <table id="historicoChamadosTable">
+                <thead>
+                    <tr>
+                        <th>Data e Hora</th>
+                        <th>Número de Protocolo</th>
+                        <th>Motivação</th>
+                    </tr>
+                </thead>
+                <tbody id="historicoChamadosBody">
+                    </tbody>
+            </table>
+
+            <div class="action-buttons">
+                <button id="voltarFormularioBtn">Voltar ao Formulário</button>
+                <button id="fazerDownloadPDFBtn">Download PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 <script>
-// LOGÍSTICA (SEM ALTERAÇÕES)
+// LOGÍSTICA (SEM ALTERAÇÕES NO EXISTENTE)
 const firebaseConfig = {
   apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
   authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
@@ -450,13 +722,22 @@ const cronEl = document.getElementById("cronometro");
 const histBody = document.getElementById("histBody");
 let startTime = null, interval = null, ativo = false;
 
+// Variáveis para a nova funcionalidade
+const nomeChamadaEl = document.getElementById("nomeChamada");
+const naChamadaEl = document.getElementById("naChamada");
+const telChamadaEl = document.getElementById("telChamada");
+const motivacaoChamadaEl = document.getElementById("motivacaoChamada");
+const protocoloNumEl = document.getElementById("protocoloNum");
+const historicoChamadosBodyEl = document.getElementById("historicoChamadosBody");
+let dadosUsuario = {}; // Armazena dados do perfil
+
 db.ref("usuarios/"+serie).on("value", snap=>{
   if(snap.exists()){
-    const d = snap.val();
-    nomeEl.textContent = d.nome;
+    dadosUsuario = snap.val(); // Armazena todos os dados
+    nomeEl.textContent = dadosUsuario.nome;
     naEl.textContent = serie;
-    telEl.textContent = d.telefone || "—";
-    fotoEl.src = d.foto || "";
+    telEl.textContent = dadosUsuario.telefone || "—";
+    fotoEl.src = dadosUsuario.foto || "";
   }
 });
 
@@ -475,7 +756,7 @@ db.ref("pontos/"+serie+"/ativo").on("value", s=>{
     startTime = s.val().inicio;
     clearInterval(interval);
     interval = setInterval(atualizarCronometro,1000);
-  } else { ativo = false; clearInterval(interval); }
+  } else { ativo = false; clearInterval(interval); cronEl.textContent = "00:00:00"; }
 });
 
 document.getElementById("iniciarBtn").onclick = ()=>{
@@ -515,7 +796,7 @@ function dataChaveAtual(){
 db.ref("historico/"+serie).on("value", s=>{
   histBody.innerHTML = "";
   if(s.exists()){
-    Object.entries(s.val()).forEach(([data,val])=>{
+    Object.entries(s.val()).sort(([dA],[dB]) => new Date(dB) - new Date(dA)).forEach(([data,val])=>{
       const ini = val.inicio ? new Date(val.inicio).toLocaleTimeString() : "--";
       const fim = val.fim ? new Date(val.fim).toLocaleTimeString() : "--";
       let dur = "--";
@@ -537,7 +818,7 @@ document.getElementById("buscarMes").onclick = ()=>{
   db.ref("historico/"+serie).once("value").then(s=>{
     histBody.innerHTML="";
     if(s.exists()){
-      Object.entries(s.val()).forEach(([data,val])=>{
+      Object.entries(s.val()).sort(([dA],[dB]) => new Date(dB) - new Date(dA)).forEach(([data,val])=>{
         const [yy,mm] = data.split("-").map(Number);
         if(yy===ano && mm===mes){
           const ini = val.inicio?new Date(val.inicio).toLocaleTimeString():"--";
@@ -567,6 +848,239 @@ function fecharCamera(){
     video.srcObject.getTracks().forEach(track => track.stop());
   }
   document.getElementById("cameraBox").style.display = "none"; 
+}
+
+// ====================================================================
+// NOVO CÓDIGO PARA CHAMADA DE EDIÇÃO E HISTÓRICO (ATUALIZADO)
+// ====================================================================
+
+// --- Funções de Modal ---
+document.getElementById("abrirChamadaBtn").onclick = () => {
+    // Preencher campos automaticamente
+    nomeChamadaEl.value = dadosUsuario.nome || "";
+    naChamadaEl.value = serie;
+    telChamadaEl.value = dadosUsuario.telefone || "";
+    
+    // Resetar para a visualização do formulário
+    alternarVisualizacaoChamada('formulario');
+    document.getElementById("chamadaEdicaoBox").style.display = "flex";
+};
+
+function fecharChamadaEdicao() {
+    document.getElementById("chamadaEdicaoBox").style.display = "none";
+}
+
+// Alterna entre 'formulario' e 'historico'
+function alternarVisualizacaoChamada(view) {
+    const formArea = document.getElementById("chamadaFormArea");
+    const histArea = document.getElementById("historicoChamadosArea");
+    
+    // Esconde a área de protocolo (se estiver visível)
+    document.getElementById("protocoloGeradoArea").style.display = "none";
+    // Garante que os botões do formulário estejam visíveis se for para o formulário
+    document.getElementById("gerarProtocoloBtn").style.display = "block";
+    document.getElementById("verHistoricoBtn").style.display = "block";
+    motivacaoChamadaEl.value = ""; // Limpar motivação ao voltar
+
+    if (view === 'historico') {
+        formArea.style.display = "none";
+        histArea.style.display = "block";
+        // Define o mês e ano atuais como padrão de busca
+        const hoje = new Date();
+        document.getElementById("histMesInput").value = hoje.getMonth() + 1;
+        document.getElementById("histAnoInput").value = hoje.getFullYear();
+        carregarHistoricoChamados(); // Carrega o histórico ao abrir
+    } else { // 'formulario'
+        formArea.style.display = "block";
+        histArea.style.display = "none";
+    }
+}
+
+// Eventos de troca de visualização
+document.getElementById("verHistoricoBtn").onclick = () => alternarVisualizacaoChamada('historico');
+document.getElementById("voltarFormularioBtn").onclick = () => alternarVisualizacaoChamada('formulario');
+
+
+// --- Geração e Envio do Chamado ---
+
+function gerarProtocolo(length = 16) {
+    let result = '';
+    const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
+document.getElementById("gerarProtocoloBtn").onclick = () => {
+    const motivacao = motivacaoChamadaEl.value.trim();
+    if (motivacao.length < 10) {
+        mostrarAlerta("Por favor, preencha a motivação com no mínimo 10 caracteres.");
+        return;
+    }
+
+    const protocolo = gerarProtocolo();
+    const dataHoraEnvio = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
+
+    const chamado = {
+        nome: nomeChamadaEl.value,
+        na: naChamadaEl.value,
+        telefone: telChamadaEl.value,
+        motivacao: motivacao,
+        dataHoraEnvio: dataHoraEnvio,
+        protocolo: protocolo,
+        timestamp: Date.now() // Para facilitar a ordenação e consulta por mês/ano
+    };
+    
+    // 1. Salvar no Firebase
+    db.ref("chamadosEdicao/"+serie).push(chamado)
+        .then(() => {
+            // 2. Esconder formulário e mostrar protocolo
+            document.getElementById("gerarProtocoloBtn").style.display = "none";
+            document.getElementById("verHistoricoBtn").style.display = "none";
+
+            protocoloNumEl.textContent = protocolo;
+            document.getElementById("protocoloGeradoArea").style.display = "block";
+
+            // 3. Associar o chamado ao botão de WhatsApp
+            document.getElementById("continuarWhatsAppBtn").onclick = () => enviarWhatsApp(chamado);
+            
+        })
+        .catch(error => {
+            mostrarAlerta("Erro ao salvar o chamado: " + error.message);
+        });
+};
+
+function enviarWhatsApp(chamado) {
+    const texto = `
+*CHAMADO DE EDIÇÃO DE PONTO - DOMUSFIT*
+--------------------------------------------------
+*NÚMERO DE PROTOCOLO*: ${chamado.protocolo}
+*DATA E HORA DO ENVIO*: ${chamado.dataHoraEnvio}
+--------------------------------------------------
+*NOME DO FUNCIONÁRIO*: ${chamado.nome}
+*NA (Série)*: ${chamado.na}
+*TELEFONE*: ${chamado.telefone}
+--------------------------------------------------
+*MOTIVAÇÃO DA EDIÇÃO*: 
+${chamado.motivacao}
+--------------------------------------------------
+`.trim();
+
+    const whatsappLink = `https://wa.me/5584991778690?text=${encodeURIComponent(texto)}`;
+    
+    window.open(whatsappLink, '_blank');
+    
+    fecharChamadaEdicao();
+}
+
+// --- Histórico de Chamados ---
+document.getElementById("consultarHistBtn").onclick = () => carregarHistoricoChamados(true);
+
+function carregarHistoricoChamados(isSearch = false) {
+    const histBodyEl = historicoChamadosBodyEl;
+    histBodyEl.innerHTML = '<tr><td colspan="3" style="text-align:center;">Carregando histórico...</td></tr>';
+    
+    const mes = isSearch ? parseInt(document.getElementById("histMesInput").value) : null;
+    const ano = isSearch ? parseInt(document.getElementById("histAnoInput").value) : null;
+
+    if (isSearch && (!mes || !ano || mes < 1 || mes > 12 || ano < 2020)) {
+        histBodyEl.innerHTML = '<tr><td colspan="3" style="text-align:center; color:red;">Por favor, informe Mês e Ano válidos.</td></tr>';
+        return;
+    }
+
+    db.ref("chamadosEdicao/"+serie).once("value")
+        .then(snapshot => {
+            histBodyEl.innerHTML = ""; // Limpar carregamento
+            if (snapshot.exists()) {
+                const chamadosArray = [];
+                snapshot.forEach(childSnap => {
+                    chamadosArray.push(childSnap.val());
+                });
+                
+                // 1. Filtragem (se for uma consulta específica)
+                let chamadosFiltrados = chamadosArray;
+                if (isSearch) {
+                    chamadosFiltrados = chamadosArray.filter(chamado => {
+                        const dataEnvio = new Date(chamado.timestamp);
+                        const chamadoMes = dataEnvio.getMonth() + 1;
+                        const chamadoAno = dataEnvio.getFullYear();
+                        return chamadoMes === mes && chamadoAno === ano;
+                    });
+                }
+
+                // 2. Ordenação (mais recente primeiro)
+                chamadosFiltrados.sort((a, b) => b.timestamp - a.timestamp);
+
+                if (chamadosFiltrados.length === 0) {
+                    histBodyEl.innerHTML = '<tr><td colspan="3" style="text-align:center;">Nenhum chamado encontrado para o período.</td></tr>';
+                    return;
+                }
+
+                // 3. Exibição
+                chamadosFiltrados.forEach(chamado => {
+                    const row = histBodyEl.insertRow();
+                    
+                    const dataCell = row.insertCell();
+                    dataCell.textContent = chamado.dataHoraEnvio;
+                    dataCell.className = 'data-cell';
+                    
+                    const protocoloCell = row.insertCell();
+                    protocoloCell.textContent = chamado.protocolo;
+                    protocoloCell.className = 'prot-cell';
+
+                    const motivacaoCell = row.insertCell();
+                    motivacaoCell.textContent = chamado.motivacao.substring(0, 150) + (chamado.motivacao.length > 150 ? '...' : '');
+                });
+
+            } else {
+                histBodyEl.innerHTML = '<tr><td colspan="3" style="text-align:center;">Nenhum chamado de edição encontrado.</td></tr>';
+            }
+        })
+        .catch(error => {
+            histBodyEl.innerHTML = `<tr><td colspan="3" style="text-align:center; color:red;">Erro ao carregar histórico: ${error.message}</td></tr>`;
+        });
+}
+
+// --- Download PDF ---
+document.getElementById("fazerDownloadPDFBtn").onclick = () => fazerDownloadPDF();
+
+function fazerDownloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4'); // 'p' para portrait, 'mm' para unidades
+
+    // Configurações e Título
+    doc.setFontSize(16);
+    doc.text(`Histórico de Chamados de Edição - ${dadosUsuario.nome || serie}`, 10, 15);
+    doc.setFontSize(10);
+    doc.text(`NA: ${serie}`, 10, 22);
+
+    const table = document.getElementById("historicoChamadosTable");
+    
+    const head = [["Data e Hora do Envio", "Protocolo", "Motivação"]];
+    // Mapeia os dados visíveis na tabela atual
+    const body = Array.from(table.tBodies[0].rows).map(row => [
+        row.cells[0].textContent, // Data e Hora
+        row.cells[1].textContent, // Protocolo
+        row.cells[2].textContent  // Motivação (truncada)
+    ]);
+
+    doc.autoTable({
+        startY: 30,
+        head: head,
+        body: body,
+        theme: 'striped',
+        headStyles: { fillColor: [0, 51, 102] }, // primary-color: #003366
+        styles: { cellPadding: 2, fontSize: 8, cellWidth: 'wrap' },
+        columnStyles: {
+            0: { cellWidth: 35, halign: 'center' }, // Data
+            1: { cellWidth: 30, halign: 'center', fontStyle: 'bold' }, // Protocolo
+            2: { cellWidth: 'auto' } // Motivação
+        }
+    });
+
+    doc.save(`Historico_Chamados_${serie}_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.pdf`);
 }
 </script>
 </body>
