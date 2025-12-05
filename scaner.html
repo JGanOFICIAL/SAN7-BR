@@ -332,7 +332,7 @@ function verificarComprovante() {
 
         // 4. Sucesso na exibição
         docContentEl.style.display = 'block';
-        setStatus("Comprovante verificado com sucesso. Os dados abaixo refletem as informações do sistema.", "success");
+        setStatus("Comprovante verificado com sucesso.", "success");
 
     }).catch(error => {
         console.error("Erro na consulta do Firebase:", error);
