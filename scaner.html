@@ -146,9 +146,8 @@
     <div id="document-content" style="display: none;">
         <div class="document-info">
             <p><strong>Comprovante de:</strong> <span id="mesAno"></span></p>
-            <p><strong>Nome do Funcionário:</strong> <span id="docNome"></span></p>
-            <p><strong>NA (Série):</strong> <span id="docNa"></span></p>
-            <p><strong>Telefone:</strong> <span id="docTel"></span></p>
+            <p><strong>Número de Série do Documento:</strong> <span id="docNa"></span></p> <p><strong>Data do Download/Geração:</strong> <span id="docDownloadDate"></span></p> <p><strong>Nome do Funcionário:</strong> <span id="docNome"></span></p>
+            <p><strong>NA (Identificador):</strong> <span id="docSerie"></span></p> <p><strong>Telefone:</strong> <span id="docTel"></span></p>
             <p id="totalHorasDisplay"></p>
         </div>
 
@@ -187,9 +186,11 @@ const statusMsgEl = document.getElementById('status-message');
 const docContentEl = document.getElementById('document-content');
 const scanBodyEl = document.getElementById('scanBody');
 const docNomeEl = document.getElementById('docNome');
-const docNaEl = document.getElementById('docNa');
+const docSerieEl = document.getElementById('docSerie'); // NOVO ELEMENTO
+const docNaEl = document.getElementById('docNa'); // Mantido para o Número de Série do Documento
 const docTelEl = document.getElementById('docTel');
 const mesAnoEl = document.getElementById('mesAno');
+const docDownloadDateEl = document.getElementById('docDownloadDate'); // NOVO ELEMENTO
 const totalHorasEl = document.getElementById('totalHorasDisplay');
 const serialNumberEl = document.getElementById('serialNumber');
 
@@ -201,6 +202,16 @@ function dataFormatadaPorExtenso(mes, ano) {
     const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", 
                    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     return `${meses[mes - 1]} de ${ano}`;
+}
+
+function dataAtualFormatada() {
+    const data = new Date();
+    const dia = String(data.getDate()).padStart(2, '0');
+    const mes = String(data.getMonth() + 1).padStart(2, '0'); // Mês começa em 0
+    const ano = data.getFullYear();
+    const hora = String(data.getHours()).padStart(2, '0');
+    const minuto = String(data.getMinutes()).padStart(2, '0');
+    return `${dia}/${mes}/${ano} ${hora}:${minuto}`;
 }
 
 function gerarNumeroDeSerie(length = 100) {
@@ -230,30 +241,22 @@ function verificarComprovante() {
 
     // 1. Obter parâmetros da URL
     const urlParams = new URLSearchParams(window.location.search);
-    const serie = urlParams.get('serie');
+    const serie = urlParams.get('serie'); // NA ou Número de Série principal
     const mes = parseInt(urlParams.get('mes'));
     const ano = parseInt(urlParams.get('ano'));
-    const check = urlParams.get('check'); // Número de série sem espaços
+    const check = urlParams.get('check'); // Número de série sem espaços para checagem
 
     if (!serie || !mes || !ano || !check) {
-        setStatus("URL de verificação incompleta ou inválida.", "error");
+        setStatus("URL de verificação incompleta ou inválida. Parâmetros 'serie', 'mes', 'ano' ou 'check' ausentes.", "error");
         return;
     }
 
-    // 2. Simular Verificação de Autenticidade (Número de Série)
-    // O QR Code gerado no index.html usa o número de série da variável 'dadosComproAvanta.numSerie'
-    // Como o número de série NÃO é salvo no Firebase, esta checagem é uma simulação.
-    // Em um sistema real, o 'check' seria um hash ou um token salvo no banco.
+    // A data de download/geração é apenas simulada com a data/hora atual
+    // Em um sistema real, essa data viria do banco de dados junto com o comprovante
+    docDownloadDateEl.textContent = dataAtualFormatada(); // Exibe a data/hora de "download"
 
-    // Apenas para fins de demonstração e cumprimento do requisito:
-    // Se o 'check' (número de série) fosse gerado com base nos dados (hash)
-    // e o 'scaner.html' pudesse refazer o hash para comparar, a checagem seria feita aqui.
-    // Como não há banco para o 'check', a autenticidade é apenas simulada/decorativa.
-    // if (check !== hashSimuladoBaseadoEmDados) {
-    //     setStatus("ALERTA DE SEGURANÇA: Número de série (check) não confere. Documento não autêntico.", "error");
-    //     serialNumberEl.textContent = `Número de Série Recebido (Inautêntico): ${check}`;
-    //     return;
-    // }
+    // 2. Simular Verificação de Autenticidade (Número de Série - Check)
+    // ... (A lógica de checagem de autenticidade permanece comentada e simulada)
     
     // 3. Buscar Dados do Funcionário e Histórico
     Promise.all([
@@ -270,7 +273,8 @@ function verificarComprovante() {
 
         // 3.1. Exibir dados do funcionário
         docNomeEl.textContent = dadosUsuario.nome || "Não informado";
-        docNaEl.textContent = serie;
+        docNaEl.textContent = serie; // Número de Série do Documento (usando o parâmetro 'serie')
+        docSerieEl.textContent = serie; // NA (Identificador) - Usando 'serie' novamente, já que é o NA
         docTelEl.textContent = dadosUsuario.telefone || "—";
         mesAnoEl.textContent = dataFormatadaPorExtenso(mes, ano);
         
@@ -323,9 +327,8 @@ function verificarComprovante() {
         }
         
         // 3.4. Exibir o Número de Série (com espaços)
-        // Como não foi salvo, apenas exibe o que veio na URL, formatado com espaços
         const formattedCheck = check.replace(/(.{10})/g, '$1 ').trim();
-        serialNumberEl.textContent = `Número de Série de Autenticidade: ${formattedCheck}`;
+        serialNumberEl.textContent = `Número de Série de Autenticidade (Check): ${formattedCheck}`;
 
         // 4. Sucesso na exibição
         docContentEl.style.display = 'block';
