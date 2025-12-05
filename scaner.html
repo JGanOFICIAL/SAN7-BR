@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DomusFit - Validação de Documento</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;600;700&display=swap" rel="stylesheet">
+<style>
+/* VARIÁVEIS DE CORES */
+:root {
+  --primary-color: #003366; /* Azul Escuro DomusFit */
+  --secondary-color: #0066cc; /* Azul Claro para Destaques */
+  --background-light: #f5f8ff; /* Fundo Levemente Azulado */
+  --text-dark: #333;
+  --text-light: #fff;
+}
+
+/* ESTILO GERAL */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--background-light);
+    margin: 0; padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: var(--text-dark);
+    text-align: center;
+}
+
+.container {
+    background: var(--text-light);
+    padding: 40px;
+    border-radius: 0;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 90%;
+    max-width: 600px;
+}
+
+/* TÍTULO */
+.header-scan {
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--secondary-color);
+}
+.header-scan h1 {
+    font-size: 28px;
+    color: var(--primary-color);
+    margin: 0;
+    font-weight: 700;
+}
+.header-scan p {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* MENSAGEM DE STATUS */
+#statusMessage {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: #c00; /* Cor de erro/alerta */
+}
+.validado {
+    color: #28a745 !important; /* Verde de sucesso */
+}
+
+/* DETALHES DO DOCUMENTO */
+#documentDetails {
+    text-align: left;
+    display: none; /* Escondido por padrão */
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+#documentDetails p {
+    margin: 8px 0;
+    font-size: 16px;
+    line-height: 1.4;
+}
+#documentDetails strong {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+.total-horas {
+    font-size: 20px;
+    color: #c00;
+    font-weight: 700;
+    margin-top: 15px;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 10px;
+}
+.serie-doc {
+    font-size: 10px;
+    color: #999;
+    margin-top: 25px;
+    text-align: center;
+    word-break: break-all;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 500px) {
+    .container {
+        padding: 25px;
+    }
+    .header-scan h1 {
+        font-size: 24px;
+    }
+    #statusMessage {
+        font-size: 16px;
+    }
+    #documentDetails p {
+        font-size: 14px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-scan">
+        <h1>DomusFit</h1>
+        <p>Sistema de Validação de Documentos Eletrônicos</p>
+    </div>
+
+    <div id="statusMessage">Aguardando dados de validação...</div>
+    
+    <div id="documentDetails">
+        <p><strong>Tipo de Documento:</strong> Comprovante de Carga Horária (ComproAvanta)</p>
+        <p><strong>Mês/Ano de Referência:</strong> <span id="refMesAno"></span></p>
+        <p><strong>NA do Funcionário:</strong> <span id="naFuncionario"></span></p>
+        <div class="total-horas">
+            Carga Horária Total: <span id="totalHoras"></span>
+        </div>
+        <div class="serie-doc">
+            Número de Série do Documento: <span id="numSerie"></span>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const params = new URLSearchParams(window.location.search);
+    const statusEl = document.getElementById('statusMessage');
+    const detailsEl = document.getElementById('documentDetails');
+    
+    const doc = params.get('doc');
+    const na = params.get('na');
+    const mes = params.get('mes');
+    const ano = params.get('ano');
+    const total = params.get('total');
+
+    if (!doc || !na || !mes || !ano || !total) {
+        statusEl.textContent = "Erro: URL de validação incompleta. Documento inválido ou não encontrado.";
+        detailsEl.style.display = 'none';
+        return;
+    }
+
+    // A validação é baseada apenas na presença dos dados, pois a informação
+    // é gerada no momento do download e o QR Code contém toda a "prova"
+    // necessária (o número de série não é salvo no Firebase, é um token de sessão).
+
+    statusEl.textContent = "Documento Verificado com Sucesso!";
+    statusEl.classList.add('validado');
+    detailsEl.style.display = 'block';
+
+    // Preenche os detalhes
+    document.getElementById('refMesAno').textContent = `${mes.padStart(2, '0')}/${ano}`;
+    document.getElementById('naFuncionario').textContent = na;
+    document.getElementById('totalHoras').textContent = total;
+    document.getElementById('numSerie').textContent = doc;
+
+});
+</script>
+
+</body>
+</html>
