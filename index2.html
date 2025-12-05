@@ -164,10 +164,29 @@ header .logo {
   cursor: pointer;
   font-weight: 600;
   transition: background-color 0.3s;
+  width: 100%; /* Garante a mesma espessura dos outros botões */
 }
 #abrirChamadaBtn:hover {
   background-color: #cc7a00;
 }
+
+/* NOVO BOTÃO: ComproAvanta */
+#comproAvantaBtn {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #ffcc00; /* Amarelo Laranja para ComproAvanta */
+  color: var(--text-dark);
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+  width: 100%; /* Mesma espessura */
+}
+#comproAvantaBtn:hover {
+  background-color: #e6b800;
+}
+
 
 /* Cronômetro e Botões */
 .cronometro {
@@ -252,7 +271,7 @@ header .logo {
 }
 
 /* NOVO ESTILO: Total de Horas Acima da Tabela */
-#totalHorasDisplay {
+#totalHorasDisplay, #comproAvantaTotalDisplay {
     background-color: var(--background-light);
     border: 1px solid var(--border-color);
     padding: 10px 15px;
@@ -265,7 +284,7 @@ header .logo {
     justify-content: space-between;
     align-items: center;
 }
-#totalHorasDisplay strong {
+#totalHorasDisplay strong, #comproAvantaTotalDisplay strong {
     font-size: 18px;
     color: #c00; /* Cor de destaque para o total */
 }
@@ -374,6 +393,80 @@ button.loading {
     max-height: 90vh; 
     overflow-y: auto; 
 }
+
+/* NOVO: Modal ComproAvanta - Ajuste de Tamanho */
+#comproAvantaBox .box {
+    max-width: 800px; /* Maior para acomodar a tabela de histórico */
+    padding: 30px 40px;
+    text-align: left;
+    max-height: 90vh; 
+    overflow-y: auto; 
+}
+#comproAvantaBox .box h3 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-top: 0;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+#comproAvantaSearchForm {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+#comproAvantaSearchForm input {
+    width: 120px;
+    background: var(--background-light);
+    border: 1px solid var(--primary-color);
+    height: 40px;
+    padding: 0 10px;
+}
+#comproAvantaSearchForm button {
+    width: 120px;
+    background-color: var(--secondary-color);
+    color: var(--text-light);
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 0;
+    height: 40px;
+}
+#comproAvantaResults {
+    margin-top: 20px;
+}
+#comproAvantaTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+#comproAvantaTable th, #comproAvantaTable td {
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+    text-align: center;
+    font-size: 14px;
+}
+#comproAvantaTable th {
+    background: var(--primary-color);
+    color: var(--text-light);
+    font-weight: 600;
+}
+#downloadComproAvantaBtn {
+    width: 100%;
+    margin-top: 30px;
+    height: 50px;
+    background-color: #008000; /* Verde para Download */
+    color: var(--text-light);
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 0;
+}
+#downloadComproAvantaBtn:hover {
+    background-color: #006400;
+}
+
+/* Campos do Formulário de Chamada de Edição (Estilos existentes preservados) */
 #chamadaEdicaoBox .box h3 {
     text-align: center;
     color: var(--primary-color);
@@ -550,10 +643,14 @@ button.loading {
     border-left: none;
     flex-grow: 1;
   }
-  #chamadaEdicaoBox .box {
+  #chamadaEdicaoBox .box, #comproAvantaBox .box {
       padding: 30px 15px;
   }
   #historicoChamadosTable th, #historicoChamadosTable td {
+      padding: 8px 5px;
+      font-size: 12px;
+  }
+  #comproAvantaTable th, #comproAvantaTable td {
       padding: 8px 5px;
       font-size: 12px;
   }
@@ -572,11 +669,18 @@ button.loading {
   #historicoSearchForm input, #historicoSearchForm button {
       width: 48%;
   }
-  #totalHorasDisplay {
+  #comproAvantaSearchForm {
+      flex-wrap: wrap;
+      justify-content: space-between;
+  }
+  #comproAvantaSearchForm input, #comproAvantaSearchForm button {
+      width: 48%;
+  }
+  #totalHorasDisplay, #comproAvantaTotalDisplay {
         flex-direction: column;
         align-items: flex-start;
   }
-  #totalHorasDisplay strong {
+  #totalHorasDisplay strong, #comproAvantaTotalDisplay strong {
         margin-top: 5px;
   }
 }
@@ -634,9 +738,7 @@ menuBtn.onclick = () => {
       </div>
     </div>
     <button id="abrirChamadaBtn">Abrir Chamada de ajuste ou correção de erros</button>
-
-
-    <div class="cronometro" id="cronometro">00:00:00</div>
+    <button id="comproAvantaBtn">Baixar Comprovante de Horas (ComproAvanta)</button> <div class="cronometro" id="cronometro">00:00:00</div>
     <div class="action-buttons">
       <button id="iniciarBtn">Iniciar Ponto</button>
       <button id="finalizarBtn">Finalizar Dia</button>
@@ -672,6 +774,34 @@ menuBtn.onclick = () => {
     <button onclick="fecharCamera()">Cancelar</button>
   </div>
 </div>
+
+<div class="sobrepor" id="comproAvantaBox">
+    <div class="box">
+        <span class="close-btn" onclick="fecharComproAvanta()">✕</span>
+        <h3>Baixar Comprovante de Horas (ComproAvanta)</h3>
+        
+        <div id="comproAvantaSearchForm">
+            <input type="number" id="comproAvantaMesInput" placeholder="Mês (1-12)" min="1" max="12">
+            <input type="number" id="comproAvantaAnoInput" placeholder="Ano (2025)">
+            <button id="consultarComproAvantaBtn">Consultar</button>
+        </div>
+
+        <div id="comproAvantaResults">
+            <div id="comproAvantaTotalDisplay"></div>
+            <table id="comproAvantaTable">
+                <thead>
+                    <tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr>
+                </thead>
+                <tbody id="comproAvantaBody">
+                    <tr><td colspan="4" style="text-align:center;">Selecione o mês e ano para consultar.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <button id="downloadComproAvantaBtn" disabled>Baixar Comprovante (PDF)</button>
+    </div>
+</div>
+
 
 <div class="sobrepor" id="chamadaEdicaoBox">
     <div class="box">
@@ -735,7 +865,7 @@ menuBtn.onclick = () => {
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script> <script>
 // LOGÍSTICA (SEM ALTERAÇÕES NO EXISTENTE)
 const firebaseConfig = {
   apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
@@ -758,10 +888,22 @@ const telEl = document.getElementById("tel");
 const fotoEl = document.getElementById("fotoPerfil");
 const cronEl = document.getElementById("cronometro");
 const histBody = document.getElementById("histBody");
-const totalHorasDisplay = document.getElementById("totalHorasDisplay"); // NOVO: Elemento de exibição do total
+const totalHorasDisplay = document.getElementById("totalHorasDisplay"); // Elemento de exibição do total
 let startTime = null, interval = null, ativo = false;
 
-// Variáveis para a nova funcionalidade
+// Variáveis para a nova funcionalidade de ComproAvanta
+const comproAvantaMesInput = document.getElementById("comproAvantaMesInput");
+const comproAvantaAnoInput = document.getElementById("comproAvantaAnoInput");
+const comproAvantaBody = document.getElementById("comproAvantaBody");
+const comproAvantaTotalDisplay = document.getElementById("comproAvantaTotalDisplay");
+const downloadComproAvantaBtn = document.getElementById("downloadComproAvantaBtn");
+let dadosComproAvanta = { // Armazena dados para o PDF
+    nome: "", na: "", telefone: "", totalHorasFormatado: "",
+    mes: "", ano: "", totalDuracaoMs: 0, historicoTabela: [],
+    numSerie: gerarNumeroDeSerie(), // Gera o número de série de 100 dígitos
+};
+
+// Variáveis para a nova funcionalidade de Chamada de Edição (EXISTENTES)
 const nomeChamadaEl = document.getElementById("nomeChamada");
 const naChamadaEl = document.getElementById("naChamada");
 const telChamadaEl = document.getElementById("telChamada");
@@ -770,6 +912,37 @@ const protocoloNumEl = document.getElementById("protocoloNum");
 const historicoChamadosBodyEl = document.getElementById("historicoChamadosBody");
 let dadosUsuario = {}; // Armazena dados do perfil
 
+// ====================================================================
+// FUNÇÕES AUXILIARES
+// ====================================================================
+
+function dataChaveAtual(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function dataFormatadaPorExtenso(mes, ano) {
+    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", 
+                   "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    return `${meses[mes - 1]} de ${ano}`;
+}
+
+function gerarNumeroDeSerie(length = 100) {
+    let result = '';
+    const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        // Adiciona um espaço a cada 10 dígitos para melhor legibilidade
+        if (i > 0 && i % 10 === 0) result += ' ';
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
+// ====================================================================
+// LISTENERS E CARREGAMENTO DE DADOS INICIAIS
+// ====================================================================
+
 db.ref("usuarios/"+serie).on("value", snap=>{
   if(snap.exists()){
     dadosUsuario = snap.val(); // Armazena todos os dados
@@ -777,17 +950,13 @@ db.ref("usuarios/"+serie).on("value", snap=>{
     naEl.textContent = serie;
     telEl.textContent = dadosUsuario.telefone || "—";
     fotoEl.src = dadosUsuario.foto || "";
+    
+    // Atualiza dados globais para o PDF
+    dadosComproAvanta.nome = dadosUsuario.nome;
+    dadosComproAvanta.na = serie;
+    dadosComproAvanta.telefone = dadosUsuario.telefone || "—";
   }
 });
-
-function atualizarCronometro(){
-  if(!startTime) return;
-  const diff = Date.now() - startTime;
-  const h = String(Math.floor(diff/3600000)).padStart(2,'0');
-  const m = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
-  const s = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
-  cronEl.textContent = `${h}:${m}:${s}`;
-}
 
 db.ref("pontos/"+serie+"/ativo").on("value", s=>{
   if(s.exists() && s.val().inicio){
@@ -798,6 +967,7 @@ db.ref("pontos/"+serie+"/ativo").on("value", s=>{
   } else { ativo = false; clearInterval(interval); cronEl.textContent = "00:00:00"; }
 });
 
+// Eventos de Ponto e Câmera (EXISTENTES)
 document.getElementById("iniciarBtn").onclick = ()=>{
   if(ativo){ mostrarAlerta("Ponto já iniciado."); return; }
   document.getElementById("dadosConfirma").innerText = `Reconhecimento facial em andamento...\nNA: ${serie}\nData: ${new Date().toLocaleString()}`;
@@ -827,24 +997,23 @@ document.getElementById("finalizarBtn").onclick = ()=>{
   mostrarAlerta("Dia finalizado com sucesso.");
 };
 
-function dataChaveAtual(){
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+function atualizarCronometro(){
+  if(!startTime) return;
+  const diff = Date.now() - startTime;
+  const h = String(Math.floor(diff/3600000)).padStart(2,'0');
+  const m = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+  const s = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+  cronEl.textContent = `${h}:${m}:${s}`;
 }
 
+
 // ====================================================================
-// FUNÇÕES DE CÁLCULO E EXIBIÇÃO DE TEMPO (AJUSTADAS)
+// HISTÓRICO PADRÃO (EXISTENTE)
 // ====================================================================
 
-/**
- * Filtra e exibe o histórico de pontos e calcula o total de horas.
- * @param {object} snapshot Dados do histórico de pontos do Firebase.
- * @param {number|null} mes O mês a ser filtrado (1-12). Se null, exibe o mês atual.
- * @param {number|null} ano O ano a ser filtrado. Se null, exibe o ano atual.
- */
 function exibirHistoricoEcalcularTotal(snapshot, mes = null, ano = null) {
   histBody.innerHTML = "";
-  totalHorasDisplay.innerHTML = ""; // Limpa a área do total
+  totalHorasDisplay.innerHTML = ""; 
   
   const hoje = new Date();
   const mesFiltro = mes || hoje.getMonth() + 1;
@@ -855,13 +1024,12 @@ function exibirHistoricoEcalcularTotal(snapshot, mes = null, ano = null) {
   if (snapshot.exists()) {
     const pontos = snapshot.val();
     
-    // 1. Filtrar, processar e ordenar os pontos
     const pontosFiltrados = Object.entries(pontos)
       .filter(([data, val]) => {
         const [yy, mm] = data.split("-").map(Number);
         return yy === anoFiltro && mm === mesFiltro;
       })
-      .sort(([dA], [dB]) => new Date(dB) - new Date(dA)); // Ordena do mais recente para o mais antigo
+      .sort(([dA], [dB]) => new Date(dB) - new Date(dA)); 
 
     pontosFiltrados.forEach(([data, val]) => {
       const ini = val.inicio ? new Date(val.inicio).toLocaleTimeString() : "--";
@@ -870,7 +1038,7 @@ function exibirHistoricoEcalcularTotal(snapshot, mes = null, ano = null) {
       
       if (val.inicio && val.fim) {
         const diff = val.fim - val.inicio;
-        totalDuracaoMs += diff; // Soma a duração em milissegundos
+        totalDuracaoMs += diff; 
         
         const h = Math.floor(diff / 3600000);
         const m = Math.floor((diff % 3600000) / 60000);
@@ -881,37 +1049,29 @@ function exibirHistoricoEcalcularTotal(snapshot, mes = null, ano = null) {
     });
   }
 
-  // 2. Calcular e exibir o total de horas ACIMA da tabela
   if (totalDuracaoMs > 0) {
     const totalH = Math.floor(totalDuracaoMs / 3600000);
     const totalM = Math.floor((totalDuracaoMs % 3600000) / 60000);
     
-    // Formatação H:M
     const totalFormatado = `${String(totalH).padStart(2, '0')}h ${String(totalM).padStart(2, '0')}m`;
     
-    // Adiciona a informação de total ao novo elemento #totalHorasDisplay
     totalHorasDisplay.innerHTML = `
         <span>Total de Horas Trabalhadas no Mês:</span> 
         <strong>${totalFormatado}</strong>
     `;
   } else {
-    // Exibe mensagem de erro ou de não encontrado no corpo da tabela
     if (mesFiltro !== hoje.getMonth() + 1 || anoFiltro !== hoje.getFullYear()) {
       histBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum ponto registrado para o mês/ano consultado.</td></tr>';
     } else if (!snapshot.exists()) {
        histBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum histórico de ponto encontrado.</td></tr>';
     }
-    // O totalHorasDisplay fica vazio se for 0
   }
 }
 
-// 3. Listener principal para carregar o mês atual ao entrar na página
 db.ref("historico/"+serie).on("value", s=>{
-  // O listener inicial não recebe parâmetros de filtro (mes/ano), exibindo o mês atual.
   exibirHistoricoEcalcularTotal(s);
 });
 
-// 4. Evento do botão de busca
 document.getElementById("buscarMes").onclick = ()=>{
   const mes = parseInt(document.getElementById("mesInput").value);
   const ano = parseInt(document.getElementById("anoInput").value);
@@ -922,13 +1082,12 @@ document.getElementById("buscarMes").onclick = ()=>{
   }
   
   db.ref("historico/"+serie).once("value").then(s=>{
-    // A função de busca usa os parâmetros informados pelo usuário.
     exibirHistoricoEcalcularTotal(s, mes, ano);
   });
 };
 
 // ====================================================================
-// FUNÇÕES DE ALERTAS E CÂMERA (SEM ALTERAÇÕES)
+// FUNÇÕES DE ALERTAS E CÂMERA (EXISTENTES)
 // ====================================================================
 
 function mostrarAlerta(msg){
@@ -945,7 +1104,242 @@ function fecharCamera(){
 }
 
 // ====================================================================
-// CÓDIGO CHAMADA DE EDIÇÃO E HISTÓRICO (SEM ALTERAÇÕES)
+// NOVO: COMPROAVANTA
+// ====================================================================
+
+document.getElementById("comproAvantaBtn").onclick = () => {
+    // Define o mês e ano atuais como padrão no modal
+    const hoje = new Date();
+    comproAvantaMesInput.value = hoje.getMonth() + 1;
+    comproAvantaAnoInput.value = hoje.getFullYear();
+    
+    // Reseta a visualização e tenta carregar o mês atual
+    comproAvantaBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Carregando...</td></tr>';
+    comproAvantaTotalDisplay.innerHTML = '';
+    downloadComproAvantaBtn.disabled = true;
+
+    carregarDadosParaComproAvanta(hoje.getMonth() + 1, hoje.getFullYear());
+    document.getElementById("comproAvantaBox").style.display = "flex";
+};
+
+document.getElementById("consultarComproAvantaBtn").onclick = () => {
+    const mes = parseInt(comproAvantaMesInput.value);
+    const ano = parseInt(comproAvantaAnoInput.value);
+
+    if(!mes || !ano || mes < 1 || mes > 12 || ano < 2020){ 
+        mostrarAlerta("Preencha mês (1-12) e ano corretamente para o comprovante."); 
+        return; 
+    }
+    
+    comproAvantaBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Consultando dados...</td></tr>';
+    comproAvantaTotalDisplay.innerHTML = '';
+    downloadComproAvantaBtn.disabled = true;
+    
+    carregarDadosParaComproAvanta(mes, ano);
+};
+
+function fecharComproAvanta() {
+    document.getElementById("comproAvantaBox").style.display = "none";
+}
+
+/**
+ * Filtra e exibe o histórico de pontos e calcula o total de horas para o modal ComproAvanta.
+ */
+function carregarDadosParaComproAvanta(mes, ano) {
+    comproAvantaBody.innerHTML = "";
+    comproAvantaTotalDisplay.innerHTML = "";
+    downloadComproAvantaBtn.disabled = true;
+    
+    db.ref("historico/"+serie).once("value").then(snapshot => {
+        
+        let totalDuracaoMs = 0;
+        const historicoTabela = [];
+
+        if (snapshot.exists()) {
+            const pontos = snapshot.val();
+            
+            // 1. Filtrar, processar e ordenar os pontos
+            const pontosFiltrados = Object.entries(pontos)
+              .filter(([data, val]) => {
+                const [yy, mm] = data.split("-").map(Number);
+                return yy === ano && mm === mes;
+              })
+              .sort(([dA], [dB]) => new Date(dA) - new Date(dB)); // Ordem cronológica para o PDF
+
+            pontosFiltrados.forEach(([data, val]) => {
+                const dataFormatada = data.split('-').reverse().join('/');
+                const ini = val.inicio ? new Date(val.inicio).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit', second:'2-digit'}) : "00:00:00";
+                const fim = val.fim ? new Date(val.fim).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit', second:'2-digit'}) : "00:00:00";
+                let dur = "00h 00m";
+                let diff = 0;
+              
+                if (val.inicio && val.fim) {
+                    diff = val.fim - val.inicio;
+                    totalDuracaoMs += diff;
+                    
+                    const h = Math.floor(diff / 3600000);
+                    const m = Math.floor((diff % 3600000) / 60000);
+                    dur = `${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m`;
+                }
+                
+                comproAvantaBody.innerHTML += `<tr><td>${dataFormatada}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td></tr>`;
+                
+                // Prepara dados para a tabela do PDF
+                historicoTabela.push([dataFormatada, ini, fim, dur]);
+            });
+        }
+
+        // 2. Calcular e armazenar o total de horas
+        if (totalDuracaoMs > 0) {
+            const totalH = Math.floor(totalDuracaoMs / 3600000);
+            const totalM = Math.floor((totalDuracaoMs % 3600000) / 60000);
+            
+            const totalFormatado = `${String(totalH).padStart(2, '0')}h ${String(totalM).padStart(2, '0')}m`;
+            
+            comproAvantaTotalDisplay.innerHTML = `
+                <span>Total de Horas Trabalhadas em ${dataFormatadaPorExtenso(mes, ano)}:</span> 
+                <strong>${totalFormatado}</strong>
+            `;
+
+            // Armazena no objeto global para o PDF
+            dadosComproAvanta.totalDuracaoMs = totalDuracaoMs;
+            dadosComproAvanta.totalHorasFormatado = totalFormatado;
+            dadosComproAvanta.mes = mes;
+            dadosComproAvanta.ano = ano;
+            dadosComproAvanta.historicoTabela = historicoTabela;
+            downloadComproAvantaBtn.disabled = false;
+
+        } else {
+            comproAvantaBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum ponto registrado para o mês/ano consultado.</td></tr>';
+            dadosComproAvanta.historicoTabela = [];
+            dadosComproAvanta.totalDuracaoMs = 0;
+            dadosComproAvanta.totalHorasFormatado = "00h 00m";
+        }
+    }).catch(error => {
+        comproAvantaBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Erro ao carregar dados: ${error.message}</td></tr>`;
+    });
+}
+
+// Botão de Download do PDF do ComproAvanta
+document.getElementById("downloadComproAvantaBtn").onclick = () => gerarComproAvantaPDF();
+
+function gerarComproAvantaPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4'); 
+
+    const { nome, na, telefone, mes, ano, totalHorasFormatado, historicoTabela, numSerie } = dadosComproAvanta;
+    const dataDownload = new Date().toLocaleString('pt-BR');
+    const nomeEmpresa = "DomusFit";
+    const mesExtenso = dataFormatadaPorExtenso(mes, ano);
+    const nomeArquivo = `${nomeEmpresa}_ComproAvanta_${na}_${mes}_${ano}.pdf`;
+
+    // 1. Cabeçalho/Metadados
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(22);
+    doc.setTextColor(0, 51, 102); // Primary Color
+    doc.text(nomeEmpresa, 105, 15, null, null, "center");
+    
+    doc.setFontSize(14);
+    doc.setTextColor(51, 51, 51);
+    doc.text(`Comprovante de Horas Trabalhadas: ${mesExtenso}`, 105, 25, null, null, "center");
+
+    // 2. Informações Pessoais
+    let y = 35;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setDrawColor(200, 200, 200);
+    doc.line(20, y, 190, y); // Linha separadora
+    y += 4;
+    
+    doc.setFont('helvetica', 'bold');
+    doc.text('Dados do Funcionário:', 20, y);
+    y += 5;
+    
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Nome: ${nome}`, 20, y);
+    doc.text(`NA (Série): ${na}`, 100, y);
+    y += 5;
+    doc.text(`Telefone: ${telefone}`, 20, y);
+    doc.text(`Total de Horas no Mês: ${totalHorasFormatado}`, 100, y);
+    y += 5;
+    doc.text(`Download em: ${dataDownload}`, 20, y);
+    y += 8;
+    doc.line(20, y, 190, y); // Linha separadora
+    y += 8;
+
+
+    // 3. Tabela de Histórico
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.text('Detalhamento do Ponto', 105, y, null, null, "center");
+    y += 2;
+
+    doc.autoTable({
+        startY: y,
+        head: [['Data', 'Entrada', 'Saída', 'Duração']],
+        body: historicoTabela,
+        theme: 'striped',
+        headStyles: { fillColor: [0, 51, 102], textColor: 255, fontStyle: 'bold' },
+        bodyStyles: { textColor: 51, fontSize: 9 },
+        styles: { cellPadding: 2, overflow: 'linebreak' },
+        columnStyles: {
+            0: { halign: 'center', cellWidth: 35 },
+            1: { halign: 'center', cellWidth: 35 },
+            2: { halign: 'center', cellWidth: 35 },
+            3: { halign: 'center', cellWidth: 35 }
+        },
+        didDrawPage: function(data) {
+             // Adicionar o número de série no rodapé de cada página, levemente transparente
+            doc.setFontSize(8);
+            doc.setFont('courier', 'normal');
+            doc.setTextColor(150, 150, 150); // Levemente transparente
+            doc.text(`Número de Série: ${numSerie}`, data.settings.margin.left, doc.internal.pageSize.height - 10);
+        },
+        willDrawCell: function(data) {
+            // Se for a última célula do último corpo, desenha o QR Code
+            if (data.section === 'body' && data.row.index === historicoTabela.length - 1 && data.column.index === 3) {
+                // Prepara a próxima posição Y para o QR Code
+                yQRCode = data.cursor.y + 15;
+            }
+        }
+    });
+
+    // Pega a posição Y final da tabela (onde a autoTable parou)
+    y = doc.autoTable.previous.finalY;
+
+    // 4. Geração e Adição do QR Code
+    // O conteúdo do QR Code deve ser o link de verificação
+    const qrCodeContent = `http://domusfit.site/scaner.html?serie=${na}&mes=${mes}&ano=${ano}&check=${numSerie.replace(/ /g, '')}`;
+    
+    // Usa a biblioteca qrcode.js para gerar o Data URL (base64)
+    QRCode.toDataURL(qrCodeContent, { errorCorrectionLevel: 'H', type: 'image/png', margin: 1, scale: 4 })
+        .then(url => {
+            // O tamanho do QR Code
+            const qrSize = 40; 
+            const xCenter = 105 - (qrSize / 2); // Centralizado
+            
+            // Adicionar o QR Code (centralizado)
+            doc.addImage(url, 'PNG', xCenter, y + 10, qrSize, qrSize);
+            
+            // Texto de instrução para o QR Code
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(51, 51, 51);
+            doc.text('Escaneie para verificar a autenticidade do documento', 105, y + qrSize + 15, null, null, "center");
+
+            // Salvar o documento
+            doc.save(nomeArquivo);
+        })
+        .catch(err => {
+            console.error(err);
+            mostrarAlerta("Erro ao gerar QR Code. O PDF foi baixado sem o código de verificação.");
+            doc.save(nomeArquivo); // Salva mesmo com erro no QR Code
+        });
+}
+
+
+// ====================================================================
+// CÓDIGO CHAMADA DE EDIÇÃO E HISTÓRICO (EXISTENTES, SEM ALTERAÇÕES)
 // ====================================================================
 
 // --- Funções de Modal ---
