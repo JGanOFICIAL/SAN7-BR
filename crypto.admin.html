@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+
+<title>Painel Administrativo</title>
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #fff;
+  margin: 0; padding: 0;
+}
+header {
+  position: fixed; top: 0; left: 0; right: 0;
+  background: #fff; height: 70px; display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 0 20px; z-index: 10;
+}
+header .logo {
+  width: 140px; height: 40px; background: #ddd;
+}
+main {
+  margin-top: 100px;
+  padding: 20px;
+}
+input {
+  border: 2px solid #003366; border-radius: 6px;
+  padding: 8px 10px; font-size: 16px;
+  outline: none; background: transparent;
+}
+button {
+  border: 2px solid #003366;
+  background: transparent; color: #003366;
+  border-radius: 6px; font-size: 16px;
+  padding: 8px 15px; cursor: pointer;
+  font-weight: 600;
+}
+button.loading { pointer-events: none; opacity: 0.7; }
+.spinner {
+  border: 3px solid transparent;
+  border-top: 3px solid #003366;
+  border-radius: 50%;
+  width: 20px; height: 20px;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { from {transform: rotate(0);} to {transform: rotate(360deg);} }
+
+#lista {
+  margin-top: 30px;
+  border-top: 2px solid #eee;
+}
+.item {
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid #ddd; padding: 10px 0;
+}
+.item img {
+  width: 50px; height: 50px; border-radius: 50%; border: 2px solid #0066cc;
+  object-fit: cover; margin-right: 15px;
+}
+.info {
+  flex: 1;
+}
+.info p { margin: 2px 0; }
+.alerta, .sobrepor {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: none; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+.alerta .box, .sobrepor .box {
+  background: #fff; padding: 25px; border-radius: 8px;
+  text-align: center; width: 340px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+.alerta .box button, .sobrepor .box button {
+  margin-top: 10px;
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+
+
+<img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000079-56d8156d83/700/E4462C25-CDA3-4FDC-AAE5-6DEEB22F0E2F.webp" alt="Logo" style="background:transparent; width:230px; height:auto; object-fit:contain;">
+
+
+</div>
+  <div>
+    <input type="text" id="pesquisa" placeholder="Pesquisar funcionário...">
+    <button id="novoBtn">Cadastrar Funcionário</button>
+  </div>
+</header>
+
+
+
+<main>
+  <div id="formCadastro" style="display:none; margin-bottom:20px;">
+    <h3>Novo Funcionário</h3>
+    <input type="text" id="nome" placeholder="Nome completo"><br><br>
+    <input type="text" id="funcao" placeholder="Função"><br><br>
+    <input type="text" id="foto" placeholder="URL da foto"><br><br>
+    <input type="text" id="telefone" placeholder="Telefone (opcional)"><br><br>
+    <button id="gerar">Gerar Cadastro</button>
+  </div>
+
+  <div id="lista"></div>
+</main>
+
+<div class="alerta" id="alertBox">
+  <div class="box">
+    <p id="alertMsg"></p>
+    <button onclick="fecharAlerta()">OK</button>
+
+
+  </div>
+</div>
+
+
+<div class="sobrepor" id="infoBox">
+  <div class="box" style="text-align:left;">
+    <button onclick="fecharInfo()" style="float:right;">X</button>
+    <h3 id="infoNome"></h3>
+    <img id="infoFoto" src="" style="width:80px;height:80px;border-radius:50%;border:2px solid #0066cc;"><br><br>
+    <p><b>Função:</b> <span id="infoFuncao"></span></p>
+    <p><b>Telefone:</b> <span id="infoTel"></span></p>
+    <p><b>NA:</b> <span id="infoNA"></span></p>
+    <hr>
+    <h4>Histórico</h4>
+    <input type="number" id="mesH" placeholder="Mês (1-12)" style="width:120px;">
+    <input type="number" id="anoH" placeholder="Ano (2025)" style="width:120px;">
+    <button id="buscarHist">Buscar</button><br><br>
+    <table border="1" width="100%" cellspacing="0" style="font-size:14px;">
+      <thead><tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr></thead>
+      <tbody id="infoHist"></tbody>
+    </table>
+    <hr>
+    <h4>Calcular pagamento</h4>
+    <input type="number" id="valorHora" placeholder="Valor hora (R$)" style="width:150px;">
+    <button id="calcularPag">Calcular</button>
+    <p id="valorTotal"></p>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+  authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
+  projectId: "prefeitura-de-joao-camara",
+  storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
+  messagingSenderId: "269299041577",
+  appId: "1:269299041577:web:fd41b2939240e9eb476338",
+  measurementId: "G-YT7NHR342J"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const lista = document.getElementById("lista");
+const form = document.getElementById("formCadastro");
+
+document.getElementById("novoBtn").onclick = ()=> form.style.display = form.style.display==="none"?"block":"none";
+
+document.getElementById("gerar").onclick = ()=>{
+  const nome = document.getElementById("nome").value.trim();
+  const funcao = document.getElementById("funcao").value.trim();
+  const foto = document.getElementById("foto").value.trim();
+  const telefone = document.getElementById("telefone").value.trim();
+  if(!nome || !funcao){ mostrarAlerta("Preencha nome e função."); return; }
+  const NA = Math.floor(10000 + Math.random()*90000);
+  db.ref("usuarios/"+NA).set({nome, funcao, foto, telefone});
+  mostrarAlerta(`Funcionário cadastrado! NA: ${NA}`);
+  form.style.display="none";
+};
+
+db.ref("usuarios").on("value", snap=>{
+  lista.innerHTML="";
+  if(snap.exists()){
+    Object.entries(snap.val()).forEach(([na,d])=>{
+      const div = document.createElement("div");
+      div.className="item";
+      div.innerHTML=`
+        <img src="${d.foto||''}">
+        <div class="info">
+          <p><b>${d.nome}</b></p>
+          <p>${d.funcao||''}</p>
+          <p>NA: ${na}</p>
+        </div>
+        <div>
+          <button onclick="verInfo('${na}')">Info</button>
+          <button onclick="excluir('${na}')">Excluir</button>
+        </div>`;
+      lista.appendChild(div);
+    });
+  }
+});
+
+function excluir(na){
+  if(confirm("Excluir funcionário "+na+"?")){
+    db.ref("usuarios/"+na).remove();
+    db.ref("historico/"+na).remove();
+  }
+}
+
+function verInfo(na){
+  db.ref("usuarios/"+na).once("value").then(snap=>{
+    if(!snap.exists()) return;
+    const d = snap.val();
+    document.getElementById("infoNome").innerText = d.nome;
+    document.getElementById("infoFuncao").innerText = d.funcao;
+    document.getElementById("infoTel").innerText = d.telefone || "—";
+    document.getElementById("infoNA").innerText = na;
+    document.getElementById("infoFoto").src = d.foto || "";
+    document.getElementById("infoHist").innerHTML="";
+    document.getElementById("infoBox").style.display="flex";
+    document.getElementById("buscarHist").onclick = ()=>buscarHistorico(na);
+    document.getElementById("calcularPag").onclick = ()=>calcularPagamento(na);
+  });
+}
+
+function buscarHistorico(na){
+  const mes = parseInt(document.getElementById("mesH").value);
+  const ano = parseInt(document.getElementById("anoH").value);
+  if(!mes || !ano){ mostrarAlerta("Informe mês e ano."); return; }
+  db.ref("historico/"+na).once("value").then(s=>{
+    const corpo=document.getElementById("infoHist");
+    corpo.innerHTML="";
+    if(s.exists()){
+      Object.entries(s.val()).forEach(([data,val])=>{
+        const [yy,mm]=data.split("-").map(Number);
+        if(yy===ano && mm===mes){
+          const ini=val.inicio?new Date(val.inicio).toLocaleTimeString():"--";
+          const fim=val.fim?new Date(val.fim).toLocaleTimeString():"--";
+          let dur="--";
+          if(val.inicio&&val.fim){
+            const diff=val.fim-val.inicio;
+            const h=Math.floor(diff/3600000);
+            const m=Math.floor((diff%3600000)/60000);
+            dur=`${h}h ${m}m`;
+          }
+          corpo.innerHTML+=`<tr><td>${data}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td></tr>`;
+        }
+      });
+    }
+  });
+}
+
+function calcularPagamento(na){
+  const valH=parseFloat(document.getElementById("valorHora").value);
+  if(!valH){ mostrarAlerta("Informe o valor por hora."); return; }
+  const mes=parseInt(document.getElementById("mesH").value);
+  const ano=parseInt(document.getElementById("anoH").value);
+  if(!mes||!ano){ mostrarAlerta("Informe mês e ano."); return; }
+  db.ref("historico/"+na).once("value").then(s=>{
+    let total=0;
+    if(s.exists()){
+      Object.entries(s.val()).forEach(([data,val])=>{
+        const [yy,mm]=data.split("-").map(Number);
+        if(yy===ano && mm===mes && val.inicio&&val.fim){
+          const diff=val.fim-val.inicio;
+          total += diff/3600000;
+        }
+      });
+    }
+    const valor = (total*valH).toFixed(2);
+    document.getElementById("valorTotal").innerText=`Total a pagar: R$ ${valor} (${total.toFixed(2)}h)`;
+  });
+}
+
+function mostrarAlerta(msg){
+  document.getElementById("alertMsg").innerText = msg;
+  document.getElementById("alertBox").style.display = "flex";
+}
+function fecharAlerta(){ document.getElementById("alertBox").style.display="none"; }
+function fecharInfo(){ document.getElementById("infoBox").style.display="none"; }
+</script>
+</body>
+</html>
+
+<style>
+#alertaSeguranca {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+}
+
+#alertaBox {
+  background: #fff;
+  width: 90%;
+  max-width: 350px;
+  border: 3px solid #fff;
+  border-radius: 0;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+#alertaBox img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin-bottom: 15px;
+}
+
+#alertaBox h2 {
+  font-size: 20px;
+  margin: 0 0 10px 0;
+}
+
+#alertaBox p {
+  font-size: 15px;
+  margin: 0 0 20px 0;
+}
+
+#alertaBox button {
+  width: 100%;
+  padding: 10px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 0;
+  font-size: 16px;
+  cursor: pointer;
+}
+</style>
+
+<div id="alertaSeguranca">
+  <div id="alertaBox">
+    <img src="https://images.vexels.com/media/users/3/201031/isolated/preview/27981fbab349aa5c115dd591fd37097d-como-icone-de-notificacao-de-app.png">
+    <h2>Olá, colaborador!</h2>
+    <p>É um prazer ter você conosco! É importante deixar todos os seus dados anônimos pata garantir que o sistema funcione corretamente como foi projetado para funcionar.</p>
+    <button onclick="document.getElementById('alertaSeguranca').style.display='none'">OK</button>
+  </div>
+</div>
+
+<script>
+setTimeout(() => {
+  document.getElementById('alertaSeguranca').style.display = "flex";
+}, 2000);
+</script>
