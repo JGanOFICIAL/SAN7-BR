@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Prova — Visualizador</title>
+<style>
+  :root{--blue:#0b2b55;}
+  body{margin:0;font-family:Inter, Arial, Helvetica, sans-serif;background:#f3f6fb;}
+  header{background:linear-gradient(180deg,var(--blue),#0c3a67);color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;}
+  header img{height:42px;}
+  header .left{display:flex;align-items:center;gap:12px;}
+  header button{background:#fff;color:var(--blue);border:0;padding:8px 12px;border-radius:6px;cursor:pointer;font-weight:700;}
+  .webwrap{padding:12px;height:calc(100vh - 86px);}
+  iframe{width:100%;height:100%;border:0;background:#fff;border-radius:8px;box-shadow:0 8px 20px rgba(3,6,15,0.06);}
+</style>
+</head>
+<body>
+  <header>
+    <div class="left">
+      <img src="https://via.placeholder.com/140x40?text=LOGO" alt="logo">
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button id="btnBack">Voltar</button>
+    </div>
+  </header>
+
+  <div class="webwrap">
+    <iframe id="formFrame" src=""></iframe>
+  </div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI",
+    authDomain: "san7-brasil.firebaseapp.com",
+    databaseURL: "https://san7-brasil-default-rtdb.firebaseio.com",
+    projectId: "san7-brasil",
+    storageBucket: "san7-brasil.firebasestorage.app",
+    messagingSenderId: "944294165741",
+    appId: "1:944294165741:web:369986a8c97bb31be620e4",
+    measurementId: "G-TQMJ1DJF51"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const params = new URLSearchParams(window.location.search);
+  const courseId = params.get('courseId');
+  const frame = document.getElementById('formFrame');
+
+  if(!courseId){
+    frame.srcdoc = '<div style="padding:20px;font-family:Arial">Curso não informado.</div>';
+  } else {
+    db.ref('courses/' + courseId).once('value').then(snap=>{
+      const c = snap.val();
+      if(!c || !c.formLink){
+        frame.srcdoc = '<div style="padding:20px;font-family:Arial">Link do formulário não cadastrado pelo admin.</div>';
+        return;
+      }
+      // se for link do Google Forms, garante que use embed view quando possível
+      let url = c.formLink;
+      // Google Forms embed: replace /viewform? with /viewform?embedded=true if needed
+      if(url.includes('docs.google.com/forms') && !url.includes('embedded=true')){
+        if(url.includes('/viewform')) url += (url.includes('?')?'&':'?') + 'embedded=true';
+      }
+      frame.src = url;
+    }).catch(err=>{
+      frame.srcdoc = '<div style="padding:20px;font-family:Arial">Erro ao carregar curso.</div>';
+    });
+  }
+
+  document.getElementById('btnBack').addEventListener('click', ()=> history.back());
+</script>
+</body>
+</html>
