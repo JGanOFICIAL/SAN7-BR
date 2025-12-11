@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Prova — Login</title>
+<style>
+  :root{--blue:#0b2b55;--light:#f6f7fb;--card:#ffffff;--muted:#6b7280;}
+  html,body{height:100%;margin:0;font-family:Inter, Arial, Helvetica, sans-serif;background:#f3f6fb;}
+  header{background:linear-gradient(180deg,var(--blue),#0c3a67);color:#fff;padding:18px 16px;display:flex;align-items:center;gap:12px;}
+  header img{height:42px;}
+  header h1{font-size:18px;margin:0;}
+  .container{max-width:920px;margin:20px auto;padding:16px;}
+  .card{background:var(--card);border-radius:8px;padding:18px;box-shadow:0 6px 18px rgba(11,43,85,0.06);}
+  .login-row{display:flex;gap:12px;align-items:center;}
+  input[type="email"], input[type="password"], input[type="text"]{
+    padding:12px;border:1px solid #d6d9e6;border-radius:4px;width:100%;box-sizing:border-box;font-size:14px;
+    outline:none;border-radius:0; /* quadrado */
+  }
+  input:focus{box-shadow:none;border-color:#9fb3da;outline:0;border-radius:0;}
+  button{
+    background:var(--blue);color:#fff;padding:12px 16px;border:0;border-radius:4px;cursor:pointer;font-weight:600;
+  }
+  .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:rot 1s linear infinite;vertical-align:middle;margin-left:8px;}
+  @keyframes rot{to{transform:rotate(360deg)}}
+  .profile{display:flex;align-items:center;gap:12px;margin-top:16px;}
+  .avatar{width:56px;height:56px;background:#e6eefb;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--blue);}
+  .courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:14px;}
+  .course-card{padding:12px;border:1px solid #e6e9f2;border-radius:8px;background:#fff;cursor:pointer;display:flex;flex-direction:column;gap:8px;}
+  .course-card img{width:100%;height:120px;object-fit:cover;border-radius:6px;}
+  .row{display:flex;gap:8px;align-items:center;}
+  .muted{color:var(--muted);font-size:13px;}
+  .overlay{position:fixed;inset:0;background:rgba(3,6,15,0.45);display:none;align-items:center;justify-content:center;z-index:60;}
+  .modal{background:#fff;padding:18px;border-radius:8px;min-width:320px;max-width:760px;box-shadow:0 12px 30px rgba(3,6,15,0.2);}
+  a.whatsapp{display:inline-block;margin-top:12px;background:#25d366;color:#fff;padding:10px 12px;border-radius:6px;text-decoration:none;font-weight:600;}
+  .small-btn{background:#eef4ff;color:var(--blue);padding:8px;border-radius:6px;border:1px solid #dbefff;font-weight:600;}
+</style>
+</head>
+<body>
+  <header>
+    <img id="logo" src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000121-af584af586/700/86FA7207-B510-462C-A581-C599EF178F42.webp" alt="logo">
+    
+  </header>
+
+  <div class="container">
+    <div id="loginCard" class="card">
+      <div style="display:flex;gap:12px;align-items:center;">
+        <div style="flex:1">
+          <label class="muted">E-mail</label>
+          <input id="email" type="email" placeholder="seu@exemplo.com">
+        </div>
+        <div style="flex:1">
+          <label class="muted">Senha</label>
+          <input id="password" type="password" placeholder="*******">
+        </div>
+        <div style="width:170px;display:flex;align-items:end;">
+          <button id="btnLogin">Acessar</button>
+        </div>
+      </div>
+      <div style="margin-top:10px;color:var(--muted);font-size:13px;">Entrar com seu e-mail cadastrado.</div>
+    </div>
+
+    <div id="userArea" class="card" style="margin-top:12px;display:none;">
+      <div class="profile">
+        <div class="avatar" id="avatarLetter">U</div>
+        <div style="flex:1">
+          <div id="userName" style="font-weight:700;font-size:16px;">Usuário</div>
+          <div id="userEmail" class="muted">email@exemplo.com</div>
+        </div>
+        <div style="text-align:right">
+          <button id="btnSignOut" class="small-btn">Sair</button>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;" class="muted">Cursos cadastrados</div>
+      <div id="courses" class="courses"></div>
+
+      <div style="margin-top:14px" class="muted">
+        Ao finalizar curso/prova, entre em contato para verificar nota e emissão do certificado com a carga horária do curso.
+      </div>
+      <a class="whatsapp" id="waLink" href="https://wa.me/5584991778690" target="_blank">Entrar em contato (WhatsApp)</a>
+    </div>
+  </div>
+
+  <!-- overlay modal generic -->
+  <div id="overlay" class="overlay">
+    <div class="modal" id="overlayContent"></div>
+  </div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script>
+  // CONFIGuracao firebase — use a que você passou
+  const firebaseConfig = {
+    apiKey: "AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI",
+    authDomain: "san7-brasil.firebaseapp.com",
+    databaseURL: "https://san7-brasil-default-rtdb.firebaseio.com",
+    projectId: "san7-brasil",
+    storageBucket: "san7-brasil.firebasestorage.app",
+    messagingSenderId: "944294165741",
+    appId: "1:944294165741:web:369986a8c97bb31be620e4",
+    measurementId: "G-TQMJ1DJF51"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.database();
+
+  const btnLogin = document.getElementById('btnLogin');
+  const emailInput = document.getElementById('email');
+  const passInput = document.getElementById('password');
+  const userArea = document.getElementById('userArea');
+  const loginCard = document.getElementById('loginCard');
+  const coursesDiv = document.getElementById('courses');
+  const userNameEl = document.getElementById('userName');
+  const userEmailEl = document.getElementById('userEmail');
+  const avatarLetter = document.getElementById('avatarLetter');
+  const btnSignOut = document.getElementById('btnSignOut');
+  const overlay = document.getElementById('overlay');
+  const overlayContent = document.getElementById('overlayContent');
+
+  function showOverlay(html){
+    overlayContent.innerHTML = html;
+    overlay.style.display = 'flex';
+  }
+  overlay.addEventListener('click', (e)=>{ if(e.target===overlay) overlay.style.display='none'});
+
+  function showSpinnerOnButton(btn){
+    btn.disabled = true;
+    const sp = document.createElement('span');
+    sp.className = 'spinner';
+    sp.id = 'btnSpinner';
+    btn.appendChild(sp);
+  }
+  function hideSpinnerOnButton(btn){
+    btn.disabled = false;
+    const sp = document.getElementById('btnSpinner');
+    if(sp) sp.remove();
+  }
+
+  btnLogin.addEventListener('click', async ()=>{
+    const email = emailInput.value.trim();
+    const pass = passInput.value;
+    if(!email || !pass){ alert('Preencha e-mail e senha.'); return; }
+    showSpinnerOnButton(btnLogin);
+    try{
+      const userCred = await auth.signInWithEmailAndPassword(email, pass);
+      const uid = userCred.user.uid;
+      // checar flag active no DB
+      const snapshot = await db.ref('users/'+uid).once('value');
+      const userRec = snapshot.val();
+      if(!userRec || userRec.active === false){
+        await auth.signOut();
+        hideSpinnerOnButton(btnLogin);
+        alert('Conta inativa ou não cadastrada. Contate o administrador.');
+        return;
+      }
+      // logged in -> mostrar dados
+      loginCard.style.display = 'none';
+      userArea.style.display = 'block';
+      userNameEl.textContent = userRec.name || 'Usuário';
+      userEmailEl.textContent = userRec.email || email;
+      avatarLetter.textContent = (userRec.name?userRec.name[0].toUpperCase():'U');
+      loadUserCourses(uid);
+    }catch(err){
+      console.error(err);
+      alert('Erro ao autenticar: '+err.message);
+    } finally { hideSpinnerOnButton(btnLogin); }
+  });
+
+  btnSignOut.addEventListener('click', async ()=>{
+    await auth.signOut();
+    loginCard.style.display = 'block';
+    userArea.style.display = 'none';
+    coursesDiv.innerHTML = '';
+    emailInput.value=''; passInput.value='';
+  });
+
+  // carrega cursos do usuário
+  function loadUserCourses(uid){
+    // ouvir cursos cadastrados e cursos atribuídos
+    db.ref('courses').on('value', snap=>{
+      const allCourses = snap.val() || {};
+      db.ref('userCourses/' + uid).once('value').then(us=>{
+        const assigned = us.val() || {};
+        renderCourses(allCourses, assigned);
+      });
+    });
+  }
+  function renderCourses(allCourses, assigned){
+    coursesDiv.innerHTML = '';
+    // se assigned for object com courseIds true
+    for(const cId in allCourses){
+      const c = allCourses[cId];
+      if(!assigned[cId]) continue;
+      const div = document.createElement('div');
+      div.className = 'course-card';
+      div.innerHTML = `
+        <img src="${c.image || 'https://via.placeholder.com/400x200?text=Curso'}" alt="">
+        <div style="font-weight:700">${c.title || 'Sem título'}</div>
+        <div class="muted" style="font-size:13px">${c.desc || ''}</div>
+        <div style="display:flex;gap:8px;margin-top:auto;">
+          <button class="small-btn openBtn">Abrir Prova</button>
+          <a class="small-btn" href="material.html?courseId=${encodeURIComponent(cId)}">Material Didático</a>
+        </div>
+      `;
+      // abrir prova
+      div.querySelector('.openBtn').addEventListener('click', ()=>{
+        window.location.href = 'prova2.html?courseId='+encodeURIComponent(cId);
+      });
+      coursesDiv.appendChild(div);
+    }
+    if(coursesDiv.children.length===0) coursesDiv.innerHTML = '<div class="muted">Nenhum curso atribuído.</div>';
+  }
+
+  // se já estiver logado, restaura
+  auth.onAuthStateChanged(user=>{
+    if(user){
+      db.ref('users/' + user.uid).once('value').then(snap=>{
+        const rec = snap.val();
+        if(!rec || rec.active===false){
+          auth.signOut(); return;
+        }
+        loginCard.style.display = 'none';
+        userArea.style.display = 'block';
+        userNameEl.textContent = rec.name || 'Usuário';
+        userEmailEl.textContent = rec.email || user.email;
+        avatarLetter.textContent = (rec.name?rec.name[0].toUpperCase():'U');
+        loadUserCourses(user.uid);
+      });
+    } else {
+      loginCard.style.display = 'block';
+      userArea.style.display = 'none';
+    }
+  });
+
+</script>
+</body>
+</html>
