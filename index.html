@@ -970,9 +970,15 @@ const menuContainer=document.getElementById('menuContainer');menuContainer.addEv
 
 
 
+
+
+
+
+
+
 <div id="overlay">
     <div id="notificacao">
-        <img id="imgNotif" src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000125-91ee591ee7/8550164B-CAAD-49E3-BDCB-211C72300F49.webp?ph=c2a6771173" alt="Notificação">
+        <img id="imgNotif" src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000129-a0260a0261/3C5A07C7-4F32-488B-B0AB-53E57B97E1E8.webp" alt="Notificação">
         <div class="botoes">
             <button id="acessarBtn">Ver cursos</button>
             <button id="fecharBtn">Fechar</button>
@@ -981,34 +987,34 @@ const menuContainer=document.getElementById('menuContainer');menuContainer.addEv
 </div>
 
 <style>
+    /* Impede qualquer flash na abertura */
     #overlay {
-        position: fixed;
+        position: fixed !important;
         top: 0;
         left: 0;
         width: 100vw;
         height: 100vh;
         background: rgba(0,0,0,0.6);
-        display: flex;
+        display: none; /* ← evita aparecer antes da hora */
         justify-content: center;
         align-items: center;
         opacity: 0;
-        visibility: hidden;
-        transition: .3s;
-        z-index: 9999;
+        transition: opacity .3s ease;
+        z-index: 999999 !important; /* isolado para não interferir */
     }
 
     #notificacao {
-        background: #fff;
+        background: #ffffff;
         padding: 20px;
         width: 320px;
-        border-radius: 12px;
+        border-radius: 0; /* quadrado */
         text-align: center;
         box-shadow: 0 0 20px rgba(0,0,0,0.3);
     }
 
     #notificacao img {
         width: 100%;
-        border-radius: 10px;
+        border-radius: 0; /* quadrado */
         margin-bottom: 15px;
     }
 
@@ -1021,8 +1027,8 @@ const menuContainer=document.getElementById('menuContainer');menuContainer.addEv
     button {
         flex: 1;
         padding: 10px;
-        border: none;
-        border-radius: 8px;
+        border: 2px solid #000; /* borda quadrada */
+        border-radius: 0; /* quadrado */
         cursor: pointer;
         font-size: 15px;
         font-weight: bold;
@@ -1040,11 +1046,15 @@ const menuContainer=document.getElementById('menuContainer');menuContainer.addEv
 </style>
 
 <script>
-    window.onload = function() {
+    document.addEventListener("DOMContentLoaded", function () {
         const overlay = document.getElementById("overlay");
-        overlay.style.visibility = "visible";
-        overlay.style.opacity = "1";
-    };
+
+        /* Agora aparece imediatamente e sem flash */
+        overlay.style.display = "flex";
+        requestAnimationFrame(() => {
+            overlay.style.opacity = "1";
+        });
+    });
 
     document.getElementById("acessarBtn").onclick = function() {
         window.location.href = "https://domusfit.site/cursos.html";
@@ -1053,8 +1063,8 @@ const menuContainer=document.getElementById('menuContainer');menuContainer.addEv
     document.getElementById("fecharBtn").onclick = function() {
         const overlay = document.getElementById("overlay");
         overlay.style.opacity = "0";
-        setTimeout(() => overlay.style.visibility = "hidden", 300);
+        setTimeout(() => {
+            overlay.style.display = "none";
+        }, 300);
     };
 </script>
-
-
