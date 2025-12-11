@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Login - Academia</title>
+<style>
+:root{
+  --bg:#fff;
+  --dark:#000;
+  --light:#f5f5f5;
+  --accent:#f0f0f0;
+  --green:#32CD32;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+body{background:var(--bg);color:var(--dark);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:100px}
+header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #eee;z-index:10}
+.logo-canto-esquerdo{height:38px;width:auto}
+.menu-container{position:relative}
+.menu-btn{width:32px;height:24px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between}
+.menu-btn div{width:100%;height:3px;background:#000;border-radius:2px;transition:all .3s}
+.menu-btn.active div:nth-child(1){transform:rotate(45deg) translateY(9px)}
+.menu-btn.active div:nth-child(2){opacity:0}
+.menu-btn.active div:nth-child(3){transform:rotate(-45deg) translateY(-9px)}
+.menu{position:absolute;top:40px;right:0;background:#fff;box-shadow:0 4px 15px rgba(0,0,0,.1);border-radius:6px;display:none;flex-direction:column;width:200px;overflow:hidden}
+.menu.active{display:flex}
+.menu a{text-decoration:none;color:#000;padding:12px 15px;transition:.3s}
+.menu a:hover{background:#f5f5f5}
+
+main{width:100%;max-width:400px;padding:20px}
+.container{margin-top:20px}
+h2{font-size:22px;font-weight:600;margin-bottom:25px}
+label{display:block;font-size:14px;color:#444;margin-bottom:8px}
+input[type="text"]{
+  width:100%;padding:14px;border:none;border-bottom:1px solid #ccc;font-size:17px;color:#000;background:transparent;outline:none;
+}
+input::placeholder{color:#aaa}
+.btn{margin-top:25px;width:100%;padding:14px;border-radius:8px;border:none;background:#e6e6e6;color:#999;font-weight:600;font-size:16px;cursor:pointer;transition:.3s}
+.btn:hover{background:#ddd}
+.btn.active{background:var(--green);color:#fff}
+.info{margin-top:20px;font-size:13px;color:#555}
+footer{margin-top:60px;font-size:12px;color:#888;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-canto-esquerdo">
+ 
+
+
+
+
+<button onclick="window.location.href='index.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">Voltar</button>
+
+</header>
+
+
+
+
+
+
+
+<div style="width:100%; text-align:center; padding:10px 0; display:flex; justify-content:center; gap:20px;">
+  <a href="prova.html" style="display:inline-block; padding:15px 25px; background:#eee; border-radius:6px; text-decoration:none; font-family:sans-serif; color:#000;">
+    Área do Aluno
+  </a>
+  <a href="https://wa.me/5584991778690" style="display:inline-block; padding:15px 25px; background:#eee; border-radius:6px; text-decoration:none; font-family:sans-serif; color:#000;">
+    Suporte
+  </a>
+</div>
+
+
+
+
+<br>
+<br>
+
+
+<div style="
+  margin:0;
+  padding:0;
+  width:100%;
+  text-align:center;
+  font-family: 'Arial', sans-serif;
+  font-size:30px;
+  font-weight:700;
+  color:#0a2a6a;
+  opacity:0;
+  animation:fade 0.9s ease-out forwards;
+">
+  Cursos disponiveis
+</div>
+
+<style>
+@keyframes fade {
+  from { opacity:0; transform:translateY(-6px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+</style>
+
+
+
+
+
+
+
+
+<div id="blocoCursos">
+
+    <div class="curso">
+        <img src="https://www.cebrac.com.br/wp-content/uploads/2023/08/diferenciais-do-curso-de-atendente-de-farmacia-no-cebrac-20220408145942-jpg.jpg" class="imgCurso" alt="">
+        <h3>Atendente de Farmácia - R$29,99</h3>
+        <p>Aprenda atendimento, organização e processos essenciais do ambiente farmacêutico com segurança e eficiência.</p>
+        <a class="acessar" href="https://wa.me/5584991778690?text=Quero%20me%20matricular%20no%20curso%20Atendente%20de%20Farmácia">Acessar →</a>
+    </div>
+
+    <div class="curso">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwO1t1k3ls65mVkLRxOEiNmezOXIBrbNapZh7GPrh9Aw&s=10" class="imgCurso" alt="">
+        <h3>Operador de Caixa - R$29,99</h3>
+        <p>Procedimentos completos de operação, controle, atendimento e rotinas para desempenho profissional.</p>
+        <a class="acessar" href="https://wa.me/5584991778690?text=Quero%20me%20matricular%20no%20curso%20Operador%20de%20Caixa">Acessar →</a>
+    </div>
+
+    <div class="curso">
+        <img src="https://cursos.ce.senac.br/wp-content/uploads/2021/08/idoso2-scaled-1.jpg" class="imgCurso" alt="">
+        <h3>Cuidador de Idosos - R$32,99</h3>
+        <p>Boas práticas de cuidado, rotina, mobilidade, segurança e assistência personalizada para idosos.</p>
+        <a class="acessar" href="https://wa.me/5584991778690?text=Quero%20me%20matricular%20no%20curso%20Cuidador%20de%20Idosos">Acessar →</a>
+    </div>
+
+    <div class="curso">
+        <img src="https://www.unifoa.edu.br/wp-content/uploads/2024/10/instrutor-de-academia.jpg" class="imgCurso" alt="">
+        <h3>VIP: Instrutor de Musculação (Conceitos de execução) - R$38,99</h3>
+        <p>Execução correta, acompanhamento de treinos, variações e ajustes práticos para evolução e segurança.</p>
+        <a class="acessar" href="https://wa.me/5584991778690?text=Quero%20me%20matricular%20no%20curso%20Instrutor%20de%20Musculação">Acessar →</a>
+    </div>
+
+    <div class="curso">
+        <img src="https://sophiederam.com/wp-content/uploads/2022/06/alimentacao-fit.png" class="imgCurso" alt="">
+        <h3>Nutrição Esportiva (Pessoal) R$29,99</h3>
+        <p>Estratégias para performance, combinações alimentares, planejamento e ajustes para diferentes objetivos.</p>
+        <a class="acessar" href="https://wa.me/5584991778690?text=Quero%20me%20matricular%20no%20curso%20Nutrição%20Esportiva">Acessar →</a>
+    </div>
+
+    <div class="curso">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuKihdNcbbHXGf4wcUflfp45-ToqJ8KV_MdOK9jOudeA&s=10" class="imgCurso" alt="">
+        <h3>Treinamento Funcional - R$48,99</h3>
+        <p>Metodologias modernas, variações práticas, progressões e treinos para condicionamento físico completo.</p>
+        <a class="acessar" href="https://wa.me/5584991778690?text=Quero%20me%20matricular%20no%20curso%20Treinamento%20Funcional">Acessar →</a>
+    </div>
+
+    <div class="curso">
+        <img src="https://clinicarx.com.br/wp-content/uploads/2022/10/antropometricas.jpg" class="imgCurso" alt="">
+        <h3>Avaliação Física - R$29,99</h3>
+        <p>Técnicas de medidas, testes funcionais, interpretação de dados e orientações para desenvolvimento físico.</p>
+        <a class="acessar" href="https://wa.me/5584991778690?text=Quero%20me%20matricular%20no%20curso%20Avaliação%20Física">Acessar →</a>
+    </div>
+
+    <div class="curso">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGexty03QWKNZEUE5Pfon6KNsRgRxnu6G5LYMM5Jvh57KyVT56Sq6prU&s=10" class="imgCurso" alt="">
+        <h3>Biomecânica Aplicada - R$29,99</h3>
+        <p>Entendimento de movimentos, técnicas, forças e ajustes práticos para otimizar treinos com segurança.</p>
+        <a class="acessar" href="https://wa.me/5584991778690?text=Quero%20me%20matricular%20no%20curso%20Biomecânica%20Aplicada">Acessar →</a>
+    </div>
+
+</div>
+
+<style>
+    :root{
+        --azul-escuro: #003b73;
+        --azul-hover: #0056a3;
+        --texto: #111111;
+        --descricao: #333333;
+    }
+
+    #topoAreaAluno{
+        width:100%;
+        text-align:center;
+        padding:22px 0 10px 0;
+        background:transparent;
+    }
+
+    #btnAreaAluno{
+        color: var(--azul-escuro);
+        font-weight:800;
+        font-size:18px;
+        text-decoration:none;
+        border-bottom:3px solid var(--azul-escuro);
+        padding-bottom:6px;
+        display:inline-block;
+        transition:.15s;
+    }
+
+    #btnAreaAluno:hover{
+        color: var(--azul-hover);
+        border-bottom-color: var(--azul-hover);
+        letter-spacing:1px;
+    }
+
+    #tituloCursos{
+        width:100%;
+        text-align:center;
+        margin:10px 0 25px 0;
+        font-size:26px;
+        font-weight:900;
+        color: var(--azul-escuro);
+    }
+
+    #blocoCursos{
+        display:grid;
+        grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+        gap:28px;
+        padding:24px;
+        box-sizing:border-box;
+        width:100%;
+        background:transparent;
+    }
+
+    .curso{
+        background:transparent;
+        display:flex;
+        flex-direction:column;
+        padding:0;
+    }
+
+    .imgCurso{
+        width:100%;
+        height:260px;
+        object-fit:cover;
+        display:block;
+    }
+
+    .curso h3{
+        font-size:20px;
+        margin:16px 16px 8px 16px;
+        color: var(--azul-escuro);
+        font-weight:800;
+    }
+
+    .curso p{
+        margin:0 16px 16px 16px;
+        color: var(--descricao);
+        font-size:15px;
+        line-height:1.45;
+    }
+
+    .acessar{
+        margin:0 16px 20px 16px;
+        padding:6px 0;
+        color: var(--azul-escuro);
+        font-weight:800;
+        text-decoration:none;
+        transition:.15s;
+        display:inline-block;
+    }
+
+    .acessar:hover{
+        color: var(--azul-hover);
+        letter-spacing:1px;
+    }
+
+    @media(max-width:480px){
+        .imgCurso{height:200px;}
+        #tituloCursos{font-size:22px;}
+    }
+</style>
+
+
+
+
+
+
+<div style="width:100%; max-width:700px; margin:0 auto; font-family:'Arial', sans-serif; color:#0a2a6a;">
+  <h2 style="text-align:center; font-size:28px; margin-bottom:25px;">Vantagens:</h2>
+  <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center;">
+    
+    <div style="flex:1 1 300px; background:rgba(255,255,255,0.1); padding:20px; border-radius:10px; box-sizing:border-box; transition:transform 0.3s;">
+      <h3 style="margin:0 0 10px; font-size:20px;">Aprendizado Rápido</h3>
+      <p style="margin:0; font-size:16px;">Conteúdo prático e direto ao ponto, para você absorver conhecimento sem enrolação.</p>
+    </div>
+
+    <div style="flex:1 1 300px; background:rgba(255,255,255,0.1); padding:20px; border-radius:10px; box-sizing:border-box; transition:transform 0.3s;">
+      <h3 style="margin:0 0 10px; font-size:20px;">Flexibilidade Total</h3>
+      <p style="margin:0; font-size:16px;">Estude quando quiser, onde estiver, sem depender de horários fixos.</p>
+    </div>
+
+    <div style="flex:1 1 300px; background:rgba(255,255,255,0.1); padding:20px; border-radius:10px; box-sizing:border-box; transition:transform 0.3s;">
+      <h3 style="margin:0 0 10px; font-size:20px;">Suporte Exclusivo</h3>
+      <p style="margin:0; font-size:16px;">Tire dúvidas diretamente com nossos especialistas pelo WhatsApp.</p>
+    </div>
+
+    
+
+    <div style="flex:1 1 300px; background:rgba(255,255,255,0.1); padding:20px; border-radius:10px; box-sizing:border-box; transition:transform 0.3s;">
+      <h3 style="margin:0 0 10px; font-size:20px;">Atualizações Constantes</h3>
+      <p style="margin:0; font-size:16px;">Conteúdos sempre atualizados para acompanhar as tendências do mercado.</p>
+    </div>
+
+  </div>
+</div>
+
+<style>
+div[style*="transition"]:hover {
+  transform: translateY(-5px);
+}
+@media (max-width:600px){
+  div[style*="flex:1 1 300px"] {
+    flex:1 1 100%;
+  }
+}
+</style>
