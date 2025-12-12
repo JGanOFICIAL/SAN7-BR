@@ -1,0 +1,414 @@
+<!doctype html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Admin - Gerenciar Usuários</title>
+<style>
+  :root{--bg:#fff;--accent:#bfeccb;--card:#f8f8f8;--dark:#222;--square-radius:4px}
+  *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;padding:0}
+  body{background:var(--bg);min-height:100vh;padding-top:80px}
+  header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;gap:16px;padding:0 20px;border-bottom:1px solid #eee;z-index:50}
+  .logo{display:flex;align-items:center;gap:10px}
+  .wrap{max-width:1100px;margin:24px auto;padding:16px}
+  .topbar{display:flex;gap:12px;align-items:center;margin-bottom:14px}
+  input[type="search"]{padding:10px;border-radius:6px;border:1px solid #ddd;width:320px}
+  .btn{padding:10px 12px;border:0;border-radius:var(--square-radius);cursor:pointer;font-weight:700}
+  .btn-primary{background:var(--accent)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+  .card{background:var(--card);padding:14px;border-radius:8px;position:relative}
+  .card h4{margin-bottom:8px}
+  .card .meta{font-size:13px;color:#555}
+  .card .controls{position:absolute;top:10px;right:10px;display:flex;gap:6px}
+  .modal-back{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:120}
+  .modal{background:#fff;padding:18px;border-radius:10px;min-width:320px;max-width:94%;position:relative}
+  .modal .close{position:absolute;right:12px;top:10px;border:0;background:transparent;font-size:18px;cursor:pointer}
+  label{display:block;margin-top:10px;font-size:13px}
+  input[type="text"], input[type="date"]{width:100%;padding:10px;border:1px solid #ddd;border-radius:6px}
+  .row{display:flex;gap:8px}
+  .row > *{flex:1}
+  .danger{background:#ffdddd}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='36' height='36'><rect rx='6' width='36' height='36' fill='%23bfeccb'/><text x='50%' y='55%' font-size='16' text-anchor='middle' fill='%23000' font-family='Arial' font-weight='700'>A</text></svg>" alt="logo" style="height:36px">
+    <h1>DomusFit - Recp.</h1>
+  </div>
+
+
+
+
+
+
+
+
+
+<div id="btnChaves" style="background:#000;color:#fff;padding:12px 20px;font-size:16px;border:1px solid #000;cursor:pointer;z-index:999999;display:inline-block;font-family:sans-serif;border-radius:6px;box-shadow:0 3px 8px rgba(0,0,0,0.2);">
+    Chaves
+</div>
+
+<div id="overlayChaves" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:92%;max-width:470px;background:#fff;z-index:999998;padding:20px;box-sizing:border-box;font-family:sans-serif;border:1px solid #000;border-radius:8px;box-shadow:0 0 30px rgba(0,0,0,0.25);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h2 style="margin:0;font-size:22px;font-weight:600;">Chaves</h2>
+        <div id="fecharChaves" style="cursor:pointer;font-size:18px;padding:6px 10px;border:1px solid #000;border-radius:4px;">X</div>
+    </div>
+
+    <div id="listaChaves" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(95px,1fr));gap:14px;max-height:310px;overflow:auto;"></div>
+
+    <div id="painelNome" style="display:none;margin-top:15px;border-top:1px solid #000;padding-top:15px;">
+        <div style="margin-bottom:8px;font-size:16px;">Nome:</div>
+        <input id="inputNome" style="width:100%;padding:12px;border:1px solid #000;font-size:16px;box-sizing:border-box;border-radius:6px;">
+        <button id="btnSalvarNome" style="margin-top:12px;width:100%;padding:14px;background:#000;color:#fff;font-size:16px;border:0;cursor:pointer;border-radius:6px;box-shadow:0 3px 8px rgba(0,0,0,0.2);">
+            Salvar
+        </button>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+(()=>{
+
+const URL_IMAGEM_CHAVE = "https://icones.pro/wp-content/uploads/2022/01/cle-vert.png";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+  authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
+  projectId: "prefeitura-de-joao-camara",
+  storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
+  messagingSenderId: "269299041577",
+  appId: "1:269299041577:web:fd41b2939240e9eb476338",
+  measurementId: "G-YT7NHR342J"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const btn = document.getElementById("btnChaves");
+const overlay = document.getElementById("overlayChaves");
+const fechar = document.getElementById("fecharChaves");
+const lista = document.getElementById("listaChaves");
+const painel = document.getElementById("painelNome");
+const input = document.getElementById("inputNome");
+const salvar = document.getElementById("btnSalvarNome");
+
+let chaveSelecionada = null;
+
+btn.onclick = ()=> overlay.style.display="block";
+fechar.onclick = ()=>{ overlay.style.display="none"; painel.style.display="none"; };
+
+function gerarChaves(){
+    for(let i=1;i<=24;i++){
+        db.ref("chaves/"+i).once("value",snap=>{
+            if(!snap.exists()){
+                db.ref("chaves/"+i).set({nome:"",inicio:"",fim:""});
+            }
+        });
+
+        const div = document.createElement("div");
+        div.id="chave"+i;
+        div.style="border:1px solid #000;padding:12px;text-align:center;cursor:pointer;font-size:14px;border-radius:6px;transition:0.2s;box-shadow:0 2px 6px rgba(0,0,0,0.15);";
+        div.onmouseover=()=>div.style.transform="scale(1.03)";
+        div.onmouseout=()=>div.style.transform="scale(1)";
+
+        div.innerHTML=`
+            <div class="imgChave" style="width:38px;height:38px;background:#f2f2f2;margin:auto;margin-bottom:8px;background-size:cover;background-position:center;border-radius:4px;background-image:url('${URL_IMAGEM_CHAVE}');"></div>
+            <div style="font-weight:600;">Chave ${i}</div>
+            <div class="status" style="font-size:11px;margin-top:4px;color:#333;"></div>
+        `;
+        div.onclick = ()=> abrirPainel(i);
+        lista.appendChild(div);
+    }
+}
+
+function abrirPainel(n){
+    chaveSelecionada = n;
+    painel.style.display="block";
+}
+
+salvar.onclick = ()=>{
+    const nome = input.value.trim();
+    if(!nome) return;
+
+    const agora = new Date().toLocaleString("pt-BR");
+    db.ref("chaves/"+chaveSelecionada).update({ nome, inicio:agora, fim:"" });
+
+    input.value="";
+    painel.style.display="none";
+}
+
+function atualizar(){
+    db.ref("chaves").on("value",snap=>{
+        const dados = snap.val();
+        if(!dados) return;
+
+        for(let i in dados){
+            const c = dados[i];
+            const div = document.getElementById("chave"+i);
+            if(!div) continue;
+
+            div.style.background = c.nome ? "#d8ffd8" : "#fff";
+
+            div.querySelector(".status").innerHTML = 
+                c.nome 
+                ? `Com: ${c.nome}<br><span style="font-size:10px;">${c.inicio}</span><br><span style="cursor:pointer;color:#000;text-decoration:underline;" onclick="encerrar(${i})">Encerrar</span>`
+                : "Livre";
+        }
+    });
+}
+
+window.encerrar = (i)=>{
+    const agora = new Date().toLocaleString("pt-BR");
+    db.ref("chaves/"+i).update({ fim:agora, nome:"", inicio:"" });
+};
+
+gerarChaves();
+atualizar();
+
+})();
+</script>
+
+
+
+
+
+
+
+
+</header>
+
+<main class="wrap">
+  <div class="topbar">
+    <input id="search" type="search" placeholder="Buscar por nome ou número de série">
+    <button id="createBtn" class="btn btn-primary">Criar Usuário</button>
+  </div>
+
+  <div class="grid" id="usersGrid">
+    <!-- cards de usuário -->
+  </div>
+</main>
+
+<!-- modal criar/editar -->
+
+<div class="modal-back" id="modalBack">
+  <div class="modal" role="dialog" aria-modal="true">
+    <button class="close" id="closeModal">✕</button>
+    <h3 id="modalTitle">Criar Usuário</h3>
+    <label>Nome</label>
+    <input id="m_name" type="text" placeholder="Nome completo">
+    <label>Número de Série</label>
+    <input id="m_serial" type="text" placeholder="xxxxx" maxlength="5" disabled>
+    <div class="row">
+      <div>
+        <label>Início (YYYY-MM-DD)</label>
+        <input id="m_start" type="date">
+      </div>
+      <div>
+        <label>Fim (YYYY-MM-DD)</label>
+        <input id="m_end" type="date">
+      </div>
+    </div>
+    <label>Plano (nome)</label>
+    <input id="m_plan" type="text" placeholder="Ex: Mensal - Premium">
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button id="saveUser" class="btn btn-primary">Salvar</button>
+      <button id="toggleActive" class="btn">Ativar/Desativar</button>
+      <button id="deleteUser" class="btn danger">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+    authDomain:"prefeitura-de-joao-camara.firebaseapp.com",
+    projectId:"prefeitura-de-joao-camara",
+    storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",
+    messagingSenderId:"269299041577",
+    appId:"1:269299041577:web:fd41b2939240e9eb476338",
+    measurementId:"G-YT7NHR342J"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const usersGrid = document.getElementById('usersGrid');
+  const searchEl = document.getElementById('search');
+  const createBtn = document.getElementById('createBtn');
+  const modalBack = document.getElementById('modalBack');
+  const closeModal = document.getElementById('closeModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const m_name = document.getElementById('m_name');
+  const m_serial = document.getElementById('m_serial');
+  const m_start = document.getElementById('m_start');
+  const m_end = document.getElementById('m_end');
+  const m_plan = document.getElementById('m_plan');
+  const saveUser = document.getElementById('saveUser');
+  const toggleActive = document.getElementById('toggleActive');
+  const deleteUser = document.getElementById('deleteUser');
+
+  let allUsers = {}; // cache
+  // ouvinte real em /users
+  db.ref('users').on('value', snap=>{
+    allUsers = snap.val() || {};
+    renderGrid();
+  });
+
+  function renderGrid(filter=''){
+    usersGrid.innerHTML = '';
+    const keys = Object.keys(allUsers).sort();
+    keys.forEach(k=>{
+      const u = allUsers[k];
+      const display = (u.name || '') + ' ' + k;
+      if(filter && !display.toLowerCase().includes(filter.toLowerCase())) return;
+      const card = document.createElement('div'); card.className='card';
+      card.innerHTML = `
+        <div class="controls">
+          <button data-serial="${k}" class="infoBtn">i</button>
+        </div>
+        <h4>${u.name || '—'}</h4>
+        <div class="meta">Nº Série: ${k}</div>
+        <div class="meta">Plano: ${u.planName || '—'}</div>
+        <div class="meta">Início: ${u.startDate || '—'} Término: ${u.endDate || '—'}</div>
+        <div style="margin-top:8px">
+          <button data-serial="${k}" class="btn btn-primary openInfo">Info</button>
+        </div>
+      `;
+      usersGrid.appendChild(card);
+    });
+    // bind info buttons
+    document.querySelectorAll('.openInfo').forEach(b=>{
+      b.addEventListener('click', ()=> openModalFor(b.dataset.serial));
+    });
+    document.querySelectorAll('.infoBtn').forEach(b=>{
+      b.addEventListener('click', ()=> openModalFor(b.dataset.serial));
+    });
+  }
+
+  searchEl.addEventListener('input', ()=> renderGrid(searchEl.value));
+
+  // criar novo
+  createBtn.addEventListener('click', ()=>{
+    openModalFor(null); // novo
+  });
+
+  function openModalFor(serialKey){
+    modalBack.style.display='flex';
+    if(serialKey){
+      modalTitle.textContent='Editar Usuário';
+      const u = allUsers[serialKey] || {};
+      m_name.value = u.name || '';
+      m_serial.value = serialKey;
+      m_start.value = u.startDate || '';
+      m_end.value = u.endDate || '';
+      m_plan.value = u.planName || '';
+      saveUser.dataset.serial = serialKey;
+      toggleActive.dataset.serial = serialKey;
+      deleteUser.dataset.serial = serialKey;
+      toggleActive.textContent = (u.active ? 'Desativar' : 'Ativar');
+    } else {
+      modalTitle.textContent='Criar Usuário';
+      m_name.value=''; m_serial.value=''; m_start.value=''; m_end.value=''; m_plan.value='';
+      saveUser.dataset.serial = '';
+      toggleActive.dataset.serial = '';
+      deleteUser.dataset.serial = '';
+      toggleActive.textContent = 'Ativar';
+    }
+  }
+
+  closeModal.addEventListener('click', ()=> modalBack.style.display='none');
+  modalBack.addEventListener('click', (e)=>{ if(e.target===modalBack) modalBack.style.display='none'; });
+
+  // gera número de série de 5 dígitos com verificação de unicidade
+  async function generateUniqueSerial(){
+    const maxAttempts = 20;
+    for(let i=0;i<maxAttempts;i++){
+      const n = Math.floor(Math.random()*90000)+10000; // garante 5 dígitos (10000-99999)
+      const key = String(n);
+      try{
+        const snap = await db.ref('users/' + key).get();
+        if(!snap.exists()) return key;
+      }catch(err){
+        console.error('Erro verificando serial', err);
+        // se erro ao checar, ainda tentamos outros números
+      }
+    }
+    throw new Error('Não foi possível gerar número de série único. Tente novamente.');
+  }
+
+  saveUser.addEventListener('click', async ()=>{
+    const name = m_name.value.trim();
+    const serialExisting = saveUser.dataset.serial || '';
+    const start = m_start.value || null;
+    const end = m_end.value || null;
+    const plan = m_plan.value.trim();
+    if(!name){ alert('Preencha o nome.'); return; }
+    try{
+      if(serialExisting){
+        // editar existente
+        const payload = {
+          name,
+          startDate: start,
+          endDate: end,
+          planName: plan,
+          updatedAt: new Date().toISOString().slice(0,10),
+        };
+        await db.ref('users/' + serialExisting).update(payload);
+        alert('Salvo com sucesso.');
+        modalBack.style.display='none';
+      } else {
+        // criar novo: gerar serial único e salvar
+        const serial = await generateUniqueSerial();
+        const payload = {
+          name,
+          startDate: start,
+          endDate: end,
+          planName: plan,
+          serialNumber: serial,
+          active: true,
+          createdAt: new Date().toISOString().slice(0,10),
+          updatedAt: new Date().toISOString().slice(0,10),
+        };
+        await db.ref('users/' + serial).set(payload);
+        alert('Salvo com sucesso. Nº Série: ' + serial);
+        modalBack.style.display='none';
+      }
+    }catch(err){
+      console.error(err);
+      alert('Erro ao salvar. Veja console.');
+    }
+  });
+
+  toggleActive.addEventListener('click', async ()=>{
+    const serial = toggleActive.dataset.serial || m_serial.value;
+    if(!serial) { alert('Número de série não encontrado.'); return; }
+    const cur = allUsers[serial] || {};
+    const next = !cur.active;
+    try{
+      await db.ref('users/' + serial + '/active').set(next);
+      alert('Usuário agora ' + (next ? 'ativo' : 'inativo') + '.');
+      modalBack.style.display='none';
+    }catch(err){ console.error(err); alert('Erro ao alterar.'); }
+  });
+
+  deleteUser.addEventListener('click', async ()=>{
+    const serial = deleteUser.dataset.serial || m_serial.value;
+    if(!serial){ alert('Número de série não encontrado.'); return; }
+    if(!confirm('Excluir usuário ' + serial + '? Esta ação é irreversível.')) return;
+    try{
+      await db.ref('users/' + serial).remove();
+      alert('Usuário excluído.');
+      modalBack.style.display='none';
+    }catch(err){ console.error(err); alert('Erro ao excluir.'); }
+  });
+
+</script>
+
+</body>
+</html>
