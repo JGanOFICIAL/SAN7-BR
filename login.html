@@ -201,3 +201,76 @@ loginBtn.addEventListener('click',async()=>{
 </script>
 </body>
 </html>
+
+
+
+
+
+<style>
+#cxk{position:fixed;left:50%;bottom:-260px;transform:translateX(-50%);width:92%;max-width:900px;background:#ffffff;color:#0b1f3a;border-radius:18px;box-shadow:0 25px 60px rgba(0,0,0,.25);padding:18px 22px 26px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;z-index:999999;transition:all .6s cubic-bezier(.16,1,.3,1)}
+#cxk.show{bottom:18px}
+#cxk .row{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+#cxk .txt{font-size:14px;line-height:1.45}
+#cxk .act{display:flex;gap:10px;align-items:center}
+#cxk button{border:0;border-radius:999px;padding:10px 18px;background:#0b1f3a;color:#ffffff;font-size:14px;cursor:pointer}
+#cxk button.cancel{background:#e5e7eb;color:#0b1f3a}
+#cxk a{color:#0b1f3a;text-decoration:none;font-size:13px}
+#cxk a:hover{text-decoration:underline}
+#cxk .sig{position:absolute;right:14px;bottom:8px;font-size:10px;opacity:.35;letter-spacing:.3px;user-select:none}
+#ovl{position:fixed;inset:0;background:rgba(255,255,255,.88);backdrop-filter:blur(6px);z-index:999998;display:none}
+#ovl .box{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:92%;max-width:720px;background:#ffffff;color:#0b1f3a;border-radius:18px;padding:22px;box-shadow:0 25px 60px rgba(0,0,0,.25)}
+#ovl .box p{font-size:14px;line-height:1.6}
+#ovl .box .ok{margin-top:14px;border-radius:999px;padding:10px 18px;background:#0b1f3a;color:#ffffff;border:0;cursor:pointer}
+#blk{position:fixed;inset:0;background:#020617;color:#e5e7eb;z-index:999997;display:none;align-items:center;justify-content:center;text-align:center;padding:24px}
+#blk .b{max-width:520px}
+</style>
+
+<div id="blk"><div class="b"><p id="bmsg"></p></div></div>
+
+<div id="ovl"><div class="box"><p id="more"></p><button class="ok" id="okMore"></button></div></div>
+
+<div id="cxk">
+  <div class="row">
+    <div class="txt" id="t1"></div>
+    <div class="act">
+      <a href="javascript:void(0)" id="moreL"></a>
+      <button class="cancel" id="canc"></button>
+      <button id="acc"></button>
+    </div>
+  </div>
+  <div class="sig">San7Doc</div>
+</div>
+
+<script>
+(function(){
+const d=s=>decodeURIComponent(escape(atob(s)));
+const T={
+a:d("RXN0ZSBzaXRlIHV0aWxpemEgY29udHJvbGVzIGRlIHNlZ3VyYW7Dp2EsIGNvb2tpZXMgdMOpY25pY29zIGUgcmVjdXJzb3MgZGUgYWNlc3NpYmlsaWRhZGUgcGFyYSBnYXJhbnRpciB1bWEgZXhwZXJpw6puY2lhIHNlZ3VyYSBlIGNvbmZvcm1lLg=="),
+b:d("U2FpYmEgbWFpcw=="),
+c:d("Q2FuY2VsYXI="),
+e:d("QWNjZWl0YXI="),
+m:d("RXN0YSBmdW5jaW9uYWxpZGFkZSBhcGxpY2EgbWVkaWRhcyBkZSBzZWd1cmFuw6dhLCBwcm90ZcOnw6NvIGRlIGRhZG9zIGUgY29uZm9ybWlkYWRlIGNvbSBib2FzIHByw6F0aWNhcyBkZSB1c28gZSBwcml2YWNpZGFkZS4gTyBzaXN0ZW1hIHRhbWLDqW0gdmFsaWRhIG8gYW1iaWVudGUgZGUgZXhlY3XDp8OjbyBlIGJsb3F1ZWlhIGFjZXNzb3MgbsOjbyBhdXRvcml6YWRvcy4="),
+o:d("T0s="),
+x:d("QW1iaWVudGUgbsOjbyBhdXRvcml6YWRvLiBBY2Vzc28gYmxvcXVlYWRvIHBvciBtZWRpZGFzIGRlIHNlZ3VyYW7Dp2Eu")
+};
+const ua=navigator.userAgent.toLowerCase();
+const ok=/webkit|gecko/.test(ua)&&!/headless|electron|insomnia|postman|curl|wget|puppeteer|playwright|android\swebview/.test(ua);
+if(!ok){
+document.getElementById("blk").style.display="flex";
+document.getElementById("bmsg").innerText=T.x;
+return;
+}
+const cxk=document.getElementById("cxk");
+document.getElementById("t1").innerText=T.a;
+document.getElementById("moreL").innerText=T.b;
+document.getElementById("canc").innerText=T.c;
+document.getElementById("acc").innerText=T.e;
+document.getElementById("more").innerText=T.m;
+document.getElementById("okMore").innerText=T.o;
+setTimeout(()=>cxk.classList.add("show"),300);
+document.getElementById("acc").onclick=()=>cxk.classList.remove("show");
+document.getElementById("canc").onclick=()=>{};
+document.getElementById("moreL").onclick=()=>document.getElementById("ovl").style.display="block";
+document.getElementById("okMore").onclick=()=>document.getElementById("ovl").style.display="none";
+})();
+</script>
