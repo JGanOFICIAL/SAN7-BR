@@ -7,175 +7,295 @@
 <style>
 :root{
   --bg:#fff;
-  --dark:#000;
-  --card:#f8f8f8;
+  --dark:#111;
   --green:#32CD32;
+  --green-hover:#28a428;
+  --border:#eee;
 }
-*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+*{box-sizing:border-box;margin:0;padding:0;font-family: 'Inter', system-ui, -apple-system, sans-serif}
+
 body{
   min-height:100vh;
   position:relative;
   color:var(--dark);
   overflow-x:hidden;
-  background:url("https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000009-6019860199/700/F9AE5F2E-C42C-4BD5-8DFF-7CF4761814EF.webp") no-repeat center center/cover;
+  /* Fundo original preservado com overlay para leitura */
+  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url("https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000009-6019860199/700/F9AE5F2E-C42C-4BD5-8DFF-7CF4761814EF.webp") no-repeat center center/cover;
+  background-attachment: fixed;
 }
+
+/* Cabeçalho Branco Sólido e Imóvel */
 header{
   position:fixed;
   top:0;
   left:0;
   right:0;
   height:64px;
-  background:rgba(255,255,255,0.95);
-  backdrop-filter:blur(8px);
+  background:#ffffff;
   display:flex;
   align-items:center;
   justify-content:space-between;
   padding:0 20px;
-  border-bottom:1px solid #eee;
-  z-index:10;
+  border-bottom:1px solid var(--border);
+  z-index:100;
 }
+
 .logo-canto-esquerdo{height:38px;width:auto}
-.menu-container{position:relative}
-.menu-btn{width:32px;height:24px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between}
-.menu-btn div{width:100%;height:3px;background:#000;border-radius:2px;transition:all .3s}
-.menu-btn.active div:nth-child(1){transform:rotate(45deg) translateY(9px)}
-.menu-btn.active div:nth-child(2){opacity:0}
-.menu-btn.active div:nth-child(3){transform:rotate(-45deg) translateY(-9px)}
-.menu{position:absolute;top:40px;right:0;background:#fff;box-shadow:0 4px 15px rgba(0,0,0,.1);border-radius:6px;display:none;flex-direction:column;width:200px;overflow:hidden}
-.menu.active{display:flex}
-.menu a{text-decoration:none;color:#000;padding:12px 15px;transition:.3s}
-.menu a:hover{background:#f5f5f5}
+
+/* Botão Suporte Quadrado e Compacto (Igual ao Login) */
+.btn-suporte-header {
+  background-color: #8DC63F;
+  color: #fff;
+  border: none;
+  width: 70px;
+  height: 35px;
+  font-weight: bold;
+  font-size: 11px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
 main{
   width:100%;
   max-width:400px;
   padding:20px;
-  margin-top:100px;
-  background:rgba(255,255,255,0.85);
-  border-radius:12px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.1);
-  backdrop-filter:blur(8px);
-  margin-left:auto;
-  margin-right:auto;
+  margin: 100px auto 20px auto;
+  z-index: 5;
 }
+
+/* Card Principal Quadrado */
 .card{
-  background:rgba(255,255,255,0.9);
-  padding:20px;
-  border-radius:10px;
-  box-shadow:0 4px 15px rgba(0,0,0,.05);
+  background: #ffffff;
+  padding: 30px 20px;
+  border-radius: 0px; /* QUADRADÃO */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  text-align: center;
 }
-.card h3{font-size:22px;font-weight:600;margin-bottom:10px;text-align:center}
-.meta{color:#555;font-size:14px;margin-bottom:6px;text-align:center}
-footer{margin-top:40px;font-size:12px;color:#888;text-align:center}
+
+.card h3{
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 15px;
+  color: #000;
+  text-transform: uppercase;
+}
+
+.meta{
+  color:#555;
+  font-size: 14px;
+  margin-bottom: 8px;
+  padding: 8px;
+  background: #f9f9f9;
+  border-left: 4px solid var(--green);
+  text-align: left;
+  font-weight: 500;
+}
+
+/* Estilo do Carrossel de Avisos */
+.menu-scroll{
+  position:relative;
+  width:100%;
+  max-width:400px;
+  margin:20px auto;
+  overflow:hidden;
+  background:#fff;
+  border-radius: 0px; /* QUADRADÃO */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:10px;
+}
+
+.menu-container{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  scroll-behavior:smooth;
+  width:100%;
+  padding:5px 0;
+  scrollbar-width:none;
+}
+.menu-container::-webkit-scrollbar{display:none}
+
+.menu-item{
+  position:relative;
+  min-width:100%;
+  height:180px;
+  background:#ccc;
+  flex:0 0 auto;
+  display:flex;
+  align-items:flex-end;
+  justify-content:flex-start;
+  background-size:cover;
+  background-position:center;
+}
+
+.menu-item span{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  color:#fff;
+  background:rgba(0,0,0,0.7);
+  padding:12px;
+  font-size:13px;
+  font-weight:600;
+  line-height: 1.4;
+}
+
+.menu-dots{display:flex;justify-content:center;gap:5px;margin-top:10px}
+.menu-dots div{width:8px;height:8px;background:var(--green);opacity: 0.3;}
+.menu-dots div.active{opacity: 1;}
+
+/* Rodapé com Botões Quadrados */
+.footer-buttons{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#ffffff;
+  padding:10px 15px;
+  display:flex;
+  justify-content:space-between;
+  gap: 10px;
+  border-top:1px solid var(--border);
+  z-index:100;
+}
+
+.footer-buttons button{
+  flex:1;
+  background: #333; /* Cor neutra para destacar */
+  border:none;
+  color:#fff;
+  font-weight:700;
+  font-size:13px;
+  padding:15px;
+  border-radius: 0px; /* QUADRADÃO */
+  cursor:pointer;
+  text-transform: uppercase;
+  transition:.3s;
+}
+
+.footer-buttons button:first-child {
+    background: var(--green);
+}
+
+.footer-buttons button:hover{ opacity: 0.9; }
+
+/* Loading Modernizado */
+#loadingScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
+.spinner{width:40px;height:40px;border:4px solid #f3f3f3;border-top:4px solid var(--green);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
+
+<div id="loadingScreen">
+    <div class="spinner"></div>
+</div>
+
 <header>
   <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-canto-esquerdo">
-
-
-
-<button onclick="window.location.href='chat.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">Suporte</button>
-
-
-
+  <button class="btn-suporte-header" onclick="window.location.href='chat.html'">Suporte</button>
 </header>
 
 <main>
   <div class="card" id="userCard">
     <h3 id="userName">Carregando...</h3>
-    <div class="meta" id="userCpf"></div>
-    <div class="meta" id="planInfo"></div>
+    <div class="meta" id="userCpf">Aguarde...</div>
+    <div class="meta" id="planInfo">Buscando dados do plano...</div>
+  </div>
+
+  <div class="menu-scroll"> 
+    <div class="menu-container" id="menuContainer"> 
+      <div class="menu-item" style="background-image:url('https://blog.agenciaamp.com/wp-content/uploads/2024/04/LGPD.jpg');">
+        <span>A LGPD vale para qualquer tratamento de dados pessoais, físicos ou digitais.</span> 
+      </div> 
+      <div class="menu-item" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtr-gUCLPBV87Jn6xBCb6up6BCBkAujcg2D8edeGthmQ&s=10');">
+        <span>Guarde seu NA em sigilo e não o compartilhe com ninguém.</span>
+      </div> 
+      <div class="menu-item" style="background-image:url('https://www.politicaetc.com.br/wp-content/uploads/2025/01/00-2.jpg');">
+        <span>O seu NA só pode ser compartilhado com a equipe técnica ou personal.</span>
+      </div> 
+    </div> 
+    <div class="menu-dots">
+        <div class="active"></div><div></div><div></div>
+    </div> 
   </div>
 </main>
 
-<br><br>
-
-
-
-
-
-
-<style> .menu-scroll{position:relative;width:95%;margin:20px auto;overflow:hidden;background:#fff;box-shadow:0 0 10px rgba(0,0,0,.1);border:1px solid #ddd;display:flex;flex-direction:column;align-items:center;padding:10px;box-sizing:border-box} .menu-container{display:flex;gap:20px;overflow-x:auto;scroll-behavior:smooth;width:100%;padding:10px 0;scroll-snap-type:x mandatory;-ms-overflow-style:none;scrollbar-width:none} .menu-container::-webkit-scrollbar{display:none} .menu-item{position:relative;min-width:340px;height:180px;background:#ccc;flex:0 0 auto;border:2px solid #eee;box-shadow:inset 0 -50px 80px rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:flex-start;background-size:cover;background-position:center;scroll-snap-align:center} .menu-item span{position:absolute;bottom:10px;left:10px;color:#fff;background:rgba(0,0,0,.5);padding:4px 8px;font-size:14px;font-weight:bold} .menu-dots{display:flex;justify-content:center;gap:5px;margin-top:10px} .menu-dots div{width:8px;height:8px;background:#004d00} @media(max-width:768px){.menu-item{min-width:240px;height:140px}} </style> <div class="menu-scroll"> <div class="menu-container" id="menuContainer"> <div class="menu-item" style="background-image:url('https://blog.agenciaamp.com/wp-content/uploads/2024/04/LGPD.jpg');"><span>A LGPD vale para qualquer tratamento de dados pessoais, físicos ou digitais.</span> </div> <div class="menu-item" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtr-gUCLPBV87Jn6xBCb6up6BCBkAujcg2D8edeGthmQ&s=10');"><span>Guarde seu NA em sigilo e não o compartilhe com ninguém.</span></div> <div class="menu-item" style="background-image:url('https://www.politicaetc.com.br/wp-content/uploads/2025/01/00-2.jpg');"><span>O seu NA só pode ser comoartilhado com a equipe técnica ou personal trainer.</span></div> </div> <div class="menu-dots"><div></div><div></div><div></div></div> </div> <script> const menuContainer=document.getElementById('menuContainer');menuContainer.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.preventDefault();menuContainer.scrollLeft+=e.deltaY}}); </script>
-
-
-
-
-
-
-<script>
-const btn=document.getElementById('menuBtn');
-const menu=document.getElementById('menu');
-btn.onclick=()=>{btn.classList.toggle('active');menu.classList.toggle('active');};
-</script>
+<div class="footer-buttons">
+  <button onclick="window.location.href='index.html'">Acessar</button>
+  <button onclick="logout()">Sair</button>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
+// Configuração Firebase
 const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomain:"prefeitura-de-joao-camara.firebaseapp.com",projectId:"prefeitura-de-joao-camara",storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",messagingSenderId:"269299041577",appId:"1:269299041577:web:fd41b2939240e9eb476338",measurementId:"G-YT7NHR342J"};
 firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 
-const logged=localStorage.getItem('loggedUser');
-if(!logged){location.href='index.html';}
-const cpfDigits=logged;
-const userNameEl=document.getElementById('userName');
-const userCpfEl=document.getElementById('userCpf');
-const planInfoEl=document.getElementById('planInfo');
+// Lógica de Autenticação
+const logged = localStorage.getItem('loggedUser');
+if(!logged){ window.location.href='index.html'; }
 
-const userRef=db.ref('users/'+cpfDigits);
-userRef.on('value',snap=>{
-  if(!snap.exists()){alert('Usuário removido.');localStorage.removeItem('loggedUser');location.href='index.html';return;}
-  const u=snap.val();
-  userNameEl.textContent=u.name||'Usuário';
-  userCpfEl.textContent='Número do Aluno (NA): '+cpfDigits;
-  let info='Plano: '+(u.planName||'—');
-  if(u.startDate) info+=' • Início: '+u.startDate;
-  if(u.endDate){
-    info+=' • Término: '+u.endDate;
-    const today=new Date().toISOString().slice(0,10);
-    const left=Math.ceil((new Date(u.endDate)-new Date(today))/(1000*60*60*24));
-    info+=' • Dias restantes: '+(left>=0?left:0);
+const userNameEl = document.getElementById('userName');
+const userCpfEl = document.getElementById('userCpf');
+const planInfoEl = document.getElementById('planInfo');
+
+// Monitoramento em Tempo Real
+const userRef = db.ref('users/' + logged);
+userRef.on('value', snap => {
+  if(!snap.exists()){
+    alert('Usuário não encontrado.');
+    logout();
+    return;
   }
-  planInfoEl.textContent=info;
-  const today=new Date().toISOString().slice(0,10);
-  if(!u.active||(u.endDate&&u.endDate<today)){
+  
+  const u = snap.val();
+  const today = new Date().toISOString().slice(0,10);
+  
+  // Verificação de Atividade
+  if(!u.active || (u.endDate && u.endDate < today)){
     alert('Seu plano está inativo ou expirado.');
-    localStorage.removeItem('loggedUser');
-    location.href='index.html';
+    logout();
+    return;
   }
+
+  // Preenchimento dos dados
+  userNameEl.textContent = u.name || 'Usuário';
+  userCpfEl.textContent = 'NA: ' + logged;
+  
+  let info = 'PLANO: ' + (u.planName || 'Padrão');
+  if(u.endDate) {
+    const left = Math.ceil((new Date(u.endDate) - new Date(today)) / (1000 * 60 * 60 * 24));
+    info += ' • Expira em: ' + u.endDate + ' (' + (left > 0 ? left : 0) + ' dias)';
+  }
+  planInfoEl.textContent = info;
+  
+  // Esconde loading ao carregar dados
+  document.getElementById('loadingScreen').style.opacity = '0';
+  setTimeout(() => { document.getElementById('loadingScreen').style.display = 'none'; }, 500);
+});
+
+function logout() {
+    localStorage.removeItem('loggedUser');
+    window.location.href = 'login.html';
+}
+
+// Controle Simples do Carrossel (Dots)
+const container = document.getElementById('menuContainer');
+const dots = document.querySelectorAll('.menu-dots div');
+container.addEventListener('scroll', () => {
+    const index = Math.round(container.scrollLeft / container.offsetWidth);
+    dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+    });
 });
 </script>
 
-<style>
-#loadingScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.5);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:9999;opacity:1;transition:opacity .8s ease}
-#loadingBox{width:100px;height:100px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(0,0,0,0.1)}
-.spinner{width:40px;height:40px;border:4px solid #ccc;border-top:4px solid #32CD32;border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-</style>
-
-<div id="loadingScreen">
-  <div id="loadingBox">
-    <div class="spinner"></div>
-  </div>
-</div>
-
-<script>
-setTimeout(()=>{
-  const loading=document.getElementById('loadingScreen');
-  loading.style.opacity='0';
-  setTimeout(()=>{loading.style.display='none'},800);
-},2000);
-</script>
-
-<style>
-.footer-buttons{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #eee;z-index:15}
-.footer-buttons button{flex:1;margin:0 5px;background:#32CD32;border:none;color:#fff;font-weight:600;font-size:16px;padding:12px;border-radius:8px;cursor:pointer;transition:.3s}
-.footer-buttons button:hover{opacity:.9}
-</style>
-
-<div class="footer-buttons">
-  <button onclick="window.location.href='index.html'">Tela inicial</button>
-  <button onclick="window.location.href='login.html'">Sair</button>
-</div>
 </body>
 </html>
