@@ -17,118 +17,89 @@
 body{background:var(--bg);color:var(--dark);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:100px}
 
 /* --- CABEÇALHO (NÃO ALTERADO) --- */
-header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #eee;z-index:10}
+header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #eee;z-index:100}
 .logo-canto-esquerdo{height:38px;width:auto}
 /* --- FIM CABEÇALHO --- */
 
-/* ESTILIZAÇÃO DA ÁREA DE VÍDEOS REFORMULADA */
 .area-videos { width: 100%; max-width: 900px; margin: 0 auto; padding: 20px; }
 
 .topo { text-align: center; margin-bottom: 25px; }
-.icone-topo { width: 100%; max-height: 180px; object-fit: cover; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-h2.titulo-secao { font-size: 24px; font-weight: 800; margin-top: 15px; color: #333; letter-spacing: -0.5px; }
+.icone-topo { width: 100%; max-height: 180px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+h2.titulo-secao { font-size: 22px; font-weight: 800; margin-top: 15px; color: #333; }
 
-/* Barra de Pesquisa */
-.search-container { position: sticky; top: 75px; z-index: 5; background: #fff; padding: 10px 0; margin-bottom: 20px; }
+/* Barra de Pesquisa Sofisticada */
+.search-box { position: sticky; top: 75px; z-index: 90; background: #fff; padding: 10px 0; margin-bottom: 15px; }
 .search-bar {
     width: 100%;
-    padding: 15px 20px;
-    border: 2px solid #eee;
+    padding: 16px 20px;
+    border: 2px solid #f0f0f0;
     border-radius: 12px;
     font-size: 16px;
     outline: none;
     transition: 0.3s;
-    background: #f9f9f9;
+    background: #fdfdfd;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
 }
-.search-bar:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 4px rgba(141, 198, 63, 0.1); }
+.search-bar:focus { border-color: var(--primary); background: #fff; box-shadow: 0 4px 12px rgba(141, 198, 63, 0.15); }
 
-/* Filtros por Categoria */
-.filter-tags { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
-.filter-tags::-webkit-scrollbar { display: none; }
-.tag {
+/* Filtros rápidos */
+.filter-container { display: flex; gap: 8px; overflow-x: auto; padding: 5px 0 20px; scrollbar-width: none; }
+.filter-container::-webkit-scrollbar { display: none; }
+.chip {
     white-space: nowrap;
-    padding: 8px 16px;
-    background: #eee;
-    border-radius: 20px;
+    padding: 8px 18px;
+    background: #f0f0f0;
+    border-radius: 25px;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     transition: 0.2s;
+    border: 1px solid transparent;
 }
-.tag.active { background: var(--primary); color: #fff; }
+.chip.active { background: var(--primary); color: #fff; }
 
-/* Grid de Exercícios */
-.grid-exercicios { display: grid; grid-template-columns: 1fr; gap: 20px; }
-@media(min-width: 600px) { .grid-exercicios { grid-template-columns: 1fr 1fr; } }
+/* Grid de Vídeos */
+.video-grid { display: grid; grid-template-columns: 1fr; gap: 25px; }
+@media(min-width: 700px) { .video-grid { grid-template-columns: 1fr 1fr; } }
 
-.card-video {
+.video-card {
     background: #fff;
     border-radius: 16px;
     border: 1px solid #eee;
     overflow: hidden;
-    transition: 0.3s;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: 0.3s;
 }
-.card-video:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+.video-card:hover { border-color: var(--primary); transform: translateY(-3px); }
 
-.video-placeholder {
-    width: 100%;
-    aspect-ratio: 16/9;
-    background: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    position: relative;
-}
-.video-placeholder img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
-.play-btn {
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    background: var(--primary);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-}
-.play-btn::after {
-    content: '';
-    width: 0; height: 0;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
-    border-left: 15px solid white;
-    margin-left: 5px;
-}
+.iframe-wrapper { width: 100%; aspect-ratio: 16/9; background: #eee; }
+.iframe-wrapper iframe { width: 100%; height: 100%; border: none; }
 
-.card-info { padding: 15px; }
-.card-info h3 { font-size: 16px; margin-bottom: 8px; color: #222; text-transform: uppercase; }
-.card-info p { font-size: 13px; color: #666; line-height: 1.4; }
-.card-tag {
+.video-info { padding: 18px; }
+.video-info h3 { font-size: 17px; margin-bottom: 8px; color: #111; font-weight: 700; }
+.video-info p { font-size: 14px; color: #555; line-height: 1.5; }
+.cat-label {
     display: inline-block;
     font-size: 10px;
-    font-weight: bold;
-    padding: 3px 8px;
-    border-radius: 4px;
-    margin-bottom: 8px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
     color: #fff;
 }
 
-/* Cores das Categorias */
-.tag-inferiores { background: #f54242; }
-.tag-costas { background: #4287f5; }
-.tag-peito { background: #42f56b; color: #222; }
-.tag-bracos { background: #f5a142; }
-.tag-ombros { background: #b142f5; }
+/* Cores por Categoria */
+.cat-inferiores { background: #f54242; }
+.cat-costas { background: #4287f5; }
+.cat-peito { background: #42f56b; color: #000; }
+.cat-bracos { background: #f5a142; }
+.cat-ombros { background: #b142f5; }
 
-iframe { width: 100%; aspect-ratio: 16/9; border: none; }
-
-/* Loading */
-#loadingScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.8);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s ease}
-.spinner{width:40px;height:40px;border:4px solid #ccc;border-top:4px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite}
+/* Loading Speed */
+#loadingScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s}
+.spinner{width:40px;height:40px;border:3px solid #f3f3f3;border-top:3px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 </style>
 </head>
@@ -136,7 +107,7 @@ iframe { width: 100%; aspect-ratio: 16/9; border: none; }
 
 <header>
   <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-canto-esquerdo">
-  <button onclick="window.location.href='index.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;border-radius:5px;">Voltar</button>
+  <button onclick="window.location.href='index.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">Voltar</button>
 </header>
 
 <div class="area-videos">
@@ -145,122 +116,116 @@ iframe { width: 100%; aspect-ratio: 16/9; border: none; }
     <h2 class="titulo-secao">MÁQUINAS DA DOMUS</h2>
   </div>
 
-  <div class="search-container">
-    <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Pesquisar exercício (ex: Leg 45)...">
+  <div class="search-box">
+    <input type="text" id="mainSearch" class="search-bar" placeholder="Pesquisar por nome ou exercício...">
   </div>
 
-  <div class="filter-tags" id="filterTags">
-    <div class="tag active" data-filter="all">Todos</div>
-    <div class="tag" data-filter="inferiores">Inferiores</div>
-    <div class="tag" data-filter="costas">Costas</div>
-    <div class="tag" data-filter="peito">Peito</div>
-    <div class="tag" data-filter="bracos">Braços</div>
-    <div class="tag" data-filter="ombros">Ombros</div>
+  <div class="filter-container" id="filterContainer">
+    <div class="chip active" data-cat="all">Todos</div>
+    <div class="chip" data-cat="inferiores">Inferiores</div>
+    <div class="chip" data-cat="costas">Costas</div>
+    <div class="chip" data-cat="peito">Peito</div>
+    <div class="chip" data-cat="bracos">Braços</div>
+    <div class="chip" data-cat="ombros">Ombros</div>
   </div>
 
-  <div class="grid-exercicios" id="gridExercicios">
+  <div class="video-grid" id="videoGrid">
     </div>
 </div>
 
 <script>
-const exercicios = [
-  { cat: 'inferiores', title: 'ADUÇÃO-ABDUÇÃO', url: 'https://youtu.be/goQVyEGMYMM?si=oEnO5-0nifWG10bK', desc: 'Exercício que fortalece a parte interna e externa das coxas.' },
-  { cat: 'inferiores', title: 'GLÚTEO VERTICAL', url: 'https://youtu.be/TIFqWKFEfs8?si=i2FtqHBCEM99_Ven', desc: 'Focado no fortalecimento dos glúteos e sustentação do quadril.' },
-  { cat: 'inferiores', title: 'LEG 45', url: 'https://youtu.be/R2EIocKYdDY?si=w7bFyaYAKsIBTaqy', desc: 'Trabalha quadríceps e glúteos com carga controlada.' },
-  { cat: 'inferiores', title: 'AGACHAMENTO GUIADO', url: 'https://youtu.be/7NCRBu9j1ZA?si=-sRje7DAH7l-vPHb', desc: 'Versão assistida do agachamento que aumenta a segurança.' },
-  { cat: 'inferiores', title: 'PANTURRILHA SENTADA', url: 'https://youtu.be/1NBoneuGtQo?si=HTyC8ypRpPRz3O2p', desc: 'Foco direto nos músculos da panturrilha.' },
-  { cat: 'costas', title: 'PUXADA / REMADA BAIXA', url: 'https://youtu.be/jfNpC3DQHI0?si=yqGJQ4jGSI6zzseD', desc: 'Essencial para fortalecer a região dorsal e postura.' },
-  { cat: 'costas', title: 'REMADA CAVALINHO', url: 'https://youtu.be/5N8jEo8DItc?si=dppALxqa3Y5GDi_P', desc: 'Desenvolve espessura nas costas e força nos dorsais.' },
-  { cat: 'costas', title: 'CROSS GRANDES', url: 'https://youtu.be/pdMWt71MPlw?si=svqOUhalGQtbrogi', desc: 'Trabalha toda a cadeia posterior com movimentos variados.' },
-  { cat: 'peito', title: 'PECK DECK', url: 'https://youtu.be/lSV3-8mlUnc?si=Gz-jwksUB0XQcGPc', desc: 'Isola os músculos peitorais para definição.' },
-  { cat: 'peito', title: 'SUPINO RETO', url: 'https://youtu.be/YiP-Zhk5YMk?si=C5vre8Q8KLwWrMfb', desc: 'Clássico para peitoral médio, força e massa.' },
-  { cat: 'peito', title: 'SUP INCLINADO MAQ', url: 'https://youtu.be/YiP-Zhk5YMk?si=3tUvWo-u0sRlKWCV', desc: 'Foco no peitoral superior com movimento guiado.' },
-  { cat: 'peito', title: 'BANCO RETO FIXO', url: 'https://youtu.be/NB_1mCfIOLU?si=g-fNzVn-tERc2Q68', desc: 'Base para diversos exercícios de peito e braços.' },
-  { cat: 'bracos', title: 'ROSCA SCOT MÁQUINA', url: 'https://youtu.be/LIcKp31AvQY?si=N2-RFc5LC_TaDA6Q', desc: 'Concentra o esforço no bíceps, aprimorando o isolamento.' },
-  { cat: 'bracos', title: 'ROSCA SCOT LIVRE', url: 'https://youtu.be/Kh4G5N48EO8?si=NPziT5IkHVieYJPK', desc: 'Estimula força e resistência de forma livre.' },
-  { cat: 'ombros', title: 'DESENV OMBRO LIVRE', url: 'https://youtu.be/axVz17o7yFM?si=jrvMRnwFWD35Jfmk', desc: 'Trabalha os deltoides de forma completa.' },
-  { cat: 'ombros', title: 'BANCO SENTADO LIVRE', url: 'https://youtu.be/L-iQfHVeuVg?si=peNm1jkzY4R_gfv7', desc: 'Suporte e postura correta para exercícios de ombro.' }
+const videoData = [
+  { cat: 'inferiores', title: 'ADUÇÃO-ABDUÇÃO', url: 'https://youtu.be/goQVyEGMYMM?si=oEnO5-0nifWG10bK', desc: 'Exercício que fortalece a parte interna e externa das coxas, promovendo equilíbrio muscular.' },
+  { cat: 'inferiores', title: 'GLÚTEO VERTICAL', url: 'https://youtu.be/TIFqWKFEfs8?si=i2FtqHBCEM99_Ven', desc: 'Focado no fortalecimento dos glúteos, proporcionando maior tonificação.' },
+  { cat: 'inferiores', title: 'LEG 45', url: 'https://youtu.be/R2EIocKYdDY?si=w7bFyaYAKsIBTaqy', desc: 'Trabalha quadríceps e glúteos com carga controlada, excelente para ganho de força.' },
+  { cat: 'inferiores', title: 'AGACHAMENTO GUIADO', url: 'https://youtu.be/7NCRBu9j1ZA?si=-sRje7DAH7l-vPHb', desc: 'Versão assistida do agachamento que aumenta a segurança do movimento.' },
+  { cat: 'inferiores', title: 'PANTURRILHA SENTADA', url: 'https://youtu.be/1NBoneuGtQo?si=HTyC8ypRpPRz3O2p', desc: 'Foco direto nos músculos gastrocnêmios e sóleo, definindo a panturrilha.' },
+  { cat: 'costas', title: 'PUXADA / REMADA BAIXA', url: 'https://youtu.be/jfNpC3DQHI0?si=yqGJQ4jGSI6zzseD', desc: 'Exercício essencial para fortalecer a região dorsal e melhorar a postura.' },
+  { cat: 'costas', title: 'REMADA CAVALINHO', url: 'https://youtu.be/5N8jEo8DItc?si=dppALxqa3Y5GDi_P', desc: 'Desenvolve espessura nas costas e força nos dorsais, ideal para treinos avançados.' },
+  { cat: 'costas', title: 'CROSS GRANDES', url: 'https://youtu.be/pdMWt71MPlw?si=svqOUhalGQtbrogi', desc: 'Trabalha toda a cadeia posterior com movimentos funcionais de tração.' },
+  { cat: 'peito', title: 'PECK DECK', url: 'https://youtu.be/lSV3-8mlUnc?si=Gz-jwksUB0XQcGPc', desc: 'Isola os músculos peitorais para promover definição e simetria muscular.' },
+  { cat: 'peito', title: 'SUPINO RETO', url: 'https://youtu.be/YiP-Zhk5YMk?si=C5vre8Q8KLwWrMfb', desc: 'Exercício clássico que trabalha o peitoral médio e auxilia no ganho de força.' },
+  { cat: 'peito', title: 'SUP INCLINADO MAQ', url: 'https://youtu.be/YiP-Zhk5YMk?si=3tUvWo-u0sRlKWCV', desc: 'Foco no peitoral superior, com movimento guiado que melhora a execução.' },
+  { cat: 'peito', title: 'BANCO RETO FIXO', url: 'https://youtu.be/NB_1mCfIOLU?si=g-fNzVn-tERc2Q68', desc: 'Base para diversos exercícios de peito e braços, essencial para treino completo.' },
+  { cat: 'bracos', title: 'ROSCA SCOT MÁQUINA', url: 'https://youtu.be/LIcKp31AvQY?si=N2-RFc5LC_TaDA6Q', desc: 'Concentra o esforço no bíceps, aprimorando o isolamento muscular.' },
+  { cat: 'bracos', title: 'ROSCA SCOT LIVRE', url: 'https://youtu.be/Kh4G5N48EO8?si=NPziT5IkHVieYJPK', desc: 'Versão com barra ou halteres que estimula força de forma natural.' },
+  { cat: 'ombros', title: 'DESENV OMBRO LIVRE', url: 'https://youtu.be/axVz17o7yFM?si=jrvMRnwFWD35Jfmk', desc: 'Trabalha os deltoides de forma completa, promovendo estabilidade.' },
+  { cat: 'ombros', title: 'BANCO SENTADO LIVRE', url: 'https://youtu.be/L-iQfHVeuVg?si=peNm1jkzY4R_gfv7', desc: 'Ideal para exercícios de ombro e braço, oferecendo suporte correto.' }
 ];
 
-const grid = document.getElementById('gridExercicios');
-const searchInput = document.getElementById('searchInput');
-const tags = document.querySelectorAll('.tag');
+const grid = document.getElementById('videoGrid');
+const search = document.getElementById('mainSearch');
+const chips = document.querySelectorAll('.chip');
 
-function render(filter = 'all', search = '') {
+function renderVideos(filterCat = 'all', searchText = '') {
     grid.innerHTML = '';
-    const filtered = exercicios.filter(ex => {
-        const matchesFilter = filter === 'all' || ex.cat === filter;
-        const matchesSearch = ex.title.toLowerCase().includes(search.toLowerCase()) || ex.desc.toLowerCase().includes(search.toLowerCase());
-        return matchesFilter && matchesSearch;
+    const filtered = videoData.filter(v => {
+        const matchesCat = filterCat === 'all' || v.cat === filterCat;
+        const matchesSearch = v.title.toLowerCase().includes(searchText.toLowerCase()) || v.desc.toLowerCase().includes(searchText.toLowerCase());
+        return matchesCat && matchesSearch;
     });
 
-    filtered.forEach(ex => {
+    filtered.forEach(v => {
+        let finalUrl = v.url;
+        if(finalUrl.includes('watch?v=')) finalUrl = finalUrl.replace('watch?v=','embed/').split('&')[0];
+        
         const card = document.createElement('div');
-        card.className = 'card-video';
+        card.className = 'video-card';
         card.innerHTML = `
-            <div class="video-placeholder" onclick="loadVideo(this, '${ex.url}')">
-                <div class="play-btn"></div>
-                <div style="color:white; margin-top:80px; font-weight:bold; font-size:12px">CLIQUE PARA ASSISTIR</div>
+            <div class="iframe-wrapper">
+                <iframe src="${finalUrl}" allowfullscreen></iframe>
             </div>
-            <div class="card-info">
-                <span class="card-tag tag-${ex.cat}">${ex.cat.toUpperCase()}</span>
-                <h3>${ex.title}</h3>
-                <p>${ex.desc}</p>
+            <div class="video-info">
+                <span class="cat-label cat-${v.cat}">${v.cat}</span>
+                <h3>${v.title}</h3>
+                <p>${v.desc}</p>
             </div>
         `;
         grid.appendChild(card);
     });
 }
 
-function loadVideo(el, url) {
-    if(url.includes('watch?v=')){ url = url.replace('watch?v=','embed/').split('&')[0]; }
-    el.innerHTML = `<iframe src="${url}?autoplay=1" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
-}
+search.addEventListener('input', (e) => {
+    const activeCat = document.querySelector('.chip.active').dataset.cat;
+    renderVideos(activeCat, e.target.value);
+});
 
-searchInput.addEventListener('input', (e) => render(document.querySelector('.tag.active').dataset.filter, e.target.value));
-
-tags.forEach(tag => {
-    tag.addEventListener('click', () => {
-        tags.forEach(t => t.classList.remove('active'));
-        tag.classList.add('active');
-        render(tag.dataset.filter, searchInput.value);
+chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+        chips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        renderVideos(chip.dataset.cat, search.value);
     });
 });
 
-// Inicializar
-render();
+// Inicialização
+renderVideos();
+
+// Remover loading rapidamente
+window.addEventListener('load', () => {
+    const loading = document.getElementById('loadingScreen');
+    loading.style.opacity = '0';
+    setTimeout(() => loading.style.display = 'none', 400);
+});
 </script>
 
-<div id="loadingScreen">
-    <div class="spinner"></div>
-</div>
-
-<script>
-    window.addEventListener('load', () => {
-        const loading = document.getElementById('loadingScreen');
-        loading.style.opacity = '0';
-        setTimeout(() => loading.style.display = 'none', 500);
-    });
-</script>
+<div id="loadingScreen"><div class="spinner"></div></div>
 
 <div id="overlay">
     <div id="notificacao">
         <img id="imgNotif" src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000125-91ee591ee7/8550164B-CAAD-49E3-BDCB-211C72300F49.webp?ph=c2a6771173" alt="Notificação">
         <div class="botoes">
-            <button id="acessarBtn">Ver cursos</button>
-            <button id="fecharBtn">Fechar</button>
+            <button id="acessarBtn" style="background:#28a745; color:white; border-radius:8px; padding:10px; font-weight:bold; border:none; flex:1; cursor:pointer;">Ver cursos</button>
+            <button id="fecharBtn" style="background:#dc3545; color:white; border-radius:8px; padding:10px; font-weight:bold; border:none; flex:1; cursor:pointer;">Fechar</button>
         </div>
     </div>
 </div>
 
 <style>
     #overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: .3s; z-index: 9999; }
-    #notificacao { background: #fff; padding: 20px; width: 320px; border-radius: 12px; text-align: center; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
+    #notificacao { background: #fff; padding: 20px; width: 320px; border-radius: 12px; text-align: center; }
     #notificacao img { width: 100%; border-radius: 10px; margin-bottom: 15px; }
     .botoes { display: flex; justify-content: space-between; gap: 10px; }
-    .botoes button { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: bold; }
-    #acessarBtn { background: #28a745; color: #fff; }
-    #fecharBtn { background: #dc3545; color: #fff; }
 </style>
 
 <script>
