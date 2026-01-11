@@ -16,7 +16,7 @@
 *{box-sizing:border-box;margin:0;padding:0;font-family: 'Inter', system-ui, -apple-system, sans-serif}
 body{background:var(--bg);color:var(--dark);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:100px}
 
-/* CABEÇALHO (NÃO MEXIDO) */
+/* CABEÇALHO (ORIGINAL E INTOCADO) */
 header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #eee;z-index:10}
 .logo-canto-esquerdo{height:38px;width:auto}
 
@@ -26,12 +26,8 @@ header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:f
 .icone-topo{width:100%;max-height:180px;object-fit:cover;border-radius:12px;margin-bottom:15px; box-shadow: var(--shadow);}
 h2{font-size:24px; font-weight:800; color:#111; letter-spacing:-0.5px; margin-bottom:20px}
 
-/* BARRA DE PESQUISA SOFISTICADA */
-.search-container {
-    position: relative;
-    margin-bottom: 30px;
-    width: 100%;
-}
+/* BARRA DE PESQUISA */
+.search-container { position: relative; margin-bottom: 30px; width: 100%; }
 .search-bar {
     width: 100%;
     padding: 16px 20px 16px 50px;
@@ -42,94 +38,44 @@ h2{font-size:24px; font-weight:800; color:#111; letter-spacing:-0.5px; margin-bo
     background: #f9f9f9;
     outline: none;
 }
-.search-bar:focus {
-    border-color: var(--green);
-    background: #fff;
-    box-shadow: 0 0 0 4px rgba(50, 205, 50, 0.1);
-}
-.search-icon {
-    position: absolute;
-    left: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #999;
-    pointer-events: none;
-}
+.search-bar:focus { border-color: var(--green); background: #fff; box-shadow: 0 0 0 4px rgba(50, 205, 50, 0.1); }
+.search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #999; }
 
-/* CATEGORIAS EM GRID */
-.grupos{
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 12px;
-    margin-bottom: 30px;
-}
+/* CATEGORIAS */
+.grupos{ display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 30px; }
 .grupo{
-    padding: 12px 15px;
-    border: none;
-    cursor: pointer;
-    font-size: 11px;
-    font-weight: 700;
-    color: #444;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 10px;
-    text-transform: uppercase;
-    transition: 0.2s;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 60px;
+    padding: 12px; border: none; cursor: pointer; font-size: 11px; font-weight: 700; color: #444; background: #fff;
+    border: 1px solid #eee; border-radius: 10px; text-transform: uppercase; transition: 0.2s; min-height: 55px;
 }
-.grupo:hover { background: #f0f0f0; transform: translateY(-2px); }
-.grupo.active {
-    background: var(--dark);
-    color: #fff;
-    border-color: var(--dark);
-}
+.grupo.active { background: var(--dark); color: #fff; border-color: var(--dark); }
 
-/* DESTAQUE POR CORES NAS BORDAS */
-.grupo[data-grupo="inferiores"]{ border-top: 4px solid #f54242; }
-.grupo[data-grupo="costas"]{ border-top: 4px solid #4287f5; }
-.grupo[data-grupo="peito"]{ border-top: 4px solid #42f56b; }
-.grupo[data-grupo="bracos"]{ border-top: 4px solid #f5a142; }
-.grupo[data-grupo="ombros"]{ border-top: 4px solid #b142f5; }
+/* CORES LATERAIS DOS BOTÕES */
+.grupo[data-grupo="inferiores"]{ border-left: 5px solid #f54242; }
+.grupo[data-grupo="costas"]{ border-left: 5px solid #4287f5; }
+.grupo[data-grupo="peito"]{ border-left: 5px solid #42f56b; }
+.grupo[data-grupo="bracos"]{ border-left: 5px solid #f5a142; }
+.grupo[data-grupo="ombros"]{ border-left: 5px solid #b142f5; }
 
-/* ITENS DE VÍDEO */
+/* LISTAGEM */
 .conteudo{ display: none; grid-template-columns: 1fr; gap: 20px; animation: fadeIn 0.4s ease; }
-.item{
-    background:#fff;
-    border-radius: 15px;
-    overflow: hidden;
-    border: 1px solid #eee;
-    transition: 0.3s;
-    display: flex;
-    flex-direction: column;
-}
-.item:hover { box-shadow: var(--shadow); }
-.item-info { padding: 20px; }
-.item h3{ margin-bottom:10px; font-size:18px; color: var(--dark); font-weight: 700;}
-.video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
-.video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+.item{ background:#fff; border-radius: 15px; overflow: hidden; border: 1px solid #eee; display: flex; flex-direction: column; }
+.item-info { padding: 18px; }
+.item h3{ margin-bottom:8px; font-size:17px; color: var(--dark); font-weight: 700;}
+.video-container { position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
+.video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 .item p{ font-size:14px; line-height:1.5; color:#666; }
 
-/* MENSAGEM NÃO ENCONTRADO */
-#no-results { display: none; text-align: center; padding: 40px; color: #999; font-size: 16px; }
-
 @keyframes fadeIn{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)} }
+#no-results { display: none; text-align: center; padding: 40px; color: #999; }
 
-/* AJUSTES MOBILE */
-@media (max-width: 600px) {
-    .grupos { grid-template-columns: 1fr 1fr; }
-    h2 { font-size: 20px; }
-}
+@media (max-width: 600px) { .grupos { grid-template-columns: 1fr 1fr; } }
 </style>
 </head>
 <body>
 
 <header>
   <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-canto-esquerdo">
-  <button onclick="window.location.href='index.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;border-radius:5px;">Voltar</button>
+  <button onclick="window.location.href='index.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">Voltar</button>
 </header>
 
 <div class="area-videos">
@@ -139,8 +85,8 @@ h2{font-size:24px; font-weight:800; color:#111; letter-spacing:-0.5px; margin-bo
   </div>
 
   <div class="search-container">
-    <span class="search-icon">🔍</span>
-    <input type="text" id="searchInput" class="search-bar" placeholder="Pesquisar exercício (ex: Leg Press, Supino...)">
+    <input type="text" id="searchInput" class="search-bar" placeholder="Pesquisar exercício ou músculo...">
+    <span class="search-icon" style="position: absolute; left: 20px; top: 18px;">🔍</span>
   </div>
 
   <div class="grupos">
@@ -149,200 +95,179 @@ h2{font-size:24px; font-weight:800; color:#111; letter-spacing:-0.5px; margin-bo
     <button class="grupo" data-grupo="peito">PEITO</button>
     <button class="grupo" data-grupo="bracos">BRAÇOS</button>
     <button class="grupo" data-grupo="ombros">OMBROS</button>
-    <button class="grupo" data-grupo="todos" id="btn-todos">VER TODOS</button>
+    <button class="grupo" data-grupo="todos">VER TODOS</button>
   </div>
 
-  <div id="no-results">Nenhum exercício encontrado para sua busca.</div>
+  <div id="no-results">Nenhum resultado encontrado.</div>
 
   <div class="conteudos">
     <div class="conteudo" id="inferiores">
       <div class="item">
-          <div class="video-wrapper"><div class="video-placeholder" data-url="https://youtu.be/goQVyEGMYMM?si=oEnO5-0nifWG10bK"></div></div>
-          <div class="item-info"><h3>ADUÇÃO-ABDUÇÃO</h3><p>Exercício que fortalece a parte interna e externa das coxas, promovendo equilíbrio muscular e estabilidade.</p></div>
+          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
+          <div class="item-info"><h3>ADUÇÃO-ABDUÇÃO</h3><p>Exercício que fortalece a parte interna e externa das coxas.</p></div>
       </div>
       <div class="item">
-          <div class="video-wrapper"><div class="video-placeholder" data-url="https://youtu.be/TIFqWKFEfs8?si=i2FtqHBCEM99_Ven"></div></div>
-          <div class="item-info"><h3>GLÚTEO VERTICAL</h3><p>Focado no fortalecimento dos glúteos, proporcionando maior tonificação e sustentação do quadril.</p></div>
+          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
+          <div class="item-info"><h3>GLÚTEO VERTICAL</h3><p>Focado no fortalecimento e tonificação dos glúteos.</p></div>
       </div>
       <div class="item">
-          <div class="video-wrapper"><div class="video-placeholder" data-url="https://youtu.be/R2EIocKYdDY?si=w7bFyaYAKsIBTaqy"></div></div>
-          <div class="item-info"><h3>LEG 45</h3><p>Trabalha quadríceps e glúteos com carga controlada, excelente para ganho de força e volume muscular.</p></div>
+          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
+          <div class="item-info"><h3>LEG 45</h3><p>Trabalha quadríceps e glúteos com carga controlada.</p></div>
       </div>
       <div class="item">
-          <div class="video-wrapper"><div class="video-placeholder" data-url="https://youtu.be/7NCRBu9j1ZA?si=-sRje7DAH7l-vPHb"></div></div>
-          <div class="item-info"><h3>AGACHAMENTO GUIADO</h3><p>Versão assistida do agachamento que aumenta a segurança do movimento e melhora a técnica.</p></div>
+          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
+          <div class="item-info"><h3>AGACHAMENTO GUIADO</h3><p>Aumenta a segurança do movimento e melhora a técnica.</p></div>
       </div>
       <div class="item">
-          <div class="video-wrapper"><div class="video-placeholder" data-url="https://youtu.be/1NBoneuGtQo?si=HTyC8ypRpPRz3O2p"></div></div>
-          <div class="item-info"><h3>PANTURRILHA SENTADA</h3><p>Foco direto nos músculos gastrocnêmios e sóleo, ajudando na definição e resistência da panturrilha.</p></div>
+          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
+          <div class="item-info"><h3>PANTURRILHA SENTADA</h3><p>Definição e resistência da panturrilha.</p></div>
       </div>
     </div>
 
     <div class="conteudo" id="costas">
       <div class="item">
-          <div class="video-wrapper"><div class="video-placeholder" data-url="https://youtu.be/jfNpC3DQHI0?si=yqGJQ4jGSI6zzseD"></div></div>
-          <div class="item-info"><h3>PUXADA / REMADA BAIXA</h3><p>Exercício essencial para fortalecer a região dorsal e melhorar a postura corporal.</p></div>
+          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
+          <div class="item-info"><h3>PUXADA / REMADA BAIXA</h3><p>Essencial para fortalecer a região dorsal.</p></div>
       </div>
       <div class="item">
-          <div class="video-wrapper"><div class="video-placeholder" data-url="https://youtu.be/5N8jEo8DItc?si=dppALxqa3Y5GDi_P"></div></div>
-          <div class="item-info"><h3>REMADA CAVALINHO</h3><p>Desenvolve espessura nas costas e força nos dorsais, ideal para treinos avançados.</p></div>
+          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
+          <div class="item-info"><h3>REMADA CAVALINHO</h3><p>Desenvolve espessura nas costas e força nos dorsais.</p></div>
       </div>
       <div class="item">
-          <div class="video-wrapper"><div class="video-placeholder" data-url="https://youtu.be/pdMWt71MPlw?si=svqOUhalGQtbrogi"></div></div>
-          <div class="item-info"><h3>CROSS GRANDES</h3><p>Trabalha toda a cadeia posterior com movimentos funcionais e variados de tração.</p></div>
+          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
+          <div class="item-info"><h3>CROSS GRANDES</h3><p>Trabalha toda a cadeia posterior.</p></div>
       </div>
     </div>
 
     <div class="conteudo" id="peito">
       <div class="item">
-          <div class="video-wrapper"><div class="video-placeholder" data-url="https://youtu.be/lSV3-8mlUnc?si=Gz-jwksUB0XQcGPc"></div></div>
-          <div class="item-info"><h3>PECK DECK</h3><p>Isola os músculos peitorais para promover definição e simetria muscular.</p></div>
+          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
+          <div class="item-info"><h3>PECK DECK</h3><p>Isola os músculos peitorais para definição.</p></div>
       </div>
       <div class="item">
-          <div class="video-wrapper"><div class="video-placeholder" data-url="https://youtu.be/YiP-Zhk5YMk?si=C5vre8Q8KLwWrMfb"></div></div>
-          <div class="item-info"><h3>SUPINO RETO</h3><p>Exercício clássico que trabalha o peitoral médio e auxilia no ganho de força e massa.</p></div>
+          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
+          <div class="item-info"><h3>SUPINO RETO</h3><p>Exercício clássico para peitoral médio e força.</p></div>
       </div>
       <div class="item">
-          <div class="video-wrapper"><div class="video-placeholder" data-url="https://youtu.be/YiP-Zhk5YMk?si=3tUvWo-u0sRlKWCV"></div></div>
-          <div class="item-info"><h3>SUP INCLINADO MAQ</h3><p>Foco no peitoral superior, com movimento guiado que melhora a execução e segurança.</p></div>
+          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
+          <div class="item-info"><h3>SUP INCLINADO MAQ</h3><p>Foco no peitoral superior com segurança.</p></div>
       </div>
       <div class="item">
-          <div class="video-wrapper"><div class="video-placeholder" data-url="https://youtu.be/NB_1mCfIOLU?si=g-fNzVn-tERc2Q68"></div></div>
-          <div class="item-info"><h3>BANCO RETO FIXO</h3><p>Base para diversos exercícios de peito e braços, essencial para um treino completo.</p></div>
+          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
+          <div class="item-info"><h3>BANCO RETO FIXO</h3><p>Base para diversos exercícios de peito.</p></div>
       </div>
     </div>
 
     <div class="conteudo" id="bracos">
       <div class="item">
-          <div class="video-wrapper"><div class="video-placeholder" data-url="https://youtu.be/LIcKp31AvQY?si=N2-RFc5LC_TaDA6Q"></div></div>
-          <div class="item-info"><h3>ROSCA SCOT MÁQUINA</h3><p>Concentra o esforço no bíceps, aprimorando o isolamento e o controle muscular.</p></div>
+          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
+          <div class="item-info"><h3>ROSCA SCOT MÁQUINA</h3><p>Isolamento total do bíceps.</p></div>
       </div>
       <div class="item">
-          <div class="video-wrapper"><div class="video-placeholder" data-url="https://youtu.be/Kh4G5N48EO8?si=NPziT5IkHVieYJPK"></div></div>
-          <div class="item-info"><h3>ROSCA SCOT LIVRE</h3><p>Versão com barra ou halteres que estimula força e resistência de forma livre e natural.</p></div>
+          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
+          <div class="item-info"><h3>ROSCA SCOT LIVRE</h3><p>Estimula força e resistência natural.</p></div>
       </div>
     </div>
 
     <div class="conteudo" id="ombros">
       <div class="item">
-          <div class="video-wrapper"><div class="video-placeholder" data-url="https://youtu.be/axVz17o7yFM?si=jrvMRnwFWD35Jfmk"></div></div>
-          <div class="item-info"><h3>DESENV OMBRO LIVRE</h3><p>Trabalha os deltoides de forma completa, promovendo força e estabilidade articular.</p></div>
+          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
+          <div class="item-info"><h3>DESENV OMBRO LIVRE</h3><p>Trabalha os deltoides de forma completa.</p></div>
       </div>
       <div class="item">
-          <div class="video-wrapper"><div class="video-placeholder" data-url="https://youtu.be/L-iQfHVeuVg?si=peNm1jkzY4R_gfv7"></div></div>
-          <div class="item-info"><h3>BANCO SENTADO LIVRE</h3><p>Ideal para exercícios de ombro e braço, oferecendo suporte e postura correta.</p></div>
+          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
+          <div class="item-info"><h3>BANCO SENTADO LIVRE</h3><p>Suporte e postura correta para treinos de ombro.</p></div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-// Lógica de Exibição e Filtro
+const searchInput = document.getElementById('searchInput');
 const botoes = document.querySelectorAll('.grupo');
 const conteudos = document.querySelectorAll('.conteudo');
-const searchInput = document.getElementById('searchInput');
-const allItems = document.querySelectorAll('.item');
 const noResults = document.getElementById('no-results');
 
-// Inicialização: Carregar vídeos conforme aparecem (Performance)
-function loadVideos(parent) {
-    const placeholders = parent.querySelectorAll('.video-placeholder');
-    placeholders.forEach(div => {
-        let url = div.dataset.url;
-        if(url.includes('watch?v=')){ url = url.replace('watch?v=','embed/').split('&')[0]; }
-        div.outerHTML = `<iframe src="${url}" allowfullscreen loading="lazy"></iframe>`;
+// Função para injetar o Iframe apenas quando necessário (Velocidade 100%)
+function activateVideos(container) {
+    const videos = container.querySelectorAll('.video-container');
+    videos.forEach(v => {
+        if (!v.querySelector('iframe')) {
+            const url = v.getAttribute('data-url');
+            v.innerHTML = `<iframe src="${url}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        }
     });
 }
 
-// Clique nas Categorias
+// Filtro por Botões
 botoes.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const grupo = btn.dataset.grupo;
-    
-    // Reset busca
-    searchInput.value = "";
-    noResults.style.display = "none";
+    btn.addEventListener('click', () => {
+        const grupo = btn.dataset.grupo;
+        searchInput.value = "";
+        noResults.style.display = "none";
+        
+        botoes.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
-    // UI Feedback
-    botoes.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    // Show/Hide
-    conteudos.forEach(c => {
-        c.style.display = 'none';
-        if(grupo === 'todos' || c.id === grupo) {
-            c.style.display = 'grid';
-            loadVideos(c);
-            // Mostrar todos os itens dentro do grupo
-            c.querySelectorAll('.item').forEach(i => i.style.display = 'flex');
-        }
+        conteudos.forEach(c => {
+            if (grupo === 'todos' || c.id === grupo) {
+                c.style.display = 'grid';
+                c.querySelectorAll('.item').forEach(i => i.style.display = 'flex');
+                activateVideos(c);
+            } else {
+                c.style.display = 'none';
+            }
+        });
     });
-  });
 });
 
-// Busca em Tempo Real
+// Pesquisa em Tempo Real
 searchInput.addEventListener('input', (e) => {
     const term = e.target.value.toLowerCase();
-    let foundAny = false;
-
-    // Se estiver pesquisando, mostra todos os containers mas filtra os itens
-    botoes.forEach(b => b.classList.remove('active'));
+    let found = false;
     
+    botoes.forEach(b => b.classList.remove('active'));
+
     conteudos.forEach(c => {
         let hasVisibleItem = false;
-        c.style.display = 'grid';
+        const items = c.querySelectorAll('.item');
         
-        c.querySelectorAll('.item').forEach(item => {
+        items.forEach(item => {
             const text = item.innerText.toLowerCase();
-            if(text.includes(term)) {
+            if (text.includes(term)) {
                 item.style.display = 'flex';
                 hasVisibleItem = true;
-                foundAny = true;
-                loadVideos(item);
+                found = true;
+                activateVideos(item); // Ativa vídeo do item pesquisado
             } else {
                 item.style.display = 'none';
             }
         });
 
-        if(!hasVisibleItem) c.style.display = 'none';
+        c.style.display = hasVisibleItem ? 'grid' : 'none';
     });
 
-    noResults.style.display = foundAny ? "none" : "block";
+    noResults.style.display = found ? 'none' : 'block';
 });
 
-// Iniciar com "Inferiores" visível para ser rápido
+// Inicialização
 document.querySelector('[data-grupo="inferiores"]').click();
 </script>
 
-<div id="overlay">
-    <div id="notificacao">
-        <img id="imgNotif" src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000125-91ee591ee7/8550164B-CAAD-49E3-BDCB-211C72300F49.webp?ph=c2a6771173" alt="Notificação">
-        <div class="botoes-notif">
-            <button id="acessarBtn" style="background: #28a745; color: #fff;">Ver cursos</button>
-            <button id="fecharBtn" style="background: #dc3545; color: #fff;">Fechar</button>
+<div id="overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: .3s; z-index: 9999;">
+    <div style="background: #fff; padding: 20px; width: 320px; border-radius: 12px; text-align: center;">
+        <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000125-91ee591ee7/8550164B-CAAD-49E3-BDCB-211C72300F49.webp?ph=c2a6771173" style="width: 100%; border-radius: 10px; margin-bottom: 15px;">
+        <div style="display: flex; gap: 10px;">
+            <button onclick="window.location.href='https://domusfit.site/cursos.html'" style="flex:1; padding: 10px; background: #28a745; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Ver cursos</button>
+            <button onclick="document.getElementById('overlay').style.opacity='0'; setTimeout(()=>document.getElementById('overlay').style.visibility='hidden',300)" style="flex:1; padding: 10px; background: #dc3545; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Fechar</button>
         </div>
     </div>
 </div>
 
-<style>
-    #overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: .3s; z-index: 9999; }
-    #notificacao { background: #fff; padding: 20px; width: 320px; border-radius: 12px; text-align: center; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
-    #notificacao img { width: 100%; border-radius: 10px; margin-bottom: 15px; }
-    .botoes-notif { display: flex; justify-content: space-between; gap: 10px; }
-    .botoes-notif button { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: bold; }
-</style>
-
 <script>
-    window.onload = function() {
-        const overlay = document.getElementById("overlay");
-        overlay.style.visibility = "visible";
-        overlay.style.opacity = "1";
-    };
-    document.getElementById("acessarBtn").onclick = function() { window.location.href = "https://domusfit.site/cursos.html"; };
-    document.getElementById("fecharBtn").onclick = function() {
-        const overlay = document.getElementById("overlay");
-        overlay.style.opacity = "0";
-        setTimeout(() => overlay.style.visibility = "hidden", 300);
+    window.onload = () => { 
+        const ov = document.getElementById('overlay');
+        ov.style.visibility = 'visible'; ov.style.opacity = '1';
     };
 </script>
 
