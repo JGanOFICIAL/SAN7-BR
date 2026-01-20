@@ -300,3 +300,60 @@ loginBtn.addEventListener('click', async () => {
 </html>
 
 <script src="san7doc.acesso-seguro.js" defer></script>
+
+
+
+<div id="uw-app"></div><script>
+(function(w,d){
+    const c = JSON.parse(decodeURIComponent(escape(atob("eyJpbWciOiJodHRwczovL2VuY3J5cHRlZC10Ym4wLmdzdGF0aWMuY29tL2ltYWdlcz9xPXRibjpBTmQ5R2NSME16MGFyd0h5RS0yM2lBZ2lQRHM5RjlRR2hZUEZ0a0hiLUNZSnpmZk9OZyZzPTEwIiwid2EiOiI1NSIsInRpdGxlIjoiRG9tdXNGaXQgQ2hhdCIsImRlc2MiOiJQZXJndW50YXMgZnJlcXVlbnRlcyBEb211c0ZpdCIsImhDb2wiOiIjMDBhNDI2IiwiYUNvbCI6IiMxYjkzZTMiLCJmQ29sIjoiI2ZmZmZmZiIsInBvcyI6InJpZ2h0IiwiZmFxIjpbeyJ0IjoiT3F1ZSDDqSBOQT8iLCJhIjoiTyBOw7ptZXJvIGRvIEFsdW5vIChOQSkgw6kgdW0gaWRlbnRpZmljYWRvciBleGNsdXNpdm8gY3JpYWRvIHBhcmEgc2ltcGxpZmljYXIgZSBwcm90ZWdlciBvIGNhZGFzdHJvIGRvcyBhbHVub3MgZGEgRG9tdXNGaXQsIGFsw6ltIGRlIHNlciB1dGlsaXphZG8gZW0gb3V0cmFzIHBsYXRhZm9ybWFzIGludGVncmFkYXMgZGVzZW52b2x2aWRhcyBwZWxhIFNhbjdEb2MuIERpZmVyZW50ZSBkZSBzaXN0ZW1hcyB0cmFkaWNpb25haXMgcXVlIGV4aWdlbSBkYWRvcyBzZW5zw612ZWlzLCBjb21vIENQRiwgUkcgb3UgbsO6bWVybyBkZSB0ZWxlZm9uZSwgbyBOQSBmb2kgcGVuc2FkbyBwYXJhIGdhcmFudGlyIHVtYSBleHBlcmnDqm5jaWEgbWFpcyBzZWd1cmEgZSBhbGluaGFkYSBjb20gYXMgcHJpbmNpcGFpcyBub3JtYXMgZGUgcHJvdGXDp8OjbyBkZSBkYWRvcyBlIGJvYXMgcHLDoXRpY2FzIGRpZ2l0YWlzLiIsImkiOiJodHRwczovL2VuY3J5cHRlZC10Ym4wLmdzdGF0aWMuY29tL2ltYWdlcz9xPXRibjpBTmQ5R2NTOEFZRFlPWmFHVk8zR3JDc3RmMUowY3UxRVBYRzNpZXA3c1gyRnFneGJ4ZyZzPTEwIiwibCI6Imh0dHBzOi8vZG9tdXNmaXQuc2l0ZS9uYS5odG1sIn0seyJ0IjoiUXVlbSBtb250YSBtZXVzIHRyZWlub3M/IiwiYSI6Ik8gc2V1IE5BIHPDsyBwb2RlIHNlciBjb21wYXJ0aWxoYWRvIGNvbSBhIGVxdWlwZSB0w6ljbmljYSBvdSBwZXJzb25hbCB0cmFpbmVyIHBhcmEgYSBtb250YWdlbSBkb3Mgc2V1cyB0cmVpbm9zLiIsImkiOiJodHRwczovL2VuY3J5cHRlZC10Ym4wLmdzdGF0aWMuY29tL2ltYWdlcz9xPXRibjpBTmQ5R2NUOU9WektlaXlhX1Q3QWxWTzczWnVBX0ZiX0NlMzRNbDVjb3FiY01aSHZ4USZzPTEwIiwibCI6IiJ9LHsidCI6Ik1ldSBhY2Vzc28gZXhwaXJvdSwgb3F1ZSBkZXZvIGZhemVyPyIsImEiOiJTZXUgYWNlc3NvIGV4cGlyb3UgcG9yIHTDqXJtaW5vIGRvIHBsYW5vOyBwcm9jdXJlIGEgcmVjZXDDp8OjbyBkYSBhY2FkZW1pYSBvdSBlbnRyZSBlbSBjb250YXRvIHBlbG8gV2hhdHNBcHAgcGFyYSByZW5vdmFyIGUgbGliZXJhciBub3ZhbWVudGUgbyBhY2Vzc28uIiwiaSI6Imh0dHBzOi8vZW5jcnlwdGVkLXRibjAuZ3N0YXRpYy5jb20vaW1hZ2VzP3E9dGJuOkFOZDlHY1NaYUY0d3pSU3h1dWhaYmFBdjZUMGxIT1Q4UEFvZEZxUHRZYVY0TmcxTXhnJnM9MTAiLCJsIjoiIn0seyJ0IjoiIiwiYSI6IiIsImkiOiIiLCJsIjoiIn1dfQ=="))));
+    const s = d.createElement('style');
+    s.innerHTML = `
+        #uw-widget { position: absolute; bottom: 20px; ${c.pos}: 20px; z-index: 999999; font-family: 'Poppins', sans-serif; }
+        #uw-ball { width: 65px; height: 65px; border-radius: 50%; background: url('${c.img}') center/cover; cursor: pointer; box-shadow: 0 8px 25px rgba(0,0,0,0.2); transition: 0.4s; position: relative; }
+        #uw-ball:hover { transform: scale(1.1) rotate(5deg); }
+        #uw-card { width: 330px; height: 500px; background: #fff; position: absolute; bottom: 80px; ${c.pos}: 0; border-radius: 20px; box-shadow: 0 15px 50px rgba(0,0,0,0.3); display: none; flex-direction: column; overflow: hidden; animation: uwPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes uwPop { from { opacity:0; transform: translateY(50px) scale(0.8); } to { opacity:1; transform: translateY(0) scale(1); } }
+        .uw-h { background: ${c.hCol}; color: ${c.fCol}; padding: 20px; position: relative; }
+        .uw-close { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 20px; opacity: 0.7; }
+        .uw-b { flex: 1; overflow-y: auto; padding: 15px; background: #f9f9f9; }
+        .uw-item { background: #fff; padding: 12px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; border: 1px solid #eee; transition: 0.2s; font-size: 13px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .uw-item:hover { border-color: ${c.aCol}; transform: translateY(-2px); }
+        .uw-ans { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; color: #555; line-height: 1.5; }
+        .uw-img { width: 100%; border-radius: 8px; margin: 10px 0; }
+        .uw-btn-link { display: inline-block; background: ${c.aCol}; color: #fff; padding: 8px 15px; border-radius: 8px; text-decoration: none; font-size: 11px; margin-top: 5px; }
+        .uw-footer { padding: 10px; background: #fff; border-top: 1px solid #eee; display: flex; gap: 5px; }
+        .uw-input { flex: 1; border: 1px solid #ddd; border-radius: 20px; padding: 8px 15px; outline: none; font-size: 13px; }
+        .uw-send { background: ${c.aCol}; color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; }
+    `;
+    d.head.appendChild(s);
+    const root = d.getElementById('uw-app');
+    root.innerHTML = `
+        <div id="uw-widget">
+            <div id="uw-card">
+                <div class="uw-h">
+                    <span class="uw-close" onclick="document.getElementById('uw-card').style.display='none'">×</span>
+                    <div style="font-weight:600; font-size:16px;">${c.title}</div>
+                    <div style="font-size:11px; opacity:0.8;">${c.desc}</div>
+                </div>
+                <div class="uw-b" id="uw-list">
+                    ${c.faq.map((f, i) => `
+                        <div class="uw-item" onclick="var el=this.querySelector('.uw-ans'); el.style.display=el.style.display==='block'?'none':'block'">
+                            <strong>${f.t}</strong>
+                            <div class="uw-ans">
+                                ${f.a}
+                                ${f.i ? '<img src="'+f.i+'" class="uw-img">' : ''}
+                                ${f.l ? '<br><a href="'+f.l+'" target="_blank" class="uw-btn-link">Ver mais</a>' : ''}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="uw-footer">
+                    <input type="text" class="uw-input" id="uw-msg" placeholder="Pergunte algo...">
+                    <button class="uw-send" onclick="const m=document.getElementById('uw-msg').value; if(m) window.open('https://api.whatsapp.com/send?phone=${c.wa}&text='+encodeURIComponent(m))">></button>
+                </div>
+            </div>
+            <div id="uw-ball" onclick="const card=document.getElementById('uw-card'); card.style.display=card.style.display==='flex'?'none':'flex'"></div>
+        </div>
+    `;
+})(window, document);
+</script>
