@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | San7Doc PDV</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f4f4f4; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .login-card { background: white; padding: 40px; border: 5px solid #000; box-shadow: 15px 15px 0 rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { text-transform: uppercase; font-weight: 900; margin-bottom: 20px; border-bottom: 3px solid #000; padding-bottom: 10px; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #000; font-weight: bold; outline: none; }
+        .btn { width: 100%; padding: 15px; background: #000; color: #fff; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .btn:hover { background: #333; }
+        .toggle-link { display: block; text-align: center; margin-top: 15px; cursor: pointer; text-decoration: underline; font-size: 14px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div id="loginSection">
+        <h2>Acessar PDV</h2>
+        <input type="email" id="loginEmail" placeholder="E-mail da Loja">
+        <input type="password" id="loginPass" placeholder="Senha">
+        <button class="btn" onclick="handleLogin()">Entrar no Sistema</button>
+        <span class="toggle-link" onclick="toggleView()"></span>
+    </div>
+
+    <div id="registerSection" class="hidden">
+        <h2>Cadastrar Loja</h2>
+        <input type="text" id="regNome" placeholder="Nome da Loja (Ex: Boutique San7)">
+        <input type="text" id="regCnpj" placeholder="CNPJ">
+        <input type="text" id="regWelcome" placeholder="Mensagem de Boas-vindas">
+        <input type="email" id="regEmail" placeholder="E-mail de Acesso">
+        <input type="password" id="regPass" placeholder="Senha">
+        <button class="btn" onclick="handleRegister()">Criar Conta e Loja</button>
+        <span class="toggle-link" onclick="toggleView()">Já tenho cadastro</span>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = { apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU", databaseURL: "https://prefeitura-de-joao-camara-default-rtdb.firebaseio.com" };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    function toggleView() {
+        document.getElementById('loginSection').classList.toggle('hidden');
+        document.getElementById('registerSection').classList.toggle('hidden');
+    }
+
+    async function handleRegister() {
+        const email = document.getElementById('regEmail').value;
+        const pass = document.getElementById('regPass').value;
+        const nome = document.getElementById('regNome').value;
+        const cnpj = document.getElementById('regCnpj').value;
+        const welcome = document.getElementById('regWelcome').value;
+
+        if(!email || !pass || !nome) return alert("Preencha os campos obrigatórios!");
+
+        try {
+            const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
+            const uid = userCredential.user.uid;
+            
+            // Salva os dados da loja vinculados ao UID do usuário
+            await db.ref(`config_lojas/${uid}`).set({
+                id: uid,
+                nome: nome,
+                cnpj: cnpj,
+                mensagem: welcome,
+                email: email
+            });
+
+            alert("Loja cadastrada com sucesso!");
+            location.reload();
+        } catch (error) {
+            alert("Erro ao cadastrar: " + error.message);
+        }
+    }
+
+    async function handleLogin() {
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPass').value;
+
+        try {
+            const userCredential = await auth.signInWithEmailAndPassword(email, pass);
+            const uid = userCredential.user.uid;
+
+            // Busca os dados da loja para salvar na sessão
+            db.ref(`config_lojas/${uid}`).once('value', snap => {
+                const dadosLoja = snap.val();
+                localStorage.setItem('lojaAtiva', JSON.stringify(dadosLoja));
+                window.location.href = 'index4.html';
+            });
+        } catch (error) {
+            alert("Erro no login: " + error.message);
+        }
+    }
+</script>
+</body>
+</html>
