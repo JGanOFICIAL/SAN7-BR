@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDV Premium | San7Doc</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        :root { --black: #000; --white: #fff; --gray: #f4f4f4; --rosa: #ff007f; --verde: #00a859; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; border-radius:0 !important; }
+        body { background: var(--white); color: var(--black); overflow-x: hidden; }
+
+        header { height:100px; background:var(--black); color:var(--white); display:flex; align-items:center; justify-content:space-between; padding:0 40px; position: sticky; top:0; z-index:100; }
+        .brand-name { font-size: 32px; font-weight: 900; letter-spacing: -1px; }
+        
+        .toolbar { padding:20px 40px; background:var(--gray); display:flex; gap:15px; border-bottom:3px solid var(--black); align-items: center; }
+        .btn { padding:12px 25px; border:2px solid var(--black); font-weight:bold; cursor:pointer; text-transform:uppercase; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-black { background:var(--black); color:var(--white); }
+        .btn-white { background:var(--white); color:var(--black); }
+        .btn:hover { background: #333; color: white; transform: translate(-2px, -2px); box-shadow: 4px 4px 0 #ccc; }
+
+        .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:none; align-items:center; justify-content:center; z-index:9999; backdrop-filter: blur(5px); }
+        .modal { background:var(--white); width:95%; max-width:850px; padding:40px; border:5px solid var(--black); position:relative; max-height: 90vh; overflow-y:auto; box-shadow: 20px 20px 0 rgba(0,0,0,0.5); }
+        .close-x { position:absolute; top:20px; right:20px; cursor:pointer; transition: 0.2s; z-index: 10; }
+        .close-x:hover { transform: rotate(90deg); }
+
+        .content { padding:30px 40px; margin-bottom: 100px; }
+        table { width:100%; border-collapse:collapse; }
+        th { background:var(--black); color:var(--white); padding:15px; text-align:left; font-size:11px; text-transform: uppercase; }
+        td { padding:15px; border-bottom:1px solid #ddd; font-size: 14px; }
+
+        .cart-float { position:fixed; bottom:30px; right:40px; width:80px; height:80px; background:var(--black); color:var(--white); display:flex; align-items:center; justify-content:center; cursor:pointer; border:4px solid var(--white); box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 500; }
+        
+        /* IMPRESSÃO GERAL (ADAPTÁVEL) */
+        #printArea { display:none; }
+        @media print { 
+            body * { visibility: hidden; } 
+            #printArea, #printArea * { visibility: visible; } 
+            #printArea { position: absolute; left:0; top:0; width: 100%; }
+            /* Se for etiqueta, o JS ajusta a largura no momento da impressão */
+        }
+
+        .label-page { page-break-after: always; width: 40mm; height: 25mm; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+
+        .cupom-container { width: 100%; max-width: 80mm; padding: 5px; font-family: 'Courier New', Courier, monospace; font-size: 12px; color: #000; margin: 0 auto; }
+        .cupom-header { text-align: center; text-transform: uppercase; margin-bottom: 10px; }
+        .cupom-divider { border-top: 1px dashed #000; margin: 5px 0; }
+        .cupom-item { display: flex; justify-content: space-between; margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="brand-name" id="displayNomeLoja">San7Doc</div>
+    <div style="display:flex; gap:30px; align-items:center;">
+        <button class="btn btn-white" onclick="openModal('modalEmployees')"><i data-lucide="users"></i> Equipe</button>
+        <div style="text-align:right; display: flex; align-items: center; gap: 15px;">
+            <div>
+                <small style="opacity:0.7">SALDO DO DIA</small>
+                <h2 id="saldoTotal" style="font-size:28px">R$ 0,00</h2>
+            </div>
+            <i data-lucide="pencil" style="cursor:pointer; background: #fff; color:#000; padding: 5px;" onclick="openOpenSales()"></i>
+        </div>
+        <button class="btn btn-black" onclick="logout()" style="border-color: #fff;"><i data-lucide="log-out"></i></button>
+    </div>
+</header>
+
+<div class="toolbar">
+    <button class="btn btn-black" onclick="prepAdd()"><i data-lucide="plus"></i> Novo Produto</button>
+    <button class="btn btn-white" onclick="openHistory()"><i data-lucide="history"></i> Histórico</button>
+    <button class="btn btn-white" onclick="openModal('modalLabels')"><i data-lucide="printer"></i> Etiquetas</button>
+    <input type="text" id="search" placeholder="Pesquisar produto ou código..." style="flex:1; padding:12px; border:2px solid #000;" oninput="drawTable()">
+    <button class="btn btn-black" style="background:#ff3b30; border-color:#ff3b30;" onclick="finalizeDay()"><i data-lucide="lock"></i> Finalizar Dia</button>
+</div>
+
+<div class="content">
+    <table>
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Produto</th>
+                <th>Marca/Tam</th>
+                <th>À Vista</th>
+                <th>Cartão</th>
+                <th>Estoque</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="inventoryBody"></tbody>
+    </table>
+</div>
+
+<div class="overlay" id="modalOpenSales"><div class="modal"><i data-lucide="x" class="close-x" onclick="closeModal('modalOpenSales')"></i><h2>Vendas Realizadas (Hoje)</h2><br><div id="openSalesList"></div></div></div>
+<div class="overlay" id="modalHistory"><div class="modal"><i data-lucide="x" class="close-x" onclick="closeModal('modalHistory')"></i><h2>Histórico de Fechamentos</h2><br><input type="text" id="histFilter" placeholder="Pesquisar data..." style="width:100%; padding:10px; border:2px solid #000;" oninput="renderHistory()"><br><br><div id="historyContainer"></div></div></div>
+<div class="overlay" id="modalDayDetail"><div class="modal"><i data-lucide="x" class="close-x" onclick="closeModal('modalDayDetail')"></i><div id="reportContent"><h2 id="dayDetailTitle">Relatório</h2><hr style="margin: 15px 0;"><div id="dayDetailList"></div><div id="daySummary" style="margin-top:20px; padding:20px; background:#000; color:#fff;"></div></div><br><button class="btn btn-black" onclick="printReport()">Imprimir</button></div></div>
+
+<div class="overlay" id="modalCart">
+    <div class="modal">
+        <i data-lucide="x" class="close-x" onclick="closeModal('modalCart')"></i>
+        <h2>Sua Sacola</h2><br>
+        <div id="cartItems" style="border: 2px solid #000; padding: 15px; max-height: 300px; overflow-y: auto;"></div>
+        <br>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <select id="selEmp" style="padding:10px; border:2px solid #000;"></select>
+            <select id="selPay" style="padding:10px; border:2px solid #000;" onchange="renderCart()">
+                <option value="vista">Dinheiro / Pix</option>
+                <option value="cartao">Cartão</option>
+            </select>
+        </div>
+        <h1 id="cartTotal" style="margin-top: 25px; text-align: right; border-top: 3px solid #000; padding-top: 10px;">Total: R$ 0,00</h1>
+        <br>
+        <button class="btn btn-black" style="width: 100%; height: 60px;" onclick="checkout()">Finalizar e Imprimir</button>
+    </div>
+</div>
+
+<div class="overlay" id="modalProduct">
+    <div class="modal">
+        <i data-lucide="x" class="close-x" onclick="closeModal('modalProduct')"></i>
+        <h2 id="modalTitle">Produto</h2><br>
+        <input type="hidden" id="editKey">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <input type="text" id="pNome" placeholder="Nome do Produto" style="padding:10px; border:2px solid #000;">
+            <input type="text" id="pMarca" placeholder="Marca" style="padding:10px; border:2px solid #000;">
+            <input type="text" id="pTam" placeholder="Tamanho" style="padding:10px; border:2px solid #000;">
+            <input type="number" id="pStock" placeholder="Estoque" style="padding:10px; border:2px solid #000;">
+            <input type="number" id="pVista" placeholder="Preço À Vista" style="padding:10px; border:2px solid #000;">
+            <input type="number" id="pCartao" placeholder="Preço Cartão" style="padding:10px; border:2px solid #000;">
+        </div><br>
+        <button class="btn btn-black" style="width: 100%" onclick="saveProduct()">Salvar no Sistema</button>
+    </div>
+</div>
+
+<div class="overlay" id="modalLabels">
+    <div class="modal">
+        <i data-lucide="x" class="close-x" onclick="closeModal('modalLabels')"></i>
+        <h2>Imprimir Etiquetas (40x25mm)</h2><br>
+        <div id="labelList" style="max-height: 400px; overflow-y: auto; border: 2px solid #000; padding: 10px;"></div><br>
+        <button class="btn btn-black" style="width: 100%" onclick="generateLabels()">Imprimir na Elgin</button>
+    </div>
+</div>
+
+<div class="overlay" id="modalEmployees"><div class="modal"><i data-lucide="x" class="close-x" onclick="closeModal('modalEmployees')"></i><h2>Vendedores</h2><br><div style="display:flex; gap:10px;"><input type="text" id="newEmp" placeholder="Nome" style="flex:1; padding:10px; border:2px solid #000;"><button class="btn btn-black" onclick="addEmp()">Add</button></div><br><div id="empList"></div></div></div>
+
+<div class="cart-float" onclick="openModal('modalCart')">
+    <i data-lucide="shopping-bag" size="32"></i>
+    <span id="cartCount" style="position:absolute; top:-5px; right:-5px; background:red; color:white; padding:4px 10px; font-weight:bold; border:2px solid white;">0</span>
+</div>
+
+<div id="printArea"></div>
+
+<script>
+    const firebaseConfig = { apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU", databaseURL: "https://prefeitura-de-joao-camara-default-rtdb.firebaseio.com" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    
+    // Recupera dados da loja logada
+    const lojaAtiva = JSON.parse(localStorage.getItem('lojaAtiva'));
+    if(!lojaAtiva) window.location.href = 'login.san7.doc.html';
+
+    document.getElementById('displayNomeLoja').innerText = lojaAtiva.nome;
+
+    let produtos = [];
+    let sacola = [];
+    let vendasDoDia = [];
+    let historicoGeral = [];
+
+    window.onload = () => {
+        lucide.createIcons();
+        syncData();
+        setupScanner();
+    };
+
+    function logout() { localStorage.removeItem('lojaAtiva'); window.location.href = 'login.san7.doc.html'; }
+
+    function setupScanner() {
+        let buffer = "";
+        let lastKeyTime = Date.now();
+        window.addEventListener('keydown', e => {
+            const currentTime = Date.now();
+            if (currentTime - lastKeyTime > 100) buffer = "";
+            lastKeyTime = currentTime;
+            if (e.key === 'Enter') {
+                if (buffer.length > 2) {
+                    const p = produtos.find(x => x.codigoBarra === buffer.trim());
+                    if (p) addToCart(p.key);
+                }
+                buffer = "";
+                e.preventDefault();
+            } else if (e.key.length === 1) buffer += e.key;
+        });
+    }
+
+    function syncData() {
+        db.ref(`estoque/${lojaAtiva.id}`).on('value', snap => {
+            produtos = [];
+            snap.forEach(c => { produtos.push({...c.val(), key: c.key}); });
+            drawTable();
+            renderLabelSelection();
+        });
+        db.ref(`funcionarios/${lojaAtiva.id}`).on('value', snap => {
+            const list = document.getElementById('empList'); const sel = document.getElementById('selEmp');
+            list.innerHTML = ''; sel.innerHTML = '<option value="">Selecionar Vendedor...</option>';
+            snap.forEach(c => {
+                list.innerHTML += `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;"><span>${c.val().nome}</span> <button onclick="delEmp('${c.key}')" style="color:red; background:none; border:none; cursor:pointer;">REMOVER</button></div>`;
+                sel.innerHTML += `<option value="${c.val().nome}">${c.val().nome}</option>`;
+            });
+        });
+        db.ref(`vendas/${lojaAtiva.id}`).on('value', snap => {
+            vendasDoDia = []; let total = 0;
+            snap.forEach(v => { 
+                const venda = {...v.val(), key: v.key};
+                vendasDoDia.push(venda);
+                total += venda.total;
+            });
+            document.getElementById('saldoTotal').innerText = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+            renderOpenSales();
+        });
+        db.ref(`historico_fechamentos/${lojaAtiva.id}`).on('value', snap => {
+            historicoGeral = [];
+            snap.forEach(v => { historicoGeral.push({...v.val(), key: v.key}); });
+        });
+    }
+
+    function drawTable() {
+        const query = document.getElementById('search').value.toLowerCase();
+        const body = document.getElementById('inventoryBody');
+        body.innerHTML = '';
+        produtos.forEach(p => {
+            if(p.nome.toLowerCase().includes(query) || p.codigoBarra.includes(query)) {
+                body.innerHTML += `<tr>
+                    <td>${p.codigoBarra}</td>
+                    <td>${p.nome}</td>
+                    <td>${p.marca}/${p.tamanho}</td>
+                    <td>R$ ${p.precoVista.toFixed(2)}</td>
+                    <td>R$ ${p.precoCartao.toFixed(2)}</td>
+                    <td>${p.estoque}</td>
+                    <td>
+                        <button class="btn btn-white" style="padding:5px 10px" onclick="addToCart('${p.key}')">Vender</button>
+                        <button class="btn btn-white" style="padding:5px 10px" onclick="prepEdit('${p.key}')">Edit</button>
+                    </td>
+                </tr>`;
+            }
+        });
+    }
+
+    function addToCart(key) {
+        const p = produtos.find(x => x.key === key);
+        if(p && p.estoque > 0) {
+            sacola.push({...p});
+            updateCartBadge();
+            if(document.getElementById('modalCart').style.display === 'flex') renderCart();
+        } else alert("Sem estoque!");
+    }
+
+    function updateCartBadge() { document.getElementById('cartCount').innerText = sacola.length; }
+
+    function renderCart() {
+        const div = document.getElementById('cartItems'); const pay = document.getElementById('selPay').value;
+        div.innerHTML = ''; let total = 0;
+        sacola.forEach((item, i) => {
+            const preco = pay === 'vista' ? item.precoVista : item.precoCartao;
+            total += preco;
+            div.innerHTML += `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
+                <span>${item.nome}</span>
+                <b>R$ ${preco.toFixed(2)} <span onclick="removeFromCart(${i})" style="color:red; cursor:pointer; margin-left:10px;">X</span></b>
+            </div>`;
+        });
+        document.getElementById('cartTotal').innerText = `Total: R$ ${total.toFixed(2)}`;
+    }
+
+    function removeFromCart(i) { sacola.splice(i, 1); updateCartBadge(); renderCart(); }
+
+    function checkout() {
+        const vendedor = document.getElementById('selEmp').value;
+        const pay = document.getElementById('selPay').value;
+        if(!vendedor || sacola.length === 0) return alert("Selecione o vendedor!");
+
+        let totalVenda = 0;
+        sacola.forEach(p => {
+            totalVenda += (pay === 'vista' ? p.precoVista : p.precoCartao);
+            db.ref(`estoque/${lojaAtiva.id}/${p.key}/estoque`).set(p.estoque - 1);
+        });
+
+        const vData = { 
+            data: new Date().toLocaleDateString('pt-BR'), 
+            hora: new Date().toLocaleTimeString('pt-BR'), 
+            vendedor, total: totalVenda, metodo: pay, itens: sacola, 
+            loja: lojaAtiva.nome, cnpj: lojaAtiva.cnpj, mensagem: lojaAtiva.mensagem 
+        };
+
+        db.ref(`vendas/${lojaAtiva.id}`).push(vData).then(() => {
+            if(confirm("Venda realizada! Deseja imprimir o comprovante?")) {
+                printVenda(vData);
+            }
+            sacola = []; updateCartBadge(); closeModal('modalCart');
+        });
+    }
+
+    function printVenda(v) {
+        const p = document.getElementById('printArea');
+        let itensHtml = v.itens.map(i => {
+            const valor = v.metodo === 'vista' ? i.precoVista : i.precoCartao;
+            return `<div class="cupom-item"><span>1x ${i.nome}</span> <span>R$ ${valor.toFixed(2)}</span></div>`;
+        }).join('');
+
+        p.innerHTML = `
+        <div class="cupom-container">
+            <div class="cupom-header">
+                <strong style="font-size: 16px;">${v.loja}</strong><br>
+                ${v.mensagem || ""}<br>
+            </div>
+            <div class="cupom-divider"></div>
+            <div style="font-size: 11px;">
+                DATA: ${v.data} - ${v.hora}<br>
+                VENDEDOR: ${v.vendedor}<br>
+                PAGAMENTO: ${v.metodo.toUpperCase()}
+            </div>
+            <div class="cupom-divider"></div>
+            ${itensHtml}
+            <div class="cupom-divider"></div>
+            <div class="cupom-item" style="font-weight: bold; font-size: 14px;">
+                <span>TOTAL</span> <span>R$ ${v.total.toFixed(2)}</span>
+            </div>
+            <div class="cupom-divider"></div>
+            <div style="text-align: center; font-size: 10px;">
+                CNPJ: ${v.cnpj}<br>
+                Obrigado pela preferência!
+            </div>
+        </div>`;
+        window.print();
+    }
+
+    function generateLabels() {
+        const p = document.getElementById('printArea'); p.innerHTML = '';
+        let has = false;
+        document.querySelectorAll('.l-qty').forEach(input => {
+            const qty = parseInt(input.value); 
+            if(qty > 0) {
+                has = true;
+                const prod = produtos.find(x => x.key === input.dataset.key);
+                for(let i=0; i<qty; i++) {
+                    p.innerHTML += `<div class="label-page">
+                        <small style="font-size:8px; font-weight:bold;">${prod.nome}</small>
+                        <svg class="b-item" data-code="${prod.codigoBarra}"></svg>
+                        <small style="font-size:9px; font-weight:bold;">R$ ${prod.precoVista.toFixed(2)}</small>
+                    </div>`;
+                }
+            }
+        });
+        if(!has) return alert("Selecione quantidades!");
+        setTimeout(() => { 
+            document.querySelectorAll('.b-item').forEach(s => JsBarcode(s, s.dataset.code, {height:30, width:1.3, displayValue:false}));
+            window.print(); 
+        }, 500);
+    }
+
+    function renderLabelSelection() {
+        const div = document.getElementById('labelList'); div.innerHTML = '';
+        produtos.forEach(p => {
+            div.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #eee;">
+                <span>${p.nome}</span>
+                <input type="number" class="l-qty" data-key="${p.key}" value="0" style="width:50px; border:1px solid #000; text-align:center;">
+            </div>`;
+        });
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; lucide.createIcons(); }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function prepAdd() { 
+        document.getElementById('editKey').value = ''; 
+        document.getElementById('modalTitle').innerText = "Novo Produto";
+        document.querySelectorAll('#modalProduct input').forEach(i => i.value = '');
+        openModal('modalProduct'); 
+    }
+    function prepEdit(key) {
+        const p = produtos.find(x => x.key === key);
+        document.getElementById('editKey').value = p.key;
+        document.getElementById('pNome').value = p.nome;
+        document.getElementById('pMarca').value = p.marca;
+        document.getElementById('pTam').value = p.tamanho;
+        document.getElementById('pStock').value = p.estoque;
+        document.getElementById('pVista').value = p.precoVista;
+        document.getElementById('pCartao').value = p.precoCartao;
+        document.getElementById('modalTitle').innerText = "Editar Produto";
+        openModal('modalProduct');
+    }
+    function saveProduct() {
+        const key = document.getElementById('editKey').value || Math.floor(10000000 + Math.random() * 90000000).toString();
+        const data = {
+            nome: document.getElementById('pNome').value, marca: document.getElementById('pMarca').value,
+            tamanho: document.getElementById('pTam').value, estoque: parseInt(document.getElementById('pStock').value),
+            precoVista: parseFloat(document.getElementById('pVista').value), precoCartao: parseFloat(document.getElementById('pCartao').value),
+            codigoBarra: key
+        };
+        db.ref(`estoque/${lojaAtiva.id}/${key}`).update(data).then(() => closeModal('modalProduct'));
+    }
+    function addEmp() { db.ref(`funcionarios/${lojaAtiva.id}`).push({nome: document.getElementById('newEmp').value}); document.getElementById('newEmp').value=''; }
+    function delEmp(key) { if(confirm("Remover?")) db.ref(`funcionarios/${lojaAtiva.id}/${key}`).remove(); }
+    function openOpenSales() { openModal('modalOpenSales'); }
+    function renderOpenSales() {
+        const list = document.getElementById('openSalesList'); list.innerHTML = '';
+        vendasDoDia.slice().reverse().forEach(v => {
+            list.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid #000; padding: 15px;">
+                <div><strong>${v.hora} - ${v.vendedor}</strong><br><small>${v.itens.length} itens - R$ ${v.total.toFixed(2)}</small></div>
+                <button onclick="deleteSale('${v.key}')" style="background:red; color:white; border:none; padding:5px 10px; cursor:pointer;">X</button>
+            </div>`;
+        });
+    }
+    function deleteSale(key) {
+        if(confirm("Excluir venda?")) {
+            const venda = vendasDoDia.find(v => v.key === key);
+            venda.itens.forEach(item => {
+                const prodRef = produtos.find(p => p.codigoBarra === item.codigoBarra);
+                if(prodRef) db.ref(`estoque/${lojaAtiva.id}/${prodRef.key}/estoque`).set(prodRef.estoque + 1);
+            });
+            db.ref(`vendas/${lojaAtiva.id}/${key}`).remove();
+        }
+    }
+    function openHistory() { openModal('modalHistory'); renderHistory(); }
+    function renderHistory() {
+        const filter = document.getElementById('histFilter').value;
+        const container = document.getElementById('historyContainer'); container.innerHTML = '';
+        historicoGeral.slice().reverse().forEach(dia => {
+            if(dia.dataFechamento.includes(filter)) {
+                container.innerHTML += `<div onclick="openDayDetail('${dia.key}')" style="padding:15px; border-bottom:2px solid #000; cursor:pointer; background:#f9f9f9; margin-bottom:5px;">
+                    <div style="display:flex; justify-content:space-between;"><strong>${dia.dataFechamento}</strong><span style="color:green; font-weight:bold;">R$ ${dia.totalDia.toFixed(2)}</span></div>
+                </div>`;
+            }
+        });
+    }
+    function openDayDetail(key) {
+        const dia = historicoGeral.find(d => d.key === key);
+        document.getElementById('dayDetailTitle').innerText = "Relatório: " + dia.dataFechamento;
+        document.getElementById('dayDetailList').innerHTML = dia.vendas.map(v => `<div>${v.hora} - ${v.vendedor} - R$ ${v.total.toFixed(2)}</div>`).join('');
+        document.getElementById('daySummary').innerHTML = `<h3>TOTAL: R$ ${dia.totalDia.toFixed(2)}</h3>`;
+        openModal('modalDayDetail');
+    }
+    function finalizeDay() {
+        if(vendasDoDia.length === 0) return alert("Sem vendas!");
+        if(confirm("Encerrar dia?")) {
+            const dataHoje = new Date().toLocaleDateString('pt-BR');
+            const fechamento = { dataFechamento: dataHoje, totalDia: vendasDoDia.reduce((a,c)=>a+c.total,0), vendas: vendasDoDia, timestamp: Date.now() };
+            db.ref(`historico_fechamentos/${lojaAtiva.id}`).push(fechamento).then(() => { db.ref(`vendas/${lojaAtiva.id}`).remove(); });
+        }
+    }
+    function printReport() { window.print(); }
+</script>
+</body>
+</html>
