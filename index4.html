@@ -36,18 +36,19 @@
 
         .cart-float { position:fixed; bottom:30px; right:40px; width:80px; height:80px; background:var(--black); color:var(--white); display:flex; align-items:center; justify-content:center; cursor:pointer; border:4px solid var(--white); box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 500; }
         
-        /* IMPRESSÃO GERAL (ADAPTÁVEL) */
+        /* AJUSTE NA IMPRESSÃO PARA EVITAR TELA PRETA */
         #printArea { display:none; }
         @media print { 
-            body * { visibility: hidden; } 
-            #printArea, #printArea * { visibility: visible; } 
-            #printArea { position: absolute; left:0; top:0; width: 100%; }
-            /* Se for etiqueta, o JS ajusta a largura no momento da impressão */
+            @page { margin: 0; }
+            body { background: white !important; color: black !important; }
+            header, .toolbar, .content, .cart-float, .overlay, .btn { display: none !important; } 
+            #printArea { display: block !important; position: absolute; left:0; top:0; width: 100%; visibility: visible; }
+            #printArea * { visibility: visible; }
         }
 
-        .label-page { page-break-after: always; width: 40mm; height: 25mm; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+        .label-page { page-break-after: always; width: 40mm; height: 25mm; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; background: white; }
 
-        .cupom-container { width: 100%; max-width: 80mm; padding: 5px; font-family: 'Courier New', Courier, monospace; font-size: 12px; color: #000; margin: 0 auto; }
+        .cupom-container { width: 100%; max-width: 80mm; padding: 5px; font-family: 'Courier New', Courier, monospace; font-size: 12px; color: #000; margin: 0 auto; background: white; }
         .cupom-header { text-align: center; text-transform: uppercase; margin-bottom: 10px; }
         .cupom-divider { border-top: 1px dashed #000; margin: 5px 0; }
         .cupom-item { display: flex; justify-content: space-between; margin-bottom: 2px; }
@@ -158,7 +159,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     
-    // Recupera dados da loja logada
     const lojaAtiva = JSON.parse(localStorage.getItem('lojaAtiva'));
     if(!lojaAtiva) window.location.href = 'login.san7.doc.html';
 
@@ -448,7 +448,11 @@
             db.ref(`historico_fechamentos/${lojaAtiva.id}`).push(fechamento).then(() => { db.ref(`vendas/${lojaAtiva.id}`).remove(); });
         }
     }
-    function printReport() { window.print(); }
+    function printReport() {
+        const p = document.getElementById('printArea');
+        p.innerHTML = document.getElementById('reportContent').innerHTML;
+        window.print();
+    }
 </script>
 </body>
 </html>
