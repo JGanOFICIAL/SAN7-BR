@@ -36,7 +36,6 @@
 
         .cart-float { position:fixed; bottom:30px; right:40px; width:80px; height:80px; background:var(--black); color:var(--white); display:flex; align-items:center; justify-content:center; cursor:pointer; border:4px solid var(--white); box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 500; }
         
-        /* AJUSTE NA IMPRESSÃO PARA EVITAR TELA PRETA */
         #printArea { display:none; }
         @media print { 
             @page { margin: 0; }
@@ -46,12 +45,29 @@
             #printArea * { visibility: visible; }
         }
 
-        .label-page { page-break-after: always; width: 40mm; height: 25mm; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; background: white; }
+        .label-page { 
+            page-break-after: always; 
+            width: 40mm; 
+            height: 25mm; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            background: white;
+            padding: 1mm;
+            text-align: center;
+        }
+        .label-store { font-size: 7px; font-weight: 900; text-transform: uppercase; margin-bottom: 0.5mm; }
+        .label-prod-name { font-size: 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; margin-bottom: 0.5mm; }
+        .label-prices { display: flex; justify-content: space-around; width: 100%; font-size: 8px; font-weight: bold; margin-top: 0.5mm; }
+        .b-item { margin: 0 !important; padding: 0 !important; }
 
-        .cupom-container { width: 100%; max-width: 80mm; padding: 5px; font-family: 'Courier New', Courier, monospace; font-size: 12px; color: #000; margin: 0 auto; background: white; }
+        .cupom-container { width: 100%; max-width: 80mm; padding: 10px; font-family: 'Courier New', Courier, monospace; font-size: 12px; color: #000; margin: 0 auto; background: white; text-align: left; }
         .cupom-header { text-align: center; text-transform: uppercase; margin-bottom: 10px; }
-        .cupom-divider { border-top: 1px dashed #000; margin: 5px 0; }
+        .cupom-divider { border-top: 1px dashed #000; margin: 5px 0; width: 100%; }
         .cupom-item { display: flex; justify-content: space-between; margin-bottom: 2px; }
+        .cupom-footer-text { font-style: italic; font-size: 10px; text-align: justify; margin-top: 5px; line-height: 1.2; }
     </style>
 </head>
 <body>
@@ -109,7 +125,8 @@
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 15px;">
             <select id="selEmp" style="padding:10px; border:2px solid #000;"></select>
             <select id="selPay" style="padding:10px; border:2px solid #000;" onchange="renderCart()">
-                <option value="vista">Dinheiro / Pix</option>
+                <option value="dinheiro">Dinheiro Vivo</option>
+                <option value="pix">Pix</option>
                 <option value="cartao">Cartão</option>
             </select>
         </div>
@@ -263,7 +280,7 @@
         const div = document.getElementById('cartItems'); const pay = document.getElementById('selPay').value;
         div.innerHTML = ''; let total = 0;
         sacola.forEach((item, i) => {
-            const preco = pay === 'vista' ? item.precoVista : item.precoCartao;
+            const preco = (pay === 'dinheiro' || pay === 'pix') ? item.precoVista : item.precoCartao;
             total += preco;
             div.innerHTML += `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
                 <span>${item.nome}</span>
@@ -282,7 +299,7 @@
 
         let totalVenda = 0;
         sacola.forEach(p => {
-            totalVenda += (pay === 'vista' ? p.precoVista : p.precoCartao);
+            totalVenda += (pay === 'dinheiro' || pay === 'pix' ? p.precoVista : p.precoCartao);
             db.ref(`estoque/${lojaAtiva.id}/${p.key}/estoque`).set(p.estoque - 1);
         });
 
@@ -304,7 +321,7 @@
     function printVenda(v) {
         const p = document.getElementById('printArea');
         let itensHtml = v.itens.map(i => {
-            const valor = v.metodo === 'vista' ? i.precoVista : i.precoCartao;
+            const valor = (v.metodo === 'dinheiro' || v.metodo === 'pix') ? i.precoVista : i.precoCartao;
             return `<div class="cupom-item"><span>1x ${i.nome}</span> <span>R$ ${valor.toFixed(2)}</span></div>`;
         }).join('');
 
@@ -327,9 +344,13 @@
                 <span>TOTAL</span> <span>R$ ${v.total.toFixed(2)}</span>
             </div>
             <div class="cupom-divider"></div>
-            <div style="text-align: center; font-size: 10px;">
+            <div style="text-align: left; font-size: 10px;">
                 CNPJ: ${v.cnpj}<br>
                 Obrigado pela preferência!
+            </div>
+            <div class="cupom-divider"></div>
+            <div class="cupom-footer-text">
+                Este documento foi gerado automaticamente pelo sistema como comprovante da compra realizada, sendo destinado apenas para conferência. Não possui valor fiscal.
             </div>
         </div>`;
         window.print();
@@ -344,17 +365,28 @@
                 has = true;
                 const prod = produtos.find(x => x.key === input.dataset.key);
                 for(let i=0; i<qty; i++) {
-                    p.innerHTML += `<div class="label-page">
-                        <small style="font-size:8px; font-weight:bold;">${prod.nome}</small>
+                    p.innerHTML += `
+                    <div class="label-page">
+                        <div class="label-store">${lojaAtiva.nome}</div>
+                        <div class="label-prod-name">${prod.nome}</div>
                         <svg class="b-item" data-code="${prod.codigoBarra}"></svg>
-                        <small style="font-size:9px; font-weight:bold;">R$ ${prod.precoVista.toFixed(2)}</small>
+                        <div class="label-prices">
+                            <div>Vista: R$ ${prod.precoVista.toFixed(2)}</div>
+                            <div>Cartão: R$ ${prod.precoCartao.toFixed(2)}</div>
+                        </div>
                     </div>`;
                 }
             }
         });
         if(!has) return alert("Selecione quantidades!");
         setTimeout(() => { 
-            document.querySelectorAll('.b-item').forEach(s => JsBarcode(s, s.dataset.code, {height:30, width:1.3, displayValue:false}));
+            document.querySelectorAll('.b-item').forEach(s => JsBarcode(s, s.dataset.code, {
+                height: 35, 
+                width: 1.2, 
+                displayValue: true,
+                fontSize: 10,
+                margin: 0
+            }));
             window.print(); 
         }, 500);
     }
