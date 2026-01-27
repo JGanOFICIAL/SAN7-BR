@@ -1,131 +1,273 @@
 <!doctype html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Avaliação</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Admin - Gerenciar Usuários</title>
 <style>
-:root{
-  --bg:#fff;
-  --dark:#000;
-  --light:#f5f5f5;
-  --accent:#f0f0f0;
-  --green:#32CD32;
-}
-*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
-body{background:var(--bg);color:var(--dark);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:100px}
-header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #eee;z-index:10}
-.logo-canto-esquerdo{height:38px;width:auto}
-.menu-container{position:relative}
-.menu-btn{width:32px;height:24px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between}
-.menu-btn div{width:100%;height:3px;background:#000;border-radius:2px;transition:all .3s}
-.menu-btn.active div:nth-child(1){transform:rotate(45deg) translateY(9px)}
-.menu-btn.active div:nth-child(2){opacity:0}
-.menu-btn.active div:nth-child(3){transform:rotate(-45deg) translateY(-9px)}
-.menu{position:absolute;top:40px;right:0;background:#fff;box-shadow:0 4px 15px rgba(0,0,0,.1);border-radius:6px;display:none;flex-direction:column;width:200px;overflow:hidden}
-.menu.active{display:flex}
-.menu a{text-decoration:none;color:#000;padding:12px 15px;transition:.3s}
-.menu a:hover{background:#f5f5f5}
-
-main{width:100%;max-width:400px;padding:20px}
-.container{margin-top:20px}
-h2{font-size:22px;font-weight:600;margin-bottom:25px}
-label{display:block;font-size:14px;color:#444;margin-bottom:8px}
-input[type="text"]{
-  width:100%;padding:14px;border:none;border-bottom:1px solid #ccc;font-size:17px;color:#000;background:transparent;outline:none;
-}
-input::placeholder{color:#aaa}
-.btn{margin-top:25px;width:100%;padding:14px;border-radius:8px;border:none;background:#e6e6e6;color:#999;font-weight:600;font-size:16px;cursor:pointer;transition:.3s}
-.btn:hover{background:#ddd}
-.btn.active{background:var(--green);color:#fff}
-.info{margin-top:20px;font-size:13px;color:#555}
-footer{margin-top:60px;font-size:12px;color:#888;text-align:center}
+  :root{--bg:#fff;--accent:#bfeccb;--card:#f8f8f8;--dark:#222;--square-radius:4px}
+  *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;padding:0}
+  body{background:var(--bg);min-height:100vh;padding-top:80px}
+  header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;gap:16px;padding:0 20px;border-bottom:1px solid #eee;z-index:50}
+  .logo{display:flex;align-items:center;gap:10px}
+  .wrap{max-width:1100px;margin:24px auto;padding:16px}
+  .topbar{display:flex;gap:12px;align-items:center;margin-bottom:14px}
+  input[type="search"]{padding:10px;border-radius:6px;border:1px solid #ddd;width:320px}
+  .btn{padding:10px 12px;border:0;border-radius:var(--square-radius);cursor:pointer;font-weight:700}
+  .btn-primary{background:var(--accent)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+  .card{background:var(--card);padding:14px;border-radius:8px;position:relative}
+  .card h4{margin-bottom:8px}
+  .card .meta{font-size:13px;color:#555}
+  .card .controls{position:absolute;top:10px;right:10px;display:flex;gap:6px}
+  .modal-back{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:120}
+  .modal{background:#fff;padding:18px;border-radius:10px;min-width:320px;max-width:94%;position:relative}
+  .modal .close{position:absolute;right:12px;top:10px;border:0;background:transparent;font-size:18px;cursor:pointer}
+  label{display:block;margin-top:10px;font-size:13px}
+  input[type="text"], input[type="date"]{width:100%;padding:10px;border:1px solid #ddd;border-radius:6px}
+  .row{display:flex;gap:8px}
+  .row > *{flex:1}
+  .danger{background:#ffdddd}
 </style>
 </head>
 <body>
 <header>
-  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-canto-esquerdo">
- 
-
-
-
-
-<button onclick="window.location.href='login.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">Voltar</button>
-
+  <div class="logo">
+    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='36' height='36'><rect rx='6' width='36' height='36' fill='%23bfeccb'/><text x='50%' y='55%' font-size='16' text-anchor='middle' fill='%23000' font-family='Arial' font-weight='700'>A</text></svg>" alt="logo" style="height:36px">
+    <h1>DomusFit - Recp.</h1>
+  </div>
 </header>
 
+<main class="wrap">
+  <div class="topbar">
+    <input id="search" type="search" placeholder="Buscar por nome ou número de série">
+    <button id="createBtn" class="btn btn-primary">Criar Usuário</button>
+  </div>
 
+  <div class="grid" id="usersGrid">
+    <!-- cards de usuário -->
+  </div>
+</main>
 
+<!-- modal criar/editar -->
 
-
-
-<div style="display: flex; justify-content: center;">
-  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0qOqLqC7NdFJLP8fVNptwGeZfOuDxBtZTL9-ly7F9jg&s=10" style="width: TAMANHO_WIDTHpx; height: 120px;">
+<div class="modal-back" id="modalBack">
+  <div class="modal" role="dialog" aria-modal="true">
+    <button class="close" id="closeModal">✕</button>
+    <h3 id="modalTitle">Criar Usuário</h3>
+    <label>Nome</label>
+    <input id="m_name" type="text" placeholder="Nome completo">
+    <label>Número de Série</label>
+    <input id="m_serial" type="text" placeholder="xxxxx" maxlength="5" disabled>
+    <div class="row">
+      <div>
+        <label>Início (YYYY-MM-DD)</label>
+        <input id="m_start" type="date">
+      </div>
+      <div>
+        <label>Fim (YYYY-MM-DD)</label>
+        <input id="m_end" type="date">
+      </div>
+    </div>
+    <label>Plano (nome)</label>
+    <input id="m_plan" type="text" placeholder="Ex: Mensal - Premium">
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button id="saveUser" class="btn btn-primary">Salvar</button>
+      <button id="toggleActive" class="btn">Ativar/Desativar</button>
+      <button id="deleteUser" class="btn danger">Excluir</button>
+    </div>
+  </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-<div style="font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:#ffffff; color:#111827; padding:24px; max-width:980px; margin:auto; border-radius:0; box-shadow:none; border:0;">
-
-  <!-- Título e descrição no topo -->
-  <div style="margin-bottom:16px;">
-    <h1 style="margin:0 0 8px 0; font-size:22px;">Diretrizes da comunidade - Academia DomusFit João Câmara RN</h1>
-    
-
-
-
-
-<p> Todos os usuários devem respeitar uns aos outros, mantendo cordialidade e evitando qualquer forma de ofensa. É proibido compartilhar conteúdos ilegais, violentos, pornográficos ou que violem direitos autorais. Atividades fraudulentas, plágio ou tentativas de burlar o sistema da plataforma não serão toleradas. Informações pessoais devem ser protegidas e não compartilhadas sem consentimento. O conteúdo disponibilizado na plataforma é apenas para fins educacionais e não pode ser usado de forma comercial. O acesso à plataforma pode ser suspenso a qualquer momento em caso de violação destes termos, e é fundamental seguir todas as normas e diretrizes estabelecidas para garantir um ambiente seguro e produtivo.
-  </p>
-<br>
-
-<hr>
-<br>
-
-<p>O usuário é responsável por todas as ações realizadas em sua conta, devendo mantê-la segura e não compartilhar a senha com terceiros. Qualquer violação destes termos poderá resultar em advertências, bloqueio temporário ou exclusão definitiva da conta. A plataforma reserva-se o direito de modificar, atualizar ou remover conteúdos a qualquer momento, bem como de alterar estes termos sem aviso prévio. É fundamental que o usuário leia e compreenda todas as regras antes de utilizar o site, garantindo assim um ambiente educativo, seguro e respeitoso para todos.
-</p>
-
-<br>
-<hr>
-<br>
-
-<p>O uso da plataforma deve ser responsável e em conformidade com as leis vigentes, sendo proibida qualquer prática ilegal, fraudulenta ou prejudicial a terceiros. Todos os usuários devem agir com ética, evitando ofensas, discriminações ou comportamentos que possam comprometer a segurança e a integridade de outros participantes. A plataforma não se responsabiliza por danos, perdas ou consequências decorrentes do uso inadequado do site. É fundamental que todos sigam estas diretrizes para manter um ambiente seguro, organizado e respeitoso.
-</p>
-
-
-  </div>
-
-  <!-- Botão de download PDF logo abaixo do texto -->
-  <div style="margin-bottom:24px;">
-    <button id="downloadPdf" style="width:100%; padding:16px; background:#0b1f3f; color:white; border:0; font-weight:600; font-size:16px; cursor:pointer; border-radius:0;">Baixar PDF</button>
-  </div>
-
-  <!-- Área de conteúdo das diretrizes -->
-  <div id="conteudoDiretrizes" style="font-size:14px; line-height:1.5; color:#111827;">
-    
-  </div>
-
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-document.getElementById('downloadPdf').addEventListener('click', async () => {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({unit:'px', format:'a4'});
-  const conteudo = document.getElementById('conteudoDiretrizes');
-  const canvas = await html2canvas(conteudo, {scale:2});
-  const imgData = canvas.toDataURL('image/png');
-  const imgProps = doc.getImageProperties(imgData);
-  const pdfWidth = doc.internal.pageSize.getWidth() - 40;
-  const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-  doc.setFontSize(20);
-  doc.text("Academia DomusFit João Câmara RN", 20, 30);
-  doc.addImage(imgData, 'PNG', 20, 60, pdfWidth, pdfHeight);
-  doc.save('diretrizes-da-comunidade-DomusFit João Câmara RN.pdf');
-});
+  const firebaseConfig = {
+    apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+    authDomain:"prefeitura-de-joao-camara.firebaseapp.com",
+    projectId:"prefeitura-de-joao-camara",
+    storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",
+    messagingSenderId:"269299041577",
+    appId:"1:269299041577:web:fd41b2939240e9eb476338",
+    measurementId:"G-YT7NHR342J"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const usersGrid = document.getElementById('usersGrid');
+  const searchEl = document.getElementById('search');
+  const createBtn = document.getElementById('createBtn');
+  const modalBack = document.getElementById('modalBack');
+  const closeModal = document.getElementById('closeModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const m_name = document.getElementById('m_name');
+  const m_serial = document.getElementById('m_serial');
+  const m_start = document.getElementById('m_start');
+  const m_end = document.getElementById('m_end');
+  const m_plan = document.getElementById('m_plan');
+  const saveUser = document.getElementById('saveUser');
+  const toggleActive = document.getElementById('toggleActive');
+  const deleteUser = document.getElementById('deleteUser');
+
+  let allUsers = {}; // cache
+  // ouvinte real em /users
+  db.ref('users').on('value', snap=>{
+    allUsers = snap.val() || {};
+    renderGrid();
+  });
+
+  function renderGrid(filter=''){
+    usersGrid.innerHTML = '';
+    const keys = Object.keys(allUsers).sort();
+    keys.forEach(k=>{
+      const u = allUsers[k];
+      const display = (u.name || '') + ' ' + k;
+      if(filter && !display.toLowerCase().includes(filter.toLowerCase())) return;
+      const card = document.createElement('div'); card.className='card';
+      card.innerHTML = `
+        <div class="controls">
+          <button data-serial="${k}" class="infoBtn">i</button>
+        </div>
+        <h4>${u.name || '—'}</h4>
+        <div class="meta">Nº Série: ${k}</div>
+        <div class="meta">Plano: ${u.planName || '—'}</div>
+        <div class="meta">Início: ${u.startDate || '—'} Término: ${u.endDate || '—'}</div>
+        <div style="margin-top:8px">
+          <button data-serial="${k}" class="btn btn-primary openInfo">Info</button>
+        </div>
+      `;
+      usersGrid.appendChild(card);
+    });
+    // bind info buttons
+    document.querySelectorAll('.openInfo').forEach(b=>{
+      b.addEventListener('click', ()=> openModalFor(b.dataset.serial));
+    });
+    document.querySelectorAll('.infoBtn').forEach(b=>{
+      b.addEventListener('click', ()=> openModalFor(b.dataset.serial));
+    });
+  }
+
+  searchEl.addEventListener('input', ()=> renderGrid(searchEl.value));
+
+  // criar novo
+  createBtn.addEventListener('click', ()=>{
+    openModalFor(null); // novo
+  });
+
+  function openModalFor(serialKey){
+    modalBack.style.display='flex';
+    if(serialKey){
+      modalTitle.textContent='Editar Usuário';
+      const u = allUsers[serialKey] || {};
+      m_name.value = u.name || '';
+      m_serial.value = serialKey;
+      m_start.value = u.startDate || '';
+      m_end.value = u.endDate || '';
+      m_plan.value = u.planName || '';
+      saveUser.dataset.serial = serialKey;
+      toggleActive.dataset.serial = serialKey;
+      deleteUser.dataset.serial = serialKey;
+      toggleActive.textContent = (u.active ? 'Desativar' : 'Ativar');
+    } else {
+      modalTitle.textContent='Criar Usuário';
+      m_name.value=''; m_serial.value=''; m_start.value=''; m_end.value=''; m_plan.value='';
+      saveUser.dataset.serial = '';
+      toggleActive.dataset.serial = '';
+      deleteUser.dataset.serial = '';
+      toggleActive.textContent = 'Ativar';
+    }
+  }
+
+  closeModal.addEventListener('click', ()=> modalBack.style.display='none');
+  modalBack.addEventListener('click', (e)=>{ if(e.target===modalBack) modalBack.style.display='none'; });
+
+  // gera número de série de 5 dígitos com verificação de unicidade
+  async function generateUniqueSerial(){
+    const maxAttempts = 20;
+    for(let i=0;i<maxAttempts;i++){
+      const n = Math.floor(Math.random()*90000)+10000; // garante 5 dígitos (10000-99999)
+      const key = String(n);
+      try{
+        const snap = await db.ref('users/' + key).get();
+        if(!snap.exists()) return key;
+      }catch(err){
+        console.error('Erro verificando serial', err);
+        // se erro ao checar, ainda tentamos outros números
+      }
+    }
+    throw new Error('Não foi possível gerar número de série único. Tente novamente.');
+  }
+
+  saveUser.addEventListener('click', async ()=>{
+    const name = m_name.value.trim();
+    const serialExisting = saveUser.dataset.serial || '';
+    const start = m_start.value || null;
+    const end = m_end.value || null;
+    const plan = m_plan.value.trim();
+    if(!name){ alert('Preencha o nome.'); return; }
+    try{
+      if(serialExisting){
+        // editar existente
+        const payload = {
+          name,
+          startDate: start,
+          endDate: end,
+          planName: plan,
+          updatedAt: new Date().toISOString().slice(0,10),
+        };
+        await db.ref('users/' + serialExisting).update(payload);
+        alert('Salvo com sucesso.');
+        modalBack.style.display='none';
+      } else {
+        // criar novo: gerar serial único e salvar
+        const serial = await generateUniqueSerial();
+        const payload = {
+          name,
+          startDate: start,
+          endDate: end,
+          planName: plan,
+          serialNumber: serial,
+          active: true,
+          createdAt: new Date().toISOString().slice(0,10),
+          updatedAt: new Date().toISOString().slice(0,10),
+        };
+        await db.ref('users/' + serial).set(payload);
+        alert('Salvo com sucesso. Nº Série: ' + serial);
+        modalBack.style.display='none';
+      }
+    }catch(err){
+      console.error(err);
+      alert('Erro ao salvar. Veja console.');
+    }
+  });
+
+  toggleActive.addEventListener('click', async ()=>{
+    const serial = toggleActive.dataset.serial || m_serial.value;
+    if(!serial) { alert('Número de série não encontrado.'); return; }
+    const cur = allUsers[serial] || {};
+    const next = !cur.active;
+    try{
+      await db.ref('users/' + serial + '/active').set(next);
+      alert('Usuário agora ' + (next ? 'ativo' : 'inativo') + '.');
+      modalBack.style.display='none';
+    }catch(err){ console.error(err); alert('Erro ao alterar.'); }
+  });
+
+  deleteUser.addEventListener('click', async ()=>{
+    const serial = deleteUser.dataset.serial || m_serial.value;
+    if(!serial){ alert('Número de série não encontrado.'); return; }
+    if(!confirm('Excluir usuário ' + serial + '? Esta ação é irreversível.')) return;
+    try{
+      await db.ref('users/' + serial).remove();
+      alert('Usuário excluído.');
+      modalBack.style.display='none';
+    }catch(err){ console.error(err); alert('Erro ao excluir.'); }
+  });
+
 </script>
 
-domusfit.site/diretrizes.html
-<br>
-
+</body>
+</html>
