@@ -52,7 +52,7 @@
     position: fixed; inset: 0; background: rgba(255,255,255,0.95); 
     display: none; align-items: center; justify-content: center; z-index: 200; 
   }
-  .modal { background: #fff; padding: 35px; border: 3px solid var(--text-main); width: 100%; max-width: 800px; position: relative; }
+  .modal { background: #fff; padding: 35px; border: 3px solid var(--text-main); width: 100%; max-width: 650px; }
 
   .quick-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; max-height: 400px; overflow-y: auto; padding: 5px; }
   
@@ -67,24 +67,6 @@
   .item-box .label-chave { font-weight: 900; font-size: 10px; text-transform: uppercase; color: var(--text-dim); }
   .item-box .nome-portador { font-size: 13px; font-weight: 700; color: var(--text-main); margin-top: 2px; }
   .item-box .hora-chave { font-size: 9px; color: var(--text-dim); }
-
-  /* Estilos para Vídeos */
-  .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; max-height: 500px; overflow-y: auto; padding-top: 10px; }
-  .video-card { border: 1px solid var(--border); cursor: pointer; transition: 0.2s; background: #fff; }
-  .video-card:hover { transform: translateY(-3px); border-color: var(--text-main); }
-  .video-thumb { width: 100%; aspect-ratio: 16/9; background-size: cover; background-position: center; position: relative; }
-  .live-badge { position: absolute; top: 5px; left: 5px; background: var(--danger); color: #fff; font-size: 9px; padding: 2px 6px; font-weight: bold; }
-  .video-info { padding: 10px; }
-  .video-title { font-size: 11px; font-weight: bold; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-  /* Overlay do Player */
-  #videoPlayerOverlay { position: fixed; inset: 0; background: #000; z-index: 300; display: none; flex-direction: column; }
-  .player-header { padding: 15px 30px; display: flex; justify-content: flex-end; }
-  .iframe-container { flex: 1; display: flex; align-items: center; justify-content: center; }
-  
-  /* Loading Spinner */
-  .spinner { width: 30px; height: 30px; border: 4px solid #f3f3f3; border-top: 4px solid var(--text-main); border-radius: 50%; animation: spin 1s linear infinite; display: none; margin: 0 auto; }
-  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
   #notificacao {
     position: fixed; top: 90px; right: 20px; padding: 20px;
@@ -103,10 +85,6 @@
     <h1 style="font-size: 1.3rem;">DOMUSFIT <span style="font-weight:300">ADMIN</span></h1>
   </div>
   <div class="nav-btns">
-    <button class="btn btn-white" onclick="abrirModal('modalJogos')">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
-      Jogos e Vídeos
-    </button>
     <button class="btn btn-white" onclick="abrirModal('modalChaves')">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3m-3-3l2.5-2.5"/></svg>
       Chaves
@@ -126,32 +104,6 @@
   </div>
   <div class="grid" id="usersGrid"></div>
 </main>
-
-<div class="modal-back" id="modalJogos">
-  <div class="modal">
-    <h2 style="margin-bottom:15px; display:flex; align-items:center; gap:10px">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
-      Jogos & Transmissões ao Vivo
-    </h2>
-    
-    <div style="display:flex; gap:10px; margin-bottom:15px;">
-      <input id="ytSearch" type="text" placeholder="Buscar esporte ao vivo (Futebol, Vôlei...)" style="flex:1" value="Futebol ao vivo">
-      <button class="btn btn-primary" onclick="buscarVideos()">BUSCAR</button>
-    </div>
-
-    <div id="ytLoader" class="spinner"></div>
-    <div id="videoContainer" class="video-grid"></div>
-
-    <button class="btn btn-white" onclick="fecharModais()" style="width:100%; margin-top:20px; justify-content:center">Sair</button>
-  </div>
-</div>
-
-<div id="videoPlayerOverlay">
-  <div class="player-header">
-    <button class="btn btn-danger" onclick="fecharPlayer()" style="border-radius:50px; padding:10px 20px">X FECHAR VÍDEO</button>
-  </div>
-  <div class="iframe-container" id="playerTarget"></div>
-</div>
 
 <div class="modal-back" id="modalBack">
   <div class="modal">
@@ -226,9 +178,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-  // CONFIGURACAO YOUTUBE
-  const YT_API_KEY = 'AIzaSyDS9f8LJEx1CFkDdmVF5AoK02hkNvxBCEE';
-
   const firebaseConfig = {
     apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
     authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
@@ -250,72 +199,11 @@
   let chaveSelecionada = null;
 
   function normalizar(t) { return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim(); }
-  
-  function abrirModal(id) { 
-    document.getElementById(id).style.display = 'flex'; 
-    if(id === 'modalJogos') buscarVideos();
-  }
-
+  function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
   function fecharModais() { 
     document.querySelectorAll('.modal-back').forEach(m => m.style.display = 'none'); 
     document.getElementById('formChave').style.display = 'none';
     document.getElementById('formExpContainer').style.display = 'none';
-  }
-
-  // --- LOGICA YOUTUBE ---
-  async function buscarVideos() {
-    const query = document.getElementById('ytSearch').value;
-    const loader = document.getElementById('ytLoader');
-    const container = document.getElementById('videoContainer');
-    
-    loader.style.display = 'block';
-    container.innerHTML = '';
-
-    try {
-      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&q=${encodeURIComponent(query)}&type=video&eventType=live&key=${YT_API_KEY}`;
-      const response = await fetch(url);
-      const data = await response.json();
-
-      loader.style.display = 'none';
-
-      if (data.items && data.items.length > 0) {
-        data.items.forEach(item => {
-          const videoId = item.id.videoId;
-          const title = item.snippet.title;
-          const thumb = item.snippet.thumbnails.medium.url;
-
-          const card = document.createElement('div');
-          card.className = 'video-card';
-          card.onclick = () => playVideo(videoId);
-          card.innerHTML = `
-            <div class="video-thumb" style="background-image: url('${thumb}')">
-                <div class="live-badge">AO VIVO</div>
-            </div>
-            <div class="video-info">
-                <div class="video-title">${title}</div>
-            </div>
-          `;
-          container.appendChild(card);
-        });
-      } else {
-        container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color: var(--text-dim)">Nenhuma transmissão ao vivo encontrada no momento.</p>';
-      }
-    } catch (error) {
-      loader.style.display = 'none';
-      alert('Erro ao carregar vídeos do YouTube. Verifique sua chave de API.');
-    }
-  }
-
-  function playVideo(id) {
-    const overlay = document.getElementById('videoPlayerOverlay');
-    const target = document.getElementById('playerTarget');
-    target.innerHTML = `<iframe width="90%" height="80%" src="https://www.youtube.com/embed/${id}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-    overlay.style.display = 'flex';
-  }
-
-  function fecharPlayer() {
-    document.getElementById('videoPlayerOverlay').style.display = 'none';
-    document.getElementById('playerTarget').innerHTML = '';
   }
 
   // GERENCIAR ALUNOS
