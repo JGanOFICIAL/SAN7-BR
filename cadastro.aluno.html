@@ -1,1 +1,355 @@
-NIUMARIO GAY
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>DomusFit - Admin Pro (Light)</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --card-bg: #f8fafc;
+    --accent: #22c55e;
+    --text-main: #1e293b;
+    --text-dim: #64748b;
+    --border: #e2e8f0;
+    --danger: #ef4444;
+    --square-radius: 0px;
+  }
+
+  * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text-main); min-height: 100vh; padding-top: 80px; }
+
+  header { 
+    position: fixed; top: 0; left: 0; right: 0; height: 75px; 
+    background: #ffffff; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 30px; border-bottom: 3px solid var(--text-main); z-index: 100;
+  }
+  .nav-btns { display: flex; gap: 10px; }
+
+  .btn { 
+    padding: 10px 18px; border: 1px solid var(--text-main); cursor: pointer; font-weight: 700; 
+    text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s;
+    border-radius: var(--square-radius); font-size: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-primary { background: var(--text-main); color: #fff; }
+  .btn-white { background: #fff; color: var(--text-main); }
+  .btn-danger { background: #fff; color: var(--danger); border-color: var(--danger); }
+
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 20px; }
+  .top-actions { 
+    display: flex; justify-content: space-between; align-items: center; 
+    margin-bottom: 30px; background: #fff; padding: 20px; border: 2px solid var(--border);
+  }
+  
+  input { padding: 12px; border: 2px solid var(--border); border-radius: var(--square-radius); outline: none; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+  .card { background: var(--card-bg); border: 2px solid var(--border); padding: 20px; transition: 0.2s; }
+  .card:hover { border-color: var(--text-main); }
+
+  .modal-back { 
+    position: fixed; inset: 0; background: rgba(255,255,255,0.95); 
+    display: none; align-items: center; justify-content: center; z-index: 200; 
+  }
+  .modal { background: #fff; padding: 35px; border: 3px solid var(--text-main); width: 100%; max-width: 650px; }
+
+  .quick-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; max-height: 450px; overflow-y: auto; }
+  
+  /* Estilo das caixas de chave */
+  .item-box { 
+    border: 2px solid var(--border); padding: 15px; text-align: center; 
+    cursor: pointer; background: #fff; display: flex; flex-direction: column; align-items: center; gap: 5px;
+    transition: 0.2s;
+  }
+  .item-box svg { color: #cbd5e1; }
+  .item-box.occupied { border-color: var(--text-main); background: #f8fafc; }
+  .item-box.occupied svg { color: var(--text-main); }
+  .item-box .label-chave { font-weight: 900; font-size: 10px; text-transform: uppercase; color: var(--text-dim); }
+  .item-box .nome-portador { font-size: 13px; font-weight: 700; color: var(--text-main); margin-top: 2px; }
+  .item-box .hora-chave { font-size: 9px; color: var(--text-dim); }
+
+  #notificacao {
+    position: fixed; top: 90px; right: 20px; padding: 20px;
+    background: var(--danger); color: white; display: none; z-index: 1000;
+    font-weight: bold; border: 2px solid #000;
+  }
+</style>
+</head>
+<body>
+
+<div id="notificacao">⚠️ ESTA PESSOA JÁ POSSUI CADASTRO!</div>
+
+<header>
+  <div style="display:flex; align-items:center; gap:10px">
+    <div style="background:#000; color:#fff; padding:8px; font-weight:900;">DF</div>
+    <h1 style="font-size: 1.3rem;">DOMUSFIT <span style="font-weight:300">ADMIN</span></h1>
+  </div>
+  <div class="nav-btns">
+    <button class="btn btn-white" onclick="abrirModal('modalChaves')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3m-3-3l2.5-2.5"/></svg>
+      Chaves
+    </button>
+    <button class="btn btn-white" onclick="abrirModal('modalExperimental')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+      Experimental
+    </button>
+    <button class="btn btn-primary" id="createBtn"> + Novo Aluno </button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="top-actions">
+    <input id="search" type="search" placeholder="Buscar aluno..." style="width: 100%; max-width:400px;">
+    <div style="font-size: 12px; font-weight: bold; color: var(--text-dim)">PAINEL DE CONTROLE</div>
+  </div>
+  <div class="grid" id="usersGrid"></div>
+</main>
+
+<div class="modal-back" id="modalBack">
+  <div class="modal">
+    <h2 id="modalTitle">Ficha do Aluno</h2>
+    <label style="font-size:12px; font-weight:bold; display:block; margin: 15px 0 5px;">Nome Completo</label>
+    <input id="m_name" type="text" style="width:100%">
+    <label style="font-size:12px; font-weight:bold; display:block; margin: 15px 0 5px;">ID Serial</label>
+    <input id="m_serial" type="text" disabled style="width:100%; background:#f1f5f9">
+    <div style="display:flex; gap:10px;">
+      <div style="flex:1">
+        <label style="font-size:12px; font-weight:bold; display:block; margin: 15px 0 5px;">Início</label>
+        <input id="m_start" type="date" style="width:100%">
+      </div>
+      <div style="flex:1">
+        <label style="font-size:12px; font-weight:bold; display:block; margin: 15px 0 5px;">Vencimento</label>
+        <input id="m_end" type="date" style="width:100%">
+      </div>
+    </div>
+    <label style="font-size:12px; font-weight:bold; display:block; margin: 15px 0 5px;">Plano</label>
+    <input id="m_plan" type="text" style="width:100%">
+    <div style="margin-top:30px; display:flex; gap:10px">
+      <button id="saveUser" class="btn btn-primary" style="flex:2; justify-content:center">Salvar</button>
+      <button id="deleteUser" class="btn btn-danger" style="flex:1; justify-content:center">Excluir</button>
+    </div>
+    <button onclick="fecharModais()" style="margin-top:20px; border:none; background:none; width:100%; cursor:pointer; color:var(--text-dim)">Voltar</button>
+  </div>
+</div>
+
+<div class="modal-back" id="modalChaves">
+  <div class="modal">
+    <h2 style="margin-bottom:20px; display:flex; align-items:center; gap:10px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3m-3-3l2.5-2.5"/></svg>
+      Controle de Chaves
+    </h2>
+    <div id="listaChaves" class="quick-list"></div>
+    <div id="formChave" style="display:none; margin-top:20px; padding:20px; border:2px solid #000; background:#f8fafc">
+        <label style="font-size:11px; font-weight:bold; text-transform:uppercase">Nome do Aluno para Chave <span id="numChaveAtiva"></span></label>
+        <input id="inputNomeChave" type="text" style="width:100%; margin:10px 0">
+        <button id="btnSalvarChave" class="btn btn-primary" style="width:100%; justify-content:center">Entregar Chave Agora</button>
+    </div>
+    <button class="btn btn-white" onclick="fecharModais()" style="width:100%; margin-top:20px; justify-content:center">Fechar Painel</button>
+  </div>
+</div>
+
+<div class="modal-back" id="modalExperimental">
+  <div class="modal">
+    <h2 style="margin-bottom:20px">Aulas Experimentais</h2>
+    <div id="listaExp" class="quick-list"></div>
+    <div style="margin-top:20px; padding:20px; border:2px solid var(--border)">
+        <label style="font-size:11px; font-weight:bold">NOVO VISITANTE</label>
+        <input id="exp_nome" type="text" placeholder="Nome" style="width:100%; margin:10px 0">
+        <input id="exp_tel" type="tel" placeholder="WhatsApp" style="width:100%">
+        <button onclick="salvarExperimental()" class="btn btn-primary" style="width:100%; margin-top:15px; justify-content:center">Registrar</button>
+    </div>
+    <button class="btn btn-white" onclick="fecharModais()" style="width:100%; margin-top:20px; justify-content:center">Fechar</button>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+    authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
+    projectId: "prefeitura-de-joao-camara",
+    storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
+    databaseURL: "https://prefeitura-de-joao-camara-default-rtdb.firebaseio.com",
+    messagingSenderId: "269299041577",
+    appId: "1:269299041577:web:fd41b2939240e9eb476338"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const usersGrid = document.getElementById('usersGrid');
+  const searchEl = document.getElementById('search');
+  let allUsers = {};
+  let chaveSelecionada = null;
+
+  const ICONE_CHAVE = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3m-3-3l2.5-2.5"/></svg>`;
+  const ICONE_REMOVER = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+
+  function normalizar(t) { return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim(); }
+  function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
+  function fecharModais() { 
+    document.querySelectorAll('.modal-back').forEach(m => m.style.display = 'none'); 
+    document.getElementById('formChave').style.display = 'none';
+  }
+
+  // ALUNOS
+  db.ref('users').on('value', snap => {
+    allUsers = snap.val() || {};
+    renderGrid();
+  });
+
+  function renderGrid() {
+    const filter = searchEl.value.toLowerCase();
+    usersGrid.innerHTML = '';
+    Object.keys(allUsers).forEach(k => {
+      const u = allUsers[k];
+      if (filter && !u.name.toLowerCase().includes(filter) && !k.includes(filter)) return;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <h4><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${u.name}</h4>
+        <div style="font-size:12px; color:var(--text-dim); margin-bottom:10px">ID: ${k} | Plano: ${u.planName || '---'}</div>
+        <button class="btn btn-white" style="width:100%; justify-content:center" onclick="editarAluno('${k}')">Gerenciar</button>
+      `;
+      usersGrid.appendChild(card);
+    });
+  }
+
+  searchEl.addEventListener('input', renderGrid);
+
+  document.getElementById('saveUser').onclick = async () => {
+    const nome = document.getElementById('m_name').value;
+    const serial = document.getElementById('m_serial').value;
+    const agora = new Date().toLocaleString('pt-BR');
+    if (!serial) {
+        if (Object.values(allUsers).some(u => normalizar(u.name) === normalizar(nome))) { 
+            document.getElementById('notificacao').style.display = 'block';
+            setTimeout(() => document.getElementById('notificacao').style.display = 'none', 3000);
+            return; 
+        }
+        const novoSerial = Math.floor(10000 + Math.random() * 90000);
+        await db.ref('users/' + novoSerial).set({ name: nome, startDate: document.getElementById('m_start').value, endDate: document.getElementById('m_end').value, planName: document.getElementById('m_plan').value, createdAt: agora });
+    } else {
+        await db.ref('users/' + serial).update({ name: nome, startDate: document.getElementById('m_start').value, endDate: document.getElementById('m_end').value, planName: document.getElementById('m_plan').value, updatedAt: agora });
+    }
+    fecharModais();
+  };
+
+  document.getElementById('createBtn').onclick = () => { document.getElementById('m_name').value=''; document.getElementById('m_serial').value=''; abrirModal('modalBack'); };
+
+  window.editarAluno = (s) => {
+    const u = allUsers[s];
+    document.getElementById('m_name').value = u.name;
+    document.getElementById('m_serial').value = s;
+    document.getElementById('m_start').value = u.startDate || '';
+    document.getElementById('m_end').value = u.endDate || '';
+    document.getElementById('m_plan').value = u.planName || '';
+    abrirModal('modalBack');
+  };
+
+  // CHAVES
+  function initChaves() {
+    const lista = document.getElementById('listaChaves');
+    lista.innerHTML = '';
+    for(let i=1; i<=24; i++) {
+        const box = document.createElement('div');
+        box.className = 'item-box';
+        box.id = 'ch-' + i;
+        box.onclick = () => { 
+          chaveSelecionada = i; 
+          document.getElementById('numChaveAtiva').innerText = i;
+          document.getElementById('formChave').style.display = 'block'; 
+        };
+        lista.appendChild(box);
+    }
+    
+    db.ref('chaves').on('value', snap => {
+        const dados = snap.val() || {};
+        for(let i=1; i<=24; i++) {
+            const el = document.getElementById('ch-'+i);
+            if(dados[i] && dados[i].nome) {
+                el.classList.add('occupied');
+                el.innerHTML = `
+                  <div style="width:100%; display:flex; justify-content:flex-end" onclick="liberarChave(${i}, event)">
+                    <div style="color:var(--danger); padding:2px; border:1px solid var(--danger)">${ICONE_REMOVER}</div>
+                  </div>
+                  ${ICONE_CHAVE}
+                  <span class="label-chave">CHAVE ${i}</span>
+                  <span class="nome-portador">${dados[i].nome}</span>
+                  <span class="hora-chave">${dados[i].inicio}</span>
+                `;
+            } else {
+                el.classList.remove('occupied');
+                el.innerHTML = `
+                  <div style="height:18px"></div>
+                  ${ICONE_CHAVE}
+                  <span class="label-chave">CHAVE ${i}</span>
+                  <span style="font-size:10px; color:#cbd5e1">DISPONÍVEL</span>
+                `;
+            }
+        }
+    });
+  }
+
+  document.getElementById('btnSalvarChave').onclick = () => {
+    const n = document.getElementById('inputNomeChave').value;
+    if(!n) return;
+    db.ref('chaves/' + chaveSelecionada).set({ 
+        nome: n, 
+        inicio: new Date().toLocaleTimeString('pt-BR') + ' ' + new Date().toLocaleDateString('pt-BR')
+    });
+    document.getElementById('inputNomeChave').value = '';
+    document.getElementById('formChave').style.display = 'none';
+  };
+
+  window.liberarChave = (i, e) => { e.stopPropagation(); db.ref('chaves/'+i).remove(); };
+
+  // EXPERIMENTAL
+  function salvarExperimental() {
+      const nome = document.getElementById('exp_nome').value;
+      const tel = document.getElementById('exp_tel').value;
+      if(!nome) return;
+      db.ref('experimentais').once('value', snap => {
+          const dados = snap.val() || {};
+          if(Object.values(dados).some(p => normalizar(p.nome) === normalizar(nome))) {
+              document.getElementById('notificacao').style.display = 'block';
+              setTimeout(() => document.getElementById('notificacao').style.display = 'none', 3000);
+          } else {
+              db.ref('experimentais/' + Date.now()).set({
+                  nome: nome, tel: tel,
+                  data: new Date().toLocaleDateString('pt-BR'),
+                  hora: new Date().toLocaleTimeString('pt-BR')
+              });
+              document.getElementById('exp_nome').value = '';
+              document.getElementById('exp_tel').value = '';
+          }
+      });
+  }
+
+  db.ref('experimentais').on('value', snap => {
+      const lista = document.getElementById('listaExp');
+      lista.innerHTML = '';
+      const dados = snap.val() || {};
+      Object.keys(dados).forEach(id => {
+          const p = dados[id];
+          const box = document.createElement('div');
+          box.className = 'item-box occupied';
+          box.innerHTML = `
+            <div style="width:100%; display:flex; justify-content:flex-end" onclick="excluirExp('${id}', event)">
+              <div style="color:var(--danger)">${ICONE_REMOVER}</div>
+            </div>
+            <span class="nome-portador">${p.nome}</span>
+            <span class="hora-chave">${p.data} às ${p.hora}</span>
+          `;
+          lista.appendChild(box);
+      });
+  });
+
+  window.excluirExp = (id, e) => { e.stopPropagation(); db.ref('experimentais/'+id).remove(); };
+
+  initChaves();
+</script>
+</body>
+</html>
