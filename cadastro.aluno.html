@@ -130,6 +130,7 @@
 
         /* Estilos Aulas e Jogos */
         .btnModern{display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:20px;border:1px solid #ddd;background:#f8f8f8;font-weight:600;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+        .btnPanic{background: var(--danger); color: white; border: none; font-size: 17px; box-shadow: 0 6px 18px rgba(255, 71, 87, 0.3);}
         .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center;backdrop-filter: blur(4px)}
         .modal-custom{background:#fff;width:94%;max-width:500px;border-radius:24px;padding:20px;max-height:85vh;display:flex;flex-direction:column;position:relative;overflow-y: auto;}
         .modal-custom.large { max-width: 800px; }
@@ -141,7 +142,7 @@
         .row-custom{display:flex;gap:8px;margin-top:10px}
         .btnSec{border-radius:14px;border:none;background: #000;padding:12px 16px;color:#fff;cursor:pointer;font-weight:600}
         .lista-custom{margin-top:15px; overflow-y:auto; flex:1;}
-        .item-aluno, .item-nota{display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #eee; cursor: pointer;}
+        .item-aluno, .item-nota, .item-panic{display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #eee; cursor: pointer;}
         .grid-jogos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; overflow-y: auto; padding-bottom: 20px; }
         .card-video { cursor: pointer; transition: transform 0.2s; }
         .card-video:hover { transform: scale(1.03); }
@@ -166,6 +167,7 @@
     <div style="display:flex;gap:14px;flex-wrap:wrap; margin-bottom: 20px;">
         <button id="btnAulas" class="btnModern" onclick="abrirModalCustom('modalAulas')"><span>Aulas Experimentais</span></button>
         <button id="btnNotas" class="btnModern" onclick="abrirModalCustom('modalNotas')"><span>Anotações</span></button>
+        <button id="btnPanic" class="btnModern btnPanic" onclick="abrirModalCustom('modalPanic')"><span>🚨 BOTÃO DO PÂNICO</span></button>
         <button id="btnJogos" class="btnModern" onclick="abrirModalCustom('modalJogos'); buscarVideos();"><span>Jogos e Vídeos</span></button>
     </div>
 
@@ -192,6 +194,18 @@
         </table>
     </div>
 </main>
+
+<div id="modalPanic" class="overlay" onclick="fecharAoClicarFora(event, 'modalPanic')">
+    <div class="modal-custom">
+      <div class="top"><span style="color:var(--danger)">Registros de Pânico / Tumulto</span><button class="x-btn" onclick="fecharCustom('modalPanic')">×</button></div>
+      <p style="font-size: 13px; color: #666; margin-bottom: 15px; text-align: center;">Deseja adicionar um novo registro de ocorrência agora?</p>
+      <div style="display:flex; gap:10px">
+          <button class="btnSec" style="flex:1; background:var(--danger)" onclick="registrarPanico()">REGISTRAR AGORA</button>
+          <button class="btnSec" style="flex:1; background:#999" onclick="fecharCustom('modalPanic')">CANCELAR</button>
+      </div>
+      <div class="lista-custom scrollCustom" id="listaPanic"></div>
+    </div>
+</div>
 
 <div id="modalAulas" class="overlay" onclick="fecharAoClicarFora(event, 'modalAulas')">
   <div class="modal-custom">
@@ -352,6 +366,39 @@ function fecharCustom(id) {
 }
 function fecharAoClicarFora(e, id) { if(e.target.id === id) fecharCustom(id); }
 function closeModalOnOut(event, id) { if(event.target.classList.contains('modal-overlay')) closeModal(id); }
+
+// --- LÓGICA PÂNICO ---
+async function registrarPanico() {
+    const agora = new Date();
+    await db.ref('panico_logs').push({
+        data: agora.toLocaleDateString('pt-BR'),
+        hora: agora.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit', second:'2-digit'})
+    });
+    fecharCustom('modalPanic');
+}
+
+db.ref('panico_logs').on('value', snap => {
+    const lista = document.getElementById('listaPanic');
+    lista.innerHTML = "";
+    const data = snap.val();
+    if(data) {
+        Object.keys(data).reverse().forEach(id => {
+            const p = data[id];
+            const div = document.createElement('div');
+            div.className = 'item-panic';
+            div.innerHTML = `
+                <div><span style="color:var(--danger); font-weight:800">🚨 OCORRÊNCIA</span><br>
+                <small>${p.data} às ${p.hora}</small></div>
+                <button class="x-btn" style="color:red; font-size:20px" onclick="excluirPanico('${id}')">×</button>
+            `;
+            lista.appendChild(div);
+        });
+    }
+});
+
+async function excluirPanico(id) {
+    if(confirm("Excluir este registro de pânico?")) await db.ref('panico_logs/'+id).remove();
+}
 
 // --- LÓGICA ANOTAÇÕES ---
 async function salvarNota() {
