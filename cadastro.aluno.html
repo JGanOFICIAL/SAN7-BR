@@ -33,7 +33,6 @@
 
         .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
 
-        /* Estilo Botão Chaves e Topbar */
         .action-header { margin-bottom: 10px; }
         .btn-keys {
             background: #f1f1f1; color: var(--text-dark); border: none;
@@ -91,9 +90,9 @@
             background: var(--white); padding: 35px; border-radius: 20px;
             width: 90%; max-width: 480px; position: relative;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            max-height: 90vh; overflow-y: auto;
         }
 
-        /* Modal de Chaves Específico */
         .modal-keys { max-width: 800px; max-height: 85vh; overflow-y: auto; padding: 25px; }
         .keys-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -116,11 +115,11 @@
 
         .field { margin-bottom: 18px; }
         .field label { display: block; font-size: 11px; font-weight: 800; color: #999; margin-bottom: 6px; }
-        .field input {
+        .field input, .field textarea {
             width: 100%; padding: 12px; border: 1.5px solid #eee;
             border-radius: 8px; outline: none; font-size: 14px;
         }
-        .field input:focus { border-color: var(--primary); }
+        .field input:focus, .field textarea:focus { border-color: var(--primary); }
 
         .btn-save {
             width: 100%; padding: 15px; background: var(--text-dark); color: white;
@@ -129,11 +128,29 @@
         }
         .btn-renovate { background: var(--primary); margin-top: 10px; }
 
-        @media (max-width: 650px) {
-            th:nth-child(3), td:nth-child(3) { display: none; }
-            .na-cell { font-size: 18px; }
-            .keys-grid { grid-template-columns: repeat(2, 1fr); }
-        }
+        /* Estilos Aulas e Jogos */
+        .btnModern{display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:20px;border:1px solid #ddd;background:#f8f8f8;font-weight:600;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+        .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center;backdrop-filter: blur(4px)}
+        .modal-custom{background:#fff;width:94%;max-width:500px;border-radius:24px;padding:20px;max-height:85vh;display:flex;flex-direction:column;position:relative;overflow-y: auto;}
+        .modal-custom.large { max-width: 800px; }
+        .player-modal{max-width:850px; background: #000; border:none;}
+        .top{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:1.2rem;margin-bottom:10px}
+        .x-btn{border:none;background:none;font-size:28px;cursor:pointer;line-height:1}
+        .red-btn{background:#d00;color:#fff;border-radius:12px;padding:5px 15px;position:absolute;right:10px;top:10px;z-index:10; border:none; cursor:pointer;}
+        .inp-custom{width:100%;padding:12px;border-radius:14px;border:1px solid #ddd;margin-top:10px;outline:none}
+        .row-custom{display:flex;gap:8px;margin-top:10px}
+        .btnSec{border-radius:14px;border:none;background: #000;padding:12px 16px;color:#fff;cursor:pointer;font-weight:600}
+        .lista-custom{margin-top:15px; overflow-y:auto; flex:1;}
+        .item-aluno, .item-nota{display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #eee; cursor: pointer;}
+        .grid-jogos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; overflow-y: auto; padding-bottom: 20px; }
+        .card-video { cursor: pointer; transition: transform 0.2s; }
+        .card-video:hover { transform: scale(1.03); }
+        .card-video img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; background: #eee; }
+        .card-video p { font-size: 13px; font-weight: 600; margin-top: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .scrollCustom::-webkit-scrollbar { width: 6px; }
+        .scrollCustom::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+        .video-frame{width:100%;height:450px;border:none;border-radius:18px}
+        @media (max-width: 600px) { .grid-jogos { grid-template-columns: repeat(2, 1fr); } .row-custom { flex-direction: column; } }
     </style>
 </head>
 <body>
@@ -145,203 +162,13 @@
     </div>
 </header>
 
-
-
-
-
-
-<br>
-
-
-
-
-
-
-<div style="display:flex;gap:14px;flex-wrap:wrap">
-  <button id="btnAulas" class="btnModern"><span>Aulas Experimentais</span></button>
-  <button id="btnJogos" class="btnModern"><span>Jogos e Vídeos</span></button>
-</div>
-
-<div id="modalAulas" class="overlay">
-  <div class="modal">
-    <div class="top"><span>Aulas Experimentais</span><button class="x" onclick="fechar('modalAulas')">×</button></div>
-    <input id="buscaAluno" class="inp" placeholder="Pesquisar na lista...">
-    <div class="row">
-      <input id="nomeAluno" class="inp" placeholder="Nome do aluno">
-      <input id="telAluno" class="inp" placeholder="Telefone">
-      <button id="btnCadastrar" class="btnSec">Cadastrar</button>
-    </div>
-    <div id="listaAlunos" class="lista scrollCustom"></div>
-  </div>
-</div>
-
-<div id="modalJogos" class="overlay">
-  <div class="modal large">
-    <div class="top"><span>Jogos Reais (Sem Videogame)</span><button class="x" onclick="fechar('modalJogos')">×</button></div>
-    <input id="buscaVideo" class="inp" placeholder="Pesquisar jogo de futebol, vôlei, etc...">
-    <div id="listaVideos" class="grid-jogos scrollCustom"></div>
-  </div>
-</div>
-
-<div id="modalPlayer" class="overlay">
-  <div class="modal player">
-    <button class="x red" onclick="fechar('modalPlayer')">×</button>
-    <iframe id="player" allowfullscreen></iframe>
-  </div>
-</div>
-
-<style>
-  :root { --primary: #007bff; --bg: #f8f8f8; }
-  .btnModern{display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:20px;border:1px solid #ddd;background:var(--bg);font-weight:600;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.08)}
-  .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center;backdrop-filter: blur(4px)}
-  .modal{background:#fff;width:94%;max-width:500px;border-radius:24px;padding:20px;max-height:85vh;display:flex;flex-direction:column;position:relative}
-  .modal.large { max-width: 800px; }
-  .player{max-width:850px; background: #000; border:none;}
-  .top{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:1.2rem;margin-bottom:10px}
-  .x{border:none;background:none;font-size:28px;cursor:pointer;line-height:1}
-  .red{background:#d00;color:#fff;border-radius:12px;padding:5px 15px;position:absolute;right:10px;top:10px;z-index:10}
-  .inp{width:100%;padding:12px;border-radius:14px;border:1px solid #ddd;margin-top:10px;outline:none}
-  .row{display:flex;gap:8px;margin-top:10px}
-  .btnSec{border-radius:14px;border:none;background: #000;padding:12px 16px;color:#fff;cursor:pointer;font-weight:600}
-  .lista{margin-top:15px; overflow-y:auto; flex:1;}
-  .item-aluno{display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #eee}
-  .grid-jogos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; overflow-y: auto; padding-bottom: 20px; }
-  .card-video { cursor: pointer; transition: transform 0.2s; }
-  .card-video:hover { transform: scale(1.03); }
-  .card-video img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; background: #eee; }
-  .card-video p { font-size: 13px; font-weight: 600; margin-top: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .scrollCustom::-webkit-scrollbar { width: 6px; }
-  .scrollCustom::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
-  iframe{width:100%;height:450px;border:none;border-radius:18px}
-  @media (max-width: 600px) { .grid-jogos { grid-template-columns: repeat(2, 1fr); } .row { flex-direction: column; } }
-</style>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
-    authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
-    projectId: "prefeitura-de-joao-camara",
-    storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
-    messagingSenderId: "269299041577",
-    appId: "1:269299041577:web:fd41b2939240e9eb476338"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const colRef = collection(db, "aulas_experimentais");
-
-  // Cadastro com persistência garantida
-  document.getElementById('btnCadastrar').onclick = async () => {
-    const nome = document.getElementById('nomeAluno').value.trim();
-    const tel = document.getElementById('telAluno').value.trim();
-    if (!nome || !tel) return alert("Preencha os campos!");
-    
-    try {
-      await addDoc(colRef, { nome, tel, data: Date.now() });
-      document.getElementById('nomeAluno').value = "";
-      document.getElementById('telAluno').value = "";
-      console.log("Salvo com sucesso!");
-    } catch (e) { 
-      console.error("ERRO DE PERSISTÊNCIA:", e);
-      alert("Erro ao salvar! Verifique se as Regras do Firestore no Console estão como 'allow read, write: if true'");
-    }
-  };
-
-  // Sincronização em Tempo Real (Escuta o banco permanentemente)
-  onSnapshot(query(colRef, orderBy("data", "desc")), (snapshot) => {
-    const lista = document.getElementById('listaAlunos');
-    lista.innerHTML = "";
-    snapshot.forEach((d) => {
-      const a = d.data();
-      const item = document.createElement('div');
-      item.className = 'item-aluno';
-      item.innerHTML = `
-        <div><strong>${a.nome}</strong><br><small>${a.tel}</small></div>
-        <button class="x" style="color:red" onclick="window.deletarAluno('${d.id}')">×</button>
-      `;
-      lista.appendChild(item);
-    });
-  }, (error) => {
-    console.error("Erro na escuta em tempo real:", error);
-  });
-
-  window.deletarAluno = async (id) => {
-    if(confirm("Excluir definitivamente?")) {
-      await deleteDoc(doc(db, "aulas_experimentais", id));
-    }
-  };
-</script>
-
-<script>
-  const API_KEY = "AIzaSyDS9f8LJEx1CFkDdmVF5AoK02hkNvxBCEE";
-  
-  async function buscarVideos(termo = "futebol ao vivo brasil") {
-    const grid = document.getElementById('listaVideos');
-    // Filtro agressivo contra videogame
-    const filtroNegativo = " -gameplay -fifa -pes -roblox -nintendo -ps5 -xbox -gaming -simulador";
-    const q = termo + filtroNegativo;
-
-    try {
-      const r = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&eventType=live&maxResults=15&q=${encodeURIComponent(q)}&key=${API_KEY}`);
-      const data = await r.json();
-      
-      grid.innerHTML = "";
-      if (data.items) {
-        data.items.forEach(v => {
-          grid.innerHTML += `
-            <div class="card-video" onclick="abrirPlayer('${v.id.videoId}')">
-              <img src="${v.snippet.thumbnails.medium.url}" alt="thumb">
-              <p>${v.snippet.title}</p>
-            </div>`;
-        });
-      }
-    } catch (e) { console.error("Erro Youtube API", e); }
-  }
-
-  function abrirPlayer(id) {
-    document.getElementById('player').src = `https://www.youtube.com/embed/${id}?autoplay=1`;
-    abrirModal('modalPlayer');
-  }
-
-  document.getElementById('btnAulas').onclick = () => abrirModal('modalAulas');
-  document.getElementById('btnJogos').onclick = () => { abrirModal('modalJogos'); buscarVideos(); };
-  document.getElementById('buscaVideo').onchange = (e) => buscarVideos(e.target.value);
-  
-  function abrirModal(id) { document.getElementById(id).style.display = "flex"; }
-  function fechar(id) { 
-    document.getElementById(id).style.display = "none"; 
-    if(id === 'modalPlayer') document.getElementById('player').src = "";
-  }
-
-  // Busca local na lista carregada
-  document.getElementById('buscaAluno').oninput = (e) => {
-    const v = e.target.value.toLowerCase();
-    document.querySelectorAll(".item-aluno").forEach(i => {
-      i.style.display = i.innerText.toLowerCase().includes(v) ? "flex" : "none";
-    });
-  };
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <main class="container">
+    <div style="display:flex;gap:14px;flex-wrap:wrap; margin-bottom: 20px;">
+        <button id="btnAulas" class="btnModern" onclick="abrirModalCustom('modalAulas')"><span>Aulas Experimentais</span></button>
+        <button id="btnNotas" class="btnModern" onclick="abrirModalCustom('modalNotas')"><span>Anotações</span></button>
+        <button id="btnJogos" class="btnModern" onclick="abrirModalCustom('modalJogos'); buscarVideos();"><span>Jogos e Vídeos</span></button>
+    </div>
+
     <div class="action-header">
         <button class="btn-keys" onclick="openModal('modalKeys')">🔑 CHAVES</button>
     </div>
@@ -366,12 +193,67 @@
     </div>
 </main>
 
+<div id="modalAulas" class="overlay" onclick="fecharAoClicarFora(event, 'modalAulas')">
+  <div class="modal-custom">
+    <div class="top"><span>Aulas Experimentais</span><button class="x-btn" onclick="fecharCustom('modalAulas')">×</button></div>
+    <input id="buscaAluno" class="inp-custom" placeholder="Pesquisar na lista...">
+    <div class="row-custom">
+      <input id="nomeAluno" class="inp-custom" placeholder="Nome do aluno">
+      <input id="telAluno" class="inp-custom" placeholder="Telefone">
+      <button id="btnCadastrarExp" class="btnSec" onclick="cadastrarAulaExperimental()">Cadastrar</button>
+    </div>
+    <div id="listaAlunos" class="lista-custom scrollCustom"></div>
+  </div>
+</div>
+
+<div id="modalNotas" class="overlay" onclick="fecharAoClicarFora(event, 'modalNotas')">
+    <div class="modal-custom">
+      <div class="top"><span>Anotações Diárias</span><button class="x-btn" onclick="fecharCustom('modalNotas')">×</button></div>
+      <button class="btnSec" style="width:100%" onclick="abrirModalCustom('modalNovaNota')">+ Nova Anotação</button>
+      <div id="listaNotas" class="lista-custom scrollCustom"></div>
+    </div>
+</div>
+
+<div id="modalNovaNota" class="overlay" onclick="fecharAoClicarFora(event, 'modalNovaNota')">
+    <div class="modal-custom">
+      <div class="top"><span>Nova Anotação</span><button class="x-btn" onclick="fecharCustom('modalNovaNota')">×</button></div>
+      <input id="notaTitulo" class="inp-custom" placeholder="Título da anotação">
+      <textarea id="notaTexto" class="inp-custom" style="height:150px; resize:none" placeholder="Escreva aqui..."></textarea>
+      <button class="btn-save" onclick="salvarNota()">SALVAR AGORA</button>
+    </div>
+</div>
+
+<div id="modalVerNota" class="overlay" onclick="fecharAoClicarFora(event, 'modalVerNota')">
+    <div class="modal-custom">
+      <div class="top"><span id="verTitulo">Título</span><button class="x-btn" onclick="fecharCustom('modalVerNota')">×</button></div>
+      <p id="verData" style="font-size:11px; color:#999; margin-bottom:15px"></p>
+      <div id="verTexto" style="white-space: pre-wrap; margin-bottom: 20px; font-size:14px; line-height:1.6; border-top: 1px solid #eee; padding-top:10px"></div>
+      <div style="display:flex; gap:10px">
+          <button class="btnSec" style="flex:1; background:#007bff" id="btnPdf">Baixar PDF</button>
+          <button class="btnSec" style="flex:1; background:#ff4757" id="btnExcluirNota">Excluir</button>
+      </div>
+    </div>
+</div>
+
+<div id="modalJogos" class="overlay" onclick="fecharAoClicarFora(event, 'modalJogos')">
+  <div class="modal-custom large">
+    <div class="top"><span>Jogos Reais (Sem Videogame)</span><button class="x-btn" onclick="fecharCustom('modalJogos')">×</button></div>
+    <input id="buscaVideo" class="inp-custom" placeholder="Pesquisar jogo de futebol, vôlei, etc...">
+    <div id="listaVideos" class="grid-jogos scrollCustom"></div>
+  </div>
+</div>
+
+<div id="modalPlayer" class="overlay">
+  <div class="modal-custom player-modal">
+    <button class="red-btn" onclick="fecharCustom('modalPlayer')">FECHAR VÍDEO</button>
+    <iframe id="player" class="video-frame" allowfullscreen></iframe>
+  </div>
+</div>
+
 <div id="modalKeys" class="modal-overlay" onclick="closeModalOnOut(event, 'modalKeys')">
     <div class="modal modal-keys">
         <h2 style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">🔑 Gestão de Chaves</h2>
-        <p style="font-size: 12px; color: #888;">Clique em uma chave para atribuir ou no X para liberar.</p>
-        <div class="keys-grid" id="keys-container">
-            </div>
+        <div class="keys-grid" id="keys-container"></div>
     </div>
 </div>
 
@@ -440,6 +322,7 @@
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -457,15 +340,133 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 let USERS = {};
 let KEYS_DATA = {};
+const YOUTUBE_API_KEY = "AIzaSyDS9f8LJEx1CFkDdmVF5AoK02hkNvxBCEE";
 
+// --- FUNÇÕES DE MODAL ---
 function openModal(id) { document.getElementById(id).style.display = 'flex'; }
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function abrirModalCustom(id) { document.getElementById(id).style.display = 'flex'; }
+function fecharCustom(id) { 
+    document.getElementById(id).style.display = 'none'; 
+    if(id === 'modalPlayer') document.getElementById('player').src = "";
+}
+function fecharAoClicarFora(e, id) { if(e.target.id === id) fecharCustom(id); }
+function closeModalOnOut(event, id) { if(event.target.classList.contains('modal-overlay')) closeModal(id); }
 
-function closeModalOnOut(event, id) {
-    if(event.target.classList.contains('modal-overlay')) closeModal(id);
+// --- LÓGICA ANOTAÇÕES ---
+async function salvarNota() {
+    const titulo = document.getElementById('notaTitulo').value;
+    const texto = document.getElementById('notaTexto').value;
+    if(!titulo || !texto) return alert("Preencha tudo");
+    const agora = new Date();
+    await db.ref('anotacoes').push({
+        titulo, texto, 
+        data: agora.toLocaleDateString('pt-BR'),
+        hora: agora.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})
+    });
+    document.getElementById('notaTitulo').value = "";
+    document.getElementById('notaTexto').value = "";
+    fecharCustom('modalNovaNota');
 }
 
-// --- LOGICA DE CHAVES ---
+db.ref('anotacoes').on('value', snap => {
+    const lista = document.getElementById('listaNotas');
+    lista.innerHTML = "";
+    const data = snap.val();
+    if(data) {
+        Object.keys(data).reverse().forEach(id => {
+            const n = data[id];
+            const div = document.createElement('div');
+            div.className = 'item-nota';
+            div.innerHTML = `<div><strong>${n.titulo}</strong><br><small>${n.data} às ${n.hora}</small></div><span>➔</span>`;
+            div.onclick = () => verNota(id, n);
+            lista.appendChild(div);
+        });
+    }
+});
+
+function verNota(id, n) {
+    document.getElementById('verTitulo').innerText = n.titulo;
+    document.getElementById('verData').innerText = `${n.data} | ${n.hora}`;
+    document.getElementById('verTexto').innerText = n.texto;
+    document.getElementById('btnExcluirNota').onclick = () => {
+        if(confirm("Excluir nota?")) { db.ref('anotacoes/'+id).remove(); fecharCustom('modalVerNota'); }
+    };
+    document.getElementById('btnPdf').onclick = () => gerarPdfNota(n);
+    abrirModalCustom('modalVerNota');
+}
+
+function gerarPdfNota(n) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(20); doc.text(n.titulo, 10, 20);
+    doc.setFontSize(10); doc.text(`${n.data} - ${n.hora}`, 10, 30);
+    doc.line(10, 35, 200, 35);
+    doc.setFontSize(12);
+    const splitText = doc.splitTextToSize(n.texto, 180);
+    doc.text(splitText, 10, 45);
+    doc.save(`anotacao_${n.titulo}.pdf`);
+}
+
+// --- LÓGICA AULAS EXPERIMENTAIS ---
+async function cadastrarAulaExperimental() {
+    const nome = document.getElementById('nomeAluno').value.trim();
+    const tel = document.getElementById('telAluno').value.trim();
+    if (!nome || !tel) return alert("Preencha os campos!");
+    await db.ref('aulas_experimentais').push({ nome, tel, data: Date.now() });
+    document.getElementById('nomeAluno').value = "";
+    document.getElementById('telAluno').value = "";
+}
+
+db.ref('aulas_experimentais').on('value', snap => {
+    const lista = document.getElementById('listaAlunos');
+    lista.innerHTML = "";
+    const data = snap.val();
+    if(data) {
+        Object.keys(data).reverse().forEach(id => {
+            const a = data[id];
+            const item = document.createElement('div');
+            item.className = 'item-aluno';
+            item.innerHTML = `<div><strong>${a.nome}</strong><br><small>${a.tel}</small></div><button class="x-btn" style="color:red" onclick="deletarAulaExp('${id}')">×</button>`;
+            lista.appendChild(item);
+        });
+    }
+});
+
+async function deletarAulaExp(id) {
+    if(confirm("Excluir aula experimental?")) await db.ref('aulas_experimentais/' + id).remove();
+}
+
+document.getElementById('buscaAluno').oninput = (e) => {
+    const v = e.target.value.toLowerCase();
+    document.querySelectorAll("#listaAlunos .item-aluno").forEach(i => {
+        i.style.display = i.innerText.toLowerCase().includes(v) ? "flex" : "none";
+    });
+};
+
+// --- LÓGICA YOUTUBE ---
+async function buscarVideos(termo = "futebol ao vivo brasil") {
+    const grid = document.getElementById('listaVideos');
+    const q = termo + " -gameplay -fifa -pes -roblox -nintendo -ps5 -xbox -gaming -simulador";
+    try {
+        const r = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&eventType=live&maxResults=15&q=${encodeURIComponent(q)}&key=${YOUTUBE_API_KEY}`);
+        const data = await r.json();
+        grid.innerHTML = "";
+        if (data.items) {
+            data.items.forEach(v => {
+                grid.innerHTML += `<div class="card-video" onclick="abrirPlayer('${v.id.videoId}')"><img src="${v.snippet.thumbnails.medium.url}"><p>${v.snippet.title}</p></div>`;
+            });
+        }
+    } catch (e) { console.error("Erro Youtube API"); }
+}
+
+function abrirPlayer(id) {
+    document.getElementById('player').src = `https://www.youtube.com/embed/${id}?autoplay=1`;
+    abrirModalCustom('modalPlayer');
+}
+document.getElementById('buscaVideo').onchange = (e) => buscarVideos(e.target.value);
+
+// --- LÓGICA DE CHAVES ---
 db.ref('chaves').on('value', snap => {
     KEYS_DATA = snap.val() || {};
     renderKeys();
@@ -480,13 +481,7 @@ function renderKeys() {
         const div = document.createElement('div');
         div.className = `key-card ${isOccupied ? 'occupied' : ''}`;
         div.onclick = () => isOccupied ? null : openAssignKey(i);
-        
-        div.innerHTML = `
-            <button class="btn-clear-key" onclick="clearKey(event, ${i})">✕</button>
-            <h4>CHAVE ${i}</h4>
-            <span class="user-name">${isOccupied ? keyInfo.user : 'Livre'}</span>
-            ${isOccupied ? `<span class="time-info">${keyInfo.date}<br>${keyInfo.time}</span>` : '🔑'}
-        `;
+        div.innerHTML = `<button class="btn-clear-key" onclick="clearKey(event, ${i})">✕</button><h4>CHAVE ${i}</h4><span class="user-name">${isOccupied ? keyInfo.user : 'Livre'}</span>${isOccupied ? `<span class="time-info">${keyInfo.date}<br>${keyInfo.time}</span>` : '🔑'}`;
         container.appendChild(div);
     }
 }
@@ -501,24 +496,18 @@ function openAssignKey(num) {
 async function saveKeyAssignment() {
     const num = document.getElementById('key-number-val').value;
     const user = document.getElementById('key-user-name').value;
-    if(!user) return alert("Digite o nome da pessoa");
-    
+    if(!user) return alert("Digite o nome");
     const now = new Date();
-    const dateStr = now.toLocaleDateString('pt-BR');
-    const timeStr = now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-
-    await db.ref('chaves/' + num).set({ user, date: dateStr, time: timeStr });
+    await db.ref('chaves/' + num).set({ user, date: now.toLocaleDateString('pt-BR'), time: now.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) });
     closeModal('modalAssignKey');
 }
 
 async function clearKey(e, num) {
     e.stopPropagation();
-    if(confirm(`Liberar Chave ${num}?`)) {
-        await db.ref('chaves/' + num).remove();
-    }
+    if(confirm(`Liberar Chave ${num}?`)) await db.ref('chaves/' + num).remove();
 }
 
-// --- LOGICA DE ALUNOS (Mantida) ---
+// --- LÓGICA DE ALUNOS ---
 db.ref('users').on('value', snap => {
     USERS = snap.val() || {};
     renderTable();
@@ -528,22 +517,14 @@ function renderTable() {
     const tbody = document.getElementById('aluno-list');
     const search = document.getElementById('search').value.toLowerCase();
     tbody.innerHTML = '';
-    const today = new Date();
-    today.setHours(0,0,0,0);
-
+    const today = new Date(); today.setHours(0,0,0,0);
     Object.keys(USERS).sort().forEach(na => {
         const u = USERS[na];
         if (u.name.toLowerCase().includes(search) || na.includes(search)) {
-            const endDate = new Date(u.endDate);
-            const expired = endDate < today;
+            const expired = new Date(u.endDate) < today;
             const tr = document.createElement('tr');
             tr.onclick = () => openEdit(na, u);
-            tr.innerHTML = `
-                <td class="na-cell">${na}</td>
-                <td><div class="name-cell">${u.name}</div></td>
-                <td style="color:#777">${u.planName || '---'}</td>
-                <td><span class="badge ${expired ? 'badge-expired' : 'badge-active'}">${expired ? 'INATIVO' : 'ATIVO'}</span></td>
-            `;
+            tr.innerHTML = `<td class="na-cell">${na}</td><td><div class="name-cell">${u.name}</div></td><td style="color:#777">${u.planName || '---'}</td><td><span class="badge ${expired ? 'badge-expired' : 'badge-active'}">${expired ? 'INATIVO' : 'ATIVO'}</span></td>`;
             tbody.appendChild(tr);
         }
     });
@@ -553,13 +534,8 @@ async function saveNewUser() {
     const na = Math.floor(10000 + Math.random() * 90000).toString();
     const name = document.getElementById('add-name').value;
     const end = document.getElementById('add-end').value;
-    if(!name || !end) return alert("Preencha Nome e Data de Término.");
-    await db.ref('users/' + na).set({
-        name, planName: document.getElementById('add-plan').value,
-        startDate: document.getElementById('add-start').value, endDate: end,
-        active: true, createdAt: new Date().toISOString().split('T')[0]
-    });
-    alert("Cadastrado! NA: " + na);
+    if(!name || !end) return alert("Preencha os dados!");
+    await db.ref('users/' + na).set({ name, planName: document.getElementById('add-plan').value, startDate: document.getElementById('add-start').value, endDate: end, active: true, createdAt: new Date().toISOString().split('T')[0] });
     closeModal('modalAdd');
 }
 
@@ -575,23 +551,15 @@ function openEdit(na, u) {
 
 async function updateUser() {
     const na = document.getElementById('edit-na-val').value;
-    await db.ref('users/' + na).update({
-        name: document.getElementById('edit-name').value,
-        planName: document.getElementById('edit-plan').value,
-        startDate: document.getElementById('edit-start').value,
-        endDate: document.getElementById('edit-end').value
-    });
+    await db.ref('users/' + na).update({ name: document.getElementById('edit-name').value, planName: document.getElementById('edit-plan').value, startDate: document.getElementById('edit-start').value, endDate: document.getElementById('edit-end').value });
     closeModal('modalEdit');
 }
 
 async function renovatePlan() {
     const na = document.getElementById('edit-na-val').value;
-    const currentEndStr = document.getElementById('edit-end').value;
     let base = new Date();
-    if(currentEndStr) {
-        const currentEnd = new Date(currentEndStr);
-        if(currentEnd > base) base = currentEnd;
-    }
+    const currentEnd = new Date(document.getElementById('edit-end').value);
+    if(currentEnd > base) base = currentEnd;
     base.setDate(base.getDate() + 30);
     await db.ref('users/' + na).update({ endDate: base.toISOString().split('T')[0], active: true });
     closeModal('modalEdit');
