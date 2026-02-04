@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DomusFit - Registro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --modern-green: #2ecc71;
+            --dark-green: #27ae60;
+            --text-black: #1a1a1a;
+            --text-gray: #7f8c8d;
+        }
+
+        * { box-sizing: border-box; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: flex-start;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        canvas#stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 500px;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Logo no canto esquerdo superior */
+        .logo-box {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .logo-box img {
+            max-width: 150px;
+            border: none;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-black);
+            margin: 10px 0 30px 0;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+        }
+
+        .input-container { margin-bottom: 40px; position: relative; }
+        
+        .input-container label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 900;
+            color: var(--modern-green);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 1.2px;
+        }
+
+        .input-container input {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid #eee;
+            padding: 15px 0;
+            font-size: 1.4rem;
+            font-weight: 500;
+            outline: none;
+            background: transparent;
+            color: var(--text-black);
+        }
+
+        .input-container input:focus {
+            border-bottom-color: var(--modern-green);
+        }
+
+        /* Seletor de Aluno */
+        .choice-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .choice-card {
+            flex: 1;
+            padding: 18px;
+            border: 2px solid #f0f0f0;
+            border-radius: 16px;
+            text-align: center;
+            font-weight: 700;
+            cursor: pointer;
+            color: var(--text-gray);
+            background: #fafafa;
+        }
+
+        .choice-card.active {
+            border-color: var(--modern-green);
+            color: var(--modern-green);
+            background: #ffffff;
+            box-shadow: 0 10px 20px rgba(46, 204, 113, 0.1);
+        }
+
+        .footer-action {
+            margin-top: auto;
+            padding-top: 40px;
+        }
+
+        .btn-confirm {
+            width: 100%;
+            padding: 22px;
+            background: var(--modern-green);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 15px 30px rgba(46, 204, 113, 0.25);
+        }
+
+        .btn-confirm:active { transform: scale(0.96); }
+
+        /* Loader e Sucesso */
+        #loader-screen { display: none; text-align: left; }
+        #success-screen { display: none; animation: slideIn 0.5s ease forwards; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .summary-box {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 24px;
+            margin: 30px 0;
+            border-left: 6px solid var(--modern-green);
+        }
+
+        .summary-box p {
+            margin: 12px 0;
+            font-size: 1rem;
+            color: #444;
+        }
+
+        .summary-box strong { color: var(--text-black); }
+    </style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<div class="content-wrapper">
+    <div class="logo-box">
+        <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" alt="DomusFit">
+    </div>
+
+    <div id="view-form">
+        <h1>Registro de <br>Presença.</h1>
+        
+        <form id="mainForm">
+            <div class="input-container">
+                <label>Nome Completo</label>
+                <input type="text" id="nome" placeholder="Digite seu nome" required>
+            </div>
+
+            <div class="input-container">
+                <label>WhatsApp</label>
+                <input type="tel" id="telefone" placeholder="(00) 00000-0000" maxlength="15" required>
+            </div>
+
+            <div class="input-container">
+                <label>Você é aluno DomusFit?</label>
+                <div class="choice-row">
+                    <div class="choice-card" onclick="setOpt('Sim', this)">Sim</div>
+                    <div class="choice-card" onclick="setOpt('Não', this)">Não</div>
+                </div>
+            </div>
+
+            <div class="footer-action">
+                <button type="submit" class="btn-confirm">REGISTRAR ENTRADA</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="loader-screen">
+        <h1 style="color: var(--modern-green);">Processando...</h1>
+        <div style="width: 40px; height: 40px; border: 4px solid #eee; border-top-color: var(--modern-green); border-radius: 50%; animation: spin 1s infinite linear;"></div>
+    </div>
+
+    <div id="success-screen">
+        <h1 style="color: var(--modern-green);">Presença <br>Confirmada.</h1>
+        <p style="color: var(--text-gray);">Tudo certo! Aproveite o evento.</p>
+        
+        <div class="summary-box" id="summary"></div>
+
+        <button onclick="location.reload()" class="btn-confirm" style="background: #1a1a1a; box-shadow: none;">VOLTAR</button>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+    firebase.initializeApp({
+        apiKey: "AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI",
+        databaseURL: "https://san7-brasil-default-rtdb.firebaseio.com",
+        projectId: "san7-brasil"
+    });
+    const db = firebase.database();
+    let isAluno = '';
+
+    // Efeito Estrelas (Carnaval Clean)
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    window.onresize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    window.onresize();
+
+    for(let i=0; i<60; i++) stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*2, s: Math.random()*0.5 });
+    
+    function animate() {
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+        ctx.fillStyle = "#2ecc71";
+        stars.forEach(s => {
+            ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
+            s.y += s.s; if(s.y > canvas.height) s.y = 0;
+        });
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Máscara Telefone
+    document.getElementById('telefone').addEventListener('input', e => {
+        let v = e.target.value.replace(/\D/g, "");
+        v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+        v = v.replace(/(\d{5})(\d)/, "$1-$2");
+        e.target.value = v;
+    });
+
+    function setOpt(val, el) {
+        Array.from(el.parentElement.children).forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        isAluno = val;
+    }
+
+    document.getElementById('mainForm').onsubmit = async (e) => {
+        e.preventDefault();
+        if(!isAluno) return alert("Selecione se é aluno!");
+
+        const dados = {
+            nome: document.getElementById('nome').value,
+            telefone: document.getElementById('telefone').value,
+            aluno: isAluno,
+            hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
+            data: new Date().toLocaleDateString('pt-BR')
+        };
+
+        document.getElementById('view-form').style.display = 'none';
+        document.getElementById('loader-screen').style.display = 'block';
+
+        await db.ref('presencas_evento').push(dados);
+
+        setTimeout(() => {
+            document.getElementById('loader-screen').style.display = 'none';
+            document.getElementById('success-screen').style.display = 'block';
+            document.getElementById('summary').innerHTML = `
+                <p><strong>Nome:</strong> ${dados.nome}</p>
+                <p><strong>Telefone:</strong> ${dados.telefone}</p>
+                <p><strong>Aluno:</strong> ${dados.aluno}</p>
+                <p><strong>Horário:</strong> ${dados.hora}</p>
+            `;
+        }, 2000);
+    };
+</script>
+
+<style> @keyframes spin { to { transform: rotate(360deg); } } </style>
+</body>
+</html>
