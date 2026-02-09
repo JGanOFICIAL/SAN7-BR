@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>DomusFit Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; margin: 0; padding: 40px; background: #fff; color: #1a1a1a; }
+        .top-nav { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 50px; }
+        
+        .metrics { display: flex; gap: 40px; margin-bottom: 40px; }
+        .m-card h2 { font-size: 3rem; margin: 0; color: #2ecc71; letter-spacing: -2px; }
+        .m-card p { margin: 0; font-weight: 700; color: #999; text-transform: uppercase; font-size: 0.7rem; }
+
+        .search-area { width: 100%; max-width: 400px; margin-bottom: 30px; position: relative; }
+        .search-area input { width: 100%; padding: 15px 0; border: none; border-bottom: 2px solid #eee; font-size: 1rem; outline: none; }
+        .search-area input:focus { border-color: #2ecc71; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 15px 0; color: #999; font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid #eee; }
+        td { padding: 25px 0; border-bottom: 1px solid #f9f9f9; font-size: 0.95rem; }
+        
+        .badge { padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 0.7rem; }
+        .badge-sim { background: #e3fcef; color: #2ecc71; }
+        .badge-nao { background: #fff5f8; color: #ff007a; }
+
+        .btn-del { border: none; background: none; color: #ddd; cursor: pointer; font-size: 1.1rem; }
+        .btn-del:hover { color: #ff007a; }
+    </style>
+</head>
+<body>
+
+<div class="top-nav">
+    <h1>Controle <br>de Fluxo.</h1>
+    <div id="relogio" style="font-weight: 800; color: #eee; font-size: 1.5rem;"></div>
+</div>
+
+<div class="metrics">
+    <div class="m-card"><h2 id="t-total">0</h2><p>Total Presenças</p></div>
+    <div class="m-card"><h2 id="t-alunos" style="color: #3498db;">0</h2><p>Alunos Domus</p></div>
+</div>
+
+<div class="search-area">
+    <input type="text" id="filter" placeholder="Buscar por nome..." oninput="draw()">
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Participante</th>
+            <th>Contato</th>
+            <th>Vínculo</th>
+            <th>Check-in</th>
+            <th>Ação</th>
+        </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+</table>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+    firebase.initializeApp({
+        apiKey: "AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI",
+        databaseURL: "https://san7-brasil-default-rtdb.firebaseio.com",
+        projectId: "san7-brasil"
+    });
+    const db = firebase.database();
+    let lista = [];
+
+    db.ref('presencas_evento').on('value', snap => {
+        lista = [];
+        snap.forEach(c => { lista.push({id: c.key, ...c.val()}); });
+        draw();
+    });
+
+    function draw() {
+        const f = document.getElementById('filter').value.toLowerCase();
+        const b = document.getElementById('tbody');
+        b.innerHTML = '';
+        let al = 0;
+
+        lista.filter(i => i.nome.toLowerCase().includes(f)).forEach(i => {
+            if(i.aluno === 'Sim') al++;
+            b.innerHTML += `
+                <tr>
+                    <td><strong>${i.nome}</strong></td>
+                    <td>${i.telefone}</td>
+                    <td><span class="badge ${i.aluno === 'Sim' ? 'badge-sim' : 'badge-nao'}">${i.aluno}</span></td>
+                    <td style="color:#888">${i.hora}</td>
+                    <td><button class="btn-del" onclick="apagar('${i.id}')"><i class="fa-solid fa-trash-can"></i></button></td>
+                </tr>
+            `;
+        });
+        document.getElementById('t-total').innerText = lista.length;
+        document.getElementById('t-alunos').innerText = al;
+    }
+
+    function apagar(id) { if(confirm('Excluir registro?')) db.ref('presencas_evento').child(id).remove(); }
+    setInterval(() => { document.getElementById('relogio').innerText = new Date().toLocaleTimeString(); }, 1000);
+</script>
+</body>
+</html>
