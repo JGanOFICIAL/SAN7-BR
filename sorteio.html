@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <title>DomusFit Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
         body { font-family: 'Inter', sans-serif; margin: 0; padding: 40px; background: #fff; color: #1a1a1a; }
+
         .top-nav { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 50px; }
         
         .metrics { display: flex; gap: 40px; margin-bottom: 40px; }
@@ -26,6 +28,58 @@
 
         .btn-del { border: none; background: none; color: #ddd; cursor: pointer; font-size: 1.1rem; }
         .btn-del:hover { color: #ff007a; }
+
+        /* ===== SORTEIO ===== */
+        .btn-sorteio {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #2ecc71;
+            color: #fff;
+            border: none;
+            padding: 16px 22px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,.15);
+        }
+
+        .sorteio-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.92);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+            color: #fff;
+        }
+
+        .sorteio-nome {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .sorteio-loading {
+            font-size: 1.2rem;
+            color: #aaa;
+        }
+
+        .btn-fechar {
+            margin-top: 35px;
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 800;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -57,6 +111,14 @@
     <tbody id="tbody"></tbody>
 </table>
 
+<button class="btn-sorteio" onclick="iniciarSorteio()">🎯 Sorteio</button>
+
+<div class="sorteio-overlay" id="overlay">
+    <div class="sorteio-nome" id="nomeSorteado">---</div>
+    <div class="sorteio-loading" id="status">Sorteando...</div>
+    <button class="btn-fechar" onclick="fecharSorteio()">Fechar</button>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
@@ -66,6 +128,7 @@
         databaseURL: "https://san7-brasil-default-rtdb.firebaseio.com",
         projectId: "san7-brasil"
     });
+
     const db = firebase.database();
     let lista = [];
 
@@ -93,12 +156,50 @@
                 </tr>
             `;
         });
+
         document.getElementById('t-total').innerText = lista.length;
         document.getElementById('t-alunos').innerText = al;
     }
 
-    function apagar(id) { if(confirm('Excluir registro?')) db.ref('presencas_evento').child(id).remove(); }
-    setInterval(() => { document.getElementById('relogio').innerText = new Date().toLocaleTimeString(); }, 1000);
+    function apagar(id) {
+        if(confirm('Excluir registro?')) 
+            db.ref('presencas_evento').child(id).remove();
+    }
+
+    setInterval(() => {
+        document.getElementById('relogio').innerText = new Date().toLocaleTimeString();
+    }, 1000);
+
+    /* ===== SORTEIO ===== */
+
+    function iniciarSorteio() {
+        if(lista.length === 0){
+            alert("Nenhum participante cadastrado!");
+            return;
+        }
+
+        document.getElementById('overlay').style.display = 'flex';
+
+        let contador = 0;
+        const efeito = setInterval(() => {
+            const random = Math.floor(Math.random() * lista.length);
+            document.getElementById('nomeSorteado').innerText = lista[random].nome;
+            contador++;
+        }, 80);
+
+        setTimeout(() => {
+            clearInterval(efeito);
+            const final = Math.floor(Math.random() * lista.length);
+            document.getElementById('nomeSorteado').innerText = lista[final].nome;
+            document.getElementById('status').innerText = "🎉 Sorteado!";
+        }, 3500);
+    }
+
+    function fecharSorteio() {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('status').innerText = "Sorteando...";
+    }
 </script>
+
 </body>
 </html>
