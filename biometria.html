@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <title>Cadastro Biométrico - DomusFit</title>
     <style>
         * {
@@ -22,11 +22,10 @@
 
         body {
             min-height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url("https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000013-2fae32fae5/700/3C689C7F-7879-42BA-9736-D2E498D707CE.webp?ph=c2a6771173") no-repeat center center/cover;
+            background: linear-gradient(rgba(255,255,255,0.2), rgba(255,255,255,0.2)), url("https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000013-2fae32fae5/700/3C689C7F-7879-42BA-9736-D2E498D707CE.webp?ph=c2a6771173") no-repeat center center/cover;
             background-attachment: fixed;
         }
 
-        /* Header Fixo */
         header {
             position: fixed;
             top: 0;
@@ -39,7 +38,7 @@
             justify-content: space-between;
             padding: 0 25px;
             border-bottom: 1px solid #eee;
-            z-index: 1000;
+            z-index: 100;
         }
 
         .logo-canto-esquerdo {
@@ -59,47 +58,42 @@
             text-transform: uppercase;
         }
 
-        /* Container Principal */
-        .container {
+        main {
             max-width: 500px;
-            margin: 100px auto 40px;
+            margin: 90px auto 30px;
             padding: 20px;
         }
 
         .card {
             background: #fff;
-            padding: 35px 30px;
+            padding: 30px;
             box-shadow: 0 40px 80px rgba(0,0,0,0.15);
+            animation: entrance 0.7s ease-out;
+        }
+
+        @keyframes entrance {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h2 {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 900;
             text-align: center;
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 20px;
         }
 
-        .subtitle {
-            text-align: center;
-            color: var(--text-gray);
-            font-size: 12px;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Info do Usuário */
         .user-info {
-            background: #f8f8f8;
+            background: #f9f9f9;
             padding: 20px;
+            border-left: 4px solid var(--brand-green);
             margin-bottom: 25px;
-            border-left: 5px solid var(--brand-green);
         }
 
         .user-info p {
+            margin: 8px 0;
             font-size: 14px;
-            margin-bottom: 8px;
             color: #333;
         }
 
@@ -108,200 +102,184 @@
             font-weight: 800;
         }
 
-        /* Inputs */
-        .input-group {
-            margin-bottom: 20px;
+        .info-complementar {
+            margin-bottom: 25px;
         }
 
-        label {
+        .info-complementar label {
             display: block;
             font-size: 10px;
             font-weight: 800;
             color: #999;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             text-transform: uppercase;
             letter-spacing: 1.5px;
         }
 
-        input {
+        .info-complementar input {
             width: 100%;
             padding: 15px;
             border: 1px solid var(--border-color);
             background: #fcfcfc;
-            font-size: 16px;
+            font-size: 14px;
+            margin-bottom: 15px;
             outline: none;
-            transition: 0.3s;
         }
 
-        input:focus {
+        .info-complementar input:focus {
             border-color: var(--brand-green);
             background: #fff;
         }
 
-        .optional {
-            opacity: 0.7;
-            font-style: italic;
-        }
-
-        /* Botões */
-        .btn {
+        .btn-biometria {
             width: 100%;
-            padding: 18px;
+            padding: 20px;
             border: none;
             font-weight: 900;
             font-size: 13px;
             text-transform: uppercase;
             cursor: pointer;
             transition: 0.3s;
-            margin-top: 15px;
-        }
-
-        .btn-primary {
             background: var(--brand-green);
             color: #fff;
+            margin: 10px 0;
         }
 
-        .btn-primary:hover {
+        .btn-biometria:hover {
             background: var(--brand-green-hover);
         }
 
-        .btn-secondary {
-            background: transparent;
-            color: #444;
-            border: 1px solid #eee;
+        .biometria-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            margin-top: 20px;
         }
 
-        .btn-secondary:hover {
-            background: #f5f5f5;
+        .biometria-status img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--brand-green);
+        }
+
+        .biometria-status span {
+            font-size: 13px;
+            color: #444;
         }
 
         /* Modal da Câmera */
-        .camera-modal {
+        #cameraModal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 2000;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
             display: none;
-            align-items: center;
             justify-content: center;
+            align-items: center;
         }
 
-        .camera-container {
+        .modal-camera-content {
             width: 90%;
-            max-width: 800px;
+            max-width: 600px;
             background: #000;
             position: relative;
         }
 
-        .camera-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: 15px 20px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+        .modal-header {
+            background: var(--brand-green);
             color: #fff;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 10;
         }
 
-        .camera-header span {
-            font-weight: 800;
-            font-size: 14px;
-            text-transform: uppercase;
-        }
-
-        .close-camera {
-            font-size: 30px;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.3s;
-        }
-
-        .close-camera:hover {
-            opacity: 0.7;
-        }
-
-        #cameraFeed {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .camera-footer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 20px;
-            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-            display: flex;
-            justify-content: center;
-            z-index: 10;
-        }
-
-        .scan-btn {
-            background: var(--brand-green);
-            color: #fff;
-            border: none;
-            padding: 15px 50px;
-            font-weight: 900;
+        .modal-header h3 {
             font-size: 16px;
+            font-weight: 800;
             text-transform: uppercase;
+        }
+
+        .modal-close {
+            font-size: 28px;
             cursor: pointer;
-            border-radius: 40px;
-            letter-spacing: 2px;
-            transition: 0.3s;
+            line-height: 1;
         }
 
-        .scan-btn:hover {
-            background: var(--brand-green-hover);
-            transform: scale(1.05);
+        #videoContainer {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: #111;
         }
 
-        .scan-btn:disabled {
-            background: #666;
-            cursor: not-allowed;
-            transform: none;
+        #videoElement {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        /* Overlay de Carregamento */
-        .loading-overlay {
+        #canvasOverlay {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.8);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 20;
-            backdrop-filter: blur(5px);
+            width: 100%;
+            height: 100%;
         }
 
-        .loading-content {
-            text-align: center;
+        .modal-footer {
+            background: #1a1a1a;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-scan {
+            background: var(--brand-green);
+            color: #fff;
+            border: none;
+            padding: 15px 40px;
+            font-weight: 800;
+            font-size: 14px;
+            text-transform: uppercase;
+            cursor: pointer;
+            letter-spacing: 2px;
+        }
+
+        .btn-scan:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #scanOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
             color: #fff;
         }
 
         .spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid rgba(255,255,255,0.1);
+            border: 4px solid rgba(255,255,255,0.3);
             border-top: 4px solid var(--brand-green);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
         }
 
         @keyframes spin {
@@ -309,16 +287,16 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Notificações */
         #notification-container {
             position: fixed;
             top: 80px;
             right: 20px;
-            z-index: 3000;
+            z-index: 2000;
         }
 
-        .notification {
+        .alert {
             background: #fff;
+            color: #000;
             padding: 16px 28px;
             border-right: 6px solid var(--brand-green);
             box-shadow: -15px 15px 40px rgba(0,0,0,0.12);
@@ -330,354 +308,371 @@
             transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        .notification.show {
-            transform: translateX(0);
-        }
-
-        .notification.error {
-            border-right-color: #ff4444;
-        }
-
-        /* Preview da Foto */
-        .photo-preview {
-            margin-top: 20px;
-            text-align: center;
-            display: none;
-        }
-
-        .photo-preview img {
-            max-width: 200px;
-            border: 3px solid var(--brand-green);
-        }
-
-        .photo-preview p {
-            margin-top: 10px;
-            font-size: 12px;
-            font-weight: 800;
-            color: var(--brand-green);
-            text-transform: uppercase;
-        }
+        .alert.show { transform: translateX(0); }
+        .alert.error { border-right-color: #ff4444; }
     </style>
 </head>
 <body>
-    <header>
-        <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-canto-esquerdo" alt="Logo">
-        <button class="btn-suporte" onclick="window.location.href='chat.html'">Suporte</button>
-    </header>
 
-    <div id="notification-container"></div>
+<div id="notification-container"></div>
 
-    <div class="container">
-        <div class="card">
-            <h2>Cadastro Biométrico</h2>
-            <p class="subtitle">Registre sua biometria facial para acesso</p>
+<header>
+    <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-canto-esquerdo">
+    <button class="btn-suporte" onclick="window.location.href='chat.html'">Suporte</button>
+</header>
 
-            <div id="userInfoCard" class="user-info">
-                <p><strong>NA:</strong> <span id="displayNA">Carregando...</span></p>
-                <p><strong>Nome:</strong> <span id="displayNome">Carregando...</span></p>
-                <p><strong>Plano:</strong> <span id="displayPlano">Carregando...</span></p>
-                <p><strong>Vencimento:</strong> <span id="displayVencimento">Carregando...</span></p>
-            </div>
-
-            <form id="cadastroForm">
-                <div class="input-group">
-                    <label>Telefone <span class="optional">(opcional)</span></label>
-                    <input type="tel" id="telefone" placeholder="(00) 00000-0000">
-                </div>
-
-                <div class="input-group">
-                    <label>Endereço <span class="optional">(opcional)</span></label>
-                    <input type="text" id="endereco" placeholder="Rua, número, bairro">
-                </div>
-
-                <button type="button" class="btn btn-primary" id="btnCadastrarBiometria">
-                    Cadastrar Biometria Facial
-                </button>
-                <button type="button" class="btn btn-secondary" onclick="window.location.href='dashboard.html'">
-                    Voltar ao Dashboard
-                </button>
-            </form>
-
-            <div id="photoPreview" class="photo-preview">
-                <img id="capturedPhoto" src="" alt="Foto capturada">
-                <p>✓ Biometria cadastrada com sucesso!</p>
-            </div>
+<main>
+    <div class="card">
+        <h2>Cadastro Biométrico</h2>
+        
+        <div id="userInfo" class="user-info">
+            <p><strong>NA:</strong> <span id="naDisplay">Carregando...</span></p>
+            <p><strong>Nome:</strong> <span id="nameDisplay">Carregando...</span></p>
+            <p><strong>Plano:</strong> <span id="planDisplay">Carregando...</span></p>
+            <p><strong>Vencimento:</strong> <span id="expiryDisplay">Carregando...</span></p>
         </div>
-    </div>
 
-    <!-- Modal da Câmera -->
-    <div class="camera-modal" id="cameraModal">
-        <div class="camera-container">
-            <div class="camera-header">
-                <span>DOMUSFIT - CADASTRO FACIAL</span>
-                <span class="close-camera" id="closeCamera">&times;</span>
+        <div class="info-complementar">
+            <label>Telefone (opcional)</label>
+            <input type="text" id="phoneInput" placeholder="(00) 00000-0000">
+            
+            <label>Endereço (opcional)</label>
+            <input type="text" id="addressInput" placeholder="Rua, número, bairro">
+            
+            <button class="btn-biometria" id="saveInfoBtn">Salvar Informações</button>
+        </div>
+
+        <div id="biometriaSection">
+            <button class="btn-biometria" id="cadastrarBiometriaBtn">
+                Cadastrar Biometria Facial
+            </button>
+            
+            <div id="biometriaStatus" class="biometria-status" style="display: none;">
+                <img id="biometriaFoto" src="" alt="Foto">
+                <span>Biometria cadastrada em: <span id="biometriaData"></span></span>
             </div>
             
-            <video id="cameraFeed" autoplay playsinline></video>
-            
-            <div class="camera-footer">
-                <button class="scan-btn" id="scanButton">Escanear</button>
-            </div>
-
-            <div class="loading-overlay" id="cameraLoading">
-                <div class="loading-content">
-                    <div class="spinner"></div>
-                    <p>PROCESSANDO IMAGEM...</p>
-                </div>
-            </div>
+            <button class="btn-biometria" id="removerBiometriaBtn" style="background:#ff4444; display: none;">
+                Remover Biometria
+            </button>
         </div>
     </div>
+</main>
 
-    <!-- Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<!-- Modal da Câmera -->
+<div id="cameraModal">
+    <div class="modal-camera-content">
+        <div class="modal-header">
+            <h3>DomusFit - Captura Biométrica</h3>
+            <span class="modal-close" onclick="fecharCamera()">&times;</span>
+        </div>
+        
+        <div id="videoContainer">
+            <video id="videoElement" autoplay playsinline></video>
+            <canvas id="canvasOverlay"></canvas>
+            
+            <div id="scanOverlay">
+                <div class="spinner"></div>
+                <div>PROCESSANDO IMAGEM...</div>
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn-scan" id="scanBtn" onclick="capturarFace()">Escanear</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+
+<script>
+// Configurações
+const CLOUD_NAME = "dzmjto17f";
+const UPLOAD_PRESET = "ml_default";
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+
+// Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+    authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
+    projectId: "prefeitura-de-joao-camara",
+    storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
+    messagingSenderId: "269299041577",
+    appId: "1:269299041577:web:fd41b2939240e9eb476338",
+    measurementId: "G-YT7NHR342J"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Variáveis globais
+let currentUser = null;
+let videoStream = null;
+let faceMatcher = null;
+let isScanning = false;
+
+// Verificar login
+const loggedUser = localStorage.getItem('loggedUser');
+if (!loggedUser) {
+    window.location.href = 'login.html';
+}
+
+// Carregar dados do usuário
+async function carregarDadosUsuario() {
+    try {
+        const snap = await db.ref('users/' + loggedUser).get();
+        if (!snap.exists()) {
+            showNotification('Usuário não encontrado', 'error');
+            setTimeout(() => { window.location.href = 'login.html'; }, 2000);
+            return;
+        }
+        
+        currentUser = snap.val();
+        
+        // Preencher informações
+        document.getElementById('naDisplay').textContent = loggedUser;
+        document.getElementById('nameDisplay').textContent = currentUser.name || 'Não informado';
+        document.getElementById('planDisplay').textContent = currentUser.planName || 'Padrão';
+        document.getElementById('expiryDisplay').textContent = currentUser.endDate || 'Sem data';
+        
+        if (currentUser.phone) document.getElementById('phoneInput').value = currentUser.phone;
+        if (currentUser.address) document.getElementById('addressInput').value = currentUser.address;
+        
+        // Verificar biometria existente
+        if (currentUser.biometria) {
+            document.getElementById('biometriaStatus').style.display = 'flex';
+            document.getElementById('biometriaFoto').src = currentUser.biometria.foto;
+            document.getElementById('biometriaData').textContent = new Date(currentUser.biometria.data).toLocaleString();
+            document.getElementById('removerBiometriaBtn').style.display = 'block';
+            document.getElementById('cadastrarBiometriaBtn').textContent = 'Atualizar Biometria';
+        }
+        
+    } catch (error) {
+        showNotification('Erro ao carregar dados', 'error');
+    }
+}
+
+// Salvar informações complementares
+document.getElementById('saveInfoBtn').addEventListener('click', async () => {
+    const phone = document.getElementById('phoneInput').value;
+    const address = document.getElementById('addressInput').value;
     
-    <script>
-        // Configuração Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
-            authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
-            projectId: "prefeitura-de-joao-camara",
-            storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
-            messagingSenderId: "269299041577",
-            appId: "1:269299041577:web:fd41b2939240e9eb476338",
-            measurementId: "G-YT7NHR342J"
+    try {
+        await db.ref('users/' + loggedUser).update({
+            phone: phone,
+            address: address
+        });
+        showNotification('Informações salvas com sucesso!');
+    } catch (error) {
+        showNotification('Erro ao salvar informações', 'error');
+    }
+});
+
+// Iniciar captura de biometria
+document.getElementById('cadastrarBiometriaBtn').addEventListener('click', async () => {
+    try {
+        // Carregar modelos do FaceAPI
+        await carregarModelosFace();
+        document.getElementById('cameraModal').style.display = 'flex';
+        iniciarCamera();
+    } catch (error) {
+        showNotification('Erro ao iniciar câmera', 'error');
+    }
+});
+
+// Carregar modelos FaceAPI
+async function carregarModelosFace() {
+    const MODEL_URL = 'https://justadudewhohacks.github.io/face-api.js/models';
+    
+    await Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+        faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+        faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+    ]);
+}
+
+// Iniciar câmera
+async function iniciarCamera() {
+    try {
+        videoStream = await navigator.mediaDevices.getUserMedia({ 
+            video: { 
+                width: 640, 
+                height: 640,
+                facingMode: 'user'
+            } 
+        });
+        
+        const video = document.getElementById('videoElement');
+        video.srcObject = videoStream;
+        
+        // Iniciar detecção em tempo real
+        video.addEventListener('play', detectarRosto);
+    } catch (error) {
+        showNotification('Erro ao acessar câmera', 'error');
+    }
+}
+
+// Detectar rosto em tempo real
+async function detectarRosto() {
+    const video = document.getElementById('videoElement');
+    const canvas = document.getElementById('canvasOverlay');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 320 });
+    
+    setInterval(async () => {
+        if (!video.videoWidth || isScanning) return;
+        
+        const detections = await faceapi.detectAllFaces(video, options)
+            .withFaceLandmarks()
+            .withFaceDescriptors();
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        if (detections.length > 0) {
+            // Desenhar 68 pontos faciais
+            faceapi.draw.drawFaceLandmarks(canvas, detections.map(d => d.landmarks));
+        }
+    }, 100);
+}
+
+// Capturar face para cadastro
+async function capturarFace() {
+    if (isScanning) return;
+    
+    const video = document.getElementById('videoElement');
+    const scanOverlay = document.getElementById('scanOverlay');
+    const scanBtn = document.getElementById('scanBtn');
+    
+    isScanning = true;
+    scanOverlay.style.display = 'flex';
+    scanBtn.disabled = true;
+    
+    try {
+        // Detectar face com landmarks
+        const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+            .withFaceLandmarks()
+            .withFaceDescriptors();
+        
+        if (detections.length === 0) {
+            throw new Error('Nenhum rosto detectado');
+        }
+        
+        if (detections.length > 1) {
+            throw new Error('Múltiplos rostos detectados');
+        }
+        
+        // Capturar frame do vídeo
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        
+        // Converter para base64
+        const imageData = canvas.toDataURL('image/jpeg', 0.9);
+        
+        // Extrair descritor facial (68 pontos)
+        const descriptor = Array.from(detections[0].descriptor);
+        
+        // Upload para Cloudinary
+        const formData = new FormData();
+        formData.append('file', imageData);
+        formData.append('upload_preset', UPLOAD_PRESET);
+        
+        const uploadResponse = await fetch(CLOUDINARY_URL, {
+            method: 'POST',
+            body: formData
+        });
+        
+        const uploadResult = await uploadResponse.json();
+        
+        // Salvar no Firebase
+        const biometriaData = {
+            foto: uploadResult.secure_url,
+            public_id: uploadResult.public_id,
+            descriptor: descriptor,
+            data: new Date().toISOString()
         };
         
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        await db.ref('users/' + loggedUser + '/biometria').set(biometriaData);
+        
+        // Atualizar interface
+        document.getElementById('biometriaStatus').style.display = 'flex';
+        document.getElementById('biometriaFoto').src = uploadResult.secure_url;
+        document.getElementById('biometriaData').textContent = new Date().toLocaleString();
+        document.getElementById('removerBiometriaBtn').style.display = 'block';
+        document.getElementById('cadastrarBiometriaBtn').textContent = 'Atualizar Biometria';
+        
+        showNotification('Biometria cadastrada com sucesso!');
+        fecharCamera();
+        
+    } catch (error) {
+        showNotification(error.message || 'Erro ao capturar face', 'error');
+        scanOverlay.style.display = 'none';
+        scanBtn.disabled = false;
+        isScanning = false;
+    }
+}
 
-        // Configuração Cloudinary
-        const CLOUD_NAME = "dzmjto17f";
-        const UPLOAD_PRESET = "ml_default";
-        const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
-
-        // Elementos DOM
-        const cameraModal = document.getElementById('cameraModal');
-        const cameraFeed = document.getElementById('cameraFeed');
-        const scanButton = document.getElementById('scanButton');
-        const closeCamera = document.getElementById('closeCamera');
-        const cameraLoading = document.getElementById('cameraLoading');
-        const btnCadastrar = document.getElementById('btnCadastrarBiometria');
-        const photoPreview = document.getElementById('photoPreview');
-        const capturedPhoto = document.getElementById('capturedPhoto');
-
-        // Variáveis globais
-        let currentUser = null;
-        let userData = null;
-        let modelsLoaded = false;
-        let cameraStream = null;
-
-        // Verificar usuário logado
-        const loggedUser = localStorage.getItem('loggedUser');
-        if (!loggedUser) {
-            window.location.href = 'login.html';
-        }
-
-        // Carregar dados do usuário
-        async function loadUserData() {
-            try {
-                const snap = await db.ref('users/' + loggedUser).get();
-                if (!snap.exists()) {
-                    showNotification('Usuário não encontrado', 'error');
-                    setTimeout(() => { window.location.href = 'login.html'; }, 2000);
-                    return;
-                }
-
-                userData = snap.val();
-                currentUser = loggedUser;
-
-                // Atualizar display
-                document.getElementById('displayNA').textContent = loggedUser;
-                document.getElementById('displayNome').textContent = userData.name || 'Não informado';
-                document.getElementById('displayPlano').textContent = userData.planName || 'Padrão';
-                document.getElementById('displayVencimento').textContent = userData.endDate || 'Não definido';
-
-                // Preencher telefone e endereço se existirem
-                if (userData.telefone) document.getElementById('telefone').value = userData.telefone;
-                if (userData.endereco) document.getElementById('endereco').value = userData.endereco;
-
-                // Verificar se já tem biometria cadastrada
-                if (userData.biometria && userData.biometria.faceDescriptor) {
-                    showNotification('Biometria já cadastrada', 'success');
-                }
-
-            } catch (error) {
-                console.error('Erro ao carregar usuário:', error);
-                showNotification('Erro ao carregar dados', 'error');
-            }
-        }
-
-        // Função para mostrar notificações
-        function showNotification(message, type = 'success') {
-            const container = document.getElementById('notification-container');
-            const notification = document.createElement('div');
-            notification.className = `notification ${type === 'error' ? 'error' : ''}`;
-            notification.textContent = message;
-            container.appendChild(notification);
+// Remover biometria
+document.getElementById('removerBiometriaBtn').addEventListener('click', async () => {
+    if (confirm('Tem certeza que deseja remover sua biometria?')) {
+        try {
+            await db.ref('users/' + loggedUser + '/biometria').remove();
             
-            setTimeout(() => notification.classList.add('show'), 50);
-            setTimeout(() => {
-                notification.classList.add('exit');
-                setTimeout(() => notification.remove(), 600);
-            }, 3500);
-        }
-
-        // Carregar modelos do FaceAPI
-        async function loadModels() {
-            try {
-                await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
-                await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
-                await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
-                modelsLoaded = true;
-                console.log('Modelos carregados com sucesso');
-            } catch (error) {
-                console.error('Erro ao carregar modelos:', error);
-                showNotification('Erro ao carregar modelos de reconhecimento', 'error');
-            }
-        }
-
-        // Iniciar câmera
-        async function startCamera() {
-            try {
-                cameraStream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { 
-                        width: 640, 
-                        height: 480,
-                        facingMode: 'user'
-                    } 
-                });
-                cameraFeed.srcObject = cameraStream;
-            } catch (error) {
-                console.error('Erro ao acessar câmera:', error);
-                showNotification('Erro ao acessar câmera', 'error');
-                cameraModal.style.display = 'none';
-            }
-        }
-
-        // Parar câmera
-        function stopCamera() {
-            if (cameraStream) {
-                cameraStream.getTracks().forEach(track => track.stop());
-                cameraStream = null;
-            }
-        }
-
-        // Capturar e processar face
-        async function captureFace() {
-            if (!modelsLoaded) {
-                showNotification('Modelos ainda carregando...', 'error');
-                return;
-            }
-
-            cameraLoading.style.display = 'flex';
-
-            try {
-                // Detectar face
-                const detections = await faceapi.detectAllFaces(cameraFeed, new faceapi.TinyFaceDetectorOptions())
-                    .withFaceLandmarks()
-                    .withFaceDescriptors();
-
-                if (detections.length === 0) {
-                    throw new Error('Nenhum rosto detectado');
-                }
-
-                if (detections.length > 1) {
-                    throw new Error('Múltiplos rostos detectados');
-                }
-
-                const detection = detections[0];
-                
-                // Criar canvas para capturar a imagem
-                const canvas = document.createElement('canvas');
-                canvas.width = cameraFeed.videoWidth;
-                canvas.height = cameraFeed.videoHeight;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(cameraFeed, 0, 0, canvas.width, canvas.height);
-
-                // Converter para base64
-                const imageData = canvas.toDataURL('image/jpeg', 0.9);
-
-                // Upload para Cloudinary
-                const formData = new FormData();
-                formData.append('file', imageData);
-                formData.append('upload_preset', UPLOAD_PRESET);
-                formData.append('public_id', `face_${loggedUser}_${Date.now()}`);
-
-                const uploadResponse = await fetch(CLOUDINARY_URL, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!uploadResponse.ok) throw new Error('Erro no upload da imagem');
-                
-                const cloudinaryData = await uploadResponse.json();
-
-                // Salvar dados biométricos no Firebase
-                const biometricData = {
-                    faceDescriptor: Array.from(detection.descriptor),
-                    landmarks: detection.landmarks.positions.map(p => ({ x: p.x, y: p.y })),
-                    imageUrl: cloudinaryData.secure_url,
-                    publicId: cloudinaryData.public_id,
-                    timestamp: new Date().toISOString(),
-                    version: '1.0'
-                };
-
-                // Salvar telefone e endereço se fornecidos
-                const updates = {
-                    telefone: document.getElementById('telefone').value,
-                    endereco: document.getElementById('endereco').value,
-                    biometria: biometricData
-                };
-
-                await db.ref('users/' + loggedUser).update(updates);
-
-                // Mostrar preview
-                capturedPhoto.src = cloudinaryData.secure_url;
-                photoPreview.style.display = 'block';
-
-                cameraModal.style.display = 'none';
-                showNotification('Biometria cadastrada com sucesso!');
-
-            } catch (error) {
-                console.error('Erro na captura:', error);
-                showNotification(error.message || 'Erro ao processar imagem', 'error');
-            } finally {
-                cameraLoading.style.display = 'none';
-            }
-        }
-
-        // Event Listeners
-        btnCadastrar.addEventListener('click', async () => {
-            if (!modelsLoaded) {
-                showNotification('Carregando modelos...', 'error');
-                return;
-            }
+            document.getElementById('biometriaStatus').style.display = 'none';
+            document.getElementById('removerBiometriaBtn').style.display = 'none';
+            document.getElementById('cadastrarBiometriaBtn').textContent = 'Cadastrar Biometria Facial';
             
-            cameraModal.style.display = 'flex';
-            await startCamera();
-        });
+            showNotification('Biometria removida com sucesso!');
+        } catch (error) {
+            showNotification('Erro ao remover biometria', 'error');
+        }
+    }
+});
 
-        closeCamera.addEventListener('click', () => {
-            cameraModal.style.display = 'none';
-            stopCamera();
-        });
+// Fechar câmera
+function fecharCamera() {
+    if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+        videoStream = null;
+    }
+    
+    document.getElementById('cameraModal').style.display = 'none';
+    document.getElementById('scanOverlay').style.display = 'none';
+    document.getElementById('scanBtn').disabled = false;
+    isScanning = false;
+}
 
-        scanButton.addEventListener('click', captureFace);
+// Notificações
+function showNotification(msg, type = 'success') {
+    const container = document.getElementById('notification-container');
+    const el = document.createElement('div');
+    el.className = `alert ${type === 'error' ? 'error' : ''}`;
+    el.innerText = msg;
+    container.appendChild(el);
+    
+    setTimeout(() => el.classList.add('show'), 50);
+    setTimeout(() => {
+        el.classList.add('exit');
+        setTimeout(() => el.remove(), 600);
+    }, 3500);
+}
 
-        // Fechar modal com ESC
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && cameraModal.style.display === 'flex') {
-                cameraModal.style.display = 'none';
-                stopCamera();
-            }
-        });
+// Inicializar
+carregarDadosUsuario();
 
-        // Inicialização
-        loadUserData();
-        loadModels();
-    </script>
+// Fechar modal com ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('cameraModal').style.display === 'flex') {
+        fecharCamera();
+    }
+});
+</script>
 </body>
 </html>
