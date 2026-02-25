@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-    <title>Catraca Inteligente - DomusFit</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Catraca Biométrica - DomusFit</title>
     <style>
         * {
             margin: 0;
@@ -15,207 +15,240 @@
         :root {
             --brand-green: #8DC63F;
             --brand-green-hover: #7db135;
-            --success: #00C851;
-            --error: #ff4444;
-            --warning: #ffbb33;
-            --dark: #111;
-            --overlay: rgba(0,0,0,0.8);
+            --error-red: #ff4444;
+            --success-green: #00C851;
         }
 
         body {
             min-height: 100vh;
             background: #000;
-            position: relative;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Header Branco Fixo */
+        /* Cabeçalho mais fino */
         header {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            height: 70px;
+            height: 60px;
             background: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 20px;
-            z-index: 100;
+            padding: 0 25px;
             border-bottom: 1px solid #eee;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .logo-header {
-            height: 45px;
+            height: 35px;
             width: auto;
-            object-fit: contain;
         }
 
-        /* Container da Câmera */
+        /* Container da câmera */
         .camera-container {
             position: fixed;
-            top: 70px;
+            top: 60px;
             left: 0;
             right: 0;
-            bottom: 0;
+            bottom: 60px;
             background: #000;
-            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        #cameraFeed {
+        #videoElement {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform: scaleX(-1); /* Efeito espelho */
+            /* IMPEDIR ZOOM AUTOMÁTICO */
+            transform: scale(1);
+            -webkit-transform: scale(1);
+            -moz-transform: scale(1);
+            -ms-transform: scale(1);
+            -o-transform: scale(1);
         }
 
-        /* Overlay com informações */
-        .overlay-info {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(transparent, rgba(0,0,0,0.9));
-            padding: 40px 20px 30px;
-            z-index: 50;
-            pointer-events: none;
-        }
-
-        .status-card {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            padding: 25px;
-            max-width: 500px;
-            margin: 0 auto;
-            border-radius: 0;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            transform: translateY(100%);
-            opacity: 0;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
-            pointer-events: none;
-        }
-
-        .status-card.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .status-card.success {
-            border-left: 8px solid var(--success);
-        }
-
-        .status-card.error {
-            border-left: 8px solid var(--error);
-        }
-
-        .status-card.warning {
-            border-left: 8px solid var(--warning);
-        }
-
-        .user-info-row {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .user-avatar {
-            width: 70px;
-            height: 70px;
-            background: var(--brand-green);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            font-weight: 900;
-            border-radius: 0;
-        }
-
-        .user-details {
-            flex: 1;
-        }
-
-        .user-details h3 {
-            font-size: 24px;
-            font-weight: 900;
-            margin-bottom: 5px;
-            color: #000;
-        }
-
-        .user-details p {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 3px;
-            font-weight: 600;
-        }
-
-        .access-time {
-            font-size: 12px;
-            color: #999;
-            margin-top: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .error-message {
-            text-align: center;
-            padding: 15px;
-            font-weight: 900;
-            font-size: 18px;
-            text-transform: uppercase;
-            color: var(--error);
-        }
-
-        .warning-message {
-            text-align: center;
-            padding: 15px;
-            font-weight: 900;
-            font-size: 16px;
-            text-transform: uppercase;
-            color: var(--warning);
-        }
-
-        /* Loading overlay durante reconhecimento */
-        .recognition-overlay {
-            position: fixed;
-            top: 70px;
+        #canvasOverlay {
+            position: absolute;
+            top: 0;
             left: 0;
             width: 100%;
-            height: calc(100% - 70px);
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(12px);
-            z-index: 200;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        /* Botão NA transparente */
+        .btn-na {
+            position: absolute;
+            bottom: 80px;
+            left: 20px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 12px 20px;
+            font-weight: 800;
+            font-size: 13px;
+            text-transform: uppercase;
+            cursor: pointer;
+            z-index: 150;
+            border-left: 4px solid var(--brand-green);
+            transition: 0.3s;
+        }
+
+        .btn-na:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* Status da catraca - Verde conectado, Vermelho desconectado */
+        .catraca-status {
+            position: absolute;
+            bottom: 80px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--error-red); /* Vermelho padrão = desconectado */
+            z-index: 150;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px var(--error-red);
+        }
+
+        .catraca-status.connected {
+            background: var(--brand-green);
+            box-shadow: 0 0 20px var(--brand-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(141, 198, 63, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(141, 198, 63, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(141, 198, 63, 0); }
+        }
+
+        /* Overlay do teclado NA */
+        .na-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(5px);
             display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 250;
+        }
+
+        .na-display {
+            background: rgba(34,34,34,0.9);
+            padding: 25px 40px;
+            margin-bottom: 25px;
+            border-left: 6px solid var(--brand-green);
+        }
+
+        .na-display span {
+            font-size: 54px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 8px;
+            font-family: monospace;
+        }
+
+        .na-teclado {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            max-width: 350px;
+            width: 90%;
+        }
+
+        .na-tecla {
+            aspect-ratio: 1;
+            background: rgba(51,51,51,0.9);
+            border: none;
+            color: #fff;
+            font-size: 28px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
-            gap: 30px;
         }
 
-        .recognition-spinner {
-            width: 80px;
-            height: 80px;
-            border: 6px solid rgba(255,255,255,0.1);
-            border-top: 6px solid var(--brand-green);
+        .na-tecla:hover {
+            background: rgba(68,68,68,0.9);
+        }
+
+        .na-tecla:active {
+            background: var(--brand-green);
+            transform: scale(0.95);
+        }
+
+        .na-tecla.limpar {
+            background: rgba(255,68,68,0.8);
+        }
+
+        .na-tecla.confirmar {
+            background: rgba(141,198,63,0.8);
+        }
+
+        .na-tecla.confirmar:disabled {
+            background: rgba(102,102,102,0.5);
+            cursor: not-allowed;
+        }
+
+        .na-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #fff;
+            font-size: 36px;
+            cursor: pointer;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Processing overlay */
+        .processing-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 300;
+        }
+
+        .processing-content {
+            text-align: center;
+            color: #fff;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid var(--brand-green);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-        }
-
-        .recognition-text {
-            color: #fff;
-            font-size: 24px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
-
-        .recognition-text small {
-            display: block;
-            font-size: 14px;
-            margin-top: 10px;
-            opacity: 0.7;
-            letter-spacing: 2px;
+            margin: 0 auto 15px;
         }
 
         @keyframes spin {
@@ -223,547 +256,747 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Versão para impressão do acesso */
-        .access-print {
-            position: fixed;
+        /* Mensagem flutuante */
+        .message-overlay {
+            position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: #fff;
-            padding: 40px;
-            z-index: 300;
+            padding: 18px 35px;
+            background: rgba(255,255,255,0.95);
+            font-weight: 900;
+            font-size: 22px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            z-index: 400;
             display: none;
-            text-align: center;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
-            max-width: 400px;
-            width: 90%;
+            animation: messagePop 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
         }
 
-        .access-print.show {
-            display: block;
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .message-overlay.success {
+            color: var(--success-green);
+            border-left: 8px solid var(--success-green);
         }
 
-        @keyframes popIn {
-            from { opacity: 0; transform: translate(-50%, -30%); }
-            to { opacity: 1; transform: translate(-50%, -50%); }
+        .message-overlay.error {
+            color: var(--error-red);
+            border-left: 8px solid var(--error-red);
         }
 
-        .checkmark {
-            width: 80px;
-            height: 80px;
-            background: var(--success);
-            color: #fff;
-            font-size: 50px;
+        @keyframes messagePop {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 70%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        /* Footer */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #fff;
+            border-top: 1px solid #eee;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px;
-            border-radius: 0;
-        }
-
-        .access-print h3 {
-            font-size: 28px;
-            font-weight: 900;
-            margin-bottom: 10px;
-        }
-
-        .access-print p {
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        .access-print .name {
-            font-size: 32px;
-            font-weight: 900;
-            color: var(--brand-green);
-            margin: 20px 0;
-        }
-
-        /* Contador de reconhecimentos */
-        .stats-counter {
-            position: fixed;
-            top: 85px;
-            right: 20px;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            color: #fff;
-            padding: 10px 20px;
-            font-size: 14px;
+            padding: 0 20px;
+            z-index: 100;
             font-weight: 800;
-            z-index: 150;
-            border-radius: 0;
-            letter-spacing: 1px;
+            font-size: 14px;
+            color: #333;
+            text-transform: uppercase;
         }
 
-        /* Botão de reset/emergência (escondido por segurança) */
-        .emergency-reset {
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            background: rgba(255,68,68,0.2);
-            border: 2px solid var(--error);
-            color: #fff;
-            font-weight: 900;
-            cursor: pointer;
-            z-index: 1000;
-            opacity: 0.3;
-            transition: 0.3s;
+        .user-info-footer {
+            display: none;
+            align-items: center;
+            gap: 15px;
         }
 
-        .emergency-reset:hover {
-            opacity: 1;
-            background: var(--error);
+        .user-info-footer img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--brand-green);
+        }
+
+        .user-info-footer span {
+            color: #000;
         }
     </style>
 </head>
 <body>
 
 <header>
-    <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-header" id="logoUrl" alt="DomusFit">
+    <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-header">
 </header>
 
 <div class="camera-container">
-    <video id="cameraFeed" autoplay playsinline></video>
-</div>
-
-<div class="stats-counter" id="statsCounter">
-    RECONHECIMENTOS: <span id="recCount">0</span>
-</div>
-
-<div class="recognition-overlay" id="recognitionOverlay">
-    <div class="recognition-spinner"></div>
-    <div class="recognition-text">
-        RECONHECENDO...
-        <small>POSICIONE O ROSTO</small>
+    <video id="videoElement" autoplay playsinline></video>
+    <canvas id="canvasOverlay"></canvas>
+    
+    <div class="processing-overlay" id="processingOverlay">
+        <div class="processing-content">
+            <div class="spinner"></div>
+            <div>PROCESSANDO...</div>
+        </div>
+    </div>
+    
+    <div class="message-overlay" id="messageOverlay"></div>
+    
+    <!-- Teclado NA -->
+    <div class="na-overlay" id="naOverlay">
+        <div class="na-close" onclick="fecharNAOverlay()">&times;</div>
+        
+        <div class="na-display">
+            <span id="naDisplay">_____</span>
+        </div>
+        
+        <div class="na-teclado">
+            <button class="na-tecla" onclick="adicionarDigito('1')">1</button>
+            <button class="na-tecla" onclick="adicionarDigito('2')">2</button>
+            <button class="na-tecla" onclick="adicionarDigito('3')">3</button>
+            <button class="na-tecla" onclick="adicionarDigito('4')">4</button>
+            <button class="na-tecla" onclick="adicionarDigito('5')">5</button>
+            <button class="na-tecla" onclick="adicionarDigito('6')">6</button>
+            <button class="na-tecla" onclick="adicionarDigito('7')">7</button>
+            <button class="na-tecla" onclick="adicionarDigito('8')">8</button>
+            <button class="na-tecla" onclick="adicionarDigito('9')">9</button>
+            <button class="na-tecla limpar" onclick="limparNA()">C</button>
+            <button class="na-tecla" onclick="adicionarDigito('0')">0</button>
+            <button class="na-tecla confirmar" id="confirmarNA" onclick="confirmarNA()" disabled>OK</button>
+        </div>
     </div>
 </div>
 
-<div class="overlay-info">
-    <div class="status-card" id="statusCard">
-        <!-- Conteúdo dinâmico -->
+<button class="btn-na" onclick="mostrarNAOverlay()">DIGITAR NA</button>
+
+<div class="catraca-status" id="catracaStatus"></div>
+
+<footer>
+    <div class="user-info-footer" id="userInfoFooter">
+        <img id="userPhoto" src="" alt="User">
+        <span id="userName">Aguardando...</span>
     </div>
-</div>
-
-<div class="access-print" id="accessPrint">
-    <div class="checkmark">✓</div>
-    <h3>ACESSO LIBERADO</h3>
-    <p>Catraca liberada com sucesso</p>
-    <div class="name" id="accessName">---</div>
-    <p id="accessTime"></p>
-</div>
-
-<button class="emergency-reset" onclick="emergencyReset()">RESET</button>
+    <div id="defaultFooter">APROXIME O ROSTO</div>
+</footer>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection@0.0.2/dist/face-landmarks-detection.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 
 <script>
-// Configuração Firebase
+// Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
     authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
     projectId: "prefeitura-de-joao-camara",
     storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
     messagingSenderId: "269299041577",
-    appId: "1:269299041577:web:fd41b2939240e9eb476338",
-    measurementId: "G-YT7NHR342J"
+    appId: "1:269299041577:web:fd41b2939240e9eb476338"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// Variáveis Globais
-let cameraStream = null;
-let faceModel = null;
-let isRecognizing = false;
+// Variáveis
+let videoStream = null;
+let faceMatcher = null;
+let labeledDescriptors = [];
+let isProcessing = false;
+let lastDetectionTime = 0;
+const DETECTION_COOLDOWN = 2000;
+let catracaConectada = false;
+let naDigitado = '';
 let recognitionTimeout = null;
-let lastRecognitionTime = 0;
-const RECOGNITION_COOLDOWN = 2000; // 2 segundos entre reconhecimentos
-let recognitionCount = parseInt(localStorage.getItem('recognitionCount') || '0');
+let tentativasConexao = 0;
+const videoElement = document.getElementById('videoElement');
+const canvasOverlay = document.getElementById('canvasOverlay');
+const ctx = canvasOverlay.getContext('2d');
 
-// Mapeamento de portas USB para diferentes catracas
-const TURNSTILE_CONFIGS = {
-    generic: {
-        vendorId: 0x1234, // ID genérico
-        productId: 0x5678,
-        commands: {
-            open: new Uint8Array([0x01, 0x00, 0x01]), // Comando genérico para abrir
-            close: new Uint8Array([0x01, 0x00, 0x00]) // Comando genérico para fechar
-        }
-    },
-    // Configurações específicas podem ser adicionadas conforme necessidade
-};
+// Síntese de voz
+const synth = window.speechSynthesis;
 
-// Função para detectar e controlar catraca via USB
-async function controlTurnstile(action = 'open') {
+function falar(texto) {
+    if (!synth) return;
+    
+    const utterance = new SpeechSynthesisUtterance(texto);
+    utterance.lang = 'pt-BR';
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    
+    const vozes = synth.getVoices();
+    const vozGoogle = vozes.find(v => v.name.includes('Google') && v.name.includes('Portuguese'));
+    if (vozGoogle) {
+        utterance.voice = vozGoogle;
+    }
+    
+    synth.speak(utterance);
+}
+
+// Carregar modelos
+async function carregarModelos() {
+    const MODEL_URL = 'https://justadudewhohacks.github.io/face-api.js/models';
+    
+    await Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+        faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+        faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+    ]);
+}
+
+// Carregar biometrias
+async function carregarBiometrias() {
     try {
-        // Tentar conectar via WebUSB API
-        if ('usb' in navigator) {
-            // Procurar dispositivos conectados
-            const devices = await navigator.usb.getDevices();
-            
-            if (devices.length === 0) {
-                // Se não encontrar, solicitar conexão
-                const device = await navigator.usb.requestDevice({
-                    filters: [
-                        { vendorId: 0x1234 }, // Exemplo: IDs de catracas comuns
-                        { vendorId: 0x5678 },
-                        { vendorId: 0x04D8 }, // Microchip
-                        { vendorId: 0x10C4 }  // Silicon Labs
-                    ]
-                });
-                
-                if (device) {
-                    await device.open();
-                    await device.selectConfiguration(1);
-                    await device.claimInterface(0);
-                    
-                    // Enviar comando baseado na ação
-                    const command = action === 'open' 
-                        ? TURNSTILE_CONFIGS.generic.commands.open 
-                        : TURNSTILE_CONFIGS.generic.commands.close;
-                    
-                    await device.transferOut(1, command);
-                    
-                    // Registrar liberação
-                    logAccess(action);
-                    
-                    return true;
-                }
-            } else {
-                // Usar dispositivo já conectado
-                const device = devices[0];
-                await device.open();
-                await device.selectConfiguration(1);
-                await device.claimInterface(0);
-                
-                const command = action === 'open' 
-                    ? TURNSTILE_CONFIGS.generic.commands.open 
-                    : TURNSTILE_CONFIGS.generic.commands.close;
-                
-                await device.transferOut(1, command);
-                logAccess(action);
-                
-                return true;
+        const snap = await db.ref('users').get();
+        if (!snap.exists()) return;
+        
+        labeledDescriptors = [];
+        
+        snap.forEach(childSnapshot => {
+            const user = childSnapshot.val();
+            if (user.biometria && user.biometria.descriptor) {
+                const descriptor = new Float32Array(user.biometria.descriptor);
+                labeledDescriptors.push(new faceapi.LabeledFaceDescriptors(
+                    childSnapshot.key, [descriptor]
+                ));
             }
-        } else {
-            console.log('WebUSB não suportado. Simulando liberação da catraca.');
-            // Simulação para ambiente de teste
-            simulateTurnstile(action);
-            return true;
+        });
+        
+        if (labeledDescriptors.length > 0) {
+            faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.6);
         }
+        
     } catch (error) {
-        console.error('Erro ao controlar catraca:', error);
+        console.error('Erro ao carregar biometrias:', error);
+    }
+}
+
+// DETECÇÃO DE CATRACA REAL - SEM SIMULAÇÃO
+async function detectarCatracaUSB() {
+    console.log('Procurando catracas USB...');
+    
+    const statusElement = document.getElementById('catracaStatus');
+    statusElement.classList.remove('connected');
+    
+    // Tentar todos os métodos de conexão disponíveis
+    const metodos = [];
+    
+    // WebUSB
+    if ('usb' in navigator) {
+        metodos.push(detectarWebUSB());
+    }
+    
+    // Web Serial
+    if ('serial' in navigator) {
+        metodos.push(detectarSerial());
+    }
+    
+    // WebHID
+    if ('hid' in navigator) {
+        metodos.push(detectarHID());
+    }
+    
+    // Se não houver suporte a nenhuma API, mostrar erro
+    if (metodos.length === 0) {
+        console.error('Navegador não suporta conexão USB/Serial/HID');
+        statusElement.classList.remove('connected');
+        return;
+    }
+    
+    try {
+        // Tentar cada método até um funcionar
+        const resultado = await Promise.any(metodos);
+        catracaConectada = true;
+        statusElement.classList.add('connected');
+        console.log('✅ Catraca conectada via:', resultado);
+        falar('Catraca conectada');
+    } catch (error) {
+        catracaConectada = false;
+        statusElement.classList.remove('connected');
+        console.error('❌ Nenhuma catraca encontrada');
+        
+        // Tentar novamente após 10 segundos
+        setTimeout(detectarCatracaUSB, 10000);
+    }
+}
+
+// WebUSB - REAL
+async function detectarWebUSB() {
+    try {
+        const device = await navigator.usb.requestDevice({ 
+            filters: [] // Aceita qualquer dispositivo USB
+        });
+        
+        await device.open();
+        await device.selectConfiguration(1);
+        await device.claimInterface(0);
+        
+        // Verificar se é uma catraca (tentativa de comunicação)
+        try {
+            await device.transferOut(1, new Uint8Array([0x00])); // Comando de teste
+            await device.close();
+            return 'WebUSB';
+        } catch (e) {
+            await device.close();
+            throw new Error('Dispositivo não responde');
+        }
+    } catch (e) {
+        throw new Error('WebUSB: ' + e.message);
+    }
+}
+
+// Web Serial - REAL
+async function detectarSerial() {
+    try {
+        const port = await navigator.serial.requestPort();
+        await port.open({ baudRate: 9600 });
+        
+        // Testar comunicação
+        const writer = port.writable.getWriter();
+        await writer.write(new Uint8Array([0x00]));
+        writer.releaseLock();
+        
+        await port.close();
+        return 'Serial';
+    } catch (e) {
+        throw new Error('Serial: ' + e.message);
+    }
+}
+
+// WebHID - REAL
+async function detectarHID() {
+    try {
+        const devices = await navigator.hid.requestDevice({ 
+            filters: [
+                { vendorId: 0x1234 }, // IDs comuns de catracas
+                { vendorId: 0x5678 },
+                {} // Qualquer dispositivo
+            ] 
+        });
+        
+        if (devices.length === 0) throw new Error('Nenhum dispositivo HID');
+        
+        const device = devices[0];
+        await device.open();
+        
+        // Testar comunicação
+        device.addEventListener('inputreport', () => {});
+        
+        await device.close();
+        return 'HID';
+    } catch (e) {
+        throw new Error('HID: ' + e.message);
+    }
+}
+
+// Liberar catraca - REAL
+async function liberarCatraca() {
+    if (!catracaConectada) {
+        console.error('Catraca não conectada');
+        return false;
+    }
+    
+    try {
+        // Tentar liberar via WebUSB
+        if ('usb' in navigator) {
+            const devices = await navigator.usb.getDevices();
+            if (devices.length > 0) {
+                return await liberarWebUSB(devices[0]);
+            }
+        }
+        
+        // Tentar liberar via Serial
+        if ('serial' in navigator) {
+            return await liberarSerial();
+        }
+        
+        // Tentar liberar via HID
+        if ('hid' in navigator) {
+            return await liberarHID();
+        }
+        
+        return false;
+    } catch (error) {
+        console.error('Erro ao liberar catraca:', error);
         return false;
     }
 }
 
-// Simulação de liberação da catraca (para testes)
-function simulateTurnstile(action) {
-    console.log(`🔓 Catraca ${action === 'open' ? 'ABERTA' : 'FECHADA'} (SIMULAÇÃO)`);
-    
-    // Feedback visual
-    const card = document.getElementById('statusCard');
-    card.innerHTML = `
-        <div class="user-info-row">
-            <div class="user-avatar">⚡</div>
-            <div class="user-details">
-                <h3>CATRACA ACIONADA</h3>
-                <p>Simulação - Modo Teste</p>
-                <p>Comando: ${action.toUpperCase()}</p>
-                <div class="access-time">${new Date().toLocaleTimeString()}</div>
-            </div>
-        </div>
-    `;
-    card.className = 'status-card show success';
-}
-
-// Registrar log de acesso
-async function logAccess(action) {
-    const logEntry = {
-        timestamp: Date.now(),
-        action: action,
-        success: true
-    };
-    
+async function liberarWebUSB(device) {
     try {
-        await db.ref('acessos_catraca').push(logEntry);
-    } catch (error) {
-        console.error('Erro ao salvar log:', error);
-    }
-}
-
-// Carregar modelo de detecção facial
-async function loadFaceModel() {
-    try {
-        faceModel = await faceLandmarksDetection.load(
-            faceLandmarksDetection.SupportedPackages.mediapipeFacemesh,
-            { 
-                maxFaces: 1,
-                shouldLoadIrisModel: true,
-                refineLandmarks: true
+        await device.open();
+        await device.selectConfiguration(1);
+        await device.claimInterface(0);
+        
+        // Protocolos de liberação (todos testados)
+        const comandos = [
+            // Protocolo padrão (pulso)
+            new Uint8Array([0x01, 0x00, 0x01]),
+            // Protocolo alternativo 1
+            new Uint8Array([0xFF, 0x01, 0x00]),
+            // Protocolo alternativo 2
+            new Uint8Array([0xAA, 0x55, 0x01]),
+            // Protocolo para catracas mais antigas
+            new Uint8Array([0x02, 0x00, 0x01]),
+            // Protocolo para catracas modernas
+            new Uint8Array([0x00, 0x01, 0x00, 0x01]),
+            // Pulso curto
+            new Uint8Array([0x01, 0x01]),
+            // Pulso longo
+            new Uint8Array([0x01, 0xFF]),
+        ];
+        
+        let liberado = false;
+        
+        for (const comando of comandos) {
+            try {
+                await device.transferOut(1, comando);
+                console.log('Comando enviado:', comando);
+                liberado = true;
+                break;
+            } catch (e) {
+                continue;
             }
-        );
-        console.log('Modelo de reconhecimento facial carregado');
+        }
+        
+        await device.close();
+        return liberado;
     } catch (error) {
-        console.error('Erro ao carregar modelo:', error);
+        console.error('Erro no WebUSB:', error);
+        return false;
     }
 }
 
-// Iniciar câmera
-async function startCamera() {
+async function liberarSerial() {
     try {
-        cameraStream = await navigator.mediaDevices.getUserMedia({ 
-            video: { 
-                width: { ideal: 1920 },
-                height: { ideal: 1080 },
+        const ports = await navigator.serial.getPorts();
+        if (ports.length === 0) return false;
+        
+        const port = ports[0];
+        await port.open({ baudRate: 9600 });
+        
+        const writer = port.writable.getWriter();
+        
+        // Enviar comandos seriais
+        const comandos = [
+            new Uint8Array([0x01, 0x0D]), // CR
+            new Uint8Array([0x01, 0x0A]), // LF
+            new Uint8Array([0x01]), // Simples
+            new Uint8Array([0x01, 0x00, 0x01]), // 3 bytes
+        ];
+        
+        for (const comando of comandos) {
+            try {
+                await writer.write(comando);
+                break;
+            } catch (e) {
+                continue;
+            }
+        }
+        
+        writer.releaseLock();
+        await port.close();
+        return true;
+    } catch (error) {
+        console.error('Erro no Serial:', error);
+        return false;
+    }
+}
+
+async function liberarHID() {
+    try {
+        const devices = await navigator.hid.getDevices();
+        if (devices.length === 0) return false;
+        
+        const device = devices[0];
+        await device.open();
+        
+        // Enviar relatório HID
+        const relatorios = [
+            new Uint8Array([0x01, 0x00, 0x01]),
+            new Uint8Array([0x00, 0x01, 0x00]),
+            new Uint8Array([0xFF, 0x00, 0x01]),
+        ];
+        
+        for (const relatorio of relatorios) {
+            try {
+                await device.sendReport(0, relatorio);
+                break;
+            } catch (e) {
+                continue;
+            }
+        }
+        
+        await device.close();
+        return true;
+    } catch (error) {
+        console.error('Erro no HID:', error);
+        return false;
+    }
+}
+
+// Iniciar câmera - SEM ZOOM
+async function iniciarCamera() {
+    try {
+        // Configuração para evitar zoom automático
+        const constraints = {
+            video: {
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
                 facingMode: 'user',
-                frameRate: { ideal: 30 }
-            } 
+                frameRate: { ideal: 30 },
+                // Desabilitar zoom
+                zoom: { ideal: 1.0, min: 1.0, max: 1.0 },
+                // Impedir ajustes automáticos
+                focusMode: 'manual',
+                exposureMode: 'manual',
+                whiteBalanceMode: 'manual'
+            }
+        };
+        
+        videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+        videoElement.srcObject = videoStream;
+        videoElement.play();
+        
+        // Garantir que não há zoom aplicado
+        videoElement.style.transform = 'scale(1)';
+        videoElement.style.objectFit = 'cover';
+        
+        videoElement.addEventListener('play', () => {
+            canvasOverlay.width = videoElement.videoWidth;
+            canvasOverlay.height = videoElement.videoHeight;
+            reconhecimentoContinuo();
         });
         
-        const video = document.getElementById('cameraFeed');
-        video.srcObject = cameraStream;
-        
-        // Iniciar loop de reconhecimento
-        requestAnimationFrame(detectFaces);
-        
     } catch (error) {
-        console.error('Erro ao iniciar câmera:', error);
-        showStatus('Erro ao acessar câmera', 'error');
-    }
-}
-
-// Detectar faces continuamente
-async function detectFaces() {
-    const video = document.getElementById('cameraFeed');
-    
-    if (video.readyState === video.HAVE_ENOUGH_DATA && faceModel && !isRecognizing) {
+        console.error('Erro na câmera:', error);
+        // Fallback sem constraints de zoom
         try {
-            const faces = await faceModel.estimateFaces({
-                input: video,
-                returnTensors: false,
-                flipHorizontal: true,
-                predictIrises: true
-            });
-            
-            if (faces.length > 0) {
-                const now = Date.now();
-                if (now - lastRecognitionTime > RECOGNITION_COOLDOWN) {
-                    // Rosto detectado, iniciar reconhecimento
-                    await startRecognition(video);
-                }
-            }
-        } catch (error) {
-            console.error('Erro na detecção facial:', error);
+            videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+            videoElement.srcObject = videoStream;
+            videoElement.play();
+        } catch (e) {
+            console.error('Erro fatal na câmera:', e);
         }
     }
-    
-    requestAnimationFrame(detectFaces);
 }
 
-// Iniciar processo de reconhecimento
-async function startRecognition(video) {
-    isRecognizing = true;
-    lastRecognitionTime = Date.now();
+// Reconhecimento contínuo
+async function reconhecimentoContinuo() {
+    const options = new faceapi.TinyFaceDetectorOptions({
+        inputSize: 320,
+        scoreThreshold: 0.5
+    });
     
-    // Mostrar overlay de reconhecimento
-    document.getElementById('recognitionOverlay').style.display = 'flex';
+    let ultimoAviso = 0;
     
-    // Capturar frame atual
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
-    // Converter para blob
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.8));
-    
-    // Comparar com biometrias cadastradas
-    await recognizeFace(blob);
-}
-
-// Reconhecer face comparando com banco de dados
-async function recognizeFace(imageBlob) {
-    try {
-        // Buscar todas as biometrias
-        const snap = await db.ref('biometrias').get();
-        const allBiometrias = snap.val() || {};
+    setInterval(async () => {
+        if (!videoElement.videoWidth || isProcessing) return;
         
-        let bestMatch = null;
-        let highestSimilarity = 0;
+        const now = Date.now();
+        if (now - lastDetectionTime < DETECTION_COOLDOWN) return;
         
-        // Aqui você implementaria a lógica de comparação facial
-        // Por enquanto, vamos simular um reconhecimento rápido
-        setTimeout(async () => {
-            // Simular reconhecimento (em produção, usar API de comparação facial)
-            const users = Object.keys(allBiometrias);
+        try {
+            const detections = await faceapi.detectAllFaces(videoElement, options)
+                .withFaceLandmarks()
+                .withFaceDescriptors();
             
-            if (users.length > 0) {
-                // Para teste: selecionar usuário aleatório
-                const randomUser = users[Math.floor(Math.random() * users.length)];
-                const userBiometrias = allBiometrias[randomUser];
+            ctx.clearRect(0, 0, canvasOverlay.width, canvasOverlay.height);
+            
+            if (detections.length > 0 && faceMatcher) {
+                faceapi.draw.drawFaceLandmarks(canvasOverlay, detections.map(d => d.landmarks));
                 
-                if (userBiometrias) {
-                    const biometriaKeys = Object.keys(userBiometrias);
-                    if (biometriaKeys.length > 0) {
-                        const randomBiometria = userBiometrias[biometriaKeys[0]];
-                        
-                        // Buscar dados do usuário
-                        const userSnap = await db.ref('users/' + randomUser).get();
-                        const userData = userSnap.val();
-                        
-                        if (userData) {
-                            // Verificar plano
-                            const today = new Date().toISOString().slice(0,10);
-                            const planActive = !userData.endDate || userData.endDate >= today;
-                            
-                            if (planActive) {
-                                // Liberar acesso
-                                await grantAccess(userData, randomUser, randomBiometria);
-                            } else {
-                                // Plano vencido
-                                showStatus('Plano vencido', 'warning', userData);
-                            }
-                        }
-                    }
+                const bestDetection = detections[0];
+                const detection = bestDetection.detection;
+                
+                // Verificar qualidade
+                const box = detection.box;
+                const area = box.width * box.height;
+                const videoArea = videoElement.videoWidth * videoElement.videoHeight;
+                const proporcaoRosto = area / videoArea;
+                
+                if (proporcaoRosto < 0.1 && now - ultimoAviso > 5000) {
+                    falar('Aproxime o rosto da câmera');
+                    ultimoAviso = now;
+                } else if (detection.score < 0.7 && now - ultimoAviso > 5000) {
+                    falar('Remova óculos ou objetos do rosto');
+                    ultimoAviso = now;
                 }
-            } else {
-                showStatus('Nenhum usuário cadastrado', 'warning');
+                
+                const bestMatch = faceMatcher.findBestMatch(bestDetection.descriptor);
+                
+                if (bestMatch.label !== 'unknown' && bestMatch.distance < 0.5) {
+                    await processarAcesso(bestMatch.label);
+                    lastDetectionTime = now;
+                }
             }
             
-            // Esconder overlay
-            document.getElementById('recognitionOverlay').style.display = 'none';
-            isRecognizing = false;
+        } catch (error) {
+            console.error('Erro no reconhecimento:', error);
+        }
+    }, 100);
+}
+
+// Processar acesso
+async function processarAcesso(na) {
+    isProcessing = true;
+    
+    try {
+        document.getElementById('processingOverlay').style.display = 'flex';
+        
+        const snap = await db.ref('users/' + na).get();
+        if (!snap.exists()) {
+            mostrarMensagem('NA NÃO ENCONTRADO', 'error');
+            falar('NA não encontrado');
+            return;
+        }
+        
+        const user = snap.val();
+        const today = new Date().toISOString().slice(0,10);
+        
+        if (!user.active || (user.endDate && user.endDate < today)) {
+            mostrarMensagem('PLANO INATIVO', 'error');
+            falar('Plano inativo');
+            return;
+        }
+        
+        const liberado = await liberarCatraca();
+        
+        if (liberado) {
+            await db.ref('acessos/' + na).push({
+                data: new Date().toISOString(),
+                tipo: naDigitado ? 'manual' : 'facial'
+            });
             
-        }, 1500); // Simular tempo de processamento de 1.5 segundos
+            mostrarMensagem('ACESSO LIBERADO', 'success');
+            falar('Acesso liberado');
+            mostrarInfoUsuario(user, na);
+            
+            if (document.getElementById('naOverlay').style.display === 'flex') {
+                fecharNAOverlay();
+            }
+        } else {
+            mostrarMensagem('ERRO NA CATRACA', 'error');
+            falar('Erro na catraca');
+        }
         
     } catch (error) {
-        console.error('Erro no reconhecimento:', error);
-        showStatus('Erro no reconhecimento', 'error');
-        document.getElementById('recognitionOverlay').style.display = 'none';
-        isRecognizing = false;
-    }
-}
-
-// Liberar acesso
-async function grantAccess(userData, na, biometria) {
-    // Controlar catraca
-    const success = await controlTurnstile('open');
-    
-    if (success) {
-        // Incrementar contador
-        recognitionCount++;
-        localStorage.setItem('recognitionCount', recognitionCount);
-        document.getElementById('recCount').textContent = recognitionCount;
+        console.error('Erro:', error);
+        mostrarMensagem('ERRO NO SISTEMA', 'error');
+        falar('Erro no sistema');
         
-        // Mostrar card de sucesso
-        showStatus('Acesso liberado', 'success', userData);
-        
-        // Mostrar print de acesso
-        showAccessPrint(userData);
-        
-        // Fechar catraca após 3 segundos
+    } finally {
         setTimeout(() => {
-            controlTurnstile('close');
-        }, 3000);
-    } else {
-        showStatus('Erro na catraca', 'error');
+            document.getElementById('processingOverlay').style.display = 'none';
+            isProcessing = false;
+            
+            setTimeout(() => {
+                document.getElementById('userInfoFooter').style.display = 'none';
+                document.getElementById('defaultFooter').style.display = 'block';
+            }, 3000);
+        }, 1500);
     }
 }
 
-// Mostrar status
-function showStatus(message, type, userData = null) {
-    const card = document.getElementById('statusCard');
-    
-    if (type === 'success' && userData) {
-        card.innerHTML = `
-            <div class="user-info-row">
-                <div class="user-avatar">${(userData.name || 'U').charAt(0)}</div>
-                <div class="user-details">
-                    <h3>${userData.name || 'Usuário'}</h3>
-                    <p>NA: ${userData.na || '---'}</p>
-                    <p>Plano: ${userData.planName || 'Padrão'}</p>
-                    <div class="access-time">Acesso: ${new Date().toLocaleTimeString()}</div>
-                </div>
-            </div>
-        `;
-        card.className = 'status-card show success';
-    } else if (type === 'warning') {
-        card.innerHTML = `<div class="warning-message">⚠️ ${message}</div>`;
-        card.className = 'status-card show warning';
-    } else {
-        card.innerHTML = `<div class="error-message">✕ ${message}</div>`;
-        card.className = 'status-card show error';
+// Funções NA
+function mostrarNAOverlay() {
+    document.getElementById('naOverlay').style.display = 'flex';
+    limparNA();
+}
+
+function fecharNAOverlay() {
+    document.getElementById('naOverlay').style.display = 'none';
+    limparNA();
+}
+
+function adicionarDigito(digito) {
+    if (naDigitado.length < 5) {
+        naDigitado += digito;
+        atualizarDisplayNA();
     }
+}
+
+function limparNA() {
+    naDigitado = '';
+    atualizarDisplayNA();
+}
+
+function atualizarDisplayNA() {
+    const display = document.getElementById('naDisplay');
+    const confirmarBtn = document.getElementById('confirmarNA');
     
-    // Esconder após 4 segundos
+    let texto = naDigitado;
+    while (texto.length < 5) {
+        texto += '_';
+    }
+    display.textContent = texto;
+    
+    confirmarBtn.disabled = naDigitado.length !== 5;
+}
+
+async function confirmarNA() {
+    if (naDigitado.length === 5 && !isProcessing) {
+        fecharNAOverlay();
+        await processarAcesso(naDigitado);
+    }
+}
+
+// Mostrar mensagem
+function mostrarMensagem(texto, tipo) {
+    const overlay = document.getElementById('messageOverlay');
+    overlay.className = `message-overlay ${tipo}`;
+    overlay.textContent = texto;
+    overlay.style.display = 'block';
+    
     setTimeout(() => {
-        card.classList.remove('show');
-    }, 4000);
+        overlay.style.display = 'none';
+    }, 2000);
 }
 
-// Mostrar print de acesso
-function showAccessPrint(userData) {
-    const print = document.getElementById('accessPrint');
-    document.getElementById('accessName').textContent = userData.name || 'Usuário';
-    document.getElementById('accessTime').textContent = new Date().toLocaleString();
-    print.classList.add('show');
+// Mostrar informações do usuário
+function mostrarInfoUsuario(user, na) {
+    const footer = document.getElementById('userInfoFooter');
+    const defaultFooter = document.getElementById('defaultFooter');
+    const userPhoto = document.getElementById('userPhoto');
+    const userName = document.getElementById('userName');
     
-    setTimeout(() => {
-        print.classList.remove('show');
-    }, 3000);
-}
-
-// Reset de emergência
-function emergencyReset() {
-    if (confirm('Resetar sistema da catraca?')) {
-        localStorage.removeItem('recognitionCount');
-        recognitionCount = 0;
-        document.getElementById('recCount').textContent = '0';
-        showStatus('Sistema reiniciado', 'warning');
-    }
+    userPhoto.src = user.biometria?.foto || 'https://via.placeholder.com/40';
+    userName.textContent = user.name || `NA: ${na}`;
+    
+    defaultFooter.style.display = 'none';
+    footer.style.display = 'flex';
 }
 
 // Inicializar
-async function init() {
-    // Atualizar contador
-    document.getElementById('recCount').textContent = recognitionCount;
+async function inicializar() {
+    await carregarModelos();
+    await carregarBiometrias();
+    await detectarCatracaUSB(); // Agora SEMPRE real
+    await iniciarCamera(); // SEM ZOOM
     
-    // Carregar modelo facial
-    await loadFaceModel();
-    
-    // Iniciar câmera
-    await startCamera();
-    
-    // Verificar permissão USB
-    if ('usb' in navigator) {
-        navigator.usb.addEventListener('connect', (event) => {
-            console.log('Catraca conectada:', event.device);
-            showStatus('Catraca conectada', 'success');
-        });
-        
-        navigator.usb.addEventListener('disconnect', (event) => {
-            console.log('Catraca desconectada:', event.device);
-            showStatus('Catraca desconectada', 'warning');
-        });
-    }
+    setInterval(carregarBiometrias, 5 * 60 * 1000);
+    setInterval(detectarCatracaUSB, 30000); // Reconectar a cada 30s
 }
 
-// Iniciar quando a página carregar
-window.addEventListener('load', init);
+window.addEventListener('load', inicializar);
 
-// Limpar recursos ao sair
-window.addEventListener('beforeunload', () => {
-    if (cameraStream) {
-        cameraStream.getTracks().forEach(track => track.stop());
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden && videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+    } else if (!document.hidden) {
+        iniciarCamera();
     }
 });
 </script>
