@@ -18,12 +18,35 @@
             --dark: #000000;
             --text-gray: #666;
             --border-color: #f0f0f0;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-blur: blur(10px);
         }
 
         body {
             min-height: 100vh;
-            background: linear-gradient(rgba(255,255,255,0.2), rgba(255,255,255,0.2)), url("https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000013-2fae32fae5/700/3C689C7F-7879-42BA-9736-D2E498D707CE.webp?ph=c2a6771173") no-repeat center center/cover;
-            background-attachment: fixed;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Efeito de fundo animado */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000013-2fae32fae5/700/3C689C7F-7879-42BA-9736-D2E498D707CE.webp?ph=c2a6771173") no-repeat center center/cover;
+            filter: blur(8px) brightness(0.7);
+            transform: scale(1.1);
+            z-index: -1;
+            animation: slowZoom 20s infinite alternate;
+        }
+
+        @keyframes slowZoom {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
         }
 
         header {
@@ -31,19 +54,27 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 60px; /* Um pouco mais fino */
-            background: #fff;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: var(--glass-blur);
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 25px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
             z-index: 100;
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
         }
 
         .logo-canto-esquerdo {
-            height: 30px; /* Ajustado */
+            height: 30px;
             width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
 
         .btn-suporte {
@@ -56,24 +87,73 @@
             font-size: 10px;
             cursor: pointer;
             text-transform: uppercase;
+            border-radius: 4px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-suporte::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-suporte:hover::after {
+            width: 200px;
+            height: 200px;
+        }
+
+        .btn-suporte:hover {
+            background: var(--brand-green-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(141,198,63,0.4);
         }
 
         main {
             max-width: 500px;
-            margin: 80px auto 30px; /* Ajustado */
+            margin: 80px auto 30px;
             padding: 20px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .card {
-            background: #fff;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
             padding: 30px;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.15);
-            animation: entrance 0.7s ease-out;
+            border-radius: 20px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: cardEntrance 0.7s ease-out;
         }
 
-        @keyframes entrance {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         h2 {
@@ -82,24 +162,60 @@
             text-align: center;
             text-transform: uppercase;
             margin-bottom: 20px;
+            background: linear-gradient(135deg, #333, #000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
         }
 
         .user-info {
-            background: #f9f9f9;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(5px);
             padding: 20px;
             border-left: 4px solid var(--brand-green);
             margin-bottom: 25px;
+            border-radius: 0 10px 10px 0;
+            animation: slideInRight 0.5s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .user-info p {
             margin: 8px 0;
             font-size: 14px;
             color: #333;
+            display: flex;
+            align-items: center;
         }
 
-        .user-info strong {
+        .user-info p strong {
             color: #000;
             font-weight: 800;
+            min-width: 100px;
+        }
+
+        .user-info p span {
+            position: relative;
+            padding-left: 10px;
+        }
+
+        .user-info p span::before {
+            content: '•';
+            color: var(--brand-green);
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
         }
 
         .info-complementar {
@@ -110,7 +226,7 @@
             display: block;
             font-size: 10px;
             font-weight: 800;
-            color: #999;
+            color: #666;
             margin-bottom: 5px;
             text-transform: uppercase;
             letter-spacing: 1.5px;
@@ -119,16 +235,20 @@
         .info-complementar input {
             width: 100%;
             padding: 15px;
-            border: 1px solid var(--border-color);
-            background: #fcfcfc;
+            border: 2px solid transparent;
+            background: rgba(255,255,255,0.9);
             font-size: 14px;
             margin-bottom: 15px;
             outline: none;
+            border-radius: 10px;
+            transition: all 0.3s;
         }
 
         .info-complementar input:focus {
             border-color: var(--brand-green);
             background: #fff;
+            box-shadow: 0 5px 15px rgba(141,198,63,0.2);
+            transform: translateY(-2px);
         }
 
         .btn-biometria {
@@ -139,14 +259,37 @@
             font-size: 13px;
             text-transform: uppercase;
             cursor: pointer;
-            transition: 0.3s;
-            background: var(--brand-green);
+            transition: all 0.3s;
+            background: linear-gradient(135deg, var(--brand-green), var(--brand-green-hover));
             color: #fff;
             margin: 10px 0;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-biometria::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-biometria:hover::before {
+            left: 100%;
         }
 
         .btn-biometria:hover {
-            background: var(--brand-green-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(141,198,63,0.4);
+        }
+
+        .btn-biometria:active {
+            transform: translateY(0);
         }
 
         .biometria-status {
@@ -154,8 +297,22 @@
             align-items: center;
             gap: 15px;
             padding: 15px;
-            background: #f9f9f9;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(5px);
             margin-top: 20px;
+            border-radius: 50px;
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .biometria-status img {
@@ -164,14 +321,22 @@
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid var(--brand-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(141,198,63,0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(141,198,63,0); }
+            100% { box-shadow: 0 0 0 0 rgba(141,198,63,0); }
         }
 
         .biometria-status span {
             font-size: 13px;
             color: #444;
+            line-height: 1.4;
         }
 
-        /* Modal da Câmera - Tela Cheia */
+        /* Modal da Câmera - Modernizado */
         #cameraModal {
             position: fixed;
             top: 0;
@@ -182,12 +347,24 @@
             z-index: 1000;
             display: none;
             flex-direction: column;
+            animation: modalFadeIn 0.5s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(1.1);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .modal-header {
-            background: var(--brand-green);
+            background: linear-gradient(135deg, var(--brand-green), var(--brand-green-hover));
             color: #fff;
-            padding: 12px 25px; /* Mais fino */
+            padding: 12px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -198,6 +375,7 @@
             font-size: 16px;
             font-weight: 800;
             text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .modal-close {
@@ -209,10 +387,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
         }
 
         .modal-close:hover {
             background: rgba(255,255,255,0.2);
+            transform: rotate(90deg);
         }
 
         #videoContainer {
@@ -227,11 +408,11 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: filter 0.3s;
+            transition: all 0.5s;
         }
 
         #videoElement.frozen {
-            filter: blur(8px);
+            filter: blur(10px) brightness(0.7);
         }
 
         #canvasOverlay {
@@ -243,39 +424,91 @@
             pointer-events: none;
         }
 
+        /* Efeito scan line */
+        #videoContainer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--brand-green), transparent);
+            animation: scanLine 2s linear infinite;
+            z-index: 10;
+            opacity: 0.5;
+        }
+
+        @keyframes scanLine {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
         .status-overlay {
             position: absolute;
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
             color: #fff;
-            padding: 12px 30px;
+            padding: 15px 40px;
             font-weight: 800;
             font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 2px;
-            border-left: 4px solid var(--brand-green);
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.2);
             display: none;
             z-index: 200;
+            animation: statusPop 0.3s ease;
+        }
+
+        @keyframes statusPop {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) scale(0.9) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) scale(1) translateY(0);
+            }
         }
 
         .status-overlay.processing {
             display: block;
-            background: rgba(0,0,0,0.9);
-            border-left-color: #ffaa00;
+            background: linear-gradient(135deg, #333, #000);
+            border: 1px solid #ffaa00;
+            color: #ffaa00;
+        }
+
+        .status-overlay.processing::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            width: 15px;
+            height: 15px;
+            border: 2px solid #ffaa00;
+            border-top-color: transparent;
+            border-radius: 50%;
+            transform: translateY(-50%);
+            animation: spin 1s linear infinite;
         }
 
         .status-overlay.success {
             display: block;
-            background: rgba(0,0,0,0.9);
-            border-left-color: var(--brand-green);
+            background: linear-gradient(135deg, var(--brand-green), #6a9c2e);
+            border: 1px solid #fff;
         }
 
         .status-overlay.error {
             display: block;
-            background: rgba(0,0,0,0.9);
-            border-left-color: #ff4444;
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+            border: 1px solid #fff;
+        }
+
+        @keyframes spin {
+            to { transform: translateY(-50%) rotate(360deg); }
         }
 
         #notification-container {
@@ -286,21 +519,34 @@
         }
 
         .alert {
-            background: #fff;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
             color: #000;
             padding: 16px 28px;
             border-right: 6px solid var(--brand-green);
-            box-shadow: -15px 15px 40px rgba(0,0,0,0.12);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
             margin-bottom: 12px;
             font-size: 13px;
             font-weight: 800;
             text-transform: uppercase;
             transform: translateX(130%);
             transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            border-radius: 8px 0 0 8px;
         }
 
         .alert.show { transform: translateX(0); }
         .alert.error { border-right-color: #ff4444; }
+
+        /* Loader animado para processamento */
+        .biometric-loader {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(141,198,63,0.3);
+            border-radius: 50%;
+            border-top-color: var(--brand-green);
+            animation: spin 1s ease-in-out infinite;
+        }
     </style>
 </head>
 <body>
@@ -330,12 +576,14 @@
             <label>Endereço (opcional)</label>
             <input type="text" id="addressInput" placeholder="Rua, número, bairro">
             
-            <button class="btn-biometria" id="saveInfoBtn">Salvar Informações</button>
+            <button class="btn-biometria" id="saveInfoBtn">
+                <span>Salvar Informações</span>
+            </button>
         </div>
 
         <div id="biometriaSection">
             <button class="btn-biometria" id="cadastrarBiometriaBtn">
-                Cadastrar Biometria Facial
+                <span>Cadastrar Biometria Facial</span>
             </button>
             
             <div id="biometriaStatus" class="biometria-status" style="display: none;">
@@ -343,14 +591,14 @@
                 <span>Biometria cadastrada em: <span id="biometriaData"></span></span>
             </div>
             
-            <button class="btn-biometria" id="removerBiometriaBtn" style="background:#ff4444; display: none;">
+            <button class="btn-biometria" id="removerBiometriaBtn" style="background:linear-gradient(135deg, #ff4444, #cc0000); display: none;">
                 Remover Biometria
             </button>
         </div>
     </div>
 </main>
 
-<!-- Modal da Câmera - Tela Cheia -->
+<!-- Modal da Câmera Modernizado -->
 <div id="cameraModal">
     <div class="modal-header">
         <h3>DomusFit - Captura Biométrica</h3>
@@ -415,11 +663,19 @@ async function carregarDadosUsuario() {
         
         currentUser = snap.val();
         
-        // Preencher informações
-        document.getElementById('naDisplay').textContent = loggedUser;
-        document.getElementById('nameDisplay').textContent = currentUser.name || 'Não informado';
-        document.getElementById('planDisplay').textContent = currentUser.planName || 'Padrão';
-        document.getElementById('expiryDisplay').textContent = currentUser.endDate || 'Sem data';
+        // Preencher informações com animação
+        const elements = {
+            na: document.getElementById('naDisplay'),
+            name: document.getElementById('nameDisplay'),
+            plan: document.getElementById('planDisplay'),
+            expiry: document.getElementById('expiryDisplay')
+        };
+        
+        // Animação de typing
+        typeWriter(elements.na, loggedUser);
+        typeWriter(elements.name, currentUser.name || 'Não informado');
+        typeWriter(elements.plan, currentUser.planName || 'Padrão');
+        typeWriter(elements.expiry, currentUser.endDate || 'Sem data');
         
         if (currentUser.phone) document.getElementById('phoneInput').value = currentUser.phone;
         if (currentUser.address) document.getElementById('addressInput').value = currentUser.address;
@@ -430,7 +686,7 @@ async function carregarDadosUsuario() {
             document.getElementById('biometriaFoto').src = currentUser.biometria.foto;
             document.getElementById('biometriaData').textContent = new Date(currentUser.biometria.data).toLocaleString();
             document.getElementById('removerBiometriaBtn').style.display = 'block';
-            document.getElementById('cadastrarBiometriaBtn').textContent = 'Atualizar Biometria';
+            document.getElementById('cadastrarBiometriaBtn').innerHTML = '<span>Atualizar Biometria</span>';
         }
         
     } catch (error) {
@@ -438,8 +694,28 @@ async function carregarDadosUsuario() {
     }
 }
 
+// Efeito typewriter
+function typeWriter(element, text, speed = 30) {
+    let i = 0;
+    element.textContent = '';
+    function type() {
+        if (i < text.length) {
+            element.textContent += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+        }
+    }
+    type();
+}
+
 // Salvar informações complementares
 document.getElementById('saveInfoBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('saveInfoBtn');
+    const originalText = btn.innerHTML;
+    
+    btn.innerHTML = '<span class="biometric-loader"></span> Salvando...';
+    btn.disabled = true;
+    
     const phone = document.getElementById('phoneInput').value;
     const address = document.getElementById('addressInput').value;
     
@@ -449,8 +725,18 @@ document.getElementById('saveInfoBtn').addEventListener('click', async () => {
             address: address
         });
         showNotification('Informações salvas com sucesso!');
+        
+        // Feedback visual
+        btn.style.background = 'linear-gradient(135deg, #00C851, #007E33)';
+        setTimeout(() => {
+            btn.style.background = 'linear-gradient(135deg, var(--brand-green), var(--brand-green-hover))';
+        }, 500);
+        
     } catch (error) {
         showNotification('Erro ao salvar informações', 'error');
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
     }
 });
 
@@ -524,10 +810,12 @@ function iniciarDeteccaoAutomatica() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             if (detections.length === 1) {
+                // Desenhar landmarks com cor verde
                 faceapi.draw.drawFaceLandmarks(canvas, detections.map(d => d.landmarks));
                 
                 stableFrames++;
-                statusOverlay.textContent = `CAPTURANDO... ${Math.min(100, Math.round((stableFrames / STABLE_THRESHOLD) * 100))}%`;
+                const percent = Math.min(100, Math.round((stableFrames / STABLE_THRESHOLD) * 100));
+                statusOverlay.textContent = `CAPTURANDO... ${percent}%`;
                 statusOverlay.className = 'status-overlay processing';
                 
                 if (stableFrames >= STABLE_THRESHOLD && !isProcessing) {
@@ -607,22 +895,22 @@ async function capturarFaceComFreeze() {
         
         await db.ref('users/' + loggedUser + '/biometria').set(biometriaData);
         
-        // Sucesso
-        statusOverlay.textContent = 'CADASTRADO COM SUCESSO!';
+        // Sucesso com animação
+        statusOverlay.textContent = '✓ CADASTRADO COM SUCESSO!';
         statusOverlay.className = 'status-overlay success';
         
         document.getElementById('biometriaStatus').style.display = 'flex';
         document.getElementById('biometriaFoto').src = uploadResult.secure_url;
         document.getElementById('biometriaData').textContent = new Date().toLocaleString();
         document.getElementById('removerBiometriaBtn').style.display = 'block';
-        document.getElementById('cadastrarBiometriaBtn').textContent = 'Atualizar Biometria';
+        document.getElementById('cadastrarBiometriaBtn').innerHTML = '<span>Atualizar Biometria</span>';
         
         showNotification('Biometria cadastrada!');
         
         setTimeout(fecharCamera, 2000);
         
     } catch (error) {
-        statusOverlay.textContent = error.message || 'ERRO';
+        statusOverlay.textContent = '✗ ' + (error.message || 'ERRO');
         statusOverlay.className = 'status-overlay error';
         video.classList.remove('frozen');
         isProcessing = false;
@@ -632,16 +920,26 @@ async function capturarFaceComFreeze() {
 // Remover biometria
 document.getElementById('removerBiometriaBtn').addEventListener('click', async () => {
     if (confirm('Remover biometria?')) {
+        const btn = document.getElementById('removerBiometriaBtn');
+        const originalText = btn.innerHTML;
+        
+        btn.innerHTML = '<span class="biometric-loader"></span> Removendo...';
+        btn.disabled = true;
+        
         try {
             await db.ref('users/' + loggedUser + '/biometria').remove();
             
             document.getElementById('biometriaStatus').style.display = 'none';
             document.getElementById('removerBiometriaBtn').style.display = 'none';
-            document.getElementById('cadastrarBiometriaBtn').textContent = 'Cadastrar Biometria';
+            document.getElementById('cadastrarBiometriaBtn').innerHTML = '<span>Cadastrar Biometria</span>';
             
             showNotification('Biometria removida!');
+            
         } catch (error) {
             showNotification('Erro ao remover', 'error');
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
         }
     }
 });
@@ -663,12 +961,12 @@ function fecharCamera() {
     isProcessing = false;
 }
 
-// Notificações
+// Notificações modernizadas
 function showNotification(msg, type = 'success') {
     const container = document.getElementById('notification-container');
     const el = document.createElement('div');
     el.className = `alert ${type === 'error' ? 'error' : ''}`;
-    el.innerText = msg;
+    el.innerHTML = msg;
     container.appendChild(el);
     
     setTimeout(() => el.classList.add('show'), 50);
