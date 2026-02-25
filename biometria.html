@@ -171,53 +171,56 @@
             color: #444;
         }
 
-        /* Modal da Câmera */
+        /* Modal da Câmera - Tela Cheia */
         #cameraModal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: #000;
             z-index: 1000;
             display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-camera-content {
-            width: 90%;
-            max-width: 600px;
-            background: #000;
-            position: relative;
+            flex-direction: column;
         }
 
         .modal-header {
             background: var(--brand-green);
             color: #fff;
-            padding: 15px 20px;
+            padding: 15px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            height: 64px;
         }
 
         .modal-header h3 {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 800;
             text-transform: uppercase;
         }
 
         .modal-close {
-            font-size: 28px;
+            font-size: 32px;
             cursor: pointer;
             line-height: 1;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(255,255,255,0.2);
         }
 
         #videoContainer {
             position: relative;
+            flex: 1;
             width: 100%;
-            aspect-ratio: 1/1;
-            background: #111;
+            background: #000;
+            overflow: hidden;
         }
 
         #videoElement {
@@ -232,59 +235,41 @@
             left: 0;
             width: 100%;
             height: 100%;
+            pointer-events: none;
         }
 
-        .modal-footer {
-            background: #1a1a1a;
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .btn-scan {
-            background: var(--brand-green);
+        .status-overlay {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
             color: #fff;
-            border: none;
-            padding: 15px 40px;
+            padding: 12px 30px;
             font-weight: 800;
             font-size: 14px;
             text-transform: uppercase;
-            cursor: pointer;
             letter-spacing: 2px;
-        }
-
-        .btn-scan:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        #scanOverlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
+            border-left: 4px solid var(--brand-green);
             display: none;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            gap: 20px;
-            color: #fff;
         }
 
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255,255,255,0.3);
-            border-top: 4px solid var(--brand-green);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .status-overlay.processing {
+            display: block;
+            background: rgba(0,0,0,0.9);
+            border-left-color: #ffaa00;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .status-overlay.success {
+            display: block;
+            background: rgba(0,0,0,0.9);
+            border-left-color: var(--brand-green);
+        }
+
+        .status-overlay.error {
+            display: block;
+            background: rgba(0,0,0,0.9);
+            border-left-color: #ff4444;
         }
 
         #notification-container {
@@ -359,26 +344,19 @@
     </div>
 </main>
 
-<!-- Modal da Câmera -->
+<!-- Modal da Câmera - Tela Cheia -->
 <div id="cameraModal">
-    <div class="modal-camera-content">
-        <div class="modal-header">
-            <h3>DomusFit - Captura Biométrica</h3>
-            <span class="modal-close" onclick="fecharCamera()">&times;</span>
-        </div>
+    <div class="modal-header">
+        <h3>DomusFit - Captura Biométrica Automática</h3>
+        <span class="modal-close" onclick="fecharCamera()">&times;</span>
+    </div>
+    
+    <div id="videoContainer">
+        <video id="videoElement" autoplay playsinline></video>
+        <canvas id="canvasOverlay"></canvas>
         
-        <div id="videoContainer">
-            <video id="videoElement" autoplay playsinline></video>
-            <canvas id="canvasOverlay"></canvas>
-            
-            <div id="scanOverlay">
-                <div class="spinner"></div>
-                <div>PROCESSANDO IMAGEM...</div>
-            </div>
-        </div>
-        
-        <div class="modal-footer">
-            <button class="btn-scan" id="scanBtn" onclick="capturarFace()">Escanear</button>
+        <div class="status-overlay" id="statusOverlay">
+            AGUARDANDO ROSTO...
         </div>
     </div>
 </div>
@@ -410,8 +388,8 @@ const db = firebase.database();
 // Variáveis globais
 let currentUser = null;
 let videoStream = null;
-let faceMatcher = null;
-let isScanning = false;
+let isProcessing = false;
+let detectionInterval = null;
 
 // Verificar login
 const loggedUser = localStorage.getItem('loggedUser');
@@ -470,13 +448,17 @@ document.getElementById('saveInfoBtn').addEventListener('click', async () => {
     }
 });
 
-// Iniciar captura de biometria
+// Iniciar captura automática de biometria
 document.getElementById('cadastrarBiometriaBtn').addEventListener('click', async () => {
     try {
         // Carregar modelos do FaceAPI
         await carregarModelosFace();
         document.getElementById('cameraModal').style.display = 'flex';
-        iniciarCamera();
+        await iniciarCamera();
+        
+        // Iniciar detecção automática
+        iniciarDeteccaoAutomatica();
+        
     } catch (error) {
         showNotification('Erro ao iniciar câmera', 'error');
     }
@@ -498,8 +480,8 @@ async function iniciarCamera() {
     try {
         videoStream = await navigator.mediaDevices.getUserMedia({ 
             video: { 
-                width: 640, 
-                height: 640,
+                width: 1280, 
+                height: 720,
                 facingMode: 'user'
             } 
         });
@@ -507,54 +489,79 @@ async function iniciarCamera() {
         const video = document.getElementById('videoElement');
         video.srcObject = videoStream;
         
-        // Iniciar detecção em tempo real
-        video.addEventListener('play', detectarRosto);
     } catch (error) {
         showNotification('Erro ao acessar câmera', 'error');
     }
 }
 
-// Detectar rosto em tempo real
-async function detectarRosto() {
+// Iniciar detecção automática
+function iniciarDeteccaoAutomatica() {
     const video = document.getElementById('videoElement');
     const canvas = document.getElementById('canvasOverlay');
     const ctx = canvas.getContext('2d');
+    const statusOverlay = document.getElementById('statusOverlay');
     
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    let stableFrames = 0;
+    const STABLE_THRESHOLD = 10; // Quadros estáveis para capturar
     
-    const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 320 });
-    
-    setInterval(async () => {
-        if (!video.videoWidth || isScanning) return;
+    detectionInterval = setInterval(async () => {
+        if (!video.videoWidth || isProcessing) return;
         
-        const detections = await faceapi.detectAllFaces(video, options)
-            .withFaceLandmarks()
-            .withFaceDescriptors();
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
         
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        if (detections.length > 0) {
-            // Desenhar 68 pontos faciais
-            faceapi.draw.drawFaceLandmarks(canvas, detections.map(d => d.landmarks));
+        try {
+            const options = new faceapi.TinyFaceDetectorOptions({ 
+                inputSize: 320,
+                scoreThreshold: 0.5
+            });
+            
+            const detections = await faceapi.detectAllFaces(video, options)
+                .withFaceLandmarks();
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (detections.length === 1) {
+                // Desenhar landmarks
+                faceapi.draw.drawFaceLandmarks(canvas, detections.map(d => d.landmarks));
+                
+                stableFrames++;
+                statusOverlay.textContent = `CAPTURANDO... ${Math.min(100, Math.round((stableFrames / STABLE_THRESHOLD) * 100))}%`;
+                statusOverlay.className = 'status-overlay processing';
+                
+                // Se rosto estável por tempo suficiente, capturar
+                if (stableFrames >= STABLE_THRESHOLD && !isProcessing) {
+                    await capturarFace();
+                }
+            } else if (detections.length === 0) {
+                stableFrames = 0;
+                statusOverlay.textContent = 'AGUARDANDO ROSTO...';
+                statusOverlay.className = 'status-overlay';
+            } else {
+                stableFrames = 0;
+                statusOverlay.textContent = 'MÚLTIPLOS ROSTOS DETECTADOS';
+                statusOverlay.className = 'status-overlay error';
+            }
+            
+        } catch (error) {
+            console.error('Erro na detecção:', error);
         }
     }, 100);
 }
 
-// Capturar face para cadastro
+// Capturar face automaticamente
 async function capturarFace() {
-    if (isScanning) return;
+    if (isProcessing) return;
     
+    isProcessing = true;
     const video = document.getElementById('videoElement');
-    const scanOverlay = document.getElementById('scanOverlay');
-    const scanBtn = document.getElementById('scanBtn');
+    const statusOverlay = document.getElementById('statusOverlay');
     
-    isScanning = true;
-    scanOverlay.style.display = 'flex';
-    scanBtn.disabled = true;
+    statusOverlay.textContent = 'PROCESSANDO IMAGEM...';
+    statusOverlay.className = 'status-overlay processing';
     
     try {
-        // Detectar face com landmarks
+        // Detectar face com descritor
         const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
             .withFaceLandmarks()
             .withFaceDescriptors();
@@ -567,19 +574,16 @@ async function capturarFace() {
             throw new Error('Múltiplos rostos detectados');
         }
         
-        // Capturar frame do vídeo
+        // Capturar frame
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         canvas.getContext('2d').drawImage(video, 0, 0);
         
-        // Converter para base64
         const imageData = canvas.toDataURL('image/jpeg', 0.9);
-        
-        // Extrair descritor facial (68 pontos)
         const descriptor = Array.from(detections[0].descriptor);
         
-        // Upload para Cloudinary
+        // Upload Cloudinary
         const formData = new FormData();
         formData.append('file', imageData);
         formData.append('upload_preset', UPLOAD_PRESET);
@@ -601,6 +605,10 @@ async function capturarFace() {
         
         await db.ref('users/' + loggedUser + '/biometria').set(biometriaData);
         
+        // Sucesso
+        statusOverlay.textContent = 'BIOMETRIA CADASTRADA COM SUCESSO!';
+        statusOverlay.className = 'status-overlay success';
+        
         // Atualizar interface
         document.getElementById('biometriaStatus').style.display = 'flex';
         document.getElementById('biometriaFoto').src = uploadResult.secure_url;
@@ -609,13 +617,14 @@ async function capturarFace() {
         document.getElementById('cadastrarBiometriaBtn').textContent = 'Atualizar Biometria';
         
         showNotification('Biometria cadastrada com sucesso!');
-        fecharCamera();
+        
+        // Fechar após 2 segundos
+        setTimeout(fecharCamera, 2000);
         
     } catch (error) {
-        showNotification(error.message || 'Erro ao capturar face', 'error');
-        scanOverlay.style.display = 'none';
-        scanBtn.disabled = false;
-        isScanning = false;
+        statusOverlay.textContent = error.message || 'ERRO NA CAPTURA';
+        statusOverlay.className = 'status-overlay error';
+        isProcessing = false;
     }
 }
 
@@ -638,15 +647,18 @@ document.getElementById('removerBiometriaBtn').addEventListener('click', async (
 
 // Fechar câmera
 function fecharCamera() {
+    if (detectionInterval) {
+        clearInterval(detectionInterval);
+        detectionInterval = null;
+    }
+    
     if (videoStream) {
         videoStream.getTracks().forEach(track => track.stop());
         videoStream = null;
     }
     
     document.getElementById('cameraModal').style.display = 'none';
-    document.getElementById('scanOverlay').style.display = 'none';
-    document.getElementById('scanBtn').disabled = false;
-    isScanning = false;
+    isProcessing = false;
 }
 
 // Notificações
