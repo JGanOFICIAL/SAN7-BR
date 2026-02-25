@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <title>Catraca Inteligente - DomusFit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --brand-green: #8DC63F;
+            --brand-green-hover: #7db135;
+            --success: #00C851;
+            --error: #ff4444;
+            --warning: #ffbb33;
+            --dark: #111;
+            --overlay: rgba(0,0,0,0.8);
+        }
+
+        body {
+            min-height: 100vh;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Header Branco Fixo */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            z-index: 100;
+            border-bottom: 1px solid #eee;
+        }
+
+        .logo-header {
+            height: 45px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Container da Câmera */
+        .camera-container {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            overflow: hidden;
+        }
+
+        #cameraFeed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* Efeito espelho */
+        }
+
+        /* Overlay com informações */
+        .overlay-info {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            padding: 40px 20px 30px;
+            z-index: 50;
+            pointer-events: none;
+        }
+
+        .status-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            max-width: 500px;
+            margin: 0 auto;
+            border-radius: 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            transform: translateY(100%);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .status-card.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .status-card.success {
+            border-left: 8px solid var(--success);
+        }
+
+        .status-card.error {
+            border-left: 8px solid var(--error);
+        }
+
+        .status-card.warning {
+            border-left: 8px solid var(--warning);
+        }
+
+        .user-info-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-avatar {
+            width: 70px;
+            height: 70px;
+            background: var(--brand-green);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 900;
+            border-radius: 0;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-details h3 {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 5px;
+            color: #000;
+        }
+
+        .user-details p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 3px;
+            font-weight: 600;
+        }
+
+        .access-time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 15px;
+            font-weight: 900;
+            font-size: 18px;
+            text-transform: uppercase;
+            color: var(--error);
+        }
+
+        .warning-message {
+            text-align: center;
+            padding: 15px;
+            font-weight: 900;
+            font-size: 16px;
+            text-transform: uppercase;
+            color: var(--warning);
+        }
+
+        /* Loading overlay durante reconhecimento */
+        .recognition-overlay {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 70px);
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(12px);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .recognition-spinner {
+            width: 80px;
+            height: 80px;
+            border: 6px solid rgba(255,255,255,0.1);
+            border-top: 6px solid var(--brand-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .recognition-text {
+            color: #fff;
+            font-size: 24px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .recognition-text small {
+            display: block;
+            font-size: 14px;
+            margin-top: 10px;
+            opacity: 0.7;
+            letter-spacing: 2px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Versão para impressão do acesso */
+        .access-print {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 40px;
+            z-index: 300;
+            display: none;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .access-print.show {
+            display: block;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: translate(-50%, -30%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            background: var(--success);
+            color: #fff;
+            font-size: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            border-radius: 0;
+        }
+
+        .access-print h3 {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .access-print p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .access-print .name {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--brand-green);
+            margin: 20px 0;
+        }
+
+        /* Contador de reconhecimentos */
+        .stats-counter {
+            position: fixed;
+            top: 85px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 800;
+            z-index: 150;
+            border-radius: 0;
+            letter-spacing: 1px;
+        }
+
+        /* Botão de reset/emergência (escondido por segurança) */
+        .emergency-reset {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255,68,68,0.2);
+            border: 2px solid var(--error);
+            color: #fff;
+            font-weight: 900;
+            cursor: pointer;
+            z-index: 1000;
+            opacity: 0.3;
+            transition: 0.3s;
+        }
+
+        .emergency-reset:hover {
+            opacity: 1;
+            background: var(--error);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-header" id="logoUrl" alt="DomusFit">
+</header>
+
+<div class="camera-container">
+    <video id="cameraFeed" autoplay playsinline></video>
+</div>
+
+<div class="stats-counter" id="statsCounter">
+    RECONHECIMENTOS: <span id="recCount">0</span>
+</div>
+
+<div class="recognition-overlay" id="recognitionOverlay">
+    <div class="recognition-spinner"></div>
+    <div class="recognition-text">
+        RECONHECENDO...
+        <small>POSICIONE O ROSTO</small>
+    </div>
+</div>
+
+<div class="overlay-info">
+    <div class="status-card" id="statusCard">
+        <!-- Conteúdo dinâmico -->
+    </div>
+</div>
+
+<div class="access-print" id="accessPrint">
+    <div class="checkmark">✓</div>
+    <h3>ACESSO LIBERADO</h3>
+    <p>Catraca liberada com sucesso</p>
+    <div class="name" id="accessName">---</div>
+    <p id="accessTime"></p>
+</div>
+
+<button class="emergency-reset" onclick="emergencyReset()">RESET</button>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection@0.0.2/dist/face-landmarks-detection.min.js"></script>
+
+<script>
+// Configuração Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+    authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
+    projectId: "prefeitura-de-joao-camara",
+    storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
+    messagingSenderId: "269299041577",
+    appId: "1:269299041577:web:fd41b2939240e9eb476338",
+    measurementId: "G-YT7NHR342J"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Variáveis Globais
+let cameraStream = null;
+let faceModel = null;
+let isRecognizing = false;
+let recognitionTimeout = null;
+let lastRecognitionTime = 0;
+const RECOGNITION_COOLDOWN = 2000; // 2 segundos entre reconhecimentos
+let recognitionCount = parseInt(localStorage.getItem('recognitionCount') || '0');
+
+// Mapeamento de portas USB para diferentes catracas
+const TURNSTILE_CONFIGS = {
+    generic: {
+        vendorId: 0x1234, // ID genérico
+        productId: 0x5678,
+        commands: {
+            open: new Uint8Array([0x01, 0x00, 0x01]), // Comando genérico para abrir
+            close: new Uint8Array([0x01, 0x00, 0x00]) // Comando genérico para fechar
+        }
+    },
+    // Configurações específicas podem ser adicionadas conforme necessidade
+};
+
+// Função para detectar e controlar catraca via USB
+async function controlTurnstile(action = 'open') {
+    try {
+        // Tentar conectar via WebUSB API
+        if ('usb' in navigator) {
+            // Procurar dispositivos conectados
+            const devices = await navigator.usb.getDevices();
+            
+            if (devices.length === 0) {
+                // Se não encontrar, solicitar conexão
+                const device = await navigator.usb.requestDevice({
+                    filters: [
+                        { vendorId: 0x1234 }, // Exemplo: IDs de catracas comuns
+                        { vendorId: 0x5678 },
+                        { vendorId: 0x04D8 }, // Microchip
+                        { vendorId: 0x10C4 }  // Silicon Labs
+                    ]
+                });
+                
+                if (device) {
+                    await device.open();
+                    await device.selectConfiguration(1);
+                    await device.claimInterface(0);
+                    
+                    // Enviar comando baseado na ação
+                    const command = action === 'open' 
+                        ? TURNSTILE_CONFIGS.generic.commands.open 
+                        : TURNSTILE_CONFIGS.generic.commands.close;
+                    
+                    await device.transferOut(1, command);
+                    
+                    // Registrar liberação
+                    logAccess(action);
+                    
+                    return true;
+                }
+            } else {
+                // Usar dispositivo já conectado
+                const device = devices[0];
+                await device.open();
+                await device.selectConfiguration(1);
+                await device.claimInterface(0);
+                
+                const command = action === 'open' 
+                    ? TURNSTILE_CONFIGS.generic.commands.open 
+                    : TURNSTILE_CONFIGS.generic.commands.close;
+                
+                await device.transferOut(1, command);
+                logAccess(action);
+                
+                return true;
+            }
+        } else {
+            console.log('WebUSB não suportado. Simulando liberação da catraca.');
+            // Simulação para ambiente de teste
+            simulateTurnstile(action);
+            return true;
+        }
+    } catch (error) {
+        console.error('Erro ao controlar catraca:', error);
+        return false;
+    }
+}
+
+// Simulação de liberação da catraca (para testes)
+function simulateTurnstile(action) {
+    console.log(`🔓 Catraca ${action === 'open' ? 'ABERTA' : 'FECHADA'} (SIMULAÇÃO)`);
+    
+    // Feedback visual
+    const card = document.getElementById('statusCard');
+    card.innerHTML = `
+        <div class="user-info-row">
+            <div class="user-avatar">⚡</div>
+            <div class="user-details">
+                <h3>CATRACA ACIONADA</h3>
+                <p>Simulação - Modo Teste</p>
+                <p>Comando: ${action.toUpperCase()}</p>
+                <div class="access-time">${new Date().toLocaleTimeString()}</div>
+            </div>
+        </div>
+    `;
+    card.className = 'status-card show success';
+}
+
+// Registrar log de acesso
+async function logAccess(action) {
+    const logEntry = {
+        timestamp: Date.now(),
+        action: action,
+        success: true
+    };
+    
+    try {
+        await db.ref('acessos_catraca').push(logEntry);
+    } catch (error) {
+        console.error('Erro ao salvar log:', error);
+    }
+}
+
+// Carregar modelo de detecção facial
+async function loadFaceModel() {
+    try {
+        faceModel = await faceLandmarksDetection.load(
+            faceLandmarksDetection.SupportedPackages.mediapipeFacemesh,
+            { 
+                maxFaces: 1,
+                shouldLoadIrisModel: true,
+                refineLandmarks: true
+            }
+        );
+        console.log('Modelo de reconhecimento facial carregado');
+    } catch (error) {
+        console.error('Erro ao carregar modelo:', error);
+    }
+}
+
+// Iniciar câmera
+async function startCamera() {
+    try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({ 
+            video: { 
+                width: { ideal: 1920 },
+                height: { ideal: 1080 },
+                facingMode: 'user',
+                frameRate: { ideal: 30 }
+            } 
+        });
+        
+        const video = document.getElementById('cameraFeed');
+        video.srcObject = cameraStream;
+        
+        // Iniciar loop de reconhecimento
+        requestAnimationFrame(detectFaces);
+        
+    } catch (error) {
+        console.error('Erro ao iniciar câmera:', error);
+        showStatus('Erro ao acessar câmera', 'error');
+    }
+}
+
+// Detectar faces continuamente
+async function detectFaces() {
+    const video = document.getElementById('cameraFeed');
+    
+    if (video.readyState === video.HAVE_ENOUGH_DATA && faceModel && !isRecognizing) {
+        try {
+            const faces = await faceModel.estimateFaces({
+                input: video,
+                returnTensors: false,
+                flipHorizontal: true,
+                predictIrises: true
+            });
+            
+            if (faces.length > 0) {
+                const now = Date.now();
+                if (now - lastRecognitionTime > RECOGNITION_COOLDOWN) {
+                    // Rosto detectado, iniciar reconhecimento
+                    await startRecognition(video);
+                }
+            }
+        } catch (error) {
+            console.error('Erro na detecção facial:', error);
+        }
+    }
+    
+    requestAnimationFrame(detectFaces);
+}
+
+// Iniciar processo de reconhecimento
+async function startRecognition(video) {
+    isRecognizing = true;
+    lastRecognitionTime = Date.now();
+    
+    // Mostrar overlay de reconhecimento
+    document.getElementById('recognitionOverlay').style.display = 'flex';
+    
+    // Capturar frame atual
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    // Converter para blob
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.8));
+    
+    // Comparar com biometrias cadastradas
+    await recognizeFace(blob);
+}
+
+// Reconhecer face comparando com banco de dados
+async function recognizeFace(imageBlob) {
+    try {
+        // Buscar todas as biometrias
+        const snap = await db.ref('biometrias').get();
+        const allBiometrias = snap.val() || {};
+        
+        let bestMatch = null;
+        let highestSimilarity = 0;
+        
+        // Aqui você implementaria a lógica de comparação facial
+        // Por enquanto, vamos simular um reconhecimento rápido
+        setTimeout(async () => {
+            // Simular reconhecimento (em produção, usar API de comparação facial)
+            const users = Object.keys(allBiometrias);
+            
+            if (users.length > 0) {
+                // Para teste: selecionar usuário aleatório
+                const randomUser = users[Math.floor(Math.random() * users.length)];
+                const userBiometrias = allBiometrias[randomUser];
+                
+                if (userBiometrias) {
+                    const biometriaKeys = Object.keys(userBiometrias);
+                    if (biometriaKeys.length > 0) {
+                        const randomBiometria = userBiometrias[biometriaKeys[0]];
+                        
+                        // Buscar dados do usuário
+                        const userSnap = await db.ref('users/' + randomUser).get();
+                        const userData = userSnap.val();
+                        
+                        if (userData) {
+                            // Verificar plano
+                            const today = new Date().toISOString().slice(0,10);
+                            const planActive = !userData.endDate || userData.endDate >= today;
+                            
+                            if (planActive) {
+                                // Liberar acesso
+                                await grantAccess(userData, randomUser, randomBiometria);
+                            } else {
+                                // Plano vencido
+                                showStatus('Plano vencido', 'warning', userData);
+                            }
+                        }
+                    }
+                }
+            } else {
+                showStatus('Nenhum usuário cadastrado', 'warning');
+            }
+            
+            // Esconder overlay
+            document.getElementById('recognitionOverlay').style.display = 'none';
+            isRecognizing = false;
+            
+        }, 1500); // Simular tempo de processamento de 1.5 segundos
+        
+    } catch (error) {
+        console.error('Erro no reconhecimento:', error);
+        showStatus('Erro no reconhecimento', 'error');
+        document.getElementById('recognitionOverlay').style.display = 'none';
+        isRecognizing = false;
+    }
+}
+
+// Liberar acesso
+async function grantAccess(userData, na, biometria) {
+    // Controlar catraca
+    const success = await controlTurnstile('open');
+    
+    if (success) {
+        // Incrementar contador
+        recognitionCount++;
+        localStorage.setItem('recognitionCount', recognitionCount);
+        document.getElementById('recCount').textContent = recognitionCount;
+        
+        // Mostrar card de sucesso
+        showStatus('Acesso liberado', 'success', userData);
+        
+        // Mostrar print de acesso
+        showAccessPrint(userData);
+        
+        // Fechar catraca após 3 segundos
+        setTimeout(() => {
+            controlTurnstile('close');
+        }, 3000);
+    } else {
+        showStatus('Erro na catraca', 'error');
+    }
+}
+
+// Mostrar status
+function showStatus(message, type, userData = null) {
+    const card = document.getElementById('statusCard');
+    
+    if (type === 'success' && userData) {
+        card.innerHTML = `
+            <div class="user-info-row">
+                <div class="user-avatar">${(userData.name || 'U').charAt(0)}</div>
+                <div class="user-details">
+                    <h3>${userData.name || 'Usuário'}</h3>
+                    <p>NA: ${userData.na || '---'}</p>
+                    <p>Plano: ${userData.planName || 'Padrão'}</p>
+                    <div class="access-time">Acesso: ${new Date().toLocaleTimeString()}</div>
+                </div>
+            </div>
+        `;
+        card.className = 'status-card show success';
+    } else if (type === 'warning') {
+        card.innerHTML = `<div class="warning-message">⚠️ ${message}</div>`;
+        card.className = 'status-card show warning';
+    } else {
+        card.innerHTML = `<div class="error-message">✕ ${message}</div>`;
+        card.className = 'status-card show error';
+    }
+    
+    // Esconder após 4 segundos
+    setTimeout(() => {
+        card.classList.remove('show');
+    }, 4000);
+}
+
+// Mostrar print de acesso
+function showAccessPrint(userData) {
+    const print = document.getElementById('accessPrint');
+    document.getElementById('accessName').textContent = userData.name || 'Usuário';
+    document.getElementById('accessTime').textContent = new Date().toLocaleString();
+    print.classList.add('show');
+    
+    setTimeout(() => {
+        print.classList.remove('show');
+    }, 3000);
+}
+
+// Reset de emergência
+function emergencyReset() {
+    if (confirm('Resetar sistema da catraca?')) {
+        localStorage.removeItem('recognitionCount');
+        recognitionCount = 0;
+        document.getElementById('recCount').textContent = '0';
+        showStatus('Sistema reiniciado', 'warning');
+    }
+}
+
+// Inicializar
+async function init() {
+    // Atualizar contador
+    document.getElementById('recCount').textContent = recognitionCount;
+    
+    // Carregar modelo facial
+    await loadFaceModel();
+    
+    // Iniciar câmera
+    await startCamera();
+    
+    // Verificar permissão USB
+    if ('usb' in navigator) {
+        navigator.usb.addEventListener('connect', (event) => {
+            console.log('Catraca conectada:', event.device);
+            showStatus('Catraca conectada', 'success');
+        });
+        
+        navigator.usb.addEventListener('disconnect', (event) => {
+            console.log('Catraca desconectada:', event.device);
+            showStatus('Catraca desconectada', 'warning');
+        });
+    }
+}
+
+// Iniciar quando a página carregar
+window.addEventListener('load', init);
+
+// Limpar recursos ao sair
+window.addEventListener('beforeunload', () => {
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+    }
+});
+</script>
+</body>
+</html>
