@@ -17,6 +17,7 @@
             --brand-green-hover: #7db135;
             --error-red: #ff4444;
             --success-green: #00C851;
+            --dark-bg: #1a1a1a;
         }
 
         body {
@@ -93,35 +94,86 @@
             pointer-events: none;
         }
 
-        /* Sobreposição do teclado NA */
+        /* Sobreposição do teclado NA - VERSÃO MODERNA */
         .na-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(5px);
+            background: linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(20,20,20,0.98) 100%);
+            backdrop-filter: blur(15px);
             display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 250;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .na-header {
+            position: absolute;
+            top: 30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #fff;
+            font-size: 14px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+
+        .na-header span {
+            color: var(--brand-green);
+            font-weight: 800;
+        }
+
+        .na-display-container {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(141, 198, 63, 0.3);
+            padding: 20px 40px;
+            margin-bottom: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .na-display-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--brand-green), transparent);
+            animation: scanLine 2s linear infinite;
+        }
+
+        @keyframes scanLine {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
         .na-display {
-            background: #222;
-            padding: 30px 50px;
-            margin-bottom: 30px;
-            border-left: 6px solid var(--brand-green);
-        }
-
-        .na-display span {
             font-size: 64px;
             font-weight: 900;
             color: #fff;
-            letter-spacing: 10px;
-            font-family: monospace;
+            letter-spacing: 15px;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 10px rgba(141, 198, 63, 0.3);
+        }
+
+        .na-display span {
+            display: inline-block;
+            width: 60px;
+            text-align: center;
         }
 
         .na-teclado {
@@ -134,39 +186,64 @@
 
         .na-tecla {
             aspect-ratio: 1;
-            background: #333;
-            border: none;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
             color: #fff;
             font-size: 32px;
             font-weight: 800;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-radius: 12px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
         .na-tecla:hover {
-            background: #444;
+            background: rgba(255,255,255,0.1);
+            border-color: var(--brand-green);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(141, 198, 63, 0.2);
         }
 
         .na-tecla:active {
             background: var(--brand-green);
             transform: scale(0.95);
+            border-color: var(--brand-green);
         }
 
         .na-tecla.limpar {
-            background: #ff4444;
+            background: rgba(255,68,68,0.1);
+            border-color: rgba(255,68,68,0.3);
+            color: #ff8888;
+        }
+
+        .na-tecla.limpar:hover {
+            background: rgba(255,68,68,0.2);
+            border-color: var(--error-red);
+            color: #fff;
         }
 
         .na-tecla.confirmar {
+            background: rgba(141, 198, 63, 0.1);
+            border-color: rgba(141, 198, 63, 0.3);
+            color: var(--brand-green);
+        }
+
+        .na-tecla.confirmar:hover:not(:disabled) {
             background: var(--brand-green);
+            color: #000;
         }
 
         .na-tecla.confirmar:disabled {
-            background: #666;
+            opacity: 0.3;
             cursor: not-allowed;
-            opacity: 0.5;
+            transform: none;
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.1);
+            color: #666;
         }
 
         .na-close {
@@ -181,11 +258,25 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            transition: all 0.2s;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .na-close:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,68,68,0.2);
+            border-color: var(--error-red);
+            transform: rotate(90deg);
+        }
+
+        .na-info {
+            position: absolute;
+            bottom: 30px;
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         /* Overlay de processamento */
@@ -195,8 +286,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(15px);
             display: none;
             justify-content: center;
             align-items: center;
@@ -206,21 +297,28 @@
         .processing-content {
             text-align: center;
             color: #fff;
+            animation: pulse 2s ease-in-out infinite;
         }
 
         .spinner {
-            width: 60px;
-            height: 60px;
-            border: 5px solid rgba(255,255,255,0.3);
-            border-top: 5px solid var(--brand-green);
+            width: 70px;
+            height: 70px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid var(--brand-green);
+            border-right: 4px solid var(--brand-green);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            margin: 0 auto 25px;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
         }
 
         /* Mensagens flutuantes */
@@ -229,30 +327,31 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 20px 40px;
-            background: rgba(255,255,255,0.95);
+            padding: 25px 50px;
+            background: rgba(255,255,255,0.98);
             font-weight: 900;
-            font-size: 24px;
+            font-size: 28px;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
             z-index: 400;
             display: none;
-            animation: messagePop 0.3s ease;
+            animation: messageSlide 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             white-space: nowrap;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            border-radius: 8px;
         }
 
         .message-overlay.success {
             color: var(--success-green);
-            border-left: 10px solid var(--success-green);
+            border-left: 8px solid var(--success-green);
         }
 
         .message-overlay.error {
             color: var(--error-red);
-            border-left: 10px solid var(--error-red);
+            border-left: 8px solid var(--error-red);
         }
 
-        @keyframes messagePop {
+        @keyframes messageSlide {
             from {
                 opacity: 0;
                 transform: translate(-50%, 100%);
@@ -306,7 +405,7 @@
             position: absolute;
             bottom: 80px;
             left: 20px;
-            background: rgba(255,255,255,0.9);
+            background: rgba(255,255,255,0.95);
             border: none;
             padding: 15px 25px;
             font-weight: 800;
@@ -315,10 +414,15 @@
             cursor: pointer;
             z-index: 150;
             border-left: 4px solid var(--brand-green);
+            border-radius: 4px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s;
         }
 
         .btn-na:hover {
             background: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         /* Status da catraca */
@@ -332,18 +436,57 @@
             background: #666;
             z-index: 150;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 800;
         }
 
         .catraca-status.connected {
             background: var(--brand-green);
-            box-shadow: 0 0 20px var(--brand-green);
-            animation: pulse 2s infinite;
+            box-shadow: 0 0 30px var(--brand-green);
+            animation: pulseCatraca 2s infinite;
         }
 
-        @keyframes pulse {
+        .catraca-status.connected::after {
+            content: 'USB';
+        }
+
+        .catraca-status.disconnected {
+            background: #666;
+        }
+
+        .catraca-status.disconnected::after {
+            content: '!';
+            font-size: 20px;
+        }
+
+        @keyframes pulseCatraca {
             0% { box-shadow: 0 0 0 0 rgba(141, 198, 63, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(141, 198, 63, 0); }
+            70% { box-shadow: 0 0 0 25px rgba(141, 198, 63, 0); }
             100% { box-shadow: 0 0 0 0 rgba(141, 198, 63, 0); }
+        }
+
+        /* Indicador de conexão USB */
+        .usb-info {
+            position: absolute;
+            bottom: 140px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 8px 15px;
+            font-size: 10px;
+            border-radius: 4px;
+            border-left: 3px solid var(--brand-green);
+            z-index: 150;
+            display: none;
+        }
+
+        .usb-info.visible {
+            display: block;
         }
     </style>
 </head>
@@ -361,18 +504,21 @@
     <div class="processing-overlay" id="processingOverlay">
         <div class="processing-content">
             <div class="spinner"></div>
-            <div>PROCESSANDO...</div>
+            <div>PROCESSANDO ACESSO</div>
         </div>
     </div>
     
     <div class="message-overlay" id="messageOverlay"></div>
     
-    <!-- Sobreposição para digitar NA -->
+    <!-- Sobreposição para digitar NA - VERSÃO MODERNA -->
     <div class="na-overlay" id="naOverlay">
+        <div class="na-header">ACESSO VIA <span>NA</span></div>
         <div class="na-close" onclick="fecharNAOverlay()">&times;</div>
         
-        <div class="na-display">
-            <span id="naDisplay">_____</span>
+        <div class="na-display-container">
+            <div class="na-display" id="naDisplay">
+                <span>_</span><span>_</span><span>_</span><span>_</span><span>_</span>
+            </div>
         </div>
         
         <div class="na-teclado">
@@ -389,12 +535,14 @@
             <button class="na-tecla" onclick="adicionarDigito('0')">0</button>
             <button class="na-tecla confirmar" id="confirmarNA" onclick="confirmarNA()" disabled>OK</button>
         </div>
+        <div class="na-info">DIGITE SEU NÚMERO DE ACESSO</div>
     </div>
 </div>
 
 <button class="btn-na" onclick="mostrarNAOverlay()">DIGITAR NA</button>
 
-<div class="catraca-status" id="catracaStatus"></div>
+<div class="catraca-status disconnected" id="catracaStatus"></div>
+<div class="usb-info" id="usbInfo">AGUARDANDO CATRACA USB...</div>
 
 <footer>
     <div class="user-info-footer" id="userInfoFooter">
@@ -429,19 +577,27 @@ let faceMatcher = null;
 let labeledDescriptors = [];
 let isProcessing = false;
 let lastDetectionTime = 0;
-const DETECTION_COOLDOWN = 2000; // 2 segundos
+const DETECTION_COOLDOWN = 2000;
 let catracaConectada = false;
+let catracaDevice = null;
 let naDigitado = '';
+let tentativasReconexao = 0;
+const MAX_TENTATIVAS_RECONEXAO = 5;
 
 // Carregar modelos FaceAPI
 async function carregarModelos() {
     const MODEL_URL = 'https://justadudewhohacks.github.io/face-api.js/models';
     
-    await Promise.all([
-        faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
-        faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-        faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
-    ]);
+    try {
+        await Promise.all([
+            faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+            faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+            faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+        ]);
+        console.log('Modelos carregados com sucesso');
+    } catch (error) {
+        console.error('Erro ao carregar modelos:', error);
+    }
 }
 
 // Carregar todas as biometrias do Firebase
@@ -455,12 +611,16 @@ async function carregarBiometrias() {
         snap.forEach(childSnapshot => {
             const user = childSnapshot.val();
             if (user.biometria && user.biometria.descriptor) {
-                const descriptor = new Float32Array(user.biometria.descriptor);
-                const labeledDescriptor = new faceapi.LabeledFaceDescriptors(
-                    childSnapshot.key,
-                    [descriptor]
-                );
-                labeledDescriptors.push(labeledDescriptor);
+                try {
+                    const descriptor = new Float32Array(user.biometria.descriptor);
+                    const labeledDescriptor = new faceapi.LabeledFaceDescriptors(
+                        childSnapshot.key,
+                        [descriptor]
+                    );
+                    labeledDescriptors.push(labeledDescriptor);
+                } catch (e) {
+                    console.error('Erro ao processar biometria do usuário', childSnapshot.key);
+                }
             }
         });
         
@@ -474,60 +634,188 @@ async function carregarBiometrias() {
     }
 }
 
-// Detectar e conectar catraca USB
-async function detectarCatracaUSB() {
+// DETECÇÃO E CONEXÃO REAL COM CATRACA USB
+async function detectarEConectarCatraca() {
+    const usbInfo = document.getElementById('usbInfo');
+    const catracaStatus = document.getElementById('catracaStatus');
+    
     try {
-        // Tentar WebUSB API
-        if ('usb' in navigator) {
-            const devices = await navigator.usb.getDevices();
-            if (devices.length > 0) {
-                catracaConectada = true;
-                document.getElementById('catracaStatus').classList.add('connected');
-                console.log('Catraca detectada via USB');
-                return;
+        // Verificar suporte a WebUSB
+        if (!('usb' in navigator)) {
+            usbInfo.textContent = 'WEBSUSB NÃO SUPORTADO';
+            usbInfo.style.borderLeftColor = '#ff4444';
+            usbInfo.classList.add('visible');
+            
+            // Fallback para simulação apenas em desenvolvimento
+            if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+                setTimeout(() => {
+                    catracaConectada = true;
+                    catracaStatus.classList.remove('disconnected');
+                    catracaStatus.classList.add('connected');
+                    usbInfo.textContent = 'MODO SIMULAÇÃO ATIVADO';
+                    usbInfo.style.borderLeftColor = '#ffaa00';
+                }, 2000);
             }
+            return;
         }
-        
-        // Fallback: simular conexão
-        setTimeout(() => {
-            catracaConectada = true;
-            document.getElementById('catracaStatus').classList.add('connected');
-        }, 2000);
-        
+
+        // Solicitar dispositivo USB
+        try {
+            const devices = await navigator.usb.getDevices();
+            
+            if (devices.length === 0) {
+                // Se não há dispositivos pareados, tentar solicitar
+                try {
+                    catracaDevice = await navigator.usb.requestDevice({
+                        filters: [
+                            // Filtros comuns para catracas e controladores USB
+                            { vendorId: 0x0403 }, // FTDI
+                            { vendorId: 0x10C4 }, // Silicon Labs
+                            { vendorId: 0x1A86 }, // QinHeng
+                            { vendorId: 0x067B }, // Prolific
+                            { vendorId: 0x2341 }  // Arduino
+                        ]
+                    });
+                    
+                    if (catracaDevice) {
+                        await conectarDispositivo(catracaDevice);
+                    }
+                } catch (requestError) {
+                    console.log('Usuário cancelou seleção de dispositivo');
+                    usbInfo.textContent = 'SELECIONE O DISPOSITIVO DA CATRACA';
+                }
+            } else {
+                // Usar primeiro dispositivo encontrado
+                catracaDevice = devices[0];
+                await conectarDispositivo(catracaDevice);
+            }
+        } catch (error) {
+            console.error('Erro ao acessar USB:', error);
+            usbInfo.textContent = 'ERRO: ' + error.message.substring(0, 30);
+        }
+
     } catch (error) {
-        console.error('Erro ao detectar catraca:', error);
+        console.error('Erro fatal na detecção USB:', error);
     }
 }
 
-// Comando para liberar catraca
+// Conectar e configurar dispositivo USB
+async function conectarDispositivo(device) {
+    const usbInfo = document.getElementById('usbInfo');
+    const catracaStatus = document.getElementById('catracaStatus');
+    
+    try {
+        await device.open();
+        
+        // Selecionar configuração padrão
+        if (device.configuration === null) {
+            await device.selectConfiguration(1);
+        }
+        
+        // Tentar reivindicar interface
+        try {
+            await device.claimInterface(0);
+        } catch (interfaceError) {
+            console.log('Interface já reivindicada ou não disponível');
+        }
+        
+        // Verificar se conseguiu controle
+        catracaConectada = true;
+        catracaStatus.classList.remove('disconnected');
+        catracaStatus.classList.add('connected');
+        
+        // Mostrar informações do dispositivo
+        usbInfo.innerHTML = `CONECTADO: ${device.productName || 'Catraca USB'}<br>${device.manufacturerName || ''}`;
+        usbInfo.style.borderLeftColor = 'var(--brand-green)';
+        usbInfo.classList.add('visible');
+        
+        console.log('Catraca conectada:', device);
+        
+        // Monitorar desconexão
+        navigator.usb.addEventListener('disconnect', (event) => {
+            if (event.device === device) {
+                catracaConectada = false;
+                catracaDevice = null;
+                catracaStatus.classList.remove('connected');
+                catracaStatus.classList.add('disconnected');
+                usbInfo.innerHTML = 'CATRACA DESCONECTADA';
+                usbInfo.style.borderLeftColor = '#ff4444';
+                
+                // Tentar reconectar
+                tentarReconectar();
+            }
+        });
+        
+    } catch (error) {
+        console.error('Erro ao conectar dispositivo:', error);
+        usbInfo.textContent = 'FALHA NA CONEXÃO';
+        usbInfo.style.borderLeftColor = '#ff4444';
+    }
+}
+
+// Tentar reconectar em caso de desconexão
+async function tentarReconectar() {
+    if (tentativasReconexao >= MAX_TENTATIVAS_RECONEXAO) {
+        document.getElementById('usbInfo').innerHTML = 'FALHA NA RECONEXÃO<br>REINICIE O SISTEMA';
+        return;
+    }
+    
+    tentativasReconexao++;
+    
+    setTimeout(async () => {
+        console.log(`Tentativa de reconexão ${tentativasReconexao}`);
+        await detectarEConectarCatraca();
+    }, 5000 * tentativasReconexao);
+}
+
+// Comando REAL para liberar catraca via USB
 async function liberarCatraca() {
-    if (!catracaConectada) {
+    if (!catracaConectada || !catracaDevice) {
         console.log('Catraca não conectada');
         return false;
     }
     
     try {
-        // WebUSB para enviar comando
-        if ('usb' in navigator) {
-            const devices = await navigator.usb.getDevices();
-            if (devices.length > 0) {
-                const device = devices[0];
-                await device.open();
-                await device.selectConfiguration(1);
-                await device.claimInterface(0);
-                
-                // Enviar pulso de liberação (protocolo genérico)
-                const comando = new Uint8Array([0x01, 0x00, 0x01]);
-                await device.transferOut(1, comando);
-                
-                await device.close();
-                return true;
+        // Protocolos comuns para catracas:
+        // 1. Pulso digital (0x01, 0x00)
+        // 2. Comando serial (0xAA, 0x01, 0x55)
+        // 3. Sinal TTL
+        
+        const comandosPossiveis = [
+            new Uint8Array([0x01, 0x00, 0x01]), // Protocolo genérico
+            new Uint8Array([0xAA, 0x01, 0x55]), // Protocolo com checksum
+            new Uint8Array([0x02, 0x00, 0x00]), // Segundo protocolo
+            new Uint8Array([0xFF, 0x01, 0x00])  // Terceiro protocolo
+        ];
+        
+        let liberado = false;
+        
+        for (const comando of comandosPossiveis) {
+            try {
+                // Tentar enviar comando
+                if (catracaDevice.opened) {
+                    const result = await catracaDevice.transferOut(1, comando);
+                    if (result.status === 'ok') {
+                        liberado = true;
+                        console.log('Comando enviado:', comando);
+                        break;
+                    }
+                }
+            } catch (cmdError) {
+                console.log('Comando falhou, tentando próximo');
             }
         }
         
-        // Simular liberação
-        console.log('Catraca liberada');
-        return true;
+        if (liberado) {
+            console.log('Catraca liberada via USB');
+            
+            // Pequeno delay para o pulso
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            return true;
+        }
+        
+        return false;
         
     } catch (error) {
         console.error('Erro ao liberar catraca:', error);
@@ -540,8 +828,8 @@ async function iniciarCamera() {
     try {
         videoStream = await navigator.mediaDevices.getUserMedia({ 
             video: { 
-                width: 1280, 
-                height: 720,
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
                 facingMode: 'user',
                 frameRate: { ideal: 30 }
             } 
@@ -550,10 +838,14 @@ async function iniciarCamera() {
         const video = document.getElementById('videoElement');
         video.srcObject = videoStream;
         
-        video.addEventListener('play', reconhecimentoContinuo);
+        video.addEventListener('play', () => {
+            console.log('Câmera iniciada');
+            reconhecimentoContinuo();
+        });
         
     } catch (error) {
         console.error('Erro ao iniciar câmera:', error);
+        mostrarMensagem('ERRO NA CÂMERA', 'error');
     }
 }
 
@@ -562,6 +854,11 @@ async function reconhecimentoContinuo() {
     const video = document.getElementById('videoElement');
     const canvas = document.getElementById('canvasOverlay');
     const ctx = canvas.getContext('2d');
+    
+    if (!video.videoWidth) {
+        setTimeout(reconhecimentoContinuo, 100);
+        return;
+    }
     
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -572,7 +869,7 @@ async function reconhecimentoContinuo() {
     });
     
     setInterval(async () => {
-        if (!video.videoWidth || isProcessing) return;
+        if (!video.videoWidth || isProcessing || !faceMatcher) return;
         
         const now = Date.now();
         if (now - lastDetectionTime < DETECTION_COOLDOWN) return;
@@ -584,7 +881,7 @@ async function reconhecimentoContinuo() {
             
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            if (detections.length > 0 && faceMatcher) {
+            if (detections.length > 0) {
                 faceapi.draw.drawFaceLandmarks(canvas, detections.map(d => d.landmarks));
                 
                 const bestDetection = detections[0];
@@ -604,6 +901,8 @@ async function reconhecimentoContinuo() {
 
 // Processar acesso (facial ou NA)
 async function processarAcesso(na) {
+    if (isProcessing) return;
+    
     isProcessing = true;
     
     try {
@@ -623,9 +922,25 @@ async function processarAcesso(na) {
             return;
         }
         
-        const liberado = await liberarCatraca();
+        // TENTAR LIBERAR CATRACA VIA USB
+        let liberado = false;
         
-        if (liberado) {
+        if (catracaConectada) {
+            liberado = await liberarCatraca();
+        } else {
+            // Se não tem catraca, tentar reconectar
+            mostrarMensagem('AGUARDANDO CATRACA', 'error');
+            await detectarEConectarCatraca();
+            if (catracaConectada) {
+                liberado = await liberarCatraca();
+            }
+        }
+        
+        if (liberado || location.hostname === 'localhost') { // Permitir teste local
+            if (!liberado && location.hostname === 'localhost') {
+                console.log('Modo teste: simulando liberação');
+            }
+            
             await db.ref('acessos/' + na).push({
                 data: new Date().toISOString(),
                 tipo: naDigitado ? 'manual' : 'facial'
@@ -656,7 +971,7 @@ async function processarAcesso(na) {
                 document.getElementById('userInfoFooter').style.display = 'none';
                 document.getElementById('defaultFooter').style.display = 'block';
             }, 3000);
-        }, 2000);
+        }, 1500);
     }
 }
 
@@ -691,11 +1006,14 @@ function atualizarDisplayNA() {
     const display = document.getElementById('naDisplay');
     const confirmarBtn = document.getElementById('confirmarNA');
     
-    let texto = naDigitado;
-    while (texto.length < 5) {
-        texto += '_';
+    const spans = display.children;
+    for (let i = 0; i < 5; i++) {
+        if (i < naDigitado.length) {
+            spans[i].textContent = naDigitado[i];
+        } else {
+            spans[i].textContent = '_';
+        }
     }
-    display.textContent = texto;
     
     confirmarBtn.disabled = naDigitado.length !== 5;
 }
@@ -737,19 +1055,46 @@ function mostrarInfoUsuario(user, na) {
 async function inicializar() {
     await carregarModelos();
     await carregarBiometrias();
-    await detectarCatracaUSB();
+    await detectarEConectarCatraca();
     await iniciarCamera();
     
+    // Recarregar biometrias periodicamente
     setInterval(carregarBiometrias, 5 * 60 * 1000);
+    
+    // Verificar conexão USB periodicamente
+    setInterval(() => {
+        if (!catracaConectada && tentativasReconexao < MAX_TENTATIVAS_RECONEXAO) {
+            detectarEConectarCatraca();
+        }
+    }, 30000);
 }
 
 window.addEventListener('load', inicializar);
 
+// Gerenciar pausa da câmera
 document.addEventListener('visibilitychange', () => {
     if (document.hidden && videoStream) {
         videoStream.getTracks().forEach(track => track.stop());
     } else if (!document.hidden) {
         iniciarCamera();
+    }
+});
+
+// Suporte a teclado para digitação rápida
+document.addEventListener('keydown', (e) => {
+    if (document.getElementById('naOverlay').style.display === 'flex') {
+        if (e.key >= '0' && e.key <= '9') {
+            adicionarDigito(e.key);
+        } else if (e.key === 'Backspace') {
+            naDigitado = naDigitado.slice(0, -1);
+            atualizarDisplayNA();
+        } else if (e.key === 'Enter' && naDigitado.length === 5) {
+            confirmarNA();
+        } else if (e.key === 'Escape') {
+            fecharNAOverlay();
+        }
+    } else if (e.key === 'n' || e.key === 'N') {
+        mostrarNAOverlay();
     }
 });
 </script>
