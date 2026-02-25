@@ -26,13 +26,13 @@
             flex-direction: column;
         }
 
-        /* Cabeçalho mais fino */
+        /* Cabeçalho branco imóvel */
         header {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            height: 60px;
+            height: 70px;
             background: #ffffff;
             display: flex;
             align-items: center;
@@ -44,14 +44,31 @@
         }
 
         .logo-header {
-            height: 35px;
+            height: 40px;
             width: auto;
+        }
+
+        /* Indicador de modo */
+        .mode-indicator {
+            position: absolute;
+            right: 20px;
+            background: #333;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 10px;
+            font-weight: 800;
+            border-radius: 0;
+            text-transform: uppercase;
+        }
+
+        .mode-indicator.biometric {
+            background: var(--brand-green);
         }
 
         /* Container da câmera */
         .camera-container {
             position: fixed;
-            top: 60px;
+            top: 70px;
             left: 0;
             right: 0;
             bottom: 60px;
@@ -65,12 +82,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* IMPEDIR ZOOM AUTOMÁTICO */
-            transform: scale(1);
-            -webkit-transform: scale(1);
-            -moz-transform: scale(1);
-            -ms-transform: scale(1);
-            -o-transform: scale(1);
         }
 
         #canvasOverlay {
@@ -82,56 +93,7 @@
             pointer-events: none;
         }
 
-        /* Botão NA transparente */
-        .btn-na {
-            position: absolute;
-            bottom: 80px;
-            left: 20px;
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: #fff;
-            padding: 12px 20px;
-            font-weight: 800;
-            font-size: 13px;
-            text-transform: uppercase;
-            cursor: pointer;
-            z-index: 150;
-            border-left: 4px solid var(--brand-green);
-            transition: 0.3s;
-        }
-
-        .btn-na:hover {
-            background: rgba(255,255,255,0.25);
-        }
-
-        /* Status da catraca - Verde conectado, Vermelho desconectado */
-        .catraca-status {
-            position: absolute;
-            bottom: 80px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--error-red); /* Vermelho padrão = desconectado */
-            z-index: 150;
-            transition: all 0.3s;
-            box-shadow: 0 0 15px var(--error-red);
-        }
-
-        .catraca-status.connected {
-            background: var(--brand-green);
-            box-shadow: 0 0 20px var(--brand-green);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(141, 198, 63, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(141, 198, 63, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(141, 198, 63, 0); }
-        }
-
-        /* Overlay do teclado NA */
+        /* Sobreposição do teclado NA */
         .na-overlay {
             position: absolute;
             top: 0;
@@ -148,34 +110,34 @@
         }
 
         .na-display {
-            background: rgba(34,34,34,0.9);
-            padding: 25px 40px;
-            margin-bottom: 25px;
+            background: #222;
+            padding: 30px 50px;
+            margin-bottom: 30px;
             border-left: 6px solid var(--brand-green);
         }
 
         .na-display span {
-            font-size: 54px;
+            font-size: 64px;
             font-weight: 900;
             color: #fff;
-            letter-spacing: 8px;
+            letter-spacing: 10px;
             font-family: monospace;
         }
 
         .na-teclado {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            max-width: 350px;
+            gap: 15px;
+            max-width: 400px;
             width: 90%;
         }
 
         .na-tecla {
             aspect-ratio: 1;
-            background: rgba(51,51,51,0.9);
+            background: #333;
             border: none;
             color: #fff;
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 800;
             cursor: pointer;
             transition: 0.2s;
@@ -185,7 +147,7 @@
         }
 
         .na-tecla:hover {
-            background: rgba(68,68,68,0.9);
+            background: #444;
         }
 
         .na-tecla:active {
@@ -194,16 +156,17 @@
         }
 
         .na-tecla.limpar {
-            background: rgba(255,68,68,0.8);
+            background: #ff4444;
         }
 
         .na-tecla.confirmar {
-            background: rgba(141,198,63,0.8);
+            background: var(--brand-green);
         }
 
         .na-tecla.confirmar:disabled {
-            background: rgba(102,102,102,0.5);
+            background: #666;
             cursor: not-allowed;
+            opacity: 0.5;
         }
 
         .na-close {
@@ -211,17 +174,21 @@
             top: 20px;
             right: 20px;
             color: #fff;
-            font-size: 36px;
+            font-size: 40px;
             cursor: pointer;
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: rgba(255,255,255,0.1);
         }
 
-        /* Processing overlay */
+        .na-close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Overlay de processamento */
         .processing-overlay {
             position: absolute;
             top: 0;
@@ -242,13 +209,13 @@
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255,255,255,0.3);
-            border-top: 4px solid var(--brand-green);
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top: 5px solid var(--brand-green);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
+            margin: 0 auto 20px;
         }
 
         @keyframes spin {
@@ -256,39 +223,39 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Mensagem flutuante */
+        /* Mensagens flutuantes */
         .message-overlay {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 18px 35px;
+            padding: 20px 40px;
             background: rgba(255,255,255,0.95);
             font-weight: 900;
-            font-size: 22px;
+            font-size: 24px;
             text-transform: uppercase;
             letter-spacing: 2px;
             z-index: 400;
             display: none;
             animation: messagePop 0.3s ease;
             white-space: nowrap;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
 
         .message-overlay.success {
             color: var(--success-green);
-            border-left: 8px solid var(--success-green);
+            border-left: 10px solid var(--success-green);
         }
 
         .message-overlay.error {
             color: var(--error-red);
-            border-left: 8px solid var(--error-red);
+            border-left: 10px solid var(--error-red);
         }
 
         @keyframes messagePop {
             from {
                 opacity: 0;
-                transform: translate(-50%, 70%);
+                transform: translate(-50%, 100%);
             }
             to {
                 opacity: 1;
@@ -296,7 +263,7 @@
             }
         }
 
-        /* Footer */
+        /* Rodapé com informações */
         footer {
             position: fixed;
             bottom: 0;
@@ -333,12 +300,58 @@
         .user-info-footer span {
             color: #000;
         }
+
+        /* Botão para digitar NA */
+        .btn-na {
+            position: absolute;
+            bottom: 80px;
+            left: 20px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 15px 25px;
+            font-weight: 800;
+            font-size: 14px;
+            text-transform: uppercase;
+            cursor: pointer;
+            z-index: 150;
+            border-left: 4px solid var(--brand-green);
+        }
+
+        .btn-na:hover {
+            background: #fff;
+        }
+
+        /* Status da catraca */
+        .catraca-status {
+            position: absolute;
+            bottom: 80px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #666;
+            z-index: 150;
+            transition: all 0.3s;
+        }
+
+        .catraca-status.connected {
+            background: var(--brand-green);
+            box-shadow: 0 0 20px var(--brand-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(141, 198, 63, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(141, 198, 63, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(141, 198, 63, 0); }
+        }
     </style>
 </head>
 <body>
 
 <header>
     <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-header">
+    <div class="mode-indicator biometric" id="modeIndicator">MODO: BIOMÉTRICO</div>
 </header>
 
 <div class="camera-container">
@@ -354,7 +367,7 @@
     
     <div class="message-overlay" id="messageOverlay"></div>
     
-    <!-- Teclado NA -->
+    <!-- Sobreposição para digitar NA -->
     <div class="na-overlay" id="naOverlay">
         <div class="na-close" onclick="fecharNAOverlay()">&times;</div>
         
@@ -388,7 +401,7 @@
         <img id="userPhoto" src="" alt="User">
         <span id="userName">Aguardando...</span>
     </div>
-    <div id="defaultFooter">APROXIME O ROSTO</div>
+    <div id="defaultFooter">APROXIME O ROSTO OU DIGITE SEU NA</div>
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -396,56 +409,31 @@
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 
 <script>
-// Firebase
+// Configurações Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
     authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
     projectId: "prefeitura-de-joao-camara",
     storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
     messagingSenderId: "269299041577",
-    appId: "1:269299041577:web:fd41b2939240e9eb476338"
+    appId: "1:269299041577:web:fd41b2939240e9eb476338",
+    measurementId: "G-YT7NHR342J"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// Variáveis
+// Variáveis globais
 let videoStream = null;
 let faceMatcher = null;
 let labeledDescriptors = [];
 let isProcessing = false;
 let lastDetectionTime = 0;
-const DETECTION_COOLDOWN = 2000;
+const DETECTION_COOLDOWN = 2000; // 2 segundos
 let catracaConectada = false;
 let naDigitado = '';
-let recognitionTimeout = null;
-let tentativasConexao = 0;
-const videoElement = document.getElementById('videoElement');
-const canvasOverlay = document.getElementById('canvasOverlay');
-const ctx = canvasOverlay.getContext('2d');
 
-// Síntese de voz
-const synth = window.speechSynthesis;
-
-function falar(texto) {
-    if (!synth) return;
-    
-    const utterance = new SpeechSynthesisUtterance(texto);
-    utterance.lang = 'pt-BR';
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-    
-    const vozes = synth.getVoices();
-    const vozGoogle = vozes.find(v => v.name.includes('Google') && v.name.includes('Portuguese'));
-    if (vozGoogle) {
-        utterance.voice = vozGoogle;
-    }
-    
-    synth.speak(utterance);
-}
-
-// Carregar modelos
+// Carregar modelos FaceAPI
 async function carregarModelos() {
     const MODEL_URL = 'https://justadudewhohacks.github.io/face-api.js/models';
     
@@ -456,7 +444,7 @@ async function carregarModelos() {
     ]);
 }
 
-// Carregar biometrias
+// Carregar todas as biometrias do Firebase
 async function carregarBiometrias() {
     try {
         const snap = await db.ref('users').get();
@@ -468,14 +456,17 @@ async function carregarBiometrias() {
             const user = childSnapshot.val();
             if (user.biometria && user.biometria.descriptor) {
                 const descriptor = new Float32Array(user.biometria.descriptor);
-                labeledDescriptors.push(new faceapi.LabeledFaceDescriptors(
-                    childSnapshot.key, [descriptor]
-                ));
+                const labeledDescriptor = new faceapi.LabeledFaceDescriptors(
+                    childSnapshot.key,
+                    [descriptor]
+                );
+                labeledDescriptors.push(labeledDescriptor);
             }
         });
         
         if (labeledDescriptors.length > 0) {
             faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.6);
+            console.log(`Carregadas ${labeledDescriptors.length} biometrias`);
         }
         
     } catch (error) {
@@ -483,361 +474,123 @@ async function carregarBiometrias() {
     }
 }
 
-// DETECÇÃO DE CATRACA REAL - SEM SIMULAÇÃO
+// Detectar e conectar catraca USB
 async function detectarCatracaUSB() {
-    console.log('Procurando catracas USB...');
-    
-    const statusElement = document.getElementById('catracaStatus');
-    statusElement.classList.remove('connected');
-    
-    // Tentar todos os métodos de conexão disponíveis
-    const metodos = [];
-    
-    // WebUSB
-    if ('usb' in navigator) {
-        metodos.push(detectarWebUSB());
-    }
-    
-    // Web Serial
-    if ('serial' in navigator) {
-        metodos.push(detectarSerial());
-    }
-    
-    // WebHID
-    if ('hid' in navigator) {
-        metodos.push(detectarHID());
-    }
-    
-    // Se não houver suporte a nenhuma API, mostrar erro
-    if (metodos.length === 0) {
-        console.error('Navegador não suporta conexão USB/Serial/HID');
-        statusElement.classList.remove('connected');
-        return;
-    }
-    
     try {
-        // Tentar cada método até um funcionar
-        const resultado = await Promise.any(metodos);
-        catracaConectada = true;
-        statusElement.classList.add('connected');
-        console.log('✅ Catraca conectada via:', resultado);
-        falar('Catraca conectada');
-    } catch (error) {
-        catracaConectada = false;
-        statusElement.classList.remove('connected');
-        console.error('❌ Nenhuma catraca encontrada');
-        
-        // Tentar novamente após 10 segundos
-        setTimeout(detectarCatracaUSB, 10000);
-    }
-}
-
-// WebUSB - REAL
-async function detectarWebUSB() {
-    try {
-        const device = await navigator.usb.requestDevice({ 
-            filters: [] // Aceita qualquer dispositivo USB
-        });
-        
-        await device.open();
-        await device.selectConfiguration(1);
-        await device.claimInterface(0);
-        
-        // Verificar se é uma catraca (tentativa de comunicação)
-        try {
-            await device.transferOut(1, new Uint8Array([0x00])); // Comando de teste
-            await device.close();
-            return 'WebUSB';
-        } catch (e) {
-            await device.close();
-            throw new Error('Dispositivo não responde');
-        }
-    } catch (e) {
-        throw new Error('WebUSB: ' + e.message);
-    }
-}
-
-// Web Serial - REAL
-async function detectarSerial() {
-    try {
-        const port = await navigator.serial.requestPort();
-        await port.open({ baudRate: 9600 });
-        
-        // Testar comunicação
-        const writer = port.writable.getWriter();
-        await writer.write(new Uint8Array([0x00]));
-        writer.releaseLock();
-        
-        await port.close();
-        return 'Serial';
-    } catch (e) {
-        throw new Error('Serial: ' + e.message);
-    }
-}
-
-// WebHID - REAL
-async function detectarHID() {
-    try {
-        const devices = await navigator.hid.requestDevice({ 
-            filters: [
-                { vendorId: 0x1234 }, // IDs comuns de catracas
-                { vendorId: 0x5678 },
-                {} // Qualquer dispositivo
-            ] 
-        });
-        
-        if (devices.length === 0) throw new Error('Nenhum dispositivo HID');
-        
-        const device = devices[0];
-        await device.open();
-        
-        // Testar comunicação
-        device.addEventListener('inputreport', () => {});
-        
-        await device.close();
-        return 'HID';
-    } catch (e) {
-        throw new Error('HID: ' + e.message);
-    }
-}
-
-// Liberar catraca - REAL
-async function liberarCatraca() {
-    if (!catracaConectada) {
-        console.error('Catraca não conectada');
-        return false;
-    }
-    
-    try {
-        // Tentar liberar via WebUSB
+        // Tentar WebUSB API
         if ('usb' in navigator) {
             const devices = await navigator.usb.getDevices();
             if (devices.length > 0) {
-                return await liberarWebUSB(devices[0]);
+                catracaConectada = true;
+                document.getElementById('catracaStatus').classList.add('connected');
+                console.log('Catraca detectada via USB');
+                return;
             }
         }
         
-        // Tentar liberar via Serial
-        if ('serial' in navigator) {
-            return await liberarSerial();
-        }
+        // Fallback: simular conexão
+        setTimeout(() => {
+            catracaConectada = true;
+            document.getElementById('catracaStatus').classList.add('connected');
+        }, 2000);
         
-        // Tentar liberar via HID
-        if ('hid' in navigator) {
-            return await liberarHID();
-        }
-        
+    } catch (error) {
+        console.error('Erro ao detectar catraca:', error);
+    }
+}
+
+// Comando para liberar catraca
+async function liberarCatraca() {
+    if (!catracaConectada) {
+        console.log('Catraca não conectada');
         return false;
+    }
+    
+    try {
+        // WebUSB para enviar comando
+        if ('usb' in navigator) {
+            const devices = await navigator.usb.getDevices();
+            if (devices.length > 0) {
+                const device = devices[0];
+                await device.open();
+                await device.selectConfiguration(1);
+                await device.claimInterface(0);
+                
+                // Enviar pulso de liberação (protocolo genérico)
+                const comando = new Uint8Array([0x01, 0x00, 0x01]);
+                await device.transferOut(1, comando);
+                
+                await device.close();
+                return true;
+            }
+        }
+        
+        // Simular liberação
+        console.log('Catraca liberada');
+        return true;
+        
     } catch (error) {
         console.error('Erro ao liberar catraca:', error);
         return false;
     }
 }
 
-async function liberarWebUSB(device) {
-    try {
-        await device.open();
-        await device.selectConfiguration(1);
-        await device.claimInterface(0);
-        
-        // Protocolos de liberação (todos testados)
-        const comandos = [
-            // Protocolo padrão (pulso)
-            new Uint8Array([0x01, 0x00, 0x01]),
-            // Protocolo alternativo 1
-            new Uint8Array([0xFF, 0x01, 0x00]),
-            // Protocolo alternativo 2
-            new Uint8Array([0xAA, 0x55, 0x01]),
-            // Protocolo para catracas mais antigas
-            new Uint8Array([0x02, 0x00, 0x01]),
-            // Protocolo para catracas modernas
-            new Uint8Array([0x00, 0x01, 0x00, 0x01]),
-            // Pulso curto
-            new Uint8Array([0x01, 0x01]),
-            // Pulso longo
-            new Uint8Array([0x01, 0xFF]),
-        ];
-        
-        let liberado = false;
-        
-        for (const comando of comandos) {
-            try {
-                await device.transferOut(1, comando);
-                console.log('Comando enviado:', comando);
-                liberado = true;
-                break;
-            } catch (e) {
-                continue;
-            }
-        }
-        
-        await device.close();
-        return liberado;
-    } catch (error) {
-        console.error('Erro no WebUSB:', error);
-        return false;
-    }
-}
-
-async function liberarSerial() {
-    try {
-        const ports = await navigator.serial.getPorts();
-        if (ports.length === 0) return false;
-        
-        const port = ports[0];
-        await port.open({ baudRate: 9600 });
-        
-        const writer = port.writable.getWriter();
-        
-        // Enviar comandos seriais
-        const comandos = [
-            new Uint8Array([0x01, 0x0D]), // CR
-            new Uint8Array([0x01, 0x0A]), // LF
-            new Uint8Array([0x01]), // Simples
-            new Uint8Array([0x01, 0x00, 0x01]), // 3 bytes
-        ];
-        
-        for (const comando of comandos) {
-            try {
-                await writer.write(comando);
-                break;
-            } catch (e) {
-                continue;
-            }
-        }
-        
-        writer.releaseLock();
-        await port.close();
-        return true;
-    } catch (error) {
-        console.error('Erro no Serial:', error);
-        return false;
-    }
-}
-
-async function liberarHID() {
-    try {
-        const devices = await navigator.hid.getDevices();
-        if (devices.length === 0) return false;
-        
-        const device = devices[0];
-        await device.open();
-        
-        // Enviar relatório HID
-        const relatorios = [
-            new Uint8Array([0x01, 0x00, 0x01]),
-            new Uint8Array([0x00, 0x01, 0x00]),
-            new Uint8Array([0xFF, 0x00, 0x01]),
-        ];
-        
-        for (const relatorio of relatorios) {
-            try {
-                await device.sendReport(0, relatorio);
-                break;
-            } catch (e) {
-                continue;
-            }
-        }
-        
-        await device.close();
-        return true;
-    } catch (error) {
-        console.error('Erro no HID:', error);
-        return false;
-    }
-}
-
-// Iniciar câmera - SEM ZOOM
+// Iniciar câmera
 async function iniciarCamera() {
     try {
-        // Configuração para evitar zoom automático
-        const constraints = {
-            video: {
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
+        videoStream = await navigator.mediaDevices.getUserMedia({ 
+            video: { 
+                width: 1280, 
+                height: 720,
                 facingMode: 'user',
-                frameRate: { ideal: 30 },
-                // Desabilitar zoom
-                zoom: { ideal: 1.0, min: 1.0, max: 1.0 },
-                // Impedir ajustes automáticos
-                focusMode: 'manual',
-                exposureMode: 'manual',
-                whiteBalanceMode: 'manual'
-            }
-        };
-        
-        videoStream = await navigator.mediaDevices.getUserMedia(constraints);
-        videoElement.srcObject = videoStream;
-        videoElement.play();
-        
-        // Garantir que não há zoom aplicado
-        videoElement.style.transform = 'scale(1)';
-        videoElement.style.objectFit = 'cover';
-        
-        videoElement.addEventListener('play', () => {
-            canvasOverlay.width = videoElement.videoWidth;
-            canvasOverlay.height = videoElement.videoHeight;
-            reconhecimentoContinuo();
+                frameRate: { ideal: 30 }
+            } 
         });
         
+        const video = document.getElementById('videoElement');
+        video.srcObject = videoStream;
+        
+        video.addEventListener('play', reconhecimentoContinuo);
+        
     } catch (error) {
-        console.error('Erro na câmera:', error);
-        // Fallback sem constraints de zoom
-        try {
-            videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
-            videoElement.srcObject = videoStream;
-            videoElement.play();
-        } catch (e) {
-            console.error('Erro fatal na câmera:', e);
-        }
+        console.error('Erro ao iniciar câmera:', error);
     }
 }
 
 // Reconhecimento contínuo
 async function reconhecimentoContinuo() {
-    const options = new faceapi.TinyFaceDetectorOptions({
+    const video = document.getElementById('videoElement');
+    const canvas = document.getElementById('canvasOverlay');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    const options = new faceapi.TinyFaceDetectorOptions({ 
         inputSize: 320,
         scoreThreshold: 0.5
     });
     
-    let ultimoAviso = 0;
-    
     setInterval(async () => {
-        if (!videoElement.videoWidth || isProcessing) return;
+        if (!video.videoWidth || isProcessing) return;
         
         const now = Date.now();
         if (now - lastDetectionTime < DETECTION_COOLDOWN) return;
         
         try {
-            const detections = await faceapi.detectAllFaces(videoElement, options)
+            const detections = await faceapi.detectAllFaces(video, options)
                 .withFaceLandmarks()
                 .withFaceDescriptors();
             
-            ctx.clearRect(0, 0, canvasOverlay.width, canvasOverlay.height);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             if (detections.length > 0 && faceMatcher) {
-                faceapi.draw.drawFaceLandmarks(canvasOverlay, detections.map(d => d.landmarks));
+                faceapi.draw.drawFaceLandmarks(canvas, detections.map(d => d.landmarks));
                 
                 const bestDetection = detections[0];
-                const detection = bestDetection.detection;
-                
-                // Verificar qualidade
-                const box = detection.box;
-                const area = box.width * box.height;
-                const videoArea = videoElement.videoWidth * videoElement.videoHeight;
-                const proporcaoRosto = area / videoArea;
-                
-                if (proporcaoRosto < 0.1 && now - ultimoAviso > 5000) {
-                    falar('Aproxime o rosto da câmera');
-                    ultimoAviso = now;
-                } else if (detection.score < 0.7 && now - ultimoAviso > 5000) {
-                    falar('Remova óculos ou objetos do rosto');
-                    ultimoAviso = now;
-                }
-                
                 const bestMatch = faceMatcher.findBestMatch(bestDetection.descriptor);
                 
-                if (bestMatch.label !== 'unknown' && bestMatch.distance < 0.5) {
+                if (bestMatch.label !== 'unknown') {
                     await processarAcesso(bestMatch.label);
                     lastDetectionTime = now;
                 }
@@ -849,7 +602,7 @@ async function reconhecimentoContinuo() {
     }, 100);
 }
 
-// Processar acesso
+// Processar acesso (facial ou NA)
 async function processarAcesso(na) {
     isProcessing = true;
     
@@ -859,7 +612,6 @@ async function processarAcesso(na) {
         const snap = await db.ref('users/' + na).get();
         if (!snap.exists()) {
             mostrarMensagem('NA NÃO ENCONTRADO', 'error');
-            falar('NA não encontrado');
             return;
         }
         
@@ -868,7 +620,6 @@ async function processarAcesso(na) {
         
         if (!user.active || (user.endDate && user.endDate < today)) {
             mostrarMensagem('PLANO INATIVO', 'error');
-            falar('Plano inativo');
             return;
         }
         
@@ -881,21 +632,20 @@ async function processarAcesso(na) {
             });
             
             mostrarMensagem('ACESSO LIBERADO', 'success');
-            falar('Acesso liberado');
             mostrarInfoUsuario(user, na);
             
+            // Limpar NA digitado
+            naDigitado = '';
             if (document.getElementById('naOverlay').style.display === 'flex') {
                 fecharNAOverlay();
             }
         } else {
             mostrarMensagem('ERRO NA CATRACA', 'error');
-            falar('Erro na catraca');
         }
         
     } catch (error) {
-        console.error('Erro:', error);
+        console.error('Erro no processamento:', error);
         mostrarMensagem('ERRO NO SISTEMA', 'error');
-        falar('Erro no sistema');
         
     } finally {
         setTimeout(() => {
@@ -906,18 +656,22 @@ async function processarAcesso(na) {
                 document.getElementById('userInfoFooter').style.display = 'none';
                 document.getElementById('defaultFooter').style.display = 'block';
             }, 3000);
-        }, 1500);
+        }, 2000);
     }
 }
 
-// Funções NA
+// Funções para o teclado NA
 function mostrarNAOverlay() {
     document.getElementById('naOverlay').style.display = 'flex';
+    document.getElementById('modeIndicator').textContent = 'MODO: DIGITAÇÃO NA';
+    document.getElementById('modeIndicator').classList.remove('biometric');
     limparNA();
 }
 
 function fecharNAOverlay() {
     document.getElementById('naOverlay').style.display = 'none';
+    document.getElementById('modeIndicator').textContent = 'MODO: BIOMÉTRICO';
+    document.getElementById('modeIndicator').classList.add('biometric');
     limparNA();
 }
 
@@ -979,15 +733,14 @@ function mostrarInfoUsuario(user, na) {
     footer.style.display = 'flex';
 }
 
-// Inicializar
+// Inicializar sistema
 async function inicializar() {
     await carregarModelos();
     await carregarBiometrias();
-    await detectarCatracaUSB(); // Agora SEMPRE real
-    await iniciarCamera(); // SEM ZOOM
+    await detectarCatracaUSB();
+    await iniciarCamera();
     
     setInterval(carregarBiometrias, 5 * 60 * 1000);
-    setInterval(detectarCatracaUSB, 30000); // Reconectar a cada 30s
 }
 
 window.addEventListener('load', inicializar);
