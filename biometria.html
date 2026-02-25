@@ -31,7 +31,7 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 64px;
+            height: 60px; /* Um pouco mais fino */
             background: #fff;
             display: flex;
             align-items: center;
@@ -42,7 +42,7 @@
         }
 
         .logo-canto-esquerdo {
-            height: 32px;
+            height: 30px; /* Ajustado */
             width: auto;
         }
 
@@ -50,8 +50,8 @@
             background: var(--brand-green);
             color: #fff;
             border: none;
-            width: 85px;
-            height: 35px;
+            width: 80px;
+            height: 32px;
             font-weight: 800;
             font-size: 10px;
             cursor: pointer;
@@ -60,7 +60,7 @@
 
         main {
             max-width: 500px;
-            margin: 90px auto 30px;
+            margin: 80px auto 30px; /* Ajustado */
             padding: 20px;
         }
 
@@ -187,15 +187,15 @@
         .modal-header {
             background: var(--brand-green);
             color: #fff;
-            padding: 15px 25px;
+            padding: 12px 25px; /* Mais fino */
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 64px;
+            height: 60px;
         }
 
         .modal-header h3 {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 800;
             text-transform: uppercase;
         }
@@ -227,6 +227,11 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: filter 0.3s;
+        }
+
+        #videoElement.frozen {
+            filter: blur(8px);
         }
 
         #canvasOverlay {
@@ -252,6 +257,7 @@
             letter-spacing: 2px;
             border-left: 4px solid var(--brand-green);
             display: none;
+            z-index: 200;
         }
 
         .status-overlay.processing {
@@ -347,7 +353,7 @@
 <!-- Modal da Câmera - Tela Cheia -->
 <div id="cameraModal">
     <div class="modal-header">
-        <h3>DomusFit - Captura Biométrica Automática</h3>
+        <h3>DomusFit - Captura Biométrica</h3>
         <span class="modal-close" onclick="fecharCamera()">&times;</span>
     </div>
     
@@ -451,14 +457,10 @@ document.getElementById('saveInfoBtn').addEventListener('click', async () => {
 // Iniciar captura automática de biometria
 document.getElementById('cadastrarBiometriaBtn').addEventListener('click', async () => {
     try {
-        // Carregar modelos do FaceAPI
         await carregarModelosFace();
         document.getElementById('cameraModal').style.display = 'flex';
         await iniciarCamera();
-        
-        // Iniciar detecção automática
         iniciarDeteccaoAutomatica();
-        
     } catch (error) {
         showNotification('Erro ao iniciar câmera', 'error');
     }
@@ -502,7 +504,7 @@ function iniciarDeteccaoAutomatica() {
     const statusOverlay = document.getElementById('statusOverlay');
     
     let stableFrames = 0;
-    const STABLE_THRESHOLD = 10; // Quadros estáveis para capturar
+    const STABLE_THRESHOLD = 10;
     
     detectionInterval = setInterval(async () => {
         if (!video.videoWidth || isProcessing) return;
@@ -522,16 +524,14 @@ function iniciarDeteccaoAutomatica() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             if (detections.length === 1) {
-                // Desenhar landmarks
                 faceapi.draw.drawFaceLandmarks(canvas, detections.map(d => d.landmarks));
                 
                 stableFrames++;
                 statusOverlay.textContent = `CAPTURANDO... ${Math.min(100, Math.round((stableFrames / STABLE_THRESHOLD) * 100))}%`;
                 statusOverlay.className = 'status-overlay processing';
                 
-                // Se rosto estável por tempo suficiente, capturar
                 if (stableFrames >= STABLE_THRESHOLD && !isProcessing) {
-                    await capturarFace();
+                    await capturarFaceComFreeze();
                 }
             } else if (detections.length === 0) {
                 stableFrames = 0;
@@ -539,7 +539,7 @@ function iniciarDeteccaoAutomatica() {
                 statusOverlay.className = 'status-overlay';
             } else {
                 stableFrames = 0;
-                statusOverlay.textContent = 'MÚLTIPLOS ROSTOS DETECTADOS';
+                statusOverlay.textContent = 'MÚLTIPLOS ROSTOS';
                 statusOverlay.className = 'status-overlay error';
             }
             
@@ -549,18 +549,27 @@ function iniciarDeteccaoAutomatica() {
     }, 100);
 }
 
-// Capturar face automaticamente
-async function capturarFace() {
+// Capturar face com freeze da imagem
+async function capturarFaceComFreeze() {
     if (isProcessing) return;
     
     isProcessing = true;
     const video = document.getElementById('videoElement');
     const statusOverlay = document.getElementById('statusOverlay');
     
-    statusOverlay.textContent = 'PROCESSANDO IMAGEM...';
-    statusOverlay.className = 'status-overlay processing';
+    // Congelar e borrar o vídeo
+    video.classList.add('frozen');
+    statusOverlay.textContent = 'PROCESSANDO...';
     
     try {
+        // Capturar frame atual
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        
+        const imageData = canvas.toDataURL('image/jpeg', 0.9);
+        
         // Detectar face com descritor
         const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
             .withFaceLandmarks()
@@ -571,16 +580,9 @@ async function capturarFace() {
         }
         
         if (detections.length > 1) {
-            throw new Error('Múltiplos rostos detectados');
+            throw new Error('Múltiplos rostos');
         }
         
-        // Capturar frame
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0);
-        
-        const imageData = canvas.toDataURL('image/jpeg', 0.9);
         const descriptor = Array.from(detections[0].descriptor);
         
         // Upload Cloudinary
@@ -606,41 +608,40 @@ async function capturarFace() {
         await db.ref('users/' + loggedUser + '/biometria').set(biometriaData);
         
         // Sucesso
-        statusOverlay.textContent = 'BIOMETRIA CADASTRADA COM SUCESSO!';
+        statusOverlay.textContent = 'CADASTRADO COM SUCESSO!';
         statusOverlay.className = 'status-overlay success';
         
-        // Atualizar interface
         document.getElementById('biometriaStatus').style.display = 'flex';
         document.getElementById('biometriaFoto').src = uploadResult.secure_url;
         document.getElementById('biometriaData').textContent = new Date().toLocaleString();
         document.getElementById('removerBiometriaBtn').style.display = 'block';
         document.getElementById('cadastrarBiometriaBtn').textContent = 'Atualizar Biometria';
         
-        showNotification('Biometria cadastrada com sucesso!');
+        showNotification('Biometria cadastrada!');
         
-        // Fechar após 2 segundos
         setTimeout(fecharCamera, 2000);
         
     } catch (error) {
-        statusOverlay.textContent = error.message || 'ERRO NA CAPTURA';
+        statusOverlay.textContent = error.message || 'ERRO';
         statusOverlay.className = 'status-overlay error';
+        video.classList.remove('frozen');
         isProcessing = false;
     }
 }
 
 // Remover biometria
 document.getElementById('removerBiometriaBtn').addEventListener('click', async () => {
-    if (confirm('Tem certeza que deseja remover sua biometria?')) {
+    if (confirm('Remover biometria?')) {
         try {
             await db.ref('users/' + loggedUser + '/biometria').remove();
             
             document.getElementById('biometriaStatus').style.display = 'none';
             document.getElementById('removerBiometriaBtn').style.display = 'none';
-            document.getElementById('cadastrarBiometriaBtn').textContent = 'Cadastrar Biometria Facial';
+            document.getElementById('cadastrarBiometriaBtn').textContent = 'Cadastrar Biometria';
             
-            showNotification('Biometria removida com sucesso!');
+            showNotification('Biometria removida!');
         } catch (error) {
-            showNotification('Erro ao remover biometria', 'error');
+            showNotification('Erro ao remover', 'error');
         }
     }
 });
@@ -658,6 +659,7 @@ function fecharCamera() {
     }
     
     document.getElementById('cameraModal').style.display = 'none';
+    document.getElementById('videoElement').classList.remove('frozen');
     isProcessing = false;
 }
 
@@ -673,13 +675,12 @@ function showNotification(msg, type = 'success') {
     setTimeout(() => {
         el.classList.add('exit');
         setTimeout(() => el.remove(), 600);
-    }, 3500);
+    }, 2500);
 }
 
 // Inicializar
 carregarDadosUsuario();
 
-// Fechar modal com ESC
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && document.getElementById('cameraModal').style.display === 'flex') {
         fecharCamera();
