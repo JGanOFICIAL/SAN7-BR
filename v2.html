@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DomusFit - Sistema de Gestão</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        :root {
+            --primary: #32CD32;
+            --primary-light: #e8f5e9;
+            --primary-dark: #2eb82e;
+            --danger: #ff4757;
+            --warning: #ffaa00;
+            --success: #32CD32;
+            --text-dark: #1a1a1a;
+            --text-gray: #666;
+            --text-light: #999;
+            --bg: #f5f7fa;
+            --white: #ffffff;
+            --border: #e0e0e0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.05);
+            --radius: 0px;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-dark);
+            padding-top: 80px;
+        }
+
+        /* Header Fixo */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-url-input {
+            border: 1px dashed var(--border);
+            padding: 6px 12px;
+            font-size: 12px;
+            width: 240px;
+            border-radius: var(--radius);
+            outline: none;
+        }
+
+        .logo-url-input:focus {
+            border-color: var(--primary);
+        }
+
+        .logo-img {
+            height: 38px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Navegação */
+        .nav-menu {
+            display: flex;
+            gap: 5px;
+            background: #f8f8f8;
+            padding: 4px;
+            border-radius: var(--radius);
+        }
+
+        .nav-item {
+            padding: 8px 20px;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            border-radius: var(--radius);
+            transition: all 0.2s;
+            color: var(--text-gray);
+        }
+
+        .nav-item:hover {
+            background: rgba(50, 205, 50, 0.1);
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Container Principal */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Painel de Conteúdo */
+        .content-panel {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            min-height: calc(100vh - 120px);
+            transition: all 0.3s;
+        }
+
+        /* Seções de Conteúdo */
+        .content-section {
+            display: none;
+            padding: 25px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards de Alunos */
+        .search-bar {
+            width: 100%;
+            padding: 14px 20px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 15px;
+            margin-bottom: 20px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-bar:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(50, 205, 50, 0.1);
+        }
+
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .student-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .student-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary);
+        }
+
+        .student-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius);
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+
+        .student-info {
+            flex: 1;
+        }
+
+        .student-name {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .student-na {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .student-status {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            border-radius: var(--radius);
+        }
+
+        .status-ok {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .status-warning {
+            background: #fff3e0;
+            color: var(--warning);
+        }
+
+        .status-expired {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .biometry-badge {
+            padding: 4px 8px;
+            background: #f0f0f0;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: var(--radius);
+        }
+
+        .biometry-badge.has {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--white);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: var(--radius);
+            position: relative;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            background: var(--white);
+            z-index: 10;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .modal-close {
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #f0f0f0;
+            border-radius: var(--radius);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        /* Formulários */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-light);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* Botões */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            border-radius: var(--radius);
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            filter: brightness(0.9);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            background: #f8f8f8;
+        }
+
+        /* Comprovante de Cadastro */
+        .receipt {
+            background: #f8f8f8;
+            padding: 30px;
+            border: 2px dashed var(--border);
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .receipt h3 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .receipt-info {
+            text-align: left;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: var(--radius);
+        }
+
+        .receipt-info p {
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dotted var(--border);
+            padding-bottom: 8px;
+        }
+
+        .receipt-info p strong {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* Analytics */
+        .analytics-header {
+            margin-bottom: 20px;
+        }
+
+        .student-selector {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 15px;
+            margin-bottom: 20px;
+            outline: none;
+        }
+
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .attendance-table th,
+        .attendance-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .attendance-table th {
+            background: #f8f8f8;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        /* PDF Download */
+        .pdf-content {
+            padding: 30px;
+            background: white;
+        }
+
+        .pdf-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .pdf-logo {
+            height: 50px;
+        }
+
+        .pdf-title {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .pdf-disclaimer {
+            margin-top: 30px;
+            padding: 15px;
+            background: #f8f8f8;
+            font-size: 11px;
+            color: var(--text-gray);
+            text-align: center;
+            border: 1px dashed var(--border);
+        }
+
+        /* Catraca Overlay */
+        .catraca-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.98);
+            padding: 20px 40px;
+            border-left: 6px solid var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            animation: slideUp 0.3s ease;
+        }
+
+        .catraca-message.show {
+            display: flex;
+        }
+
+        .catraca-message img {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius);
+            object-fit: cover;
+        }
+
+        .catraca-message-content h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .catraca-message-content p {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .catraca-message.success {
+            border-left-color: var(--success);
+        }
+
+        .catraca-message.error {
+            border-left-color: var(--danger);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 100%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+    <div class="logo-area">
+        <img id="headerLogo" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi6mEH9_67KQuAtG_EaYxlAaipOeTrrZaE6xYDSiifBV3gzax1RLvlkkB4Qi2pqc7Kx5IiJdMtDqtZzPjX0QjqDXSwnKHGtfItjPyYIBIkroZvayvs3moavENXkqJmqvUgDdcd7q4vEIM3B1NdNLGeodIUX53YBkh5d8LmpBo43vd2lGaIIJY1l0O3CbAY/s545/DE10A6B3-69C6-4B5D-B685-997DD46303AF.jpeg" class="logo-img" alt="Logo">
+        <input type="text" id="logoUrlInput" class="logo-url-input" placeholder="URL da logomarca..." value="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi6mEH9_67KQuAtG_EaYxlAaipOeTrrZaE6xYDSiifBV3gzax1RLvlkkB4Qi2pqc7Kx5IiJdMtDqtZzPjX0QjqDXSwnKHGtfItjPyYIBIkroZvayvs3moavENXkqJmqvUgDdcd7q4vEIM3B1NdNLGeodIUX53YBkh5d8LmpBo43vd2lGaIIJY1l0O3CbAY/s545/DE10A6B3-69C6-4B5D-B685-997DD46303AF.jpeg">
+    </div>
+
+    <nav class="nav-menu">
+        <button class="nav-item active" onclick="mudarSecao('alunos')">👥 ALUNOS</button>
+        <button class="nav-item" onclick="mudarSecao('cadastrar')">📝 CADASTRAR</button>
+        <button class="nav-item" onclick="mudarSecao('analytics')">📊 ANALYTICS</button>
+        <button class="nav-item" onclick="mudarSecao('update')">📥 UPDATE</button>
+        <button class="nav-item" onclick="mudarSecao('identidade')">🔐 IDENTIDADE</button>
+    </nav>
+</header>
+
+<main class="main-container">
+    <div class="content-panel">
+        <!-- Seção Alunos -->
+        <section id="secaoAlunos" class="content-section active">
+            <h2 style="margin-bottom: 20px; font-weight: 800;">ALUNOS CADASTRADOS</h2>
+            <input type="text" id="searchStudents" class="search-bar" placeholder="Pesquisar por nome ou NA...">
+            <div id="studentsGrid" class="students-grid"></div>
+        </section>
+
+        <!-- Seção Cadastrar -->
+        <section id="secaoCadastrar" class="content-section">
+            <h2 style="margin-bottom: 20px; font-weight: 800;">CADASTRAR NOVO ALUNO</h2>
+            
+            <form id="cadastroForm" style="max-width: 600px;">
+                <div class="form-group">
+                    <label>NOME COMPLETO *</label>
+                    <input type="text" id="cadastroNome" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label>PLANO (OPCIONAL)</label>
+                    <input type="text" id="cadastroPlano" class="form-control" placeholder="Ex: Mensal">
+                </div>
+
+                <div class="form-group">
+                    <label>TELEFONE (OPCIONAL)</label>
+                    <input type="text" id="cadastroTelefone" class="form-control" placeholder="(00) 00000-0000">
+                </div>
+
+                <div class="form-group">
+                    <label>ENDEREÇO (OPCIONAL)</label>
+                    <input type="text" id="cadastroEndereco" class="form-control" placeholder="Rua, número, bairro">
+                </div>
+
+                <div class="form-group">
+                    <label>CIDADE (OPCIONAL)</label>
+                    <input type="text" id="cadastroCidade" class="form-control" placeholder="Cidade">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>DATA DE INÍCIO *</label>
+                        <input type="date" id="cadastroInicio" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>DATA DE TÉRMINO *</label>
+                        <input type="date" id="cadastroTermino" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>MÉTODO DE PAGAMENTO</label>
+                    <select id="cadastroPagamento" class="form-control">
+                        <option value="">Selecione...</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                        <option value="Pix">Pix</option>
+                        <option value="Cartão Débito">Cartão de Débito</option>
+                        <option value="Cartão Crédito">Cartão de Crédito</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <button type="button" class="btn btn-primary" onclick="cadastrarAluno()" style="flex: 1;">CADASTRAR ALUNO</button>
+                    <button type="button" class="btn btn-outline" onclick="limparFormulario()" style="flex: 1;">LIMPAR</button>
+                </div>
+            </form>
+
+            <div id="cadastroReceipt" class="receipt" style="display: none;">
+                <h3>✅ CADASTRO REALIZADO</h3>
+                <div class="receipt-info" id="receiptInfo"></div>
+                <div style="margin-top: 20px;">
+                    <p style="color: var(--primary); font-weight: 700; margin-bottom: 10px;">📱 RECOMENDAÇÃO</p>
+                    <p>Para garantir mais segurança e praticidade, cadastre a biometria facial do aluno na seção "IDENTIDADE".</p>
+                </div>
+                <button class="btn btn-primary" onclick="limparFormulario()" style="margin-top: 20px;">REALIZAR NOVO CADASTRO</button>
+            </div>
+        </section>
+
+        <!-- Seção Analytics -->
+        <section id="secaoAnalytics" class="content-section">
+            <h2 style="margin-bottom: 20px; font-weight: 800;">ANALYTICS</h2>
+            
+            <div class="analytics-header">
+                <select id="analyticsStudentSelect" class="student-selector">
+                    <option value="">Selecione um aluno...</option>
+                </select>
+            </div>
+
+            <div id="analyticsContent" style="display: none;">
+                <div style="display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px; background: #f8f8f8; padding: 20px; border-radius: var(--radius);">
+                        <p style="font-size: 12px; color: var(--text-light); margin-bottom: 5px;">Total de Acessos</p>
+                        <p style="font-size: 32px; font-weight: 800;" id="totalAcessos">0</p>
+                    </div>
+                    <div style="flex: 1; min-width: 200px; background: #f8f8f8; padding: 20px; border-radius: var(--radius);">
+                        <p style="font-size: 12px; color: var(--text-light); margin-bottom: 5px;">Média Mensal</p>
+                        <p style="font-size: 32px; font-weight: 800;" id="mediaMensal">0</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-bottom: 15px; font-weight: 700;">HISTÓRICO DE ACESSOS</h3>
+                <table class="attendance-table">
+                    <thead>
+                        <tr>
+                            <th>DATA</th>
+                            <th>HORA</th>
+                            <th>DIA DA SEMANA</th>
+                            <th>TIPO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="acessosTableBody"></tbody>
+                </table>
+            </div>
+
+            <div id="analyticsEmpty" style="text-align: center; padding: 50px; background: #f8f8f8;">
+                <p style="color: var(--text-light);">Selecione um aluno para visualizar os analytics</p>
+            </div>
+        </section>
+
+        <!-- Seção Update (Download PDF) -->
+        <section id="secaoUpdate" class="content-section">
+            <h2 style="margin-bottom: 20px; font-weight: 800;">DOWNLOAD DE DADOS</h2>
+            
+            <select id="updateStudentSelect" class="student-selector" style="margin-bottom: 20px;">
+                <option value="">Selecione um aluno...</option>
+            </select>
+
+            <div id="updateContent" style="display: none; max-width: 800px;">
+                <div style="background: #f8f8f8; padding: 30px; border-radius: var(--radius);">
+                    <div style="display: flex; gap: 30px; align-items: center; margin-bottom: 30px;">
+                        <img id="updateFoto" src="" alt="Foto" style="width: 100px; height: 100px; object-fit: cover; border-radius: var(--radius);">
+                        <div>
+                            <h3 id="updateNome" style="font-size: 24px; font-weight: 800;"></h3>
+                            <p style="color: var(--primary); font-size: 32px; font-weight: 900;" id="updateNA"></p>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 1px dashed var(--border); padding-top: 20px;">
+                        <button class="btn btn-primary" onclick="gerarPDF()" style="width: 100%;">
+                            📥 BAIXAR PDF COMPLETO
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Identidade (Biometria) -->
+        <section id="secaoIdentidade" class="content-section">
+            <h2 style="margin-bottom: 20px; font-weight: 800;">CADASTRO BIOMÉTRICO</h2>
+            
+            <div style="background: #f8f8f8; padding: 20px; margin-bottom: 20px;">
+                <p style="color: var(--text-gray);">📱 Esta função é otimizada para dispositivos móveis. Para cadastrar a biometria facial, selecione um aluno abaixo:</p>
+            </div>
+
+            <input type="text" id="searchBiometria" class="search-bar" placeholder="Pesquisar aluno...">
+
+            <div id="biometriaStudentsGrid" class="students-grid"></div>
+        </section>
+    </div>
+</main>
+
+<!-- Modal de Edição de Aluno -->
+<div class="modal-overlay" id="modalEdit">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>EDITAR ALUNO</h2>
+            <button class="modal-close" onclick="fecharModal('modalEdit')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editNA">
+            
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img id="editFoto" src="" alt="Foto" style="width: 80px; height: 80px; border-radius: var(--radius); object-fit: cover;">
+            </div>
+
+            <div class="form-group">
+                <label>NOME COMPLETO</label>
+                <input type="text" id="editNome" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>PLANO</label>
+                <input type="text" id="editPlano" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>TELEFONE</label>
+                <input type="text" id="editTelefone" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>ENDEREÇO</label>
+                <input type="text" id="editEndereco" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>CIDADE</label>
+                <input type="text" id="editCidade" class="form-control">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>DATA INÍCIO</label>
+                    <input type="date" id="editInicio" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>DATA TÉRMINO</label>
+                    <input type="date" id="editTermino" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>MÉTODO DE PAGAMENTO</label>
+                <select id="editPagamento" class="form-control">
+                    <option value="">Selecione...</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                    <option value="Pix">Pix</option>
+                    <option value="Cartão Débito">Cartão de Débito</option>
+                    <option value="Cartão Crédito">Cartão de Crédito</option>
+                </select>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <p style="font-weight: 700; margin-bottom: 10px;">HISTÓRICO DE RENOVAÇÕES</p>
+                <div id="historicoRenovacoes" style="background: #f8f8f8; padding: 10px; max-height: 150px; overflow-y: auto;"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" onclick="excluirAluno()">EXCLUIR</button>
+            <button class="btn btn-outline" onclick="fecharModal('modalEdit')">CANCELAR</button>
+            <button class="btn btn-primary" onclick="salvarEdicao()">SALVAR</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Biometria -->
+<div class="modal-overlay" id="modalBiometria">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>CADASTRO BIOMÉTRICO</h2>
+            <button class="modal-close" onclick="fecharModal('modalBiometria')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h3 id="biometriaNome"></h3>
+                <p style="color: var(--primary); font-size: 20px; font-weight: 800;" id="biometriaNA"></p>
+            </div>
+
+            <div id="biometriaCamera" style="display: none;">
+                <video id="biometriaVideo" style="width: 100%; height: 300px; object-fit: cover; background: #000;" autoplay playsinline></video>
+                <canvas id="biometriaCanvas" style="display: none;"></canvas>
+                
+                <div style="margin-top: 20px; text-align: center;">
+                    <p id="biometriaStatus" style="margin-bottom: 10px;">Aguardando rosto...</p>
+                    <button class="btn btn-primary" onclick="capturarBiometria()">CAPTURAR</button>
+                </div>
+            </div>
+
+            <div id="biometriaInfo" style="display: none; text-align: center;">
+                <p>Biometria cadastrada com sucesso!</p>
+            </div>
+
+            <button class="btn btn-primary" id="btnIniciarBiometria" onclick="iniciarBiometria()" style="width: 100%; margin-top: 20px;">INICIAR CAPTURA</button>
+        </div>
+    </div>
+</div>
+
+<!-- Mensagem Flutuante da Catraca -->
+<div id="catracaMessage" class="catraca-message">
+    <img id="messageFoto" src="" alt="Foto">
+    <div class="catraca-message-content">
+        <h4 id="messageNome"></h4>
+        <p id="messageDetalhe"></p>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+// Configuração Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+    authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
+    projectId: "prefeitura-de-joao-camara",
+    storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
+    messagingSenderId: "269299041577",
+    appId: "1:269299041577:web:fd41b2939240e9eb476338"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Variáveis Globais
+let USERS = {};
+let currentUser = null;
+let biometriaStream = null;
+
+// ========== FUNÇÕES GERAIS ==========
+
+// Atualizar logo
+document.getElementById('logoUrlInput').addEventListener('change', function(e) {
+    document.getElementById('headerLogo').src = e.target.value;
+});
+
+// Navegação
+function mudarSecao(secao) {
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+    
+    document.getElementById(`secao${secao.charAt(0).toUpperCase() + secao.slice(1)}`).classList.add('active');
+    
+    const activeButton = Array.from(document.querySelectorAll('.nav-item')).find(
+        btn => btn.textContent.includes(secao === 'alunos' ? 'ALUNOS' : 
+                                        secao === 'cadastrar' ? 'CADASTRAR' : 
+                                        secao === 'analytics' ? 'ANALYTICS' : 
+                                        secao === 'update' ? 'UPDATE' : 'IDENTIDADE')
+    );
+    if (activeButton) activeButton.classList.add('active');
+    
+    if (secao === 'alunos') carregarAlunos();
+    if (secao === 'identidade') carregarAlunosSemBiometria();
+    if (secao === 'analytics' || secao === 'update') carregarSelectAlunos();
+}
+
+// Modal
+function abrirModal(id) {
+    document.getElementById(id).classList.add('active');
+}
+
+function fecharModal(id) {
+    document.getElementById(id).classList.remove('active');
+    if (id === 'modalBiometria' && biometriaStream) {
+        biometriaStream.getTracks().forEach(track => track.stop());
+        biometriaStream = null;
+    }
+}
+
+// Mensagem da Catraca
+function mostrarMensagemCatraca(nome, foto, tipo, motivo) {
+    const msg = document.getElementById('catracaMessage');
+    document.getElementById('messageFoto').src = foto || 'https://via.placeholder.com/50';
+    document.getElementById('messageNome').textContent = nome;
+    document.getElementById('messageDetalhe').textContent = motivo;
+    
+    msg.className = `catraca-message ${tipo} show`;
+    
+    setTimeout(() => {
+        msg.classList.remove('show');
+    }, 2000);
+}
+
+// ========== FUNÇÕES DE ALUNOS ==========
+
+// Carregar alunos do Firebase
+db.ref('users').on('value', snap => {
+    USERS = snap.val() || {};
+    carregarAlunos();
+    if (document.getElementById('secaoAlunos').classList.contains('active')) carregarAlunos();
+    if (document.getElementById('secaoIdentidade').classList.contains('active')) carregarAlunosSemBiometria();
+    carregarSelectAlunos();
+});
+
+// Carregar grid de alunos
+function carregarAlunos() {
+    const searchTerm = document.getElementById('searchStudents')?.value?.toLowerCase() || '';
+    const grid = document.getElementById('studentsGrid');
+    
+    grid.innerHTML = '';
+    
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    
+    Object.keys(USERS).sort().forEach(na => {
+        const user = USERS[na];
+        
+        if (user.name?.toLowerCase().includes(searchTerm) || na.includes(searchTerm)) {
+            const dataTermino = new Date(user.endDate + 'T00:00:00');
+            const diasRestantes = Math.ceil((dataTermino - hoje) / (1000 * 60 * 60 * 24));
+            
+            let statusClass = 'status-ok';
+            let statusText = 'ATIVO';
+            
+            if (diasRestantes < 0) {
+                statusClass = 'status-expired';
+                statusText = 'INATIVO';
+            } else if (diasRestantes <= 7) {
+                statusClass = 'status-warning';
+                statusText = 'PRÓXIMO AO VENCIMENTO';
+            }
+            
+            const card = document.createElement('div');
+            card.className = 'student-card';
+            card.onclick = () => abrirEdicao(na, user);
+            
+            card.innerHTML = `
+                <img src="${user.biometria?.foto || 'https://via.placeholder.com/60x60'}" class="student-photo">
+                <div class="student-info">
+                    <div class="student-name">${user.name || 'Sem nome'}</div>
+                    <div class="student-na">${na}</div>
+                    <div class="student-status">
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                        <span class="biometry-badge ${user.biometria ? 'has' : ''}">
+                            ${user.biometria ? '✓ BIOMETRIA' : '✗ SEM BIOMETRIA'}
+                        </span>
+                    </div>
+                </div>
+            `;
+            
+            grid.appendChild(card);
+        }
+    });
+}
+
+// Filtrar alunos na seção alunos
+document.getElementById('searchStudents')?.addEventListener('input', carregarAlunos);
+
+// ========== FUNÇÕES DE CADASTRO ==========
+
+function limparFormulario() {
+    document.getElementById('cadastroForm').reset();
+    document.getElementById('cadastroReceipt').style.display = 'none';
+    document.getElementById('cadastroForm').style.display = 'block';
+}
+
+async function cadastrarAluno() {
+    const nome = document.getElementById('cadastroNome').value;
+    const inicio = document.getElementById('cadastroInicio').value;
+    const termino = document.getElementById('cadastroTermino').value;
+    
+    if (!nome || !inicio || !termino) {
+        alert('Preencha os campos obrigatórios!');
+        return;
+    }
+    
+    // Gerar NA único
+    let na;
+    do {
+        na = Math.floor(10000 + Math.random() * 90000).toString();
+    } while (USERS[na]);
+    
+    const novoAluno = {
+        name: nome,
+        planName: document.getElementById('cadastroPlano').value || 'Padrão',
+        phone: document.getElementById('cadastroTelefone').value || '',
+        address: document.getElementById('cadastroEndereco').value || '',
+        city: document.getElementById('cadastroCidade').value || '',
+        startDate: inicio,
+        endDate: termino,
+        paymentMethod: document.getElementById('cadastroPagamento').value || '',
+        active: true,
+        createdAt: new Date().toISOString(),
+        renovacoes: [{
+            data: new Date().toISOString(),
+            tipo: 'Cadastro inicial',
+            pagamento: document.getElementById('cadastroPagamento').value || ''
+        }]
+    };
+    
+    await db.ref('users/' + na).set(novoAluno);
+    
+    // Mostrar comprovante
+    document.getElementById('cadastroForm').style.display = 'none';
+    const receipt = document.getElementById('cadastroReceipt');
+    receipt.style.display = 'block';
+    
+    document.getElementById('receiptInfo').innerHTML = `
+        <p><strong>NA:</strong> <span>${na}</span></p>
+        <p><strong>Aluno:</strong> <span>${nome}</span></p>
+        <p><strong>Plano:</strong> <span>${novoAluno.planName}</span></p>
+        <p><strong>Vigência:</strong> <span>${new Date(inicio).toLocaleDateString()} até ${new Date(termino).toLocaleDateString()}</span></p>
+        <p><strong>Pagamento:</strong> <span>${novoAluno.paymentMethod || 'Não informado'}</span></p>
+        <p><strong>Data do cadastro:</strong> <span>${new Date().toLocaleString()}</span></p>
+    `;
+    
+    mostrarMensagemCatraca(nome, '', 'success', 'Cadastro realizado com sucesso!');
+}
+
+// ========== FUNÇÕES DE EDIÇÃO ==========
+
+async function abrirEdicao(na, user) {
+    document.getElementById('editNA').value = na;
+    document.getElementById('editFoto').src = user.biometria?.foto || 'https://via.placeholder.com/80';
+    document.getElementById('editNome').value = user.name || '';
+    document.getElementById('editPlano').value = user.planName || '';
+    document.getElementById('editTelefone').value = user.phone || '';
+    document.getElementById('editEndereco').value = user.address || '';
+    document.getElementById('editCidade').value = user.city || '';
+    document.getElementById('editInicio').value = user.startDate || '';
+    document.getElementById('editTermino').value = user.endDate || '';
+    document.getElementById('editPagamento').value = user.paymentMethod || '';
+    
+    // Carregar histórico de renovações
+    const renovacoes = user.renovacoes || [];
+    const historico = document.getElementById('historicoRenovacoes');
+    historico.innerHTML = renovacoes.reverse().map(r => `
+        <div style="border-bottom: 1px dashed var(--border); padding: 8px;">
+            <p><strong>${new Date(r.data).toLocaleDateString()}</strong> - ${r.tipo}</p>
+            <p style="font-size: 11px;">Pagamento: ${r.pagamento || 'Não informado'}</p>
+        </div>
+    `).join('') || '<p style="color: var(--text-light);">Nenhuma renovação registrada</p>';
+    
+    abrirModal('modalEdit');
+}
+
+async function salvarEdicao() {
+    const na = document.getElementById('editNA').value;
+    
+    await db.ref('users/' + na).update({
+        name: document.getElementById('editNome').value,
+        planName: document.getElementById('editPlano').value,
+        phone: document.getElementById('editTelefone').value,
+        address: document.getElementById('editEndereco').value,
+        city: document.getElementById('editCidade').value,
+        startDate: document.getElementById('editInicio').value,
+        endDate: document.getElementById('editTermino').value,
+        paymentMethod: document.getElementById('editPagamento').value
+    });
+    
+    fecharModal('modalEdit');
+    mostrarMensagemCatraca('', '', 'success', 'Aluno atualizado com sucesso!');
+}
+
+async function excluirAluno() {
+    if (confirm('Tem certeza que deseja excluir este aluno?')) {
+        const na = document.getElementById('editNA').value;
+        await db.ref('users/' + na).remove();
+        fecharModal('modalEdit');
+        mostrarMensagemCatraca('', '', 'error', 'Aluno excluído!');
+    }
+}
+
+// ========== FUNÇÕES ANALYTICS ==========
+
+function carregarSelectAlunos() {
+    const selectAnalytics = document.getElementById('analyticsStudentSelect');
+    const selectUpdate = document.getElementById('updateStudentSelect');
+    
+    if (selectAnalytics) {
+        selectAnalytics.innerHTML = '<option value="">Selecione um aluno...</option>';
+    }
+    if (selectUpdate) {
+        selectUpdate.innerHTML = '<option value="">Selecione um aluno...</option>';
+    }
+    
+    Object.keys(USERS).sort().forEach(na => {
+        const user = USERS[na];
+        const option = `<option value="${na}">${na} - ${user.name || 'Sem nome'}</option>`;
+        
+        if (selectAnalytics) selectAnalytics.innerHTML += option;
+        if (selectUpdate) selectUpdate.innerHTML += option;
+    });
+}
+
+document.getElementById('analyticsStudentSelect')?.addEventListener('change', async function(e) {
+    const na = e.target.value;
+    
+    if (!na) {
+        document.getElementById('analyticsContent').style.display = 'none';
+        document.getElementById('analyticsEmpty').style.display = 'block';
+        return;
+    }
+    
+    document.getElementById('analyticsEmpty').style.display = 'none';
+    document.getElementById('analyticsContent').style.display = 'block';
+    
+    // Carregar acessos
+    const acessosSnap = await db.ref('acessos/' + na).once('value');
+    const acessos = acessosSnap.val() || {};
+    
+    const acessosList = Object.values(acessos).sort((a, b) => new Date(b.data) - new Date(a.data));
+    
+    document.getElementById('totalAcessos').textContent = acessosList.length;
+    
+    // Calcular média mensal
+    const datas = acessosList.map(a => new Date(a.data).getMonth() + '-' + new Date(a.data).getFullYear());
+    const mesesUnicos = [...new Set(datas)];
+    const media = acessosList.length / (mesesUnicos.length || 1);
+    document.getElementById('mediaMensal').textContent = media.toFixed(1);
+    
+    const tbody = document.getElementById('acessosTableBody');
+    tbody.innerHTML = acessosList.slice(0, 50).map(a => {
+        const data = new Date(a.data);
+        const diasSemana = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
+        
+        return `
+            <tr>
+                <td>${data.toLocaleDateString()}</td>
+                <td>${data.toLocaleTimeString()}</td>
+                <td>${diasSemana[data.getDay()]}</td>
+                <td>${a.tipo === 'facial' ? '🔐 BIOMETRIA' : '⌨️ NA'}</td>
+            </tr>
+        `;
+    }).join('');
+});
+
+// ========== FUNÇÕES UPDATE (PDF) ==========
+
+document.getElementById('updateStudentSelect')?.addEventListener('change', function(e) {
+    const na = e.target.value;
+    
+    if (!na) {
+        document.getElementById('updateContent').style.display = 'none';
+        return;
+    }
+    
+    const user = USERS[na];
+    if (!user) return;
+    
+    document.getElementById('updateNome').textContent = user.name || 'Sem nome';
+    document.getElementById('updateNA').textContent = na;
+    document.getElementById('updateFoto').src = user.biometria?.foto || 'https://via.placeholder.com/100';
+    
+    document.getElementById('updateContent').style.display = 'block';
+});
+
+async function gerarPDF() {
+    const na = document.getElementById('updateStudentSelect').value;
+    const user = USERS[na];
+    
+    if (!user) return;
+    
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Cabeçalho
+    doc.setFontSize(20);
+    doc.text('RELATÓRIO COMPLETO DO ALUNO', 20, 20);
+    
+    doc.setFontSize(12);
+    doc.text(`Data do download: ${new Date().toLocaleString()}`, 20, 30);
+    doc.line(20, 35, 190, 35);
+    
+    // Foto
+    if (user.biometria?.foto) {
+        try {
+            const img = new Image();
+            img.src = user.biometria.foto;
+            await new Promise(resolve => { img.onload = resolve; });
+            doc.addImage(img, 'JPEG', 20, 40, 40, 40);
+        } catch (e) {}
+    }
+    
+    // Informações básicas
+    let y = 90;
+    doc.setFontSize(14);
+    doc.text('DADOS PESSOAIS', 20, y);
+    y += 10;
+    
+    doc.setFontSize(10);
+    doc.text(`NA: ${na}`, 20, y);
+    y += 7;
+    doc.text(`Nome: ${user.name || 'Não informado'}`, 20, y);
+    y += 7;
+    doc.text(`Telefone: ${user.phone || 'Não informado'}`, 20, y);
+    y += 7;
+    doc.text(`Endereço: ${user.address || 'Não informado'}`, 20, y);
+    y += 7;
+    doc.text(`Cidade: ${user.city || 'Não informado'}`, 20, y);
+    y += 10;
+    
+    doc.line(20, y, 190, y);
+    y += 10;
+    
+    // Plano
+    doc.setFontSize(14);
+    doc.text('PLANO', 20, y);
+    y += 10;
+    
+    doc.setFontSize(10);
+    doc.text(`Plano: ${user.planName || 'Padrão'}`, 20, y);
+    y += 7;
+    doc.text(`Data de início: ${new Date(user.startDate).toLocaleDateString()}`, 20, y);
+    y += 7;
+    doc.text(`Data de término: ${new Date(user.endDate).toLocaleDateString()}`, 20, y);
+    y += 7;
+    doc.text(`Método de pagamento: ${user.paymentMethod || 'Não informado'}`, 20, y);
+    y += 10;
+    
+    doc.line(20, y, 190, y);
+    y += 10;
+    
+    // Biometria
+    doc.setFontSize(14);
+    doc.text('BIOMETRIA FACIAL', 20, y);
+    y += 10;
+    
+    doc.setFontSize(10);
+    if (user.biometria) {
+        doc.text(`Status: CADASTRADA ✓`, 20, y);
+        y += 7;
+        doc.text(`Data do cadastro: ${new Date(user.biometria.data).toLocaleString()}`, 20, y);
+    } else {
+        doc.text(`Status: NÃO CADASTRADA ✗`, 20, y);
+    }
+    y += 10;
+    
+    doc.line(20, y, 190, y);
+    y += 10;
+    
+    // Histórico de acessos
+    doc.setFontSize(14);
+    doc.text('HISTÓRICO DE ACESSOS', 20, y);
+    y += 10;
+    
+    const acessosSnap = await db.ref('acessos/' + na).once('value');
+    const acessos = acessosSnap.val() || {};
+    const acessosList = Object.values(acessos).sort((a, b) => new Date(b.data) - new Date(a.data));
+    
+    doc.setFontSize(8);
+    let count = 0;
+    for (const acesso of acessosList.slice(0, 30)) {
+        if (y > 270) {
+            doc.addPage();
+            y = 20;
+        }
+        
+        const data = new Date(acesso.data);
+        doc.text(`${data.toLocaleDateString()} ${data.toLocaleTimeString()} - ${acesso.tipo === 'facial' ? 'Biometria' : 'NA'}`, 20, y);
+        y += 5;
+        count++;
+    }
+    
+    if (count === 0) {
+        doc.text('Nenhum acesso registrado', 20, y);
+        y += 5;
+    }
+    
+    y += 10;
+    
+    // Disclaimer
+    doc.addPage();
+    doc.setFontSize(8);
+    doc.text('DISCLAIMER DE SEGURANÇA', 20, 20);
+    doc.setFontSize(7);
+    doc.text('Este documento contém informações pessoais do aluno. Caso necessário para confirmação de informações,', 20, 30);
+    doc.text('poderão ser utilizadas imagens das câmeras de segurança do estabelecimento para validação.', 20, 37);
+    doc.text('Documento gerado automaticamente pelo sistema DomusFit.', 20, 44);
+    
+    doc.save(`aluno_${na}_${new Date().toISOString().split('T')[0]}.pdf`);
+}
+
+// ========== FUNÇÕES IDENTIDADE (BIOMETRIA) ==========
+
+function carregarAlunosSemBiometria() {
+    const searchTerm = document.getElementById('searchBiometria')?.value?.toLowerCase() || '';
+    const grid = document.getElementById('biometriaStudentsGrid');
+    
+    grid.innerHTML = '';
+    
+    Object.keys(USERS).sort().forEach(na => {
+        const user = USERS[na];
+        
+        if (!user.biometria && user.name?.toLowerCase().includes(searchTerm)) {
+            const card = document.createElement('div');
+            card.className = 'student-card';
+            card.onclick = () => abrirBiometria(na, user);
+            
+            card.innerHTML = `
+                <img src="${user.biometria?.foto || 'https://via.placeholder.com/60x60'}" class="student-photo">
+                <div class="student-info">
+                    <div class="student-name">${user.name || 'Sem nome'}</div>
+                    <div class="student-na">${na}</div>
+                    <div class="student-status">
+                        <span class="status-badge status-warning">SEM BIOMETRIA</span>
+                    </div>
+                </div>
+            `;
+            
+            grid.appendChild(card);
+        }
+    });
+}
+
+document.getElementById('searchBiometria')?.addEventListener('input', carregarAlunosSemBiometria);
+
+function abrirBiometria(na, user) {
+    document.getElementById('biometriaNome').textContent = user.name;
+    document.getElementById('biometriaNA').textContent = na;
+    
+    document.getElementById('biometriaCamera').style.display = 'none';
+    document.getElementById('biometriaInfo').style.display = 'none';
+    document.getElementById('btnIniciarBiometria').style.display = 'block';
+    
+    currentUser = { na, ...user };
+    abrirModal('modalBiometria');
+}
+
+async function iniciarBiometria() {
+    document.getElementById('btnIniciarBiometria').style.display = 'none';
+    document.getElementById('biometriaCamera').style.display = 'block';
+    
+    try {
+        biometriaStream = await navigator.mediaDevices.getUserMedia({ 
+            video: { width: 640, height: 480 } 
+        });
+        
+        const video = document.getElementById('biometriaVideo');
+        video.srcObject = biometriaStream;
+        
+        await carregarModelosFace();
+        
+    } catch (error) {
+        alert('Erro ao acessar câmera');
+    }
+}
+
+async function carregarModelosFace() {
+    const MODEL_URL = 'https://justadudewhohacks.github.io/face-api.js/models';
+    
+    await Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+        faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+        faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+    ]);
+}
+
+async function capturarBiometria() {
+    const video = document.getElementById('biometriaVideo');
+    const canvas = document.getElementById('biometriaCanvas');
+    
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0);
+    
+    document.getElementById('biometriaStatus').textContent = 'Processando...';
+    
+    try {
+        const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+            .withFaceLandmarks()
+            .withFaceDescriptors();
+        
+        if (detections.length === 0) {
+            alert('Nenhum rosto detectado');
+            return;
+        }
+        
+        if (detections.length > 1) {
+            alert('Múltiplos rostos detectados');
+            return;
+        }
+        
+        const descriptor = Array.from(detections[0].descriptor);
+        
+        // Upload para Cloudinary
+        const imageData = canvas.toDataURL('image/jpeg', 0.9);
+        
+        const formData = new FormData();
+        formData.append('file', imageData);
+        formData.append('upload_preset', 'ml_default');
+        
+        const uploadResponse = await fetch('https://api.cloudinary.com/v1_1/dzmjto17f/image/upload', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const uploadResult = await uploadResponse.json();
+        
+        // Salvar no Firebase
+        await db.ref('users/' + currentUser.na + '/biometria').set({
+            foto: uploadResult.secure_url,
+            public_id: uploadResult.public_id,
+            descriptor: descriptor,
+            data: new Date().toISOString()
+        });
+        
+        document.getElementById('biometriaCamera').style.display = 'none';
+        document.getElementById('biometriaInfo').style.display = 'block';
+        document.getElementById('biometriaInfo').innerHTML = '<p>✅ Biometria cadastrada com sucesso!</p>';
+        
+        if (biometriaStream) {
+            biometriaStream.getTracks().forEach(track => track.stop());
+        }
+        
+        setTimeout(() => fecharModal('modalBiometria'), 2000);
+        
+    } catch (error) {
+        alert('Erro ao processar biometria');
+    }
+}
+
+// ========== SIMULAÇÃO DE CATRACA ==========
+
+// Simular acessos para testes
+setInterval(() => {
+    const alunos = Object.keys(USERS);
+    if (alunos.length > 0) {
+        const na = alunos[Math.floor(Math.random() * alunos.length)];
+        const user = USERS[na];
+        
+        const hoje = new Date();
+        const termino = new Date(user.endDate + 'T00:00:00');
+        
+        if (termino < hoje) {
+            mostrarMensagemCatraca(user.name || 'Aluno', user.biometria?.foto, 'error', 'ACESSO NEGADO - Plano inativo');
+        } else {
+            mostrarMensagemCatraca(user.name || 'Aluno', user.biometria?.foto, 'success', 'ACESSO LIBERADO');
+        }
+    }
+}, 15000);
+
+// Inicializar
+window.addEventListener('load', () => {
+    carregarAlunos();
+});
+</script>
+</body>
+</html>
