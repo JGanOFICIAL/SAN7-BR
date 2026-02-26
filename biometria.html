@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -889,7 +890,7 @@ if (!loggedUser) {
 }
 
 // ============================================
-// SISTEMA DE ÁUDIO COM GOOGLE TTS
+// SISTEMA DE ÁUDIO COM VOZ FEMININA DO GOOGLE
 // ============================================
 
 function falar(texto) {
@@ -906,17 +907,61 @@ function falar(texto) {
     const utterance = new SpeechSynthesisUtterance(texto);
     utterance.lang = 'pt-BR';
     utterance.rate = 0.9; // Velocidade um pouco mais lenta
-    utterance.pitch = 1;
+    utterance.pitch = 1.2; // Tom mais agudo (feminino)
     utterance.volume = 1;
     
-    // Selecionar voz do Google (português)
-    const vozes = window.speechSynthesis.getVoices();
-    const vozGoogle = vozes.find(voz => 
-        voz.lang.includes('pt') && voz.name.includes('Google')
-    ) || vozes.find(voz => voz.lang.includes('pt'));
+    // Função para selecionar voz feminina do Google
+    function selecionarVozFeminina() {
+        const vozes = window.speechSynthesis.getVoices();
+        
+        // PRIORIDADE 1: Voz feminina do Google em português
+        const vozGoogleFeminina = vozes.find(voz => 
+            voz.lang.includes('pt') && 
+            (voz.name.includes('Google') || voz.name.includes('google')) &&
+            (voz.name.includes('Feminina') || voz.name.includes('feminina') || voz.name.includes('Female'))
+        );
+        
+        if (vozGoogleFeminina) {
+            return vozGoogleFeminina;
+        }
+        
+        // PRIORIDADE 2: Qualquer voz do Google em português
+        const vozGoogle = vozes.find(voz => 
+            voz.lang.includes('pt') && voz.name.includes('Google')
+        );
+        
+        if (vozGoogle) {
+            return vozGoogle;
+        }
+        
+        // PRIORIDADE 3: Voz feminina em português (não Google)
+        const vozFeminina = vozes.find(voz => 
+            voz.lang.includes('pt') && 
+            (voz.name.includes('Feminina') || voz.name.includes('feminina') || 
+             voz.name.includes('Female') || voz.name.includes('Maria') || 
+             voz.name.includes('Helena') || voz.name.includes('Luciana'))
+        );
+        
+        if (vozFeminina) {
+            return vozFeminina;
+        }
+        
+        // PRIORIDADE 4: Qualquer voz em português
+        const vozPT = vozes.find(voz => voz.lang.includes('pt'));
+        
+        if (vozPT) {
+            return vozPT;
+        }
+        
+        // PRIORIDADE 5: Primeira voz disponível
+        return vozes[0];
+    }
     
-    if (vozGoogle) {
-        utterance.voice = vozGoogle;
+    // Tentar selecionar a melhor voz
+    const vozSelecionada = selecionarVozFeminina();
+    if (vozSelecionada) {
+        utterance.voice = vozSelecionada;
+        console.log('Voz selecionada:', vozSelecionada.name);
     }
     
     utterance.onend = () => {
@@ -931,6 +976,20 @@ function falar(texto) {
     
     window.speechSynthesis.speak(utterance);
 }
+
+// Forçar recarregamento das vozes disponíveis
+window.speechSynthesis.onvoiceschanged = () => {
+    console.log('Vozes carregadas:', window.speechSynthesis.getVoices().length);
+    const vozes = window.speechSynthesis.getVoices();
+    vozes.forEach(voz => {
+        console.log(`- ${voz.name} (${voz.lang}) ${voz.name.includes('Google') ? '✅ Google' : ''}`);
+    });
+};
+
+// Chamar uma vez para garantir
+setTimeout(() => {
+    window.speechSynthesis.getVoices();
+}, 100);
 
 // ============================================
 // TUTORIAL INTERATIVO
