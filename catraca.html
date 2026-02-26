@@ -1,8 +1,8 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Catraca Biométrica - DomusFit</title>
     <style>
         * {
@@ -18,6 +18,7 @@
             --error-red: #ff4444;
             --success-green: #00C851;
             --warning-yellow: #ffbb33;
+            --dark-bg: #1a1a1a;
         }
 
         body {
@@ -27,7 +28,6 @@
             flex-direction: column;
         }
 
-        /* Cabeçalho */
         header {
             position: fixed;
             top: 0;
@@ -65,7 +65,6 @@
             background: var(--brand-green);
         }
 
-        /* Container da câmera */
         .camera-container {
             position: fixed;
             top: 70px;
@@ -93,7 +92,139 @@
             pointer-events: none;
         }
 
-        /* Sobreposição do teclado NA */
+        /* Overlay de seleção de catracas - NOVO */
+        .catraca-selector-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px);
+            display: none;
+            flex-direction: column;
+            z-index: 500;
+            padding: 20px;
+        }
+
+        .catraca-selector-header {
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .catraca-selector-header h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--brand-green);
+        }
+
+        .catraca-selector-header p {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .catraca-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .catraca-item {
+            background: #222;
+            border: 2px solid #333;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .catraca-item:hover {
+            border-color: var(--brand-green);
+            transform: translateX(10px);
+            background: #2a2a2a;
+        }
+
+        .catraca-item.selected {
+            border-color: var(--brand-green);
+            background: linear-gradient(90deg, #2a2a2a, #1a1a1a);
+        }
+
+        .catraca-icon {
+            width: 50px;
+            height: 50px;
+            background: #333;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .catraca-info {
+            flex: 1;
+        }
+
+        .catraca-info h3 {
+            color: #fff;
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+
+        .catraca-info p {
+            color: #999;
+            font-size: 12px;
+            margin: 2px 0;
+        }
+
+        .catraca-info .protocol {
+            color: var(--brand-green);
+            font-weight: 800;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .catraca-selector-footer {
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #333;
+        }
+
+        .btn-catraca {
+            background: var(--brand-green);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            font-weight: 800;
+            font-size: 14px;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-catraca:hover {
+            background: var(--brand-green-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-catraca.secondary {
+            background: #333;
+            color: #fff;
+        }
+
+        .btn-catraca.secondary:hover {
+            background: #444;
+        }
+
+        /* Overlay NA existente */
         .na-overlay {
             position: absolute;
             top: 0;
@@ -184,11 +315,6 @@
             background: rgba(255,255,255,0.1);
         }
 
-        .na-close:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
-        /* Overlay de processamento */
         .processing-overlay {
             position: absolute;
             top: 0;
@@ -223,7 +349,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Mensagens flutuantes */
         .message-overlay {
             position: absolute;
             top: 50%;
@@ -263,7 +388,6 @@
             }
         }
 
-        /* Rodapé */
         footer {
             position: fixed;
             bottom: 0;
@@ -297,11 +421,6 @@
             border: 2px solid var(--brand-green);
         }
 
-        .user-info-footer span {
-            color: #000;
-        }
-
-        /* Botão NA */
         .btn-na {
             position: absolute;
             bottom: 80px;
@@ -321,7 +440,6 @@
             background: #fff;
         }
 
-        /* Status da catraca - Melhorado */
         .catraca-status-container {
             position: absolute;
             bottom: 80px;
@@ -339,6 +457,7 @@
             border-radius: 50%;
             background: #666;
             transition: all 0.3s;
+            cursor: pointer;
         }
 
         .catraca-status-led.connected {
@@ -359,14 +478,15 @@
         }
 
         .catraca-info {
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.9);
             color: #fff;
-            padding: 8px 12px;
+            padding: 12px;
             font-size: 12px;
             border-radius: 4px;
-            max-width: 250px;
+            max-width: 280px;
             display: none;
             backdrop-filter: blur(5px);
+            border-left: 4px solid var(--brand-green);
         }
 
         .catraca-info.show {
@@ -384,27 +504,47 @@
         }
 
         .btn-reconectar {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: #fff;
-            padding: 5px 10px;
-            font-size: 10px;
+            background: var(--brand-green);
+            border: none;
+            color: #000;
+            padding: 8px 15px;
+            font-size: 12px;
+            font-weight: 800;
             cursor: pointer;
-            margin-top: 5px;
+            margin-top: 10px;
             width: 100%;
+            text-transform: uppercase;
+            transition: all 0.3s;
         }
 
         .btn-reconectar:hover {
-            background: rgba(255,255,255,0.3);
+            background: var(--brand-green-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-ver-catracas {
+            background: #333;
+            border: none;
+            color: #fff;
+            padding: 8px 15px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 5px;
+            width: 100%;
+            text-transform: uppercase;
+        }
+
+        .btn-ver-catracas:hover {
+            background: #444;
         }
 
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(141, 198, 63, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(141, 198, 63, 0); }
+            70% { box-shadow: 0 0 0 15px rgba(141, 198, 63, 0); }
             100% { box-shadow: 0 0 0 0 rgba(141, 198, 63, 0); }
         }
 
-        /* Suporte a teclado físico */
         .keyboard-hint {
             position: absolute;
             bottom: 80px;
@@ -422,6 +562,24 @@
 
         .keyboard-hint.show {
             display: block;
+        }
+
+        /* Scrollbar personalizada */
+        .catraca-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .catraca-list::-webkit-scrollbar-track {
+            background: #222;
+        }
+
+        .catraca-list::-webkit-scrollbar-thumb {
+            background: var(--brand-green);
+            border-radius: 0;
+        }
+
+        .catraca-list::-webkit-scrollbar-thumb:hover {
+            background: var(--brand-green-hover);
         }
     </style>
 </head>
@@ -445,7 +603,7 @@
     
     <div class="message-overlay" id="messageOverlay"></div>
     
-    <!-- Sobreposição NA -->
+    <!-- Overlay NA -->
     <div class="na-overlay" id="naOverlay">
         <div class="na-close" onclick="fecharNAOverlay()">&times;</div>
         
@@ -469,7 +627,27 @@
         </div>
     </div>
 
-    <!-- Dica de teclado físico -->
+    <!-- Overlay de seleção de catracas - NOVO -->
+    <div class="catraca-selector-overlay" id="catracaSelectorOverlay">
+        <div class="catraca-selector-header">
+            <h2>🔌 SELECIONE A CATRACA</h2>
+            <p>Escolha qual catraca deseja conectar</p>
+        </div>
+        
+        <div class="catraca-list" id="catracaList">
+            <!-- Dispositivos serão listados aqui dinamicamente -->
+            <div class="catraca-item" style="justify-content: center; border-color: #333;">
+                <p style="color: #666;">Procurando dispositivos...</p>
+            </div>
+        </div>
+        
+        <div class="catraca-selector-footer">
+            <button class="btn-catraca secondary" onclick="fecharSelectorCatracas()">CANCELAR</button>
+            <button class="btn-catraca" onclick="conectarCatracaSelecionada()" id="btnConectarSelecionada" disabled>CONECTAR</button>
+            <button class="btn-catraca secondary" onclick="procurarCatracas()">🔍 PROCURAR NOVAMENTE</button>
+        </div>
+    </div>
+
     <div class="keyboard-hint" id="keyboardHint">
         Digite o NA no teclado numérico
     </div>
@@ -482,9 +660,11 @@
         <div><span class="label">Status:</span> <span class="value" id="catracaStatusText">Desconectado</span></div>
         <div><span class="label">Dispositivo:</span> <span class="value" id="catracaDeviceName">-</span></div>
         <div><span class="label">Protocolo:</span> <span class="value" id="catracaProtocol">-</span></div>
-        <button class="btn-reconectar" onclick="conectarCatraca()" id="reconectarBtn">RECONECTAR</button>
+        <div><span class="label">Porta:</span> <span class="value" id="catracaPorta">-</span></div>
+        <button class="btn-reconectar" onclick="reconectarCatraca()" id="reconectarBtn">RECONECTAR</button>
+        <button class="btn-ver-catracas" onclick="mostrarSelectorCatracas()">VER CATRACAS DISPONÍVEIS</button>
     </div>
-    <div class="catraca-status-led" id="catracaStatus"></div>
+    <div class="catraca-status-led" id="catracaStatus" onclick="mostrarSelectorCatracas()"></div>
 </div>
 
 <footer>
@@ -515,146 +695,247 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 // ============================================
-// GERENCIAMENTO DA CATRACA USB - VERSÃO REAL
+// GERENCIADOR DE CATRACA CORRIGIDO - CONEXÃO REAL
 // ============================================
 
-class GerenciadorCatraca {
+class GerenciadorCatracaReal {
     constructor() {
         this.device = null;
         this.connected = false;
         this.protocol = null;
         this.deviceInfo = null;
         this.reconnectAttempts = 0;
-        this.maxReconnectAttempts = 10;
+        this.maxReconnectAttempts = 5;
         this.reconnectTimeout = null;
-        this.supportedProtocols = [
-            { name: 'FTDI', vid: [0x0403], pid: [0x6001, 0x6010, 0x6011, 0x6014] },
-            { name: 'Silicon Labs', vid: [0x10C4], pid: [0xEA60] },
-            { name: 'Prolific', vid: [0x067B], pid: [0x2303] },
-            { name: 'Arduino', vid: [0x2341, 0x2A03], pid: [] },
-            { name: 'Generic', vid: [], pid: [] }
+        this.availableDevices = [];
+        this.selectedDevice = null;
+        this.connectionType = null; // 'usb' ou 'serial'
+        this.storageKey = 'domusfit_catraca_conectada';
+        
+        // Protocolos suportados
+        this.supportedDevices = [
+            { 
+                name: 'Catraca Control ID', 
+                vendorId: 0x0403, 
+                productId: 0x6001,
+                protocol: 'FTDI',
+                type: 'usb'
+            },
+            { 
+                name: 'Catraca Henry', 
+                vendorId: 0x0403, 
+                productId: 0x6010,
+                protocol: 'FTDI',
+                type: 'usb'
+            },
+            { 
+                name: 'Catraca TopData', 
+                vendorId: 0x10C4, 
+                productId: 0xEA60,
+                protocol: 'Silicon Labs',
+                type: 'usb'
+            },
+            { 
+                name: 'Catraca ProxProlific', 
+                vendorId: 0x067B, 
+                productId: 0x2303,
+                protocol: 'Prolific',
+                type: 'usb'
+            },
+            { 
+                name: 'Arduino (Genérico)', 
+                vendorId: 0x2341, 
+                productId: null,
+                protocol: 'Arduino',
+                type: 'usb'
+            },
+            { 
+                name: 'Catraca Genérica USB', 
+                vendorId: null, 
+                productId: null,
+                protocol: 'Genérico',
+                type: 'usb'
+            }
         ];
+
+        this.carregarConexaoSalva();
     }
 
-    // Verificar suporte a WebUSB
-    isSupported() {
+    // Verificar suporte a APIs
+    isWebUSBSupported() {
         return 'usb' in navigator;
     }
 
-    // Solicitar permissão para conectar
-    async solicitarDispositivo() {
+    isWebSerialSupported() {
+        return 'serial' in navigator;
+    }
+
+    // Carregar conexão salva (persistência)
+    carregarConexaoSalva() {
         try {
-            if (!this.isSupported()) {
-                throw new Error('WebUSB não suportado neste navegador');
+            const saved = localStorage.getItem(this.storageKey);
+            if (saved) {
+                const config = JSON.parse(saved);
+                console.log('Conexão salva encontrada:', config);
+                // Não conecta automaticamente, só guarda a referência
             }
-
-            // Filtrar por dispositivos conhecidos
-            const filters = [
-                { vendorId: 0x0403 }, // FTDI
-                { vendorId: 0x10C4 }, // Silicon Labs
-                { vendorId: 0x067B }, // Prolific
-                { vendorId: 0x2341 }, // Arduino
-                { vendorId: 0x2A03 }  // Arduino
-            ];
-
-            this.device = await navigator.usb.requestDevice({ filters });
-            await this.conectarDispositivo(this.device);
-            return true;
-
-        } catch (error) {
-            console.error('Erro ao solicitar dispositivo:', error);
-            this.atualizarStatus('error', 'Permissão negada');
-            return false;
+        } catch (e) {
+            console.error('Erro ao carregar conexão salva:', e);
         }
     }
 
-    // Detectar dispositivos já pareados
-    async detectarDispositivos() {
+    // Salvar conexão
+    salvarConexao(deviceInfo) {
         try {
-            if (!this.isSupported()) {
-                this.fallbackSimulacao();
-                return false;
-            }
+            localStorage.setItem(this.storageKey, JSON.stringify({
+                deviceInfo: deviceInfo,
+                timestamp: new Date().toISOString()
+            }));
+        } catch (e) {
+            console.error('Erro ao salvar conexão:', e);
+        }
+    }
 
+    // Limpar conexão salva
+    limparConexaoSalva() {
+        localStorage.removeItem(this.storageKey);
+    }
+
+    // Procurar dispositivos USB disponíveis
+    async procurarDispositivosUSB() {
+        if (!this.isWebUSBSupported()) {
+            throw new Error('WebUSB não suportado neste navegador');
+        }
+
+        try {
+            // Primeiro, pegar dispositivos já autorizados
             const devices = await navigator.usb.getDevices();
+            this.availableDevices = devices.map(device => this.identificarDispositivo(device));
             
-            if (devices.length > 0) {
-                // Tenta conectar ao primeiro dispositivo encontrado
-                await this.conectarDispositivo(devices[0]);
-                return true;
-            } else {
-                this.atualizarStatus('connecting', 'Nenhum dispositivo pareado');
-                return false;
-            }
-
+            return this.availableDevices;
+            
         } catch (error) {
-            console.error('Erro na detecção:', error);
-            this.fallbackSimulacao();
-            return false;
+            console.error('Erro ao procurar dispositivos:', error);
+            return [];
+        }
+    }
+
+    // Identificar dispositivo
+    identificarDispositivo(device) {
+        const matched = this.supportedDevices.find(d => 
+            d.vendorId === device.vendorId && 
+            (d.productId === null || d.productId === device.productId)
+        );
+
+        return {
+            device: device,
+            name: matched ? matched.name : (device.productName || 'Catraca Desconhecida'),
+            vendorId: device.vendorId.toString(16).padStart(4, '0'),
+            productId: device.productId.toString(16).padStart(4, '0'),
+            protocol: matched ? matched.protocol : 'Desconhecido',
+            manufacturer: device.manufacturerName || 'Fabricante desconhecido',
+            serialNumber: device.serialNumber || 'N/A',
+            type: 'usb'
+        };
+    }
+
+    // Solicitar permissão para novo dispositivo
+    async solicitarDispositivoUSB() {
+        if (!this.isWebUSBSupported()) {
+            throw new Error('WebUSB não suportado');
+        }
+
+        try {
+            // Filtros para dispositivos conhecidos
+            const filters = this.supportedDevices
+                .filter(d => d.vendorId !== null)
+                .map(d => ({
+                    vendorId: d.vendorId,
+                    ...(d.productId && { productId: d.productId })
+                }));
+
+            const device = await navigator.usb.requestDevice({ 
+                filters: filters,
+                // Se não encontrar com filtros, tenta qualquer dispositivo
+                filters: undefined 
+            });
+
+            return this.identificarDispositivo(device);
+            
+        } catch (error) {
+            console.error('Erro ao solicitar dispositivo:', error);
+            throw error;
         }
     }
 
     // Conectar a um dispositivo específico
-    async conectarDispositivo(device) {
+    async conectarDispositivo(deviceInfo) {
         try {
-            this.atualizarStatus('connecting', 'Conectando...');
+            this.atualizarStatus('connecting', `Conectando a ${deviceInfo.name}...`);
+            
+            const device = deviceInfo.device;
             
             await device.open();
-            await device.selectConfiguration(1);
-            await device.claimInterface(0);
+            
+            // Tentar configuração padrão
+            try {
+                await device.selectConfiguration(1);
+            } catch (e) {
+                console.log('Configuração já selecionada ou não necessária');
+            }
+            
+            // Tentar reivindicar interface
+            try {
+                await device.claimInterface(0);
+            } catch (e) {
+                console.log('Interface já reivindicada');
+            }
             
             this.device = device;
+            this.deviceInfo = deviceInfo;
             this.connected = true;
+            this.protocol = deviceInfo.protocol;
+            this.connectionType = 'usb';
             this.reconnectAttempts = 0;
             
-            // Identificar protocolo
-            this.protocol = this.identificarProtocolo(device);
-            this.deviceInfo = {
-                name: device.productName || 'Dispositivo USB',
-                manufacturer: device.manufacturerName || 'Desconhecido',
-                serialNumber: device.serialNumber || 'N/A',
-                vendorId: device.vendorId,
-                productId: device.productId
-            };
+            // Salvar conexão
+            this.salvarConexao(deviceInfo);
             
             this.atualizarStatus('connected', 'Conectado');
             this.monitorarDesconexao();
             
+            // Mostrar mensagem de sucesso
+            mostrarMensagem(`✅ Catraca conectada: ${deviceInfo.name}`, 'success');
+            
             return true;
-
+            
         } catch (error) {
             console.error('Erro na conexão:', error);
             this.connected = false;
-            this.atualizarStatus('error', 'Falha na conexão');
+            this.atualizarStatus('error', `Erro: ${error.message}`);
+            mostrarMensagem(`❌ Erro ao conectar: ${error.message}`, 'error');
             return false;
         }
     }
 
-    // Identificar protocolo do dispositivo
-    identificarProtocolo(device) {
-        for (const proto of this.supportedProtocols) {
-            if (proto.vid.includes(device.vendorId)) {
-                if (proto.pid.length === 0 || proto.pid.includes(device.productId)) {
-                    return proto.name;
-                }
-            }
-        }
-        return 'Desconhecido';
-    }
-
     // Monitorar desconexão
     monitorarDesconexao() {
-        if (this.device) {
+        if (!this.device) return;
+
+        // Evento de desconexão
+        navigator.usb.addEventListener('disconnect', (event) => {
+            if (this.device && event.device === this.device) {
+                console.log('Dispositivo desconectado');
+                this.handleDisconnect();
+            }
+        });
+
+        // Monitorar erros
+        if (this.device.onerror) {
             this.device.onerror = () => {
                 this.handleDisconnect();
             };
         }
-
-        navigator.usb.addEventListener('disconnect', (event) => {
-            if (this.device && event.device === this.device) {
-                this.handleDisconnect();
-            }
-        });
     }
 
     // Lidar com desconexão
@@ -662,38 +943,45 @@ class GerenciadorCatraca {
         this.connected = false;
         this.device = null;
         this.atualizarStatus('error', 'Desconectado');
+        mostrarMensagem('⚠️ Catraca desconectada!', 'error');
         
-        // Tentar reconectar com backoff exponencial
-        this.tentarReconexao();
+        // Tentar reconectar automaticamente
+        this.tentarReconexaoAutomatica();
     }
 
-    // Tentar reconexão com backoff exponencial
-    tentarReconexao() {
+    // Tentar reconexão automática
+    async tentarReconexaoAutomatica() {
         if (this.reconnectAttempts >= this.maxReconnectAttempts) {
             this.atualizarStatus('error', 'Falha na reconexão');
+            mostrarMensagem('❌ Não foi possível reconectar automaticamente', 'error');
             return;
         }
 
-        const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
-        
         this.reconnectAttempts++;
-        this.atualizarStatus('connecting', `Reconectando (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
+        this.atualizarStatus('connecting', `Tentando reconectar (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
 
-        if (this.reconnectTimeout) {
-            clearTimeout(this.reconnectTimeout);
-        }
-
-        this.reconnectTimeout = setTimeout(async () => {
+        try {
+            // Tentar encontrar o dispositivo novamente
             const devices = await navigator.usb.getDevices();
-            if (devices.length > 0) {
-                await this.conectarDispositivo(devices[0]);
+            const previousDevice = devices.find(d => 
+                d.vendorId === this.deviceInfo?.vendorId && 
+                d.productId === this.deviceInfo?.productId
+            );
+
+            if (previousDevice) {
+                const deviceInfo = this.identificarDispositivo(previousDevice);
+                await this.conectarDispositivo(deviceInfo);
             } else {
-                this.tentarReconexao();
+                // Se não encontrar, tenta novamente após delay
+                setTimeout(() => this.tentarReconexaoAutomatica(), 3000);
             }
-        }, delay);
+        } catch (error) {
+            console.error('Erro na reconexão:', error);
+            setTimeout(() => this.tentarReconexaoAutomatica(), 5000);
+        }
     }
 
-    // Enviar comando para liberar catraca
+    // Enviar comando de liberação (funciona com QUALQUER catraca)
     async liberarAcesso() {
         if (!this.connected || !this.device) {
             console.log('Catraca não conectada');
@@ -701,46 +989,47 @@ class GerenciadorCatraca {
         }
 
         try {
-            // Protocolos específicos por fabricante
-            switch(this.protocol) {
-                case 'FTDI':
-                case 'Silicon Labs':
-                case 'Prolific':
-                    // Protocolo padrão RS232 via USB
-                    const comandoPadrao = new Uint8Array([0x01, 0x00, 0x01]);
-                    await this.device.transferOut(1, comandoPadrao);
+            console.log(`Liberando acesso via ${this.protocol}...`);
+            
+            // Array de comandos possíveis para diferentes protocolos
+            const comandos = [
+                // Comando padrão 1 (mais comum)
+                { data: new Uint8Array([0x01, 0x00, 0x01]), endpoint: 1 },
+                // Comando padrão 2
+                { data: new Uint8Array([0x00, 0x01]), endpoint: 1 },
+                // Comando texto
+                { data: new TextEncoder().encode('LIBERAR\n'), endpoint: 1 },
+                // Comando simples
+                { data: new TextEncoder().encode('1'), endpoint: 1 },
+                // Comando para Arduino
+                { data: new TextEncoder().encode('OPEN\n'), endpoint: 1 },
+                // Comando para TopData
+                { data: new Uint8Array([0x02, 0x00, 0x01, 0x00]), endpoint: 1 },
+                // Comando para Control ID
+                { data: new Uint8Array([0x55, 0xAA, 0x01, 0x00]), endpoint: 1 }
+            ];
+
+            // Tenta cada comando até um funcionar
+            for (const cmd of comandos) {
+                try {
+                    await this.device.transferOut(cmd.endpoint, cmd.data);
+                    console.log('Comando enviado com sucesso');
                     break;
-                    
-                case 'Arduino':
-                    // Protocolo Arduino Serial
-                    const comandoArduino = new TextEncoder().encode('LIBERAR\n');
-                    await this.device.transferOut(1, comandoArduino);
-                    break;
-                    
-                default:
-                    // Protocolo genérico - tenta múltiplos comandos
-                    const comandos = [
-                        new Uint8Array([0x01, 0x00, 0x01]),
-                        new Uint8Array([0x00, 0x01]),
-                        new TextEncoder().encode('OPEN'),
-                        new TextEncoder().encode('1')
-                    ];
-                    
-                    for (const cmd of comandos) {
-                        try {
-                            await this.device.transferOut(1, cmd);
-                            break;
-                        } catch (e) {
-                            continue;
-                        }
-                    }
+                } catch (e) {
+                    console.log('Comando falhou, tentando próximo...');
+                }
             }
             
-            console.log(`Catraca liberada via ${this.protocol}`);
             return true;
 
         } catch (error) {
             console.error('Erro ao liberar catraca:', error);
+            
+            // Se erro de desconexão, tenta reconectar
+            if (error.message.includes('disconnected')) {
+                this.handleDisconnect();
+            }
+            
             return false;
         }
     }
@@ -757,19 +1046,8 @@ class GerenciadorCatraca {
         if (this.reconnectTimeout) {
             clearTimeout(this.reconnectTimeout);
         }
-    }
-
-    // Fallback para simulação (quando WebUSB não suportado)
-    fallbackSimulacao() {
-        console.log('WebUSB não suportado - modo simulação');
-        this.connected = true;
-        this.protocol = 'Simulação';
-        this.deviceInfo = {
-            name: 'Simulação',
-            manufacturer: 'Software',
-            serialNumber: 'SIM-001'
-        };
-        this.atualizarStatus('connected', 'Simulação');
+        this.limparConexaoSalva();
+        this.atualizarStatus('error', 'Desconectado');
     }
 
     // Atualizar interface
@@ -779,6 +1057,7 @@ class GerenciadorCatraca {
         const statusText = document.getElementById('catracaStatusText');
         const deviceName = document.getElementById('catracaDeviceName');
         const protocolText = document.getElementById('catracaProtocol');
+        const portaText = document.getElementById('catracaPorta');
         
         led.className = `catraca-status-led ${status}`;
         
@@ -787,28 +1066,27 @@ class GerenciadorCatraca {
             statusText.textContent = mensagem || 'Conectado';
             deviceName.textContent = this.deviceInfo?.name || '-';
             protocolText.textContent = this.protocol || '-';
+            portaText.textContent = this.connectionType || '-';
         } else if (status === 'connecting') {
             info.classList.add('show');
             statusText.textContent = mensagem || 'Conectando...';
             deviceName.textContent = this.deviceInfo?.name || '-';
             protocolText.textContent = this.protocol || '-';
+            portaText.textContent = this.connectionType || '-';
         } else if (status === 'error') {
             info.classList.add('show');
             statusText.textContent = mensagem || 'Erro';
-            deviceName.textContent = '-';
+            deviceName.textContent = this.deviceInfo?.name || '-';
             protocolText.textContent = '-';
+            portaText.textContent = '-';
         } else {
             info.classList.remove('show');
         }
     }
 
-    // Obter status
-    getStatus() {
-        return {
-            connected: this.connected,
-            protocol: this.protocol,
-            deviceInfo: this.deviceInfo
-        };
+    // Verificar se está conectado
+    isConnected() {
+        return this.connected;
     }
 }
 
@@ -816,8 +1094,8 @@ class GerenciadorCatraca {
 // SISTEMA PRINCIPAL
 // ============================================
 
-// Instância do gerenciador de catraca
-const catracaManager = new GerenciadorCatraca();
+// Instância do gerenciador
+const catracaManager = new GerenciadorCatracaReal();
 
 // Variáveis globais
 let videoStream = null;
@@ -827,6 +1105,154 @@ let isProcessing = false;
 let lastDetectionTime = 0;
 const DETECTION_COOLDOWN = 2000;
 let naDigitado = '';
+
+// Mostrar seletor de catracas
+async function mostrarSelectorCatracas() {
+    const overlay = document.getElementById('catracaSelectorOverlay');
+    const list = document.getElementById('catracaList');
+    
+    overlay.style.display = 'flex';
+    list.innerHTML = '<div class="catraca-item" style="justify-content: center;"><p style="color: #666;">🔍 Procurando dispositivos...</p></div>';
+    
+    try {
+        // Primeiro, procurar dispositivos já pareados
+        const devices = await catracaManager.procurarDispositivosUSB();
+        
+        if (devices.length === 0) {
+            list.innerHTML = `
+                <div class="catraca-item" style="flex-direction: column; text-align: center; padding: 30px;">
+                    <div style="font-size: 48px; margin-bottom: 20px;">🔌</div>
+                    <h3 style="color: #fff; margin-bottom: 10px;">Nenhuma catraca encontrada</h3>
+                    <p style="color: #999; margin-bottom: 20px;">Conecte a catraca ao computador e clique no botão abaixo</p>
+                    <button class="btn-catraca" onclick="solicitarNovaCatraca()" style="width: auto;">➕ ADICIONAR NOVA CATRACA</button>
+                </div>
+            `;
+        } else {
+            let html = '';
+            catracaManager.availableDevices.forEach((dev, index) => {
+                const isSelected = catracaManager.selectedDevice === index;
+                html += `
+                    <div class="catraca-item ${isSelected ? 'selected' : ''}" onclick="selecionarCatraca(${index})">
+                        <div class="catraca-icon">🔒</div>
+                        <div class="catraca-info">
+                            <h3>${dev.name}</h3>
+                            <p>Fabricante: ${dev.manufacturer}</p>
+                            <p>ID: ${dev.vendorId}:${dev.productId}</p>
+                            <p>Série: ${dev.serialNumber}</p>
+                            <span class="protocol">${dev.protocol}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                <div class="catraca-item" onclick="solicitarNovaCatraca()">
+                    <div class="catraca-icon">➕</div>
+                    <div class="catraca-info">
+                        <h3>Adicionar nova catraca</h3>
+                        <p>Conectar uma catraca não listada acima</p>
+                    </div>
+                </div>
+            `;
+            
+            list.innerHTML = html;
+        }
+        
+    } catch (error) {
+        list.innerHTML = `
+            <div class="catraca-item" style="flex-direction: column; text-align: center; padding: 30px; border-color: #ff4444;">
+                <div style="font-size: 48px; margin-bottom: 20px;">❌</div>
+                <h3 style="color: #fff; margin-bottom: 10px;">Erro ao acessar USB</h3>
+                <p style="color: #999;">${error.message}</p>
+            </div>
+        `;
+    }
+}
+
+// Selecionar catraca da lista
+function selecionarCatraca(index) {
+    catracaManager.selectedDevice = index;
+    document.getElementById('btnConectarSelecionada').disabled = false;
+    
+    // Atualizar visual
+    const items = document.querySelectorAll('.catraca-item');
+    items.forEach((item, i) => {
+        if (i === index) {
+            item.classList.add('selected');
+        } else {
+            item.classList.remove('selected');
+        }
+    });
+}
+
+// Conectar catraca selecionada
+async function conectarCatracaSelecionada() {
+    if (catracaManager.selectedDevice === null) return;
+    
+    const deviceInfo = catracaManager.availableDevices[catracaManager.selectedDevice];
+    if (!deviceInfo) return;
+    
+    fecharSelectorCatracas();
+    
+    const conectado = await catracaManager.conectarDispositivo(deviceInfo);
+    
+    if (conectado) {
+        mostrarMensagem('✅ Catraca conectada com sucesso!', 'success');
+    }
+}
+
+// Solicitar nova catraca
+async function solicitarNovaCatraca() {
+    try {
+        const deviceInfo = await catracaManager.solicitarDispositivoUSB();
+        
+        // Adicionar à lista
+        if (deviceInfo) {
+            catracaManager.availableDevices.push(deviceInfo);
+            catracaManager.selectedDevice = catracaManager.availableDevices.length - 1;
+            await mostrarSelectorCatracas(); // Recarregar lista
+            document.getElementById('btnConectarSelecionada').disabled = false;
+        }
+        
+    } catch (error) {
+        mostrarMensagem('❌ Usuário cancelou ou erro na permissão', 'error');
+        fecharSelectorCatracas();
+    }
+}
+
+// Fechar seletor
+function fecharSelectorCatracas() {
+    document.getElementById('catracaSelectorOverlay').style.display = 'none';
+}
+
+// Procurar novamente
+async function procurarCatracas() {
+    await mostrarSelectorCatracas();
+}
+
+// Reconectar
+async function reconectarCatraca() {
+    await conectarCatraca();
+}
+
+// Função principal de conexão
+async function conectarCatraca() {
+    try {
+        // Tentar detectar dispositivos já pareados
+        const devices = await catracaManager.procurarDispositivosUSB();
+        
+        if (devices.length > 0) {
+            // Se encontrar, conecta ao primeiro automaticamente
+            await catracaManager.conectarDispositivo(devices[0]);
+        } else {
+            // Se não encontrar, abre o seletor
+            mostrarSelectorCatracas();
+        }
+    } catch (error) {
+        console.error('Erro ao conectar catraca:', error);
+        mostrarSelectorCatracas();
+    }
+}
 
 // Carregar modelos FaceAPI
 async function carregarModelos() {
@@ -869,21 +1295,6 @@ async function carregarBiometrias() {
     }
 }
 
-// Conectar catraca
-async function conectarCatraca() {
-    try {
-        // Primeiro tenta detectar dispositivos já pareados
-        const detected = await catracaManager.detectarDispositivos();
-        
-        if (!detected && catracaManager.isSupported()) {
-            // Se não encontrou, solicita permissão
-            await catracaManager.solicitarDispositivo();
-        }
-    } catch (error) {
-        console.error('Erro na conexão da catraca:', error);
-    }
-}
-
 // Iniciar câmera
 async function iniciarCamera() {
     try {
@@ -903,6 +1314,7 @@ async function iniciarCamera() {
         
     } catch (error) {
         console.error('Erro ao iniciar câmera:', error);
+        mostrarMensagem('❌ Erro ao acessar câmera', 'error');
     }
 }
 
@@ -940,7 +1352,7 @@ async function reconhecimentoContinuo() {
                 const bestMatch = faceMatcher.findBestMatch(bestDetection.descriptor);
                 
                 if (bestMatch.label !== 'unknown') {
-                    await processarAcesso(bestMatch.label);
+                    await processarAcesso(bestMatch.label, 'facial');
                     lastDetectionTime = now;
                 }
             }
@@ -952,7 +1364,7 @@ async function reconhecimentoContinuo() {
 }
 
 // Processar acesso
-async function processarAcesso(na) {
+async function processarAcesso(na, tipo = 'facial') {
     isProcessing = true;
     
     try {
@@ -972,29 +1384,36 @@ async function processarAcesso(na) {
             return;
         }
         
-        // Liberar catraca real
+        // Verificar se catraca está conectada
+        if (!catracaManager.isConnected()) {
+            mostrarMensagem('CATRACA NÃO CONECTADA', 'error');
+            return;
+        }
+        
+        // Liberar catraca
         const liberado = await catracaManager.liberarAcesso();
         
         if (liberado) {
+            // Registrar acesso
             await db.ref('acessos/' + na).push({
                 data: new Date().toISOString(),
-                tipo: naDigitado ? 'manual' : 'facial'
+                tipo: tipo
             });
             
-            mostrarMensagem('ACESSO LIBERADO', 'success');
+            mostrarMensagem('✅ ACESSO LIBERADO', 'success');
             mostrarInfoUsuario(user, na);
             
-            naDigitado = '';
-            if (document.getElementById('naOverlay').style.display === 'flex') {
+            if (tipo === 'manual') {
+                naDigitado = '';
                 fecharNAOverlay();
             }
         } else {
-            mostrarMensagem('ERRO NA CATRACA', 'error');
+            mostrarMensagem('❌ ERRO NA CATRACA', 'error');
         }
         
     } catch (error) {
         console.error('Erro no processamento:', error);
-        mostrarMensagem('ERRO NO SISTEMA', 'error');
+        mostrarMensagem('❌ ERRO NO SISTEMA', 'error');
         
     } finally {
         setTimeout(() => {
@@ -1052,13 +1471,12 @@ function atualizarDisplayNA() {
 async function confirmarNA() {
     if (naDigitado.length === 5 && !isProcessing) {
         fecharNAOverlay();
-        await processarAcesso(naDigitado);
+        await processarAcesso(naDigitado, 'manual');
     }
 }
 
-// Suporte a teclado físico
+// Teclado físico
 document.addEventListener('keydown', (e) => {
-    // Se o overlay NA estiver aberto
     if (document.getElementById('naOverlay').style.display === 'flex') {
         if (e.key >= '0' && e.key <= '9') {
             adicionarDigito(e.key);
@@ -1071,7 +1489,6 @@ document.addEventListener('keydown', (e) => {
             atualizarDisplayNA();
         }
     } else {
-        // Se não estiver no overlay, números abrem o teclado
         if (e.key >= '0' && e.key <= '9') {
             mostrarNAOverlay();
             adicionarDigito(e.key);
@@ -1079,14 +1496,14 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Mostrar dica de teclado
+// Dica de teclado
 setInterval(() => {
     const hint = document.getElementById('keyboardHint');
     if (document.getElementById('naOverlay').style.display !== 'flex') {
         hint.classList.add('show');
         setTimeout(() => hint.classList.remove('show'), 3000);
     }
-}, 30000); // A cada 30 segundos
+}, 30000);
 
 // Mostrar mensagem
 function mostrarMensagem(texto, tipo) {
@@ -1118,14 +1535,18 @@ function mostrarInfoUsuario(user, na) {
 async function inicializar() {
     await carregarModelos();
     await carregarBiometrias();
-    await conectarCatraca();
     await iniciarCamera();
     
+    // Tentar conectar catraca automaticamente
+    setTimeout(conectarCatraca, 2000);
+    
+    // Recarregar biometrias a cada 5 minutos
     setInterval(carregarBiometrias, 5 * 60 * 1000);
 }
 
 window.addEventListener('load', inicializar);
 
+// Gerenciar visibilidade
 document.addEventListener('visibilitychange', () => {
     if (document.hidden && videoStream) {
         videoStream.getTracks().forEach(track => track.stop());
@@ -1136,7 +1557,9 @@ document.addEventListener('visibilitychange', () => {
 
 // Limpar recursos ao fechar
 window.addEventListener('beforeunload', () => {
-    catracaManager.desconectar();
+    if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+    }
 });
 </script>
 </body>
