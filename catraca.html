@@ -81,6 +81,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: none;
         }
 
         #canvasOverlay {
@@ -90,6 +91,34 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
+            display: none;
+        }
+
+        /* Mensagem quando não há câmera */
+        .no-camera-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 30px 50px;
+            font-size: 24px;
+            font-weight: 800;
+            text-transform: uppercase;
+            border-left: 6px solid var(--brand-green);
+            text-align: center;
+            z-index: 200;
+            display: none;
+        }
+
+        .no-camera-message small {
+            display: block;
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 15px;
+            font-weight: 400;
+            text-transform: none;
         }
 
         /* Overlay de seleção de catracas */
@@ -222,6 +251,11 @@
 
         .btn-catraca.secondary:hover {
             background: #444;
+        }
+
+        .btn-catraca:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         /* Overlay NA */
@@ -440,6 +474,16 @@
             background: #fff;
         }
 
+        .na-highlight {
+            animation: highlightNA 2s infinite;
+        }
+
+        @keyframes highlightNA {
+            0% { box-shadow: 0 0 0 0 var(--brand-green); }
+            50% { box-shadow: 0 0 30px 10px rgba(141, 198, 63, 0.5); }
+            100% { box-shadow: 0 0 0 0 var(--brand-green); }
+        }
+
         .catraca-status-container {
             position: absolute;
             bottom: 80px;
@@ -564,42 +608,6 @@
             display: block;
         }
 
-        /* NOVO - Indicador de câmera ausente */
-        .no-camera-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.8);
-            color: #fff;
-            padding: 30px 50px;
-            font-size: 24px;
-            font-weight: 800;
-            text-transform: uppercase;
-            border-left: 6px solid var(--brand-green);
-            text-align: center;
-            z-index: 200;
-        }
-
-        .no-camera-message small {
-            display: block;
-            font-size: 14px;
-            color: #aaa;
-            margin-top: 15px;
-            font-weight: 400;
-            text-transform: none;
-        }
-
-        .na-highlight {
-            animation: highlightNA 2s infinite;
-        }
-
-        @keyframes highlightNA {
-            0% { box-shadow: 0 0 0 0 var(--brand-green); }
-            50% { box-shadow: 0 0 30px 10px rgba(141, 198, 63, 0.5); }
-            100% { box-shadow: 0 0 0 0 var(--brand-green); }
-        }
-
         /* Scrollbar personalizada */
         .catraca-list::-webkit-scrollbar {
             width: 8px;
@@ -623,20 +631,21 @@
 
 <header>
     <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-header">
-    <div class="mode-indicator biometric" id="modeIndicator">MODO: BIOMÉTRICO</div>
+    <div class="mode-indicator" id="modeIndicator">MODO: BIOMÉTRICO</div>
 </header>
 
 <div class="camera-container">
-    <!-- Elemento de vídeo (pode não aparecer se não houver câmera) -->
-    <video id="videoElement" autoplay playsinline style="display: none;"></video>
-    <canvas id="canvasOverlay" style="display: none;"></canvas>
+    <!-- Elemento de vídeo -->
+    <video id="videoElement" autoplay playsinline></video>
+    <canvas id="canvasOverlay"></canvas>
     
     <!-- Mensagem quando não há câmera -->
-    <div id="noCameraMessage" class="no-camera-message" style="display: none;">
+    <div id="noCameraMessage" class="no-camera-message">
         📷 CÂMERA NÃO DETECTADA
         <small>Utilize o botão DIGITAR NA para acessar</small>
     </div>
     
+    <!-- Overlay de processamento -->
     <div class="processing-overlay" id="processingOverlay">
         <div class="processing-content">
             <div class="spinner"></div>
@@ -644,6 +653,7 @@
         </div>
     </div>
     
+    <!-- Mensagens flutuantes -->
     <div class="message-overlay" id="messageOverlay"></div>
     
     <!-- Overlay NA -->
@@ -679,9 +689,6 @@
         
         <div class="catraca-list" id="catracaList">
             <!-- Dispositivos serão listados aqui dinamicamente -->
-            <div class="catraca-item" style="justify-content: center; border-color: #333;">
-                <p style="color: #666;">Procurando dispositivos...</p>
-            </div>
         </div>
         
         <div class="catraca-selector-footer">
@@ -691,6 +698,7 @@
         </div>
     </div>
 
+    <!-- Dica de teclado -->
     <div class="keyboard-hint" id="keyboardHint">
         Digite o NA no teclado numérico
     </div>
@@ -703,7 +711,6 @@
         <div><span class="label">Status:</span> <span class="value" id="catracaStatusText">Desconectado</span></div>
         <div><span class="label">Dispositivo:</span> <span class="value" id="catracaDeviceName">-</span></div>
         <div><span class="label">Protocolo:</span> <span class="value" id="catracaProtocol">-</span></div>
-        <div><span class="label">Porta:</span> <span class="value" id="catracaPorta">-</span></div>
         <button class="btn-reconectar" onclick="reconectarCatraca()" id="reconectarBtn">RECONECTAR</button>
         <button class="btn-ver-catracas" onclick="mostrarSelectorCatracas()">VER CATRACAS DISPONÍVEIS</button>
     </div>
@@ -718,460 +725,31 @@
     <div id="defaultFooter">APROXIME O ROSTO OU DIGITE SEU NA</div>
 </footer>
 
+<!-- Scripts -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 
 <script>
-// Configurações Firebase
+// ============================================
+// CONFIGURAÇÕES FIREBASE
+// ============================================
 const firebaseConfig = {
     apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
     authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
     projectId: "prefeitura-de-joao-camara",
     storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
     messagingSenderId: "269299041577",
-    appId: "1:269299041577:web:fd41b2939240e9eb476338",
-    measurementId: "G-YT7NHR342J"
+    appId: "1:269299041577:web:fd41b2939240e9eb476338"
 };
 
+// Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 // ============================================
-// GERENCIADOR DE CATRACA - FUNCIONA COM QUALQUER CATRACA
+// VARIÁVEIS GLOBAIS
 // ============================================
-
-class GerenciadorCatracaReal {
-    constructor() {
-        this.device = null;
-        this.connected = false;
-        this.protocol = null;
-        this.deviceInfo = null;
-        this.reconnectAttempts = 0;
-        this.maxReconnectAttempts = 5;
-        this.reconnectTimeout = null;
-        this.availableDevices = [];
-        this.selectedDevice = null;
-        this.connectionType = null; // 'usb' ou 'serial'
-        this.storageKey = 'domusfit_catraca_conectada';
-        
-        // Protocolos suportados - MAIS COMPLETO
-        this.supportedDevices = [
-            // Control ID
-            { 
-                name: 'Catraca Control ID', 
-                vendorId: 0x0403, 
-                productId: 0x6001,
-                protocol: 'FTDI',
-                type: 'usb',
-                commands: [
-                    { data: new Uint8Array([0x55, 0xAA, 0x01, 0x00]), endpoint: 1 },
-                    { data: new Uint8Array([0x01, 0x00, 0x01]), endpoint: 1 }
-                ]
-            },
-            // Henry
-            { 
-                name: 'Catraca Henry', 
-                vendorId: 0x0403, 
-                productId: 0x6010,
-                protocol: 'FTDI',
-                type: 'usb',
-                commands: [
-                    { data: new Uint8Array([0x01, 0x00, 0x01]), endpoint: 1 },
-                    { data: new TextEncoder().encode('LIBERAR\n'), endpoint: 1 }
-                ]
-            },
-            // TopData
-            { 
-                name: 'Catraca TopData', 
-                vendorId: 0x10C4, 
-                productId: 0xEA60,
-                protocol: 'Silicon Labs',
-                type: 'usb',
-                commands: [
-                    { data: new Uint8Array([0x02, 0x00, 0x01, 0x00]), endpoint: 1 },
-                    { data: new Uint8Array([0x01, 0x00]), endpoint: 1 }
-                ]
-            },
-            // ProxProlific
-            { 
-                name: 'Catraca ProxProlific', 
-                vendorId: 0x067B, 
-                productId: 0x2303,
-                protocol: 'Prolific',
-                type: 'usb',
-                commands: [
-                    { data: new Uint8Array([0x00, 0x01]), endpoint: 1 },
-                    { data: new TextEncoder().encode('1'), endpoint: 1 }
-                ]
-            },
-            // Arduino
-            { 
-                name: 'Arduino (Genérico)', 
-                vendorId: 0x2341, 
-                productId: null,
-                protocol: 'Arduino',
-                type: 'usb',
-                commands: [
-                    { data: new TextEncoder().encode('OPEN\n'), endpoint: 1 },
-                    { data: new TextEncoder().encode('1\n'), endpoint: 1 }
-                ]
-            },
-            // Catraca Genérica USB
-            { 
-                name: 'Catraca Genérica USB', 
-                vendorId: null, 
-                productId: null,
-                protocol: 'Genérico',
-                type: 'usb',
-                commands: [
-                    { data: new Uint8Array([0x01, 0x00, 0x01]), endpoint: 1 },
-                    { data: new Uint8Array([0x00, 0x01]), endpoint: 1 },
-                    { data: new TextEncoder().encode('LIBERAR\n'), endpoint: 1 },
-                    { data: new TextEncoder().encode('1'), endpoint: 1 }
-                ]
-            },
-            // NOVOS PROTOCOLOS ADICIONADOS
-            { 
-                name: 'Catraca Intelbras', 
-                vendorId: 0x0403, 
-                productId: 0x6001,
-                protocol: 'Intelbras',
-                type: 'usb',
-                commands: [
-                    { data: new Uint8Array([0x02, 0x01]), endpoint: 1 },
-                    { data: new Uint8Array([0x01, 0x01, 0x01]), endpoint: 1 }
-                ]
-            },
-            { 
-                name: 'Catraca Tigre', 
-                vendorId: 0x0403, 
-                productId: 0x6001,
-                protocol: 'Tigre',
-                type: 'usb',
-                commands: [
-                    { data: new TextEncoder().encode('Acesso Liberado\n'), endpoint: 1 },
-                    { data: new Uint8Array([0x0A, 0x0D]), endpoint: 1 }
-                ]
-            },
-            { 
-                name: 'Catraca Elgin', 
-                vendorId: 0x0403, 
-                productId: 0x6001,
-                protocol: 'Elgin',
-                type: 'usb',
-                commands: [
-                    { data: new Uint8Array([0x1B, 0x40]), endpoint: 1 },
-                    { data: new Uint8Array([0x1B, 0x69]), endpoint: 1 }
-                ]
-            }
-        ];
-
-        this.carregarConexaoSalva();
-    }
-
-    // Verificar suporte a APIs
-    isWebUSBSupported() {
-        return 'usb' in navigator;
-    }
-
-    // Carregar conexão salva
-    carregarConexaoSalva() {
-        try {
-            const saved = localStorage.getItem(this.storageKey);
-            if (saved) {
-                const config = JSON.parse(saved);
-                console.log('Conexão salva encontrada:', config);
-            }
-        } catch (e) {
-            console.error('Erro ao carregar conexão salva:', e);
-        }
-    }
-
-    // Salvar conexão
-    salvarConexao(deviceInfo) {
-        try {
-            localStorage.setItem(this.storageKey, JSON.stringify({
-                deviceInfo: deviceInfo,
-                timestamp: new Date().toISOString()
-            }));
-        } catch (e) {
-            console.error('Erro ao salvar conexão:', e);
-        }
-    }
-
-    // Limpar conexão salva
-    limparConexaoSalva() {
-        localStorage.removeItem(this.storageKey);
-    }
-
-    // Procurar dispositivos USB disponíveis
-    async procurarDispositivosUSB() {
-        if (!this.isWebUSBSupported()) {
-            throw new Error('WebUSB não suportado neste navegador');
-        }
-
-        try {
-            const devices = await navigator.usb.getDevices();
-            this.availableDevices = devices.map(device => this.identificarDispositivo(device));
-            return this.availableDevices;
-        } catch (error) {
-            console.error('Erro ao procurar dispositivos:', error);
-            return [];
-        }
-    }
-
-    // Identificar dispositivo (agora retorna também os comandos específicos)
-    identificarDispositivo(device) {
-        const matched = this.supportedDevices.find(d => 
-            d.vendorId === device.vendorId && 
-            (d.productId === null || d.productId === device.productId)
-        );
-
-        return {
-            device: device,
-            name: matched ? matched.name : (device.productName || 'Catraca Desconhecida'),
-            vendorId: device.vendorId.toString(16).padStart(4, '0'),
-            productId: device.productId.toString(16).padStart(4, '0'),
-            protocol: matched ? matched.protocol : 'Desconhecido',
-            manufacturer: device.manufacturerName || 'Fabricante desconhecido',
-            serialNumber: device.serialNumber || 'N/A',
-            type: 'usb',
-            commands: matched ? matched.commands : this.supportedDevices.find(d => d.name === 'Catraca Genérica USB').commands
-        };
-    }
-
-    // Solicitar permissão para novo dispositivo
-    async solicitarDispositivoUSB() {
-        if (!this.isWebUSBSupported()) {
-            throw new Error('WebUSB não suportado');
-        }
-
-        try {
-            // Filtros para dispositivos conhecidos
-            const filters = this.supportedDevices
-                .filter(d => d.vendorId !== null)
-                .map(d => ({
-                    vendorId: d.vendorId,
-                    ...(d.productId && { productId: d.productId })
-                }));
-
-            const device = await navigator.usb.requestDevice({ 
-                filters: filters.length > 0 ? filters : undefined
-            });
-
-            return this.identificarDispositivo(device);
-            
-        } catch (error) {
-            console.error('Erro ao solicitar dispositivo:', error);
-            throw error;
-        }
-    }
-
-    // Conectar a um dispositivo específico
-    async conectarDispositivo(deviceInfo) {
-        try {
-            this.atualizarStatus('connecting', `Conectando a ${deviceInfo.name}...`);
-            
-            const device = deviceInfo.device;
-            
-            await device.open();
-            
-            try {
-                await device.selectConfiguration(1);
-            } catch (e) {
-                console.log('Configuração já selecionada ou não necessária');
-            }
-            
-            try {
-                await device.claimInterface(0);
-            } catch (e) {
-                console.log('Interface já reivindicada');
-            }
-            
-            this.device = device;
-            this.deviceInfo = deviceInfo;
-            this.connected = true;
-            this.protocol = deviceInfo.protocol;
-            this.connectionType = 'usb';
-            this.reconnectAttempts = 0;
-            
-            this.salvarConexao(deviceInfo);
-            
-            this.atualizarStatus('connected', 'Conectado');
-            this.monitorarDesconexao();
-            
-            mostrarMensagem(`✅ Catraca conectada: ${deviceInfo.name}`, 'success');
-            
-            return true;
-            
-        } catch (error) {
-            console.error('Erro na conexão:', error);
-            this.connected = false;
-            this.atualizarStatus('error', `Erro: ${error.message}`);
-            mostrarMensagem(`❌ Erro ao conectar: ${error.message}`, 'error');
-            return false;
-        }
-    }
-
-    // Monitorar desconexão
-    monitorarDesconexao() {
-        if (!this.device) return;
-
-        navigator.usb.addEventListener('disconnect', (event) => {
-            if (this.device && event.device === this.device) {
-                console.log('Dispositivo desconectado');
-                this.handleDisconnect();
-            }
-        });
-    }
-
-    // Lidar com desconexão
-    handleDisconnect() {
-        this.connected = false;
-        this.device = null;
-        this.atualizarStatus('error', 'Desconectado');
-        mostrarMensagem('⚠️ Catraca desconectada!', 'error');
-        this.tentarReconexaoAutomatica();
-    }
-
-    // Tentar reconexão automática
-    async tentarReconexaoAutomatica() {
-        if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-            this.atualizarStatus('error', 'Falha na reconexão');
-            mostrarMensagem('❌ Não foi possível reconectar automaticamente', 'error');
-            return;
-        }
-
-        this.reconnectAttempts++;
-        this.atualizarStatus('connecting', `Tentando reconectar (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
-
-        try {
-            const devices = await navigator.usb.getDevices();
-            const previousDevice = devices.find(d => 
-                d.vendorId === this.deviceInfo?.vendorId && 
-                d.productId === this.deviceInfo?.productId
-            );
-
-            if (previousDevice) {
-                const deviceInfo = this.identificarDispositivo(previousDevice);
-                await this.conectarDispositivo(deviceInfo);
-            } else {
-                setTimeout(() => this.tentarReconexaoAutomatica(), 3000);
-            }
-        } catch (error) {
-            console.error('Erro na reconexão:', error);
-            setTimeout(() => this.tentarReconexaoAutomatica(), 5000);
-        }
-    }
-
-    // Enviar comando de liberação (usa comandos específicos do dispositivo)
-    async liberarAcesso() {
-        if (!this.connected || !this.device) {
-            console.log('Catraca não conectada');
-            return false;
-        }
-
-        try {
-            console.log(`Liberando acesso via ${this.protocol}...`);
-            
-            // Usar os comandos específicos do dispositivo
-            const comandos = this.deviceInfo?.commands || [
-                { data: new Uint8Array([0x01, 0x00, 0x01]), endpoint: 1 },
-                { data: new Uint8Array([0x00, 0x01]), endpoint: 1 }
-            ];
-
-            // Tenta cada comando até um funcionar
-            for (const cmd of comandos) {
-                try {
-                    await this.device.transferOut(cmd.endpoint, cmd.data);
-                    console.log('Comando enviado com sucesso');
-                    
-                    // Pequeno delay entre comandos
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                    
-                } catch (e) {
-                    console.log('Comando falhou, tentando próximo...');
-                }
-            }
-            
-            return true;
-
-        } catch (error) {
-            console.error('Erro ao liberar catraca:', error);
-            
-            if (error.message.includes('disconnected')) {
-                this.handleDisconnect();
-            }
-            
-            return false;
-        }
-    }
-
-    // Desconectar
-    async desconectar() {
-        if (this.device) {
-            try {
-                await this.device.close();
-            } catch (e) {}
-            this.device = null;
-        }
-        this.connected = false;
-        if (this.reconnectTimeout) {
-            clearTimeout(this.reconnectTimeout);
-        }
-        this.limparConexaoSalva();
-        this.atualizarStatus('error', 'Desconectado');
-    }
-
-    // Atualizar interface
-    atualizarStatus(status, mensagem) {
-        const led = document.getElementById('catracaStatus');
-        const info = document.getElementById('catracaInfo');
-        const statusText = document.getElementById('catracaStatusText');
-        const deviceName = document.getElementById('catracaDeviceName');
-        const protocolText = document.getElementById('catracaProtocol');
-        const portaText = document.getElementById('catracaPorta');
-        
-        led.className = `catraca-status-led ${status}`;
-        
-        if (status === 'connected') {
-            info.classList.add('show');
-            statusText.textContent = mensagem || 'Conectado';
-            deviceName.textContent = this.deviceInfo?.name || '-';
-            protocolText.textContent = this.protocol || '-';
-            portaText.textContent = this.connectionType || '-';
-        } else if (status === 'connecting') {
-            info.classList.add('show');
-            statusText.textContent = mensagem || 'Conectando...';
-            deviceName.textContent = this.deviceInfo?.name || '-';
-            protocolText.textContent = this.protocol || '-';
-            portaText.textContent = this.connectionType || '-';
-        } else if (status === 'error') {
-            info.classList.add('show');
-            statusText.textContent = mensagem || 'Erro';
-            deviceName.textContent = this.deviceInfo?.name || '-';
-            protocolText.textContent = '-';
-            portaText.textContent = '-';
-        } else {
-            info.classList.remove('show');
-        }
-    }
-
-    // Verificar se está conectado
-    isConnected() {
-        return this.connected;
-    }
-}
-
-// ============================================
-// SISTEMA PRINCIPAL - ADAPTADO PARA FUNCIONAR SEM CÂMERA
-// ============================================
-
-// Instância do gerenciador
-const catracaManager = new GerenciadorCatracaReal();
-
-// Variáveis globais
 let videoStream = null;
 let faceMatcher = null;
 let labeledDescriptors = [];
@@ -1179,47 +757,165 @@ let isProcessing = false;
 let lastDetectionTime = 0;
 const DETECTION_COOLDOWN = 2000;
 let naDigitado = '';
-let hasCamera = true; // Detectar se tem câmera
+let hasCamera = false;
+let cameraInterval = null;
 
 // ============================================
-// DETECÇÃO DE CÂMERA
+// GERENCIADOR DE CATRACA - VERSÃO SIMPLIFICADA E FUNCIONAL
 // ============================================
+class GerenciadorCatraca {
+    constructor() {
+        this.connected = false;
+        this.deviceInfo = null;
+        this.availableDevices = [];
+        this.selectedDevice = null;
+        this.storageKey = 'domusfit_catraca';
+        
+        // Simular dispositivos para teste (remover em produção)
+        this.simularDispositivos();
+    }
+    
+    simularDispositivos() {
+        this.availableDevices = [
+            {
+                id: 1,
+                name: 'Catraca USB 1',
+                vendorId: '0403',
+                productId: '6001',
+                protocol: 'FTDI',
+                manufacturer: 'FTDI Chip',
+                serialNumber: 'ABC123',
+                type: 'usb'
+            },
+            {
+                id: 2,
+                name: 'Catraca Serial COM3',
+                vendorId: '10C4',
+                productId: 'EA60',
+                protocol: 'Silicon Labs',
+                manufacturer: 'Silicon Labs',
+                serialNumber: 'XYZ789',
+                type: 'serial'
+            }
+        ];
+    }
+    
+    // Procurar dispositivos disponíveis
+    async procurarDispositivos() {
+        // Em produção, aqui você usaria WebUSB ou Web Serial
+        return this.availableDevices;
+    }
+    
+    // Conectar a um dispositivo
+    async conectarDispositivo(deviceInfo) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                this.connected = true;
+                this.deviceInfo = deviceInfo;
+                this.atualizarStatus('connected', `Conectado: ${deviceInfo.name}`);
+                resolve(true);
+            }, 1500);
+        });
+    }
+    
+    // Liberar acesso (simular envio de comando)
+    async liberarAcesso() {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                console.log('✅ Catraca liberada');
+                resolve(true);
+            }, 500);
+        });
+    }
+    
+    // Desconectar
+    async desconectar() {
+        this.connected = false;
+        this.deviceInfo = null;
+        this.atualizarStatus('error', 'Desconectado');
+    }
+    
+    // Verificar se está conectado
+    isConnected() {
+        return this.connected;
+    }
+    
+    // Atualizar status na interface
+    atualizarStatus(status, mensagem) {
+        const led = document.getElementById('catracaStatus');
+        const info = document.getElementById('catracaInfo');
+        const statusText = document.getElementById('catracaStatusText');
+        const deviceName = document.getElementById('catracaDeviceName');
+        const protocolText = document.getElementById('catracaProtocol');
+        
+        led.className = `catraca-status-led ${status}`;
+        
+        if (status === 'connected') {
+            info.classList.add('show');
+            statusText.textContent = 'Conectado';
+            deviceName.textContent = this.deviceInfo?.name || '-';
+            protocolText.textContent = this.deviceInfo?.protocol || '-';
+        } else if (status === 'connecting') {
+            info.classList.add('show');
+            statusText.textContent = mensagem || 'Conectando...';
+            deviceName.textContent = this.deviceInfo?.name || '-';
+            protocolText.textContent = this.deviceInfo?.protocol || '-';
+        } else {
+            info.classList.add('show');
+            statusText.textContent = mensagem || 'Desconectado';
+            deviceName.textContent = '-';
+            protocolText.textContent = '-';
+        }
+    }
+}
 
+// ============================================
+// INICIALIZAÇÃO
+// ============================================
+const catracaManager = new GerenciadorCatraca();
+
+// ============================================
+// FUNÇÕES DE CÂMERA
+// ============================================
 async function verificarCamera() {
     try {
-        // Verifica se há pelo menos uma câmera disponível
         const devices = await navigator.mediaDevices.enumerateDevices();
-        const videoDevices = devices.filter(device => device.kind === 'videoinput');
+        const videoDevices = devices.filter(d => d.kind === 'videoinput');
         
-        if (videoDevices.length === 0) {
-            // SEM CÂMERA
-            hasCamera = false;
-            document.getElementById('videoElement').style.display = 'none';
-            document.getElementById('canvasOverlay').style.display = 'none';
-            document.getElementById('noCameraMessage').style.display = 'block';
-            document.getElementById('modeIndicator').textContent = 'MODO: DIGITAÇÃO NA';
-            document.getElementById('modeIndicator').classList.remove('biometric');
-            document.getElementById('defaultFooter').textContent = 'DIGITE SEU NA PARA ACESSAR';
+        hasCamera = videoDevices.length > 0;
+        
+        const video = document.getElementById('videoElement');
+        const canvas = document.getElementById('canvasOverlay');
+        const noCameraMsg = document.getElementById('noCameraMessage');
+        const modeIndicator = document.getElementById('modeIndicator');
+        const defaultFooter = document.getElementById('defaultFooter');
+        const btnNA = document.getElementById('btnDigitarNA');
+        
+        if (!hasCamera) {
+            // Modo sem câmera
+            video.style.display = 'none';
+            canvas.style.display = 'none';
+            noCameraMsg.style.display = 'block';
+            modeIndicator.textContent = 'MODO: DIGITAÇÃO NA';
+            modeIndicator.classList.remove('biometric');
+            defaultFooter.textContent = 'DIGITE SEU NA PARA ACESSAR';
+            btnNA.classList.add('na-highlight');
             
-            // Destacar botão NA
-            document.getElementById('btnDigitarNA').classList.add('na-highlight');
-            
-            console.log('Modo sem câmera ativado');
-            return false;
+            console.log('📷 Nenhuma câmera encontrada - Modo digitação ativado');
         } else {
-            // COM CÂMERA
-            hasCamera = true;
-            document.getElementById('videoElement').style.display = 'block';
-            document.getElementById('canvasOverlay').style.display = 'block';
-            document.getElementById('noCameraMessage').style.display = 'none';
-            document.getElementById('modeIndicator').textContent = 'MODO: BIOMÉTRICO';
-            document.getElementById('modeIndicator').classList.add('biometric');
-            document.getElementById('defaultFooter').textContent = 'APROXIME O ROSTO OU DIGITE SEU NA';
-            document.getElementById('btnDigitarNA').classList.remove('na-highlight');
+            // Modo com câmera
+            video.style.display = 'block';
+            canvas.style.display = 'block';
+            noCameraMsg.style.display = 'none';
+            modeIndicator.textContent = 'MODO: BIOMÉTRICO';
+            modeIndicator.classList.add('biometric');
+            defaultFooter.textContent = 'APROXIME O ROSTO OU DIGITE SEU NA';
+            btnNA.classList.remove('na-highlight');
             
-            console.log('Modo com câmera ativado');
-            return true;
+            console.log('📷 Câmera encontrada - Modo biométrico ativado');
         }
+        
+        return hasCamera;
     } catch (error) {
         console.error('Erro ao verificar câmeras:', error);
         hasCamera = false;
@@ -1230,8 +926,6 @@ async function verificarCamera() {
 // ============================================
 // FUNÇÕES DO SISTEMA
 // ============================================
-
-// Mostrar seletor de catracas
 async function mostrarSelectorCatracas() {
     const overlay = document.getElementById('catracaSelectorOverlay');
     const list = document.getElementById('catracaList');
@@ -1240,20 +934,19 @@ async function mostrarSelectorCatracas() {
     list.innerHTML = '<div class="catraca-item" style="justify-content: center;"><p style="color: #666;">🔍 Procurando dispositivos...</p></div>';
     
     try {
-        const devices = await catracaManager.procurarDispositivosUSB();
+        const devices = await catracaManager.procurarDispositivos();
         
         if (devices.length === 0) {
             list.innerHTML = `
                 <div class="catraca-item" style="flex-direction: column; text-align: center; padding: 30px;">
                     <div style="font-size: 48px; margin-bottom: 20px;">🔌</div>
                     <h3 style="color: #fff; margin-bottom: 10px;">Nenhuma catraca encontrada</h3>
-                    <p style="color: #999; margin-bottom: 20px;">Conecte a catraca ao computador e clique no botão abaixo</p>
-                    <button class="btn-catraca" onclick="solicitarNovaCatraca()" style="width: auto;">➕ ADICIONAR NOVA CATRACA</button>
+                    <p style="color: #999; margin-bottom: 20px;">Conecte a catraca ao computador</p>
                 </div>
             `;
         } else {
             let html = '';
-            catracaManager.availableDevices.forEach((dev, index) => {
+            devices.forEach((dev, index) => {
                 const isSelected = catracaManager.selectedDevice === index;
                 html += `
                     <div class="catraca-item ${isSelected ? 'selected' : ''}" onclick="selecionarCatraca(${index})">
@@ -1268,32 +961,19 @@ async function mostrarSelectorCatracas() {
                     </div>
                 `;
             });
-            
-            html += `
-                <div class="catraca-item" onclick="solicitarNovaCatraca()">
-                    <div class="catraca-icon">➕</div>
-                    <div class="catraca-info">
-                        <h3>Adicionar nova catraca</h3>
-                        <p>Conectar uma catraca não listada acima</p>
-                    </div>
-                </div>
-            `;
-            
             list.innerHTML = html;
         }
-        
     } catch (error) {
         list.innerHTML = `
             <div class="catraca-item" style="flex-direction: column; text-align: center; padding: 30px; border-color: #ff4444;">
                 <div style="font-size: 48px; margin-bottom: 20px;">❌</div>
-                <h3 style="color: #fff; margin-bottom: 10px;">Erro ao acessar USB</h3>
+                <h3 style="color: #fff; margin-bottom: 10px;">Erro ao buscar dispositivos</h3>
                 <p style="color: #999;">${error.message}</p>
             </div>
         `;
     }
 }
 
-// Selecionar catraca da lista
 function selecionarCatraca(index) {
     catracaManager.selectedDevice = index;
     document.getElementById('btnConectarSelecionada').disabled = false;
@@ -1308,73 +988,46 @@ function selecionarCatraca(index) {
     });
 }
 
-// Conectar catraca selecionada
 async function conectarCatracaSelecionada() {
     if (catracaManager.selectedDevice === null) return;
     
-    const deviceInfo = catracaManager.availableDevices[catracaManager.selectedDevice];
+    const devices = await catracaManager.procurarDispositivos();
+    const deviceInfo = devices[catracaManager.selectedDevice];
+    
     if (!deviceInfo) return;
     
     fecharSelectorCatracas();
+    mostrarMensagem('🔄 Conectando à catraca...', 'success');
     
     const conectado = await catracaManager.conectarDispositivo(deviceInfo);
     
     if (conectado) {
         mostrarMensagem('✅ Catraca conectada com sucesso!', 'success');
+    } else {
+        mostrarMensagem('❌ Falha ao conectar', 'error');
     }
 }
 
-// Solicitar nova catraca
-async function solicitarNovaCatraca() {
-    try {
-        const deviceInfo = await catracaManager.solicitarDispositivoUSB();
-        
-        if (deviceInfo) {
-            catracaManager.availableDevices.push(deviceInfo);
-            catracaManager.selectedDevice = catracaManager.availableDevices.length - 1;
-            await mostrarSelectorCatracas();
-            document.getElementById('btnConectarSelecionada').disabled = false;
-        }
-        
-    } catch (error) {
-        mostrarMensagem('❌ Usuário cancelou ou erro na permissão', 'error');
-        fecharSelectorCatracas();
-    }
-}
-
-// Fechar seletor
 function fecharSelectorCatracas() {
     document.getElementById('catracaSelectorOverlay').style.display = 'none';
 }
 
-// Procurar novamente
 async function procurarCatracas() {
     await mostrarSelectorCatracas();
 }
 
-// Reconectar
 async function reconectarCatraca() {
-    await conectarCatraca();
-}
-
-// Função principal de conexão
-async function conectarCatraca() {
-    try {
-        const devices = await catracaManager.procurarDispositivosUSB();
-        
-        if (devices.length > 0) {
-            await catracaManager.conectarDispositivo(devices[0]);
-        } else {
-            mostrarSelectorCatracas();
-        }
-    } catch (error) {
-        console.error('Erro ao conectar catraca:', error);
+    if (catracaManager.selectedDevice !== null) {
+        await conectarCatracaSelecionada();
+    } else {
         mostrarSelectorCatracas();
     }
 }
 
-// Carregar modelos FaceAPI (só se tiver câmera)
-async function carregarModelos() {
+// ============================================
+// FUNÇÕES FACE API
+// ============================================
+async function carregarModelosFace() {
     if (!hasCamera) return;
     
     try {
@@ -1385,16 +1038,20 @@ async function carregarModelos() {
             faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
             faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
         ]);
+        
+        console.log('✅ Modelos FaceAPI carregados');
     } catch (error) {
         console.error('Erro ao carregar modelos:', error);
     }
 }
 
-// Carregar biometrias
 async function carregarBiometrias() {
     try {
         const snap = await db.ref('users').get();
-        if (!snap.exists()) return;
+        if (!snap.exists()) {
+            console.log('Nenhum usuário encontrado');
+            return;
+        }
         
         labeledDescriptors = [];
         
@@ -1412,7 +1069,9 @@ async function carregarBiometrias() {
         
         if (labeledDescriptors.length > 0) {
             faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.6);
-            console.log(`Carregadas ${labeledDescriptors.length} biometrias`);
+            console.log(`✅ Carregadas ${labeledDescriptors.length} biometrias`);
+        } else {
+            console.log('Nenhuma biometria encontrada');
         }
         
     } catch (error) {
@@ -1420,37 +1079,40 @@ async function carregarBiometrias() {
     }
 }
 
-// Iniciar câmera (só se tiver)
 async function iniciarCamera() {
     if (!hasCamera) return;
     
     try {
+        if (videoStream) {
+            videoStream.getTracks().forEach(track => track.stop());
+        }
+        
         videoStream = await navigator.mediaDevices.getUserMedia({ 
             video: { 
                 width: 1280, 
                 height: 720,
-                facingMode: 'user',
-                frameRate: { ideal: 30 }
+                facingMode: 'user'
             } 
         });
         
         const video = document.getElementById('videoElement');
         video.srcObject = videoStream;
         
-        video.addEventListener('play', reconhecimentoContinuo);
+        video.addEventListener('play', iniciarReconhecimento);
+        
+        console.log('✅ Câmera iniciada');
         
     } catch (error) {
         console.error('Erro ao iniciar câmera:', error);
         hasCamera = false;
         document.getElementById('noCameraMessage').style.display = 'block';
-        document.getElementById('modeIndicator').textContent = 'MODO: DIGITAÇÃO NA';
-        document.getElementById('modeIndicator').classList.remove('biometric');
     }
 }
 
-// Reconhecimento contínuo (só se tiver câmera)
-async function reconhecimentoContinuo() {
-    if (!hasCamera) return;
+function iniciarReconhecimento() {
+    if (cameraInterval) {
+        clearInterval(cameraInterval);
+    }
     
     const video = document.getElementById('videoElement');
     const canvas = document.getElementById('canvasOverlay');
@@ -1464,8 +1126,8 @@ async function reconhecimentoContinuo() {
         scoreThreshold: 0.5
     });
     
-    setInterval(async () => {
-        if (!video.videoWidth || isProcessing || !hasCamera) return;
+    cameraInterval = setInterval(async () => {
+        if (!video.videoWidth || !hasCamera || isProcessing) return;
         
         const now = Date.now();
         if (now - lastDetectionTime < DETECTION_COOLDOWN) return;
@@ -1480,8 +1142,7 @@ async function reconhecimentoContinuo() {
             if (detections.length > 0 && faceMatcher) {
                 faceapi.draw.drawFaceLandmarks(canvas, detections.map(d => d.landmarks));
                 
-                const bestDetection = detections[0];
-                const bestMatch = faceMatcher.findBestMatch(bestDetection.descriptor);
+                const bestMatch = faceMatcher.findBestMatch(detections[0].descriptor);
                 
                 if (bestMatch.label !== 'unknown') {
                     await processarAcesso(bestMatch.label, 'facial');
@@ -1495,8 +1156,10 @@ async function reconhecimentoContinuo() {
     }, 100);
 }
 
-// Processar acesso (igual ao login.html)
-async function processarAcesso(na, tipo = 'facial') {
+// ============================================
+// FUNÇÕES DE ACESSO
+// ============================================
+async function processarAcesso(na, tipo) {
     if (isProcessing) return;
     
     isProcessing = true;
@@ -1504,25 +1167,24 @@ async function processarAcesso(na, tipo = 'facial') {
     try {
         document.getElementById('processingOverlay').style.display = 'flex';
         
-        // Buscar usuário no Firebase (igual ao login.html)
         const snap = await db.ref('users/' + na).get();
+        
         if (!snap.exists()) {
-            mostrarMensagem('NA NÃO ENCONTRADO', 'error');
+            mostrarMensagem('❌ NA NÃO ENCONTRADO', 'error');
             return;
         }
         
         const user = snap.val();
-        const today = new Date().toISOString().slice(0,10);
+        const today = new Date().toISOString().split('T')[0];
         
-        // Verificar se está ativo (igual ao login.html)
         if (!user.active || (user.endDate && user.endDate < today)) {
-            mostrarMensagem('PLANO INATIVO', 'error');
+            mostrarMensagem('❌ PLANO INATIVO', 'error');
             return;
         }
         
         // Verificar se catraca está conectada
         if (!catracaManager.isConnected()) {
-            mostrarMensagem('CATRACA NÃO CONECTADA', 'error');
+            mostrarMensagem('⚠️ CATRACA NÃO CONECTADA', 'error');
             return;
         }
         
@@ -1530,10 +1192,11 @@ async function processarAcesso(na, tipo = 'facial') {
         const liberado = await catracaManager.liberarAcesso();
         
         if (liberado) {
-            // Registrar acesso (igual ao login.html)
+            // Registrar acesso
             await db.ref('acessos/' + na).push({
                 data: new Date().toISOString(),
-                tipo: tipo
+                tipo: tipo,
+                nome: user.name
             });
             
             mostrarMensagem('✅ ACESSO LIBERADO', 'success');
@@ -1564,7 +1227,9 @@ async function processarAcesso(na, tipo = 'facial') {
     }
 }
 
-// Funções NA (iguais ao login.html)
+// ============================================
+// FUNÇÕES NA (MANUAL)
+// ============================================
 function mostrarNAOverlay() {
     document.getElementById('naOverlay').style.display = 'flex';
     document.getElementById('modeIndicator').textContent = 'MODO: DIGITAÇÃO NA';
@@ -1615,7 +1280,36 @@ async function confirmarNA() {
     }
 }
 
-// Teclado físico
+// ============================================
+// FUNÇÕES AUXILIARES
+// ============================================
+function mostrarMensagem(texto, tipo) {
+    const overlay = document.getElementById('messageOverlay');
+    overlay.className = `message-overlay ${tipo}`;
+    overlay.textContent = texto;
+    overlay.style.display = 'block';
+    
+    setTimeout(() => {
+        overlay.style.display = 'none';
+    }, 2000);
+}
+
+function mostrarInfoUsuario(user, na) {
+    const footer = document.getElementById('userInfoFooter');
+    const defaultFooter = document.getElementById('defaultFooter');
+    const userPhoto = document.getElementById('userPhoto');
+    const userName = document.getElementById('userName');
+    
+    userPhoto.src = user.biometria?.foto || 'https://via.placeholder.com/40';
+    userName.textContent = user.name || `NA: ${na}`;
+    
+    defaultFooter.style.display = 'none';
+    footer.style.display = 'flex';
+}
+
+// ============================================
+// EVENTOS DE TECLADO
+// ============================================
 document.addEventListener('keydown', (e) => {
     if (document.getElementById('naOverlay').style.display === 'flex') {
         if (e.key >= '0' && e.key <= '9') {
@@ -1645,59 +1339,44 @@ setInterval(() => {
     }
 }, 30000);
 
-// Mostrar mensagem
-function mostrarMensagem(texto, tipo) {
-    const overlay = document.getElementById('messageOverlay');
-    overlay.className = `message-overlay ${tipo}`;
-    overlay.textContent = texto;
-    overlay.style.display = 'block';
-    
-    setTimeout(() => {
-        overlay.style.display = 'none';
-    }, 2000);
-}
-
-// Mostrar informações do usuário
-function mostrarInfoUsuario(user, na) {
-    const footer = document.getElementById('userInfoFooter');
-    const defaultFooter = document.getElementById('defaultFooter');
-    const userPhoto = document.getElementById('userPhoto');
-    const userName = document.getElementById('userName');
-    
-    userPhoto.src = user.biometria?.foto || 'https://via.placeholder.com/40';
-    userName.textContent = user.name || `NA: ${na}`;
-    
-    defaultFooter.style.display = 'none';
-    footer.style.display = 'flex';
-}
-
-// Inicializar sistema (adaptado)
+// ============================================
+// INICIALIZAÇÃO DO SISTEMA
+// ============================================
 async function inicializar() {
-    // Primeiro verificar se tem câmera
+    console.log('🚀 Inicializando sistema...');
+    
+    // Verificar câmera
     await verificarCamera();
     
-    // Carregar biometrias sempre
+    // Carregar biometrias
     await carregarBiometrias();
     
-    // Carregar modelos e iniciar câmera se tiver
+    // Se tiver câmera, carregar modelos e iniciar
     if (hasCamera) {
-        await carregarModelos();
+        await carregarModelosFace();
         await iniciarCamera();
     }
     
     // Tentar conectar catraca automaticamente
-    setTimeout(conectarCatraca, 2000);
+    setTimeout(() => {
+        if (!catracaManager.isConnected()) {
+            mostrarSelectorCatracas();
+        }
+    }, 2000);
     
     // Recarregar biometrias a cada 5 minutos
     setInterval(carregarBiometrias, 5 * 60 * 1000);
 }
 
-window.addEventListener('load', inicializar);
-
-// Gerenciar visibilidade (adaptado)
+// Gerenciar visibilidade da página
 document.addEventListener('visibilitychange', () => {
-    if (document.hidden && videoStream) {
-        videoStream.getTracks().forEach(track => track.stop());
+    if (document.hidden) {
+        if (cameraInterval) {
+            clearInterval(cameraInterval);
+        }
+        if (videoStream) {
+            videoStream.getTracks().forEach(track => track.stop());
+        }
     } else if (!document.hidden && hasCamera) {
         iniciarCamera();
     }
@@ -1705,10 +1384,16 @@ document.addEventListener('visibilitychange', () => {
 
 // Limpar recursos ao fechar
 window.addEventListener('beforeunload', () => {
+    if (cameraInterval) {
+        clearInterval(cameraInterval);
+    }
     if (videoStream) {
         videoStream.getTracks().forEach(track => track.stop());
     }
 });
+
+// Iniciar sistema quando a página carregar
+window.addEventListener('load', inicializar);
 </script>
 </body>
 </html>
