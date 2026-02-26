@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8"/>
@@ -29,7 +29,6 @@
             overflow-x: hidden;
         }
 
-        /* Efeito de fundo animado */
         body::before {
             content: '';
             position: fixed;
@@ -336,7 +335,162 @@
             line-height: 1.4;
         }
 
-        /* Modal da Câmera - Modernizado */
+        /* NOVO - Tutorial Overlay */
+        #tutorialOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            animation: tutorialFadeIn 0.5s ease;
+        }
+
+        @keyframes tutorialFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .tutorial-card {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            max-width: 500px;
+            width: 90%;
+            border-radius: 30px;
+            padding: 40px;
+            position: relative;
+            border: 2px solid var(--brand-green);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .tutorial-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #fff;
+            font-size: 32px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .tutorial-close:hover {
+            background: rgba(255,255,255,0.2);
+            transform: rotate(90deg);
+        }
+
+        .tutorial-icon {
+            text-align: center;
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .tutorial-title {
+            color: var(--brand-green);
+            font-size: 24px;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .tutorial-message {
+            color: #fff;
+            font-size: 18px;
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 30px;
+            min-height: 80px;
+            font-weight: 300;
+        }
+
+        .tutorial-progress {
+            width: 100%;
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .tutorial-progress-bar {
+            height: 100%;
+            background: var(--brand-green);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .tutorial-btn {
+            background: var(--brand-green);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            font-weight: 800;
+            font-size: 16px;
+            text-transform: uppercase;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .tutorial-btn:hover {
+            background: var(--brand-green-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(141,198,63,0.3);
+        }
+
+        .tutorial-btn:disabled {
+            background: #444;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .tutorial-step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .tutorial-dot {
+            width: 10px;
+            height: 10px;
+            background: #333;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .tutorial-dot.active {
+            background: var(--brand-green);
+            transform: scale(1.3);
+        }
+
+        /* Modal da Câmera */
         #cameraModal {
             position: fixed;
             top: 0;
@@ -424,7 +578,6 @@
             pointer-events: none;
         }
 
-        /* Efeito scan line */
         #videoContainer::after {
             content: '';
             position: absolute;
@@ -537,7 +690,6 @@
         .alert.show { transform: translateX(0); }
         .alert.error { border-right-color: #ff4444; }
 
-        /* Loader animado para processamento */
         .biometric-loader {
             display: inline-block;
             width: 30px;
@@ -547,11 +699,67 @@
             border-top-color: var(--brand-green);
             animation: spin 1s ease-in-out infinite;
         }
+
+        .audio-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 3000;
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--brand-green);
+            display: none;
+        }
+
+        .audio-wave {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .audio-wave span {
+            width: 4px;
+            height: 15px;
+            background: var(--brand-green);
+            animation: wave 1s infinite ease-in-out;
+        }
+
+        .audio-wave span:nth-child(2) {
+            animation-delay: 0.2s;
+            height: 20px;
+        }
+
+        .audio-wave span:nth-child(3) {
+            animation-delay: 0.4s;
+            height: 25px;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.5); }
+            50% { transform: scaleY(1); }
+        }
     </style>
 </head>
 <body>
 
 <div id="notification-container"></div>
+
+<!-- Indicador de áudio -->
+<div class="audio-indicator" id="audioIndicator">
+    <span>🔊</span>
+    <div class="audio-wave">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
 
 <header>
     <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-canto-esquerdo">
@@ -598,7 +806,33 @@
     </div>
 </main>
 
-<!-- Modal da Câmera Modernizado -->
+<!-- NOVO - Tutorial Overlay -->
+<div id="tutorialOverlay">
+    <div class="tutorial-card">
+        <span class="tutorial-close" onclick="fecharTutorial()">&times;</span>
+        
+        <div class="tutorial-icon">👤</div>
+        <div class="tutorial-title" id="tutorialTitle">Bem-vindo!</div>
+        
+        <div class="tutorial-message" id="tutorialMessage">
+            Olá! Tudo bem? Vou te ensinar a cadastrar sua biometria de forma simples e fácil.
+        </div>
+        
+        <div class="tutorial-progress">
+            <div class="tutorial-progress-bar" id="tutorialProgress" style="width: 0%;"></div>
+        </div>
+        
+        <button class="tutorial-btn" id="tutorialContinueBtn" onclick="avancarTutorial()">CONTINUAR</button>
+        
+        <div class="tutorial-step-indicator" id="tutorialSteps">
+            <span class="tutorial-dot active"></span>
+            <span class="tutorial-dot"></span>
+            <span class="tutorial-dot"></span>
+        </div>
+    </div>
+</div>
+
+<!-- Modal da Câmera -->
 <div id="cameraModal">
     <div class="modal-header">
         <h3>DomusFit - Captura Biométrica</h3>
@@ -644,11 +878,159 @@ let currentUser = null;
 let videoStream = null;
 let isProcessing = false;
 let detectionInterval = null;
+let tutorialPasso = 1;
+const totalPassos = 3;
+let audioAtivo = true;
 
 // Verificar login
 const loggedUser = localStorage.getItem('loggedUser');
 if (!loggedUser) {
     window.location.href = 'login.html';
+}
+
+// ============================================
+// SISTEMA DE ÁUDIO COM GOOGLE TTS
+// ============================================
+
+function falar(texto) {
+    if (!audioAtivo) return;
+    
+    // Mostrar indicador de áudio
+    document.getElementById('audioIndicator').style.display = 'flex';
+    
+    // Cancelar qualquer fala anterior
+    if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+    }
+    
+    const utterance = new SpeechSynthesisUtterance(texto);
+    utterance.lang = 'pt-BR';
+    utterance.rate = 0.9; // Velocidade um pouco mais lenta
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    
+    // Selecionar voz do Google (português)
+    const vozes = window.speechSynthesis.getVoices();
+    const vozGoogle = vozes.find(voz => 
+        voz.lang.includes('pt') && voz.name.includes('Google')
+    ) || vozes.find(voz => voz.lang.includes('pt'));
+    
+    if (vozGoogle) {
+        utterance.voice = vozGoogle;
+    }
+    
+    utterance.onend = () => {
+        setTimeout(() => {
+            document.getElementById('audioIndicator').style.display = 'none';
+        }, 500);
+    };
+    
+    utterance.onerror = () => {
+        document.getElementById('audioIndicator').style.display = 'none';
+    };
+    
+    window.speechSynthesis.speak(utterance);
+}
+
+// ============================================
+// TUTORIAL INTERATIVO
+// ============================================
+
+function mostrarTutorial() {
+    tutorialPasso = 1;
+    document.getElementById('tutorialOverlay').style.display = 'flex';
+    atualizarTutorial();
+}
+
+function fecharTutorial() {
+    document.getElementById('tutorialOverlay').style.display = 'none';
+    document.getElementById('audioIndicator').style.display = 'none';
+    if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+    }
+}
+
+function avancarTutorial() {
+    if (tutorialPasso < totalPassos) {
+        tutorialPasso++;
+        atualizarTutorial();
+    } else {
+        // Último passo - fechar tutorial e abrir câmera
+        fecharTutorial();
+        iniciarCapturaBiometria();
+    }
+}
+
+function atualizarTutorial() {
+    const mensagens = {
+        1: {
+            titulo: "👋 Olá! Tudo bem?",
+            texto: "Vou estar te ensinando a cadastrar a biometria de forma simples e fácil para acessar a academia diariamente, tá?"
+        },
+        2: {
+            titulo: "📸 Posicionamento",
+            texto: "Quando a câmera abrir, posicione seu rosto no centro da tela e aguarde alguns segundos..."
+        },
+        3: {
+            titulo: "⏳ Quase lá!",
+            texto: "Aguarde mais um pouco enquanto o sistema processa sua imagem. Vai ser rápido!"
+        }
+    };
+    
+    const progresso = (tutorialPasso / totalPassos) * 100;
+    
+    document.getElementById('tutorialTitle').textContent = mensagens[tutorialPasso].titulo;
+    document.getElementById('tutorialMessage').textContent = mensagens[tutorialPasso].texto;
+    document.getElementById('tutorialProgress').style.width = progresso + '%';
+    
+    // Falar a mensagem atual
+    falar(mensagens[tutorialPasso].texto);
+    
+    // Atualizar dots
+    const dots = document.querySelectorAll('.tutorial-dot');
+    dots.forEach((dot, index) => {
+        if (index + 1 === tutorialPasso) {
+            dot.classList.add('active');
+        } else {
+            dot.classList.remove('active');
+        }
+    });
+    
+    // Se for último passo, mudar texto do botão
+    if (tutorialPasso === totalPassos) {
+        document.getElementById('tutorialContinueBtn').textContent = 'COMEÇAR CAPTURA';
+    } else {
+        document.getElementById('tutorialContinueBtn').textContent = 'CONTINUAR';
+    }
+}
+
+// ============================================
+// CAPTURA DE BIOMETRIA COM ÁUDIO
+// ============================================
+
+async function iniciarCapturaBiometria() {
+    try {
+        await carregarModelosFace();
+        
+        // Falar instrução inicial da câmera
+        setTimeout(() => {
+            falar("Posicione o rosto no centro e aguarde alguns segundos");
+        }, 500);
+        
+        document.getElementById('cameraModal').style.display = 'flex';
+        await iniciarCamera();
+        iniciarDeteccaoAutomatica();
+        
+        // Falar segunda instrução após 3 segundos
+        setTimeout(() => {
+            if (!isProcessing) {
+                falar("Aguarde mais um pouco, tá?");
+            }
+        }, 3000);
+        
+    } catch (error) {
+        showNotification('Erro ao iniciar câmera', 'error');
+    }
 }
 
 // Carregar dados do usuário
@@ -740,16 +1122,9 @@ document.getElementById('saveInfoBtn').addEventListener('click', async () => {
     }
 });
 
-// Iniciar captura automática de biometria
-document.getElementById('cadastrarBiometriaBtn').addEventListener('click', async () => {
-    try {
-        await carregarModelosFace();
-        document.getElementById('cameraModal').style.display = 'flex';
-        await iniciarCamera();
-        iniciarDeteccaoAutomatica();
-    } catch (error) {
-        showNotification('Erro ao iniciar câmera', 'error');
-    }
+// Iniciar tutorial ao clicar em cadastrar biometria
+document.getElementById('cadastrarBiometriaBtn').addEventListener('click', () => {
+    mostrarTutorial();
 });
 
 // Carregar modelos FaceAPI
@@ -791,6 +1166,7 @@ function iniciarDeteccaoAutomatica() {
     
     let stableFrames = 0;
     const STABLE_THRESHOLD = 10;
+    let audioJaFalouAguardar = false;
     
     detectionInterval = setInterval(async () => {
         if (!video.videoWidth || isProcessing) return;
@@ -825,10 +1201,21 @@ function iniciarDeteccaoAutomatica() {
                 stableFrames = 0;
                 statusOverlay.textContent = 'AGUARDANDO ROSTO...';
                 statusOverlay.className = 'status-overlay';
+                
+                // Falar para posicionar o rosto apenas uma vez
+                if (!audioJaFalouAguardar && !isProcessing) {
+                    audioJaFalouAguardar = true;
+                    falar("Posicione o rosto no centro");
+                }
             } else {
                 stableFrames = 0;
                 statusOverlay.textContent = 'MÚLTIPLOS ROSTOS';
                 statusOverlay.className = 'status-overlay error';
+                
+                if (!audioJaFalouAguardar && !isProcessing) {
+                    audioJaFalouAguardar = true;
+                    falar("Apenas um rosto por vez, por favor");
+                }
             }
             
         } catch (error) {
@@ -907,6 +1294,9 @@ async function capturarFaceComFreeze() {
         
         showNotification('Biometria cadastrada!');
         
+        // Falar sucesso
+        falar("Biometria cadastrada com sucesso!");
+        
         setTimeout(fecharCamera, 2000);
         
     } catch (error) {
@@ -914,6 +1304,8 @@ async function capturarFaceComFreeze() {
         statusOverlay.className = 'status-overlay error';
         video.classList.remove('frozen');
         isProcessing = false;
+        
+        falar("Erro ao capturar. Tente novamente.");
     }
 }
 
@@ -959,6 +1351,7 @@ function fecharCamera() {
     document.getElementById('cameraModal').style.display = 'none';
     document.getElementById('videoElement').classList.remove('frozen');
     isProcessing = false;
+    document.getElementById('audioIndicator').style.display = 'none';
 }
 
 // Notificações modernizadas
@@ -979,9 +1372,19 @@ function showNotification(msg, type = 'success') {
 // Inicializar
 carregarDadosUsuario();
 
+// Carregar vozes disponíveis
+window.speechSynthesis.onvoiceschanged = () => {
+    console.log('Vozes carregadas:', window.speechSynthesis.getVoices().length);
+};
+
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && document.getElementById('cameraModal').style.display === 'flex') {
-        fecharCamera();
+    if (e.key === 'Escape') {
+        if (document.getElementById('tutorialOverlay').style.display === 'flex') {
+            fecharTutorial();
+        }
+        if (document.getElementById('cameraModal').style.display === 'flex') {
+            fecharCamera();
+        }
     }
 });
 </script>
