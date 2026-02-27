@@ -96,7 +96,7 @@
             pointer-events: none;
         }
 
-        /* NOVO - Overlay sem câmera */
+        /* Overlay sem câmera */
         .no-camera-overlay {
             position: absolute;
             top: 0;
@@ -143,7 +143,7 @@
             font-size: 16px;
         }
 
-        /* Overlay de seleção de catracas - MELHORADO */
+        /* Overlay de seleção de catracas - VERSÃO SERIAL */
         .catraca-selector-overlay {
             position: absolute;
             top: 0;
@@ -183,6 +183,9 @@
             font-size: 12px;
             color: #0f0;
             border-bottom: 1px solid #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .catraca-list {
@@ -247,6 +250,7 @@
             color: #666;
             font-size: 10px;
             margin-top: 4px;
+            word-break: break-all;
         }
 
         .catraca-selector-footer {
@@ -273,7 +277,7 @@
             color: #000;
         }
 
-        .btn-catraca.primary:hover {
+        .btn-catraca.primary:hover:not(:disabled) {
             background: var(--brand-green-hover);
             transform: translateY(-2px);
         }
@@ -548,12 +552,12 @@
         }
 
         .catraca-info {
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             color: #fff;
             padding: 15px;
             font-size: 12px;
             border-radius: 8px;
-            max-width: 300px;
+            max-width: 320px;
             display: none;
             backdrop-filter: blur(5px);
             border-left: 4px solid var(--brand-green);
@@ -571,6 +575,7 @@
         .catraca-info .value {
             color: var(--brand-green);
             font-weight: 800;
+            word-break: break-all;
         }
 
         .btn-reconectar {
@@ -584,6 +589,10 @@
             margin-top: 10px;
             width: 100%;
             text-transform: uppercase;
+        }
+
+        .btn-reconectar:hover {
+            background: var(--brand-green-hover);
         }
 
         .btn-ver-catracas {
@@ -666,7 +675,7 @@
     <video id="videoElement" autoplay playsinline></video>
     <canvas id="canvasOverlay"></canvas>
     
-    <!-- NOVO - Overlay sem câmera -->
+    <!-- Overlay sem câmera -->
     <div class="no-camera-overlay" id="noCameraOverlay">
         <div class="no-camera-icon">📷❌</div>
         <div class="no-camera-title">Câmera não detectada</div>
@@ -712,29 +721,29 @@
         </div>
     </div>
 
-    <!-- Overlay de seleção de catracas - MELHORADO (igual ao explorador de arquivos) -->
+    <!-- Overlay de seleção de catracas - VERSÃO SERIAL -->
     <div class="catraca-selector-overlay" id="catracaSelectorOverlay">
         <div class="catraca-selector-header">
             <h2>🔌 Conectar Catraca</h2>
-            <p>Selecione o dispositivo para conexão</p>
+            <p>Selecione a porta COM da catraca</p>
         </div>
         
         <div class="catraca-path" id="catracaPath">
-            Este Computador > Dispositivos USB > Catracas
+            Este Computador > Portas COM > Catracas
         </div>
         
         <div class="catraca-list" id="catracaList">
-            <!-- Dispositivos serão listados aqui -->
+            <!-- Portas serão listadas aqui -->
             <div class="catraca-item" style="justify-content: center; border: none;">
                 <div class="spinner" style="width: 30px; height: 30px;"></div>
-                <span style="color: #666; margin-left: 10px;">Procurando dispositivos...</span>
+                <span style="color: #666; margin-left: 10px;">Verificando portas disponíveis...</span>
             </div>
         </div>
         
         <div class="catraca-selector-footer">
             <button class="btn-catraca secondary" onclick="fecharSelectorCatracas()">Cancelar</button>
             <button class="btn-catraca primary" id="btnConectarSelecionada" onclick="conectarCatracaSelecionada()" disabled>Conectar</button>
-            <button class="btn-catraca secondary" onclick="procurarCatracas()">🔍 Atualizar</button>
+            <button class="btn-catraca secondary" onclick="procurarCatracas()">🔄 Atualizar</button>
         </div>
     </div>
 
@@ -751,6 +760,7 @@
         <div><span class="label">Status:</span> <span class="value" id="catracaStatusText">Desconectado</span></div>
         <div><span class="label">Catraca:</span> <span class="value" id="catracaDeviceName">-</span></div>
         <div><span class="label">Porta:</span> <span class="value" id="catracaPorta">-</span></div>
+        <div><span class="label">Baud Rate:</span> <span class="value" id="catracaBaud">9600</span></div>
         <button class="btn-reconectar" onclick="reconectarCatraca()" id="reconectarBtn">RECONECTAR</button>
         <button class="btn-ver-catracas" onclick="mostrarSelectorCatracas()">VER CATRACAS DISPONÍVEIS</button>
     </div>
@@ -785,69 +795,104 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 // ============================================
-// GERENCIADOR DE CATRACA - MELHORADO
+// GERENCIADOR DE CATRACA - VERSÃO SERIAL (CORRIGIDA)
 // ============================================
 
-class GerenciadorCatraca {
+class GerenciadorCatracaSerial {
     constructor() {
-        this.device = null;
+        this.port = null;
+        this.reader = null;
+        this.writer = null;
         this.connected = false;
-        this.deviceInfo = null;
+        this.portInfo = null;
+        this.availablePorts = [];
+        this.selectedPortIndex = null;
         this.reconnectAttempts = 0;
         this.maxReconnectAttempts = 3;
-        this.availableDevices = [];
-        this.selectedDevice = null;
-        this.connectionType = null;
         
-        // Event listeners para WebUSB
-        if ('usb' in navigator) {
-            navigator.usb.addEventListener('connect', (event) => {
-                console.log('Dispositivo conectado:', event.device);
-                this.handleDeviceConnect(event.device);
-            });
-            
-            navigator.usb.addEventListener('disconnect', (event) => {
-                console.log('Dispositivo desconectado:', event.device);
-                this.handleDeviceDisconnect(event.device);
-            });
-        }
+        // Configurações de comunicação
+        this.baudRates = [9600, 19200, 38400, 57600, 115200];
+        this.currentBaudIndex = 0; // Começa com 9600 (mais comum)
+        
+        // Comandos de liberação (universais)
+        this.commands = [
+            { data: new Uint8Array([0x01, 0x00, 0x01]), name: 'Comando Padrão 1' },
+            { data: new Uint8Array([0x00, 0x01]), name: 'Comando Padrão 2' },
+            { data: new TextEncoder().encode('LIBERAR\r\n'), name: 'Comando Texto 1' },
+            { data: new TextEncoder().encode('1\r\n'), name: 'Comando Texto 2' },
+            { data: new TextEncoder().encode('OPEN\r\n'), name: 'Comando OPEN' },
+            { data: new Uint8Array([0x55, 0xAA, 0x01, 0x00]), name: 'Comando 55AA' },
+            { data: new Uint8Array([0x02, 0x00, 0x01, 0x00]), name: 'Comando TopData' },
+            { data: new Uint8Array([0xAA, 0x55, 0x01, 0x00]), name: 'Comando Control ID' }
+        ];
     }
 
-    // Verificar suporte
-    isWebUSBSupported() {
-        return 'usb' in navigator;
+    // Verificar suporte a Serial API
+    isSerialSupported() {
+        return 'serial' in navigator;
     }
 
-    // Buscar dispositivos (igual abrir pasta do computador)
-    async buscarDispositivos() {
-        if (!this.isWebUSBSupported()) {
-            throw new Error('WebUSB não suportado');
+    // Buscar portas disponíveis
+    async buscarPortas() {
+        if (!this.isSerialSupported()) {
+            throw new Error('Web Serial não suportado neste navegador. Use Chrome ou Edge.');
         }
 
         try {
-            // Primeiro, pegar dispositivos já autorizados
-            const devices = await navigator.usb.getDevices();
-            
-            // Simular busca no sistema (como se fosse abrir uma pasta)
+            // Simular busca no sistema
             await this.simularBuscaSistema();
             
-            this.availableDevices = devices.map(device => this.identificarDispositivo(device));
+            // Solicitar portas (abre o seletor nativo do navegador)
+            const port = await navigator.serial.requestPort();
             
-            return this.availableDevices;
+            // Obter informações da porta
+            const info = port.getInfo();
+            this.portInfo = {
+                port: port,
+                usbVendorId: info.usbVendorId,
+                usbProductId: info.usbProductId,
+                name: this.identificarDispositivo(info),
+                path: `COM${info.usbVendorId || '?'}`,
+                manufacturer: 'Fabricante USB',
+                baudRate: this.baudRates[this.currentBaudIndex]
+            };
+            
+            this.availablePorts = [this.portInfo];
+            return this.availablePorts;
             
         } catch (error) {
-            console.error('Erro ao buscar dispositivos:', error);
-            return [];
+            console.error('Erro ao buscar portas:', error);
+            throw error;
         }
     }
 
-    // Simular busca no sistema (para dar a sensação de "abrindo pasta")
+    // Identificar dispositivo por VID/PID
+    identificarDispositivo(info) {
+        const vid = info.usbVendorId ? info.usbVendorId.toString(16).padStart(4, '0') : '0000';
+        const pid = info.usbProductId ? info.usbProductId.toString(16).padStart(4, '0') : '0000';
+        
+        const knownDevices = {
+            '0403:6001': 'Catraca Control ID (FTDI)',
+            '0403:6010': 'Catraca Henry (FTDI)',
+            '0403:6015': 'Catraca Bridge (FTDI)',
+            '10C4:EA60': 'Catraca TopData (Silicon Labs)',
+            '067B:2303': 'Catraca Prolific (PL2303)',
+            '1A86:7523': 'Catraca CH340 (Genérica)',
+            '2341:0043': 'Arduino Uno (Genérico)',
+            '2A03:0043': 'Arduino Leonardo'
+        };
+        
+        const key = `${vid}:${pid}`;
+        return knownDevices[key] || `Catraca USB (${vid}:${pid})`;
+    }
+
+    // Simular busca no sistema
     async simularBuscaSistema() {
         return new Promise(resolve => {
             const steps = [
-                'Acessando dispositivos USB...',
-                'Verificando catracas disponíveis...',
-                'Lendo informações dos dispositivos...'
+                'Acessando portas COM...',
+                'Verificando dispositivos conectados...',
+                'Lendo informações das portas...'
             ];
             
             let i = 0;
@@ -857,172 +902,90 @@ class GerenciadorCatraca {
                     i++;
                 } else {
                     clearInterval(interval);
-                    document.getElementById('catracaPath').textContent = 'Este Computador > Dispositivos USB > Catracas encontradas';
+                    document.getElementById('catracaPath').textContent = 'Este Computador > Portas COM > Selecione uma catraca';
                     resolve();
                 }
             }, 300);
         });
     }
 
-    // Identificar dispositivo
-    identificarDispositivo(device) {
-        const name = device.productName || 'Catraca USB';
-        const manufacturer = device.manufacturerName || 'Fabricante desconhecido';
-        const serial = device.serialNumber || 'N/A';
-        
-        // Mapear IDs para nomes conhecidos
-        const knownDevices = {
-            '0403:6001': 'Catraca Control ID',
-            '0403:6010': 'Catraca Henry',
-            '10C4:EA60': 'Catraca TopData',
-            '067B:2303': 'Catraca Prolific',
-            '2341:0000': 'Arduino (Genérico)'
-        };
-        
-        const vidPid = `${device.vendorId.toString(16).padStart(4, '0')}:${device.productId.toString(16).padStart(4, '0')}`;
-        const displayName = knownDevices[vidPid] || name;
-
-        return {
-            device: device,
-            name: displayName,
-            originalName: name,
-            manufacturer: manufacturer,
-            vendorId: device.vendorId,
-            productId: device.productId,
-            vidPid: vidPid,
-            serialNumber: serial,
-            path: `USB\\VID_${vidPid.split(':')[0].toUpperCase()}&PID_${vidPid.split(':')[1].toUpperCase()}\\${serial}`,
-            type: 'usb'
-        };
-    }
-
-    // Solicitar novo dispositivo (abrir seletor do sistema)
-    async solicitarDispositivo() {
-        if (!this.isWebUSBSupported()) {
-            throw new Error('WebUSB não suportado');
-        }
-
+    // Conectar à porta selecionada
+    async conectar(portInfo) {
         try {
-            // Filtros para dispositivos comuns
-            const filters = [
-                { vendorId: 0x0403 }, // FTDI
-                { vendorId: 0x10C4 }, // Silicon Labs
-                { vendorId: 0x067B }, // Prolific
-                { vendorId: 0x2341 }  // Arduino
-            ];
-
-            const device = await navigator.usb.requestDevice({ filters });
-            return this.identificarDispositivo(device);
+            this.atualizarStatus('connecting', `Conectando a ${portInfo.name}...`);
             
-        } catch (error) {
-            if (error.name === 'NotFoundError') {
-                throw new Error('Nenhum dispositivo selecionado');
-            }
-            throw error;
-        }
-    }
-
-    // Conectar ao dispositivo
-    async conectar(deviceInfo) {
-        try {
-            this.atualizarStatus('connecting', `Conectando a ${deviceInfo.name}...`);
+            this.port = portInfo.port;
             
-            const device = deviceInfo.device;
+            // Abrir porta com configurações padrão
+            await this.port.open({
+                baudRate: portInfo.baudRate || 9600,
+                dataBits: 8,
+                stopBits: 1,
+                parity: 'none',
+                flowControl: 'none'
+            });
             
-            // Abrir dispositivo
-            await device.open();
+            // Configurar writer e reader
+            this.writer = this.port.writable.getWriter();
+            this.reader = this.port.readable.getReader();
             
-            // Selecionar configuração
-            try {
-                await device.selectConfiguration(1);
-            } catch (e) {
-                console.log('Configuração já selecionada');
-            }
-            
-            // Reivindicar interface
-            try {
-                await device.claimInterface(0);
-            } catch (e) {
-                console.log('Interface já reivindicada');
-            }
-            
-            this.device = device;
-            this.deviceInfo = deviceInfo;
+            this.portInfo = portInfo;
             this.connected = true;
+            this.reconnectAttempts = 0;
             
             this.atualizarStatus('connected', 'Conectado');
+            document.getElementById('catracaBaud').textContent = this.portInfo.baudRate;
             
             // Mostrar mensagem de sucesso
-            mostrarMensagem(`✅ Catraca conectada: ${deviceInfo.name}`, 'success');
+            mostrarMensagem(`✅ Catraca conectada: ${portInfo.name}`, 'success');
+            
+            // Iniciar leitura (para debug)
+            this.iniciarLeitura();
             
             return true;
             
         } catch (error) {
-            console.error('Erro na conexão:', error);
+            console.error('Erro na conexão serial:', error);
             this.connected = false;
-            this.atualizarStatus('error', `Erro: ${error.message}`);
-            mostrarMensagem(`❌ ${error.message}`, 'error');
+            
+            // Mensagem de erro específica
+            let mensagemErro = error.message;
+            if (error.message.includes('Failed to open')) {
+                mensagemErro = 'Falha ao abrir porta. Verifique se a catraca não está em uso por outro programa.';
+            } else if (error.message.includes('Access denied')) {
+                mensagemErro = 'Acesso negado. Tente reconectar a catraca.';
+            }
+            
+            this.atualizarStatus('error', `Erro: ${mensagemErro}`);
+            mostrarMensagem(`❌ ${mensagemErro}`, 'error');
             return false;
         }
     }
 
-    // Lidar com conexão de dispositivo
-    handleDeviceConnect(device) {
-        // Verificar se é uma catraca conhecida
-        const deviceInfo = this.identificarDispositivo(device);
+    // Iniciar leitura (para debug)
+    async iniciarLeitura() {
+        if (!this.reader) return;
         
-        // Se estava tentando reconectar, tenta automaticamente
-        if (this.reconnectAttempts > 0) {
-            this.conectar(deviceInfo);
-        }
-        
-        mostrarMensagem(`🔌 Nova catraca detectada: ${deviceInfo.name}`, 'success');
-    }
-
-    // Lidar com desconexão
-    handleDeviceDisconnect(device) {
-        if (this.device && this.device === device) {
-            this.connected = false;
-            this.device = null;
-            this.atualizarStatus('error', 'Desconectado');
-            mostrarMensagem('⚠️ Catraca desconectada!', 'error');
-            
-            // Tentar reconectar automaticamente
-            this.tentarReconexao();
-        }
-    }
-
-    // Tentar reconexão
-    async tentarReconexao() {
-        if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-            this.atualizarStatus('error', 'Falha na reconexão');
-            return;
-        }
-
-        this.reconnectAttempts++;
-        this.atualizarStatus('connecting', `Tentando reconectar (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
-
         try {
-            const devices = await navigator.usb.getDevices();
-            const previousDevice = devices.find(d => 
-                d.vendorId === this.deviceInfo?.vendorId && 
-                d.productId === this.deviceInfo?.productId
-            );
-
-            if (previousDevice) {
-                const deviceInfo = this.identificarDispositivo(previousDevice);
-                await this.conectar(deviceInfo);
-            } else {
-                setTimeout(() => this.tentarReconexao(), 3000);
+            while (true) {
+                const { value, done } = await this.reader.read();
+                if (done) break;
+                
+                // Debug: mostrar dados recebidos
+                if (value && value.length > 0) {
+                    console.log('Dados recebidos:', value);
+                }
             }
         } catch (error) {
-            setTimeout(() => this.tentarReconexao(), 3000);
+            console.error('Erro na leitura:', error);
+        } finally {
+            this.reader.releaseLock();
         }
     }
 
-    // Liberar acesso (comando universal)
+    // Liberar acesso (tenta múltiplos comandos e baud rates)
     async liberarAcesso() {
-        if (!this.connected || !this.device) {
+        if (!this.connected || !this.writer) {
             console.log('Catraca não conectada');
             return false;
         }
@@ -1030,24 +993,30 @@ class GerenciadorCatraca {
         try {
             console.log('Liberando acesso...');
             
-            // Tenta diferentes comandos (universal)
-            const comandos = [
-                new Uint8Array([0x01, 0x00, 0x01]),           // Comando 1
-                new Uint8Array([0x00, 0x01]),                  // Comando 2
-                new TextEncoder().encode('LIBERAR\n'),        // Comando texto
-                new TextEncoder().encode('1'),                 // Comando simples
-                new TextEncoder().encode('OPEN\n'),            // Comando OPEN
-                new Uint8Array([0x55, 0xAA, 0x01, 0x00])       // Comando 55AA
-            ];
-
-            for (const cmd of comandos) {
+            // Tenta todos os comandos com o baud rate atual
+            for (const cmd of this.commands) {
                 try {
-                    await this.device.transferOut(1, cmd);
-                    console.log('Comando enviado com sucesso');
-                    return true;
+                    console.log(`Tentando comando: ${cmd.name}`);
+                    await this.writer.write(cmd.data);
+                    
+                    // Aguarda um pouco entre comandos
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    
                 } catch (e) {
-                    console.log('Tentando próximo comando...');
+                    console.log(`Comando falhou: ${cmd.name}`, e);
                 }
+            }
+            
+            // Se falhou, tenta próximo baud rate
+            if (this.currentBaudIndex < this.baudRates.length - 1) {
+                this.currentBaudIndex++;
+                const novoBaud = this.baudRates[this.currentBaudIndex];
+                console.log(`Tentando baud rate: ${novoBaud}`);
+                
+                // Reconectar com novo baud rate
+                await this.desconectar();
+                this.portInfo.baudRate = novoBaud;
+                await this.conectar(this.portInfo);
             }
             
             return true;
@@ -1060,12 +1029,28 @@ class GerenciadorCatraca {
 
     // Desconectar
     async desconectar() {
-        if (this.device) {
+        if (this.writer) {
             try {
-                await this.device.close();
+                await this.writer.close();
             } catch (e) {}
-            this.device = null;
+            this.writer = null;
         }
+        
+        if (this.reader) {
+            try {
+                await this.reader.cancel();
+                await this.reader.releaseLock();
+            } catch (e) {}
+            this.reader = null;
+        }
+        
+        if (this.port) {
+            try {
+                await this.port.close();
+            } catch (e) {}
+            this.port = null;
+        }
+        
         this.connected = false;
         this.atualizarStatus('error', 'Desconectado');
     }
@@ -1083,18 +1068,18 @@ class GerenciadorCatraca {
         if (status === 'connected') {
             info.classList.add('show');
             statusText.textContent = mensagem || 'Conectado';
-            deviceName.textContent = this.deviceInfo?.name || '-';
-            portaText.textContent = this.deviceInfo?.path || '-';
+            deviceName.textContent = this.portInfo?.name || '-';
+            portaText.textContent = this.portInfo?.path || '-';
         } else if (status === 'connecting') {
             info.classList.add('show');
             statusText.textContent = mensagem || 'Conectando...';
-            deviceName.textContent = this.deviceInfo?.name || '-';
-            portaText.textContent = this.deviceInfo?.path || '-';
+            deviceName.textContent = this.portInfo?.name || '-';
+            portaText.textContent = this.portInfo?.path || '-';
         } else {
             info.classList.add('show');
             statusText.textContent = mensagem || 'Desconectado';
-            deviceName.textContent = this.deviceInfo?.name || '-';
-            portaText.textContent = this.deviceInfo?.path || '-';
+            deviceName.textContent = this.portInfo?.name || '-';
+            portaText.textContent = this.portInfo?.path || '-';
         }
     }
 
@@ -1107,7 +1092,7 @@ class GerenciadorCatraca {
 // SISTEMA PRINCIPAL
 // ============================================
 
-const catracaManager = new GerenciadorCatraca();
+const catracaManager = new GerenciadorCatracaSerial();
 
 // Variáveis globais
 let videoStream = null;
@@ -1135,10 +1120,6 @@ async function verificarCamera() {
             return false;
         }
         
-        // Testar acesso real à câmera
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        stream.getTracks().forEach(track => track.stop());
-        
         hasCamera = true;
         document.getElementById('cameraStatus').textContent = '📷 Câmera OK';
         return true;
@@ -1154,74 +1135,62 @@ async function verificarCamera() {
     }
 }
 
-// Mostrar seletor de catracas (igual abrir pasta)
+// Mostrar seletor de catracas (abre seletor nativo do navegador)
 async function mostrarSelectorCatracas() {
     const overlay = document.getElementById('catracaSelectorOverlay');
     const list = document.getElementById('catracaList');
     const path = document.getElementById('catracaPath');
     
     overlay.style.display = 'flex';
-    path.textContent = 'Este Computador > Procurando dispositivos...';
+    path.textContent = 'Este Computador > Solicitando permissão...';
     
     list.innerHTML = `
         <div class="catraca-item" style="justify-content: center; border: none;">
             <div class="spinner" style="width: 30px; height: 30px;"></div>
-            <span style="color: #666; margin-left: 10px;">Verificando portas USB...</span>
+            <span style="color: #666; margin-left: 10px;">Aguardando seleção...</span>
         </div>
     `;
     
     try {
-        const devices = await catracaManager.buscarDispositivos();
+        const ports = await catracaManager.buscarPortas();
         
-        if (devices.length === 0) {
+        if (ports.length === 0) {
             list.innerHTML = `
                 <div class="catraca-item" style="flex-direction: column; text-align: center; padding: 40px;">
                     <div style="font-size: 64px; margin-bottom: 20px; opacity: 0.3;">🔌</div>
-                    <h3 style="color: #fff; margin-bottom: 10px;">Nenhuma catraca encontrada</h3>
-                    <p style="color: #999; margin-bottom: 20px;">Conecte a catraca ao computador e clique em "Adicionar"</p>
+                    <h3 style="color: #fff; margin-bottom: 10px;">Nenhuma catraca selecionada</h3>
+                    <p style="color: #999; margin-bottom: 20px;">Clique em "Adicionar Catraca" para selecionar</p>
                     <button class="btn-catraca primary" onclick="adicionarNovaCatraca()">➕ ADICIONAR CATRACA</button>
                 </div>
             `;
         } else {
             let html = '';
-            devices.forEach((dev, index) => {
-                const isSelected = catracaManager.selectedDevice === index;
+            ports.forEach((port, index) => {
+                const isSelected = catracaManager.selectedPortIndex === index;
                 html += `
                     <div class="catraca-item ${isSelected ? 'selected' : ''}" onclick="selecionarCatraca(${index})">
                         <div class="catraca-icon">🔒</div>
                         <div class="catraca-details">
-                            <div class="catraca-name">${dev.name}</div>
+                            <div class="catraca-name">${port.name}</div>
                             <div class="catraca-meta">
-                                <span>${dev.manufacturer}</span>
-                                <span>${dev.vidPid}</span>
+                                <span>${port.manufacturer}</span>
+                                <span>VID:${port.usbVendorId?.toString(16) || '0000'}</span>
                             </div>
-                            <div class="catraca-path-small">${dev.path}</div>
+                            <div class="catraca-path-small">Porta: ${port.path} | Baud: ${port.baudRate}</div>
                         </div>
                     </div>
                 `;
             });
             
-            html += `
-                <div class="catraca-item" onclick="adicionarNovaCatraca()">
-                    <div class="catraca-icon">➕</div>
-                    <div class="catraca-details">
-                        <div class="catraca-name">Adicionar nova catraca</div>
-                        <div class="catraca-meta">
-                            <span>USB Genérico</span>
-                        </div>
-                        <div class="catraca-path-small">Clique para selecionar um dispositivo</div>
-                    </div>
-                </div>
-            `;
-            
             list.innerHTML = html;
+            document.getElementById('btnConectarSelecionada').disabled = false;
         }
         
     } catch (error) {
         list.innerHTML = `
             <div class="catraca-item" style="flex-direction: column; text-align: center; padding: 40px; border-color: #ff4444;">
                 <div style="font-size: 64px; margin-bottom: 20px;">❌</div>
-                <h3 style="color: #fff; margin-bottom: 10px;">Erro ao acessar USB</h3>
+                <h3 style="color: #fff; margin-bottom: 10px;">Erro ao acessar portas</h3>
                 <p style="color: #999;">${error.message}</p>
                 <button class="btn-catraca primary" onclick="mostrarSelectorCatracas()" style="margin-top: 20px;">Tentar novamente</button>
             </div>
@@ -1230,7 +1199,7 @@ async function mostrarSelectorCatracas() {
 }
 
 function selecionarCatraca(index) {
-    catracaManager.selectedDevice = index;
+    catracaManager.selectedPortIndex = index;
     document.getElementById('btnConectarSelecionada').disabled = false;
     
     const items = document.querySelectorAll('.catraca-item');
@@ -1244,22 +1213,18 @@ function selecionarCatraca(index) {
 }
 
 async function conectarCatracaSelecionada() {
-    if (catracaManager.selectedDevice === null) return;
+    if (catracaManager.selectedPortIndex === null) return;
     
-    const deviceInfo = catracaManager.availableDevices[catracaManager.selectedDevice];
-    if (!deviceInfo) return;
+    const portInfo = catracaManager.availablePorts[catracaManager.selectedPortIndex];
+    if (!portInfo) return;
     
     fecharSelectorCatracas();
-    await catracaManager.conectar(deviceInfo);
+    await catracaManager.conectar(portInfo);
 }
 
 async function adicionarNovaCatraca() {
     try {
-        const deviceInfo = await catracaManager.solicitarDispositivo();
-        catracaManager.availableDevices.push(deviceInfo);
-        catracaManager.selectedDevice = catracaManager.availableDevices.length - 1;
         await mostrarSelectorCatracas();
-        document.getElementById('btnConectarSelecionada').disabled = false;
     } catch (error) {
         mostrarMensagem('❌ Operação cancelada', 'error');
         fecharSelectorCatracas();
@@ -1271,12 +1236,14 @@ function fecharSelectorCatracas() {
 }
 
 async function procurarCatracas() {
+    catracaManager.availablePorts = [];
+    catracaManager.selectedPortIndex = null;
     await mostrarSelectorCatracas();
 }
 
 async function reconectarCatraca() {
-    if (catracaManager.deviceInfo) {
-        await catracaManager.conectar(catracaManager.deviceInfo);
+    if (catracaManager.portInfo) {
+        await catracaManager.conectar(catracaManager.portInfo);
     } else {
         mostrarSelectorCatracas();
     }
@@ -1408,7 +1375,7 @@ async function processarAcesso(na, tipo = 'facial') {
         const user = snap.val();
         const today = new Date().toISOString().slice(0,10);
         
-        // Verificar se o plano está ativo (NA funciona mesmo sem catraca)
+        // Verificar se o plano está ativo
         if (!user.active || (user.endDate && user.endDate < today)) {
             mostrarMensagem('PLANO INATIVO', 'error');
             return;
@@ -1417,8 +1384,9 @@ async function processarAcesso(na, tipo = 'facial') {
         // Se tiver catraca conectada, libera
         if (catracaManager.isConnected()) {
             await catracaManager.liberarAcesso();
+            mostrarMensagem('✅ ACESSO LIBERADO + CATRACA', 'success');
         } else {
-            console.log('Catraca não conectada, mas NA válido');
+            mostrarMensagem('✅ ACESSO LIBERADO (NA)', 'success');
         }
         
         // Registrar acesso
@@ -1428,7 +1396,6 @@ async function processarAcesso(na, tipo = 'facial') {
             catracaConectada: catracaManager.isConnected()
         });
         
-        mostrarMensagem('✅ ACESSO LIBERADO', 'success');
         mostrarInfoUsuario(user, na);
         
         if (tipo === 'manual') {
@@ -1567,8 +1534,8 @@ async function inicializar() {
         await iniciarCamera();
     }
     
-    // Tentar conectar catraca automaticamente após 2 segundos
-    setTimeout(mostrarSelectorCatracas, 2000);
+    // Mostrar mensagem inicial
+    mostrarMensagem('👆 Clique no LED verde para conectar a catraca', 'success');
     
     // Recarregar biometrias a cada 5 minutos
     setInterval(carregarBiometrias, 5 * 60 * 1000);
@@ -1580,6 +1547,9 @@ window.addEventListener('load', inicializar);
 window.addEventListener('beforeunload', () => {
     if (videoStream) {
         videoStream.getTracks().forEach(track => track.stop());
+    }
+    if (catracaManager.isConnected()) {
+        catracaManager.desconectar();
     }
 });
 </script>
