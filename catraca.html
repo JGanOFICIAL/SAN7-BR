@@ -1157,7 +1157,7 @@ function iniciarReconhecimento() {
 }
 
 // ============================================
-// FUNÇÕES DE ACESSO
+// FUNÇÕES DE ACESSO - CORRIGIDAS
 // ============================================
 async function processarAcesso(na, tipo) {
     if (isProcessing) return;
@@ -1167,6 +1167,35 @@ async function processarAcesso(na, tipo) {
     try {
         document.getElementById('processingOverlay').style.display = 'flex';
         
+        // NA ESPECIAL PARA AULA EXPERIMENTAL (00000)
+        if (na === '00000') {
+            // Registrar acesso experimental
+            await db.ref('acessos_experimentais').push({
+                data: new Date().toISOString(),
+                tipo: 'experimental'
+            });
+            
+            mostrarMensagem('🎫 AULA EXPERIMENTAL', 'success');
+            
+            // Verificar se catraca está conectada
+            if (catracaManager.isConnected()) {
+                await catracaManager.liberarAcesso();
+            }
+            
+            mostrarInfoUsuario({ 
+                name: 'Aula Experimental', 
+                biometria: { foto: 'https://via.placeholder.com/40' } 
+            }, '00000');
+            
+            if (tipo === 'manual') {
+                naDigitado = '';
+                fecharNAOverlay();
+            }
+            
+            return;
+        }
+        
+        // Buscar usuário no Firebase
         const snap = await db.ref('users/' + na).get();
         
         if (!snap.exists()) {
@@ -1177,7 +1206,10 @@ async function processarAcesso(na, tipo) {
         const user = snap.val();
         const today = new Date().toISOString().split('T')[0];
         
-        if (!user.active || (user.endDate && user.endDate < today)) {
+        // Verificar se o plano está ativo
+        const isActive = user.active && (!user.endDate || user.endDate >= today);
+        
+        if (!isActive) {
             mostrarMensagem('❌ PLANO INATIVO', 'error');
             return;
         }
