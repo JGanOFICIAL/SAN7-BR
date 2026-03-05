@@ -4,190 +4,741 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Gestão DomusFit</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #32CD32;
-            --primary-light: #e8f5e9;
-            --danger: #ff4757;
-            --text-dark: #1a1a1a;
-            --text-gray: #666;
-            --bg: #f8f9fa;
-            --white: #ffffff;
-            --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            --radius: 10px;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: var(--text-dark); padding-top: 80px; }
+        :root {
+            --primary: #2d5a2d;
+            --primary-dark: #1e3f1e;
+            --primary-light: #eaf2ea;
+            --danger: #b33f3f;
+            --danger-dark: #8f2e2e;
+            --text: #1e2b1e;
+            --text-light: #4a5a4a;
+            --bg: #ece8e0;
+            --surface: #faf7f2;
+            --border: #d9d0c0;
+            --border-dark: #b8aa94;
+            --shadow: 0 4px 0 #b8aa94;
+            --shadow-hover: 0 6px 0 #a0927c;
+            --shadow-inset: inset 0 2px 4px rgba(0,0,0,0.1);
+            --radius: 0px;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            padding-top: 80px;
+            position: relative;
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(44, 44, 44, 0.7);
+            display: none;
+            place-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+        }
+
+        .loading-box {
+            background: var(--surface);
+            padding: 30px;
+            border: 2px solid var(--border-dark);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .loading-box span {
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 1px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 0;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         header {
-            position: fixed; top: 0; left: 0; right: 0;
-            background: var(--white); height: 70px;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 30px; border-bottom: 1px solid #eee; z-index: 1000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            height: 70px;
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            border-bottom: 3px solid var(--border-dark);
+            box-shadow: var(--shadow);
+            z-index: 1000;
         }
-        .logo-area { display: flex; align-items: center; gap: 12px; }
-        .logo-img { height: 38px; }
-        .admin-badge { font-weight: 800; font-size: 13px; color: var(--primary); letter-spacing: 1px; }
 
-        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
-
-        .action-header { margin-bottom: 10px; }
-        .btn-keys {
-            background: #f1f1f1; color: var(--text-dark); border: none;
-            padding: 10px 20px; border-radius: var(--radius);
-            font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;
-            transition: 0.2s; margin-bottom: 15px;
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
-        .btn-keys:hover { background: #e5e5e5; }
 
-        .topbar {
-            display: flex; gap: 15px; margin-bottom: 25px; align-items: center;
+        .logo-img {
+            height: 40px;
+            border: 2px solid var(--border-dark);
+            background: var(--surface);
         }
+
+        .admin-badge {
+            font-weight: 800;
+            font-size: 14px;
+            color: var(--primary);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px 30px;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: var(--surface);
+            border: 2px solid var(--border-dark);
+            box-shadow: var(--shadow);
+            padding: 14px 24px;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.1s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .action-btn.panic {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger-dark);
+            box-shadow: 0 4px 0 var(--danger-dark);
+        }
+
+        .action-btn.panic:hover {
+            box-shadow: 0 6px 0 var(--danger-dark);
+        }
+
+        .keys-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: 2px solid var(--primary-dark);
+            box-shadow: 0 4px 0 var(--primary-dark);
+            padding: 16px;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .keys-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 var(--primary-dark);
+        }
+
+        .search-area {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
         .search-box {
-            flex: 1; padding: 14px 20px; border: 1px solid #ddd;
-            border-radius: var(--radius); outline: none; font-size: 15px;
-            background: var(--white); box-shadow: var(--shadow);
+            flex: 1;
+            min-width: 280px;
+            padding: 16px 20px;
+            background: var(--surface);
+            border: 2px solid var(--border-dark);
+            box-shadow: var(--shadow-inset);
+            font-size: 15px;
+            outline: none;
         }
+
+        .search-box:focus {
+            border-color: var(--primary);
+        }
+
         .btn-new {
-            background: var(--primary); color: white; border: none;
-            padding: 14px 25px; border-radius: var(--radius);
-            font-weight: 700; cursor: pointer; transition: 0.2s;
-            box-shadow: 0 4px 12px rgba(50, 205, 50, 0.2);
+            background: var(--primary);
+            color: white;
+            border: 2px solid var(--primary-dark);
+            box-shadow: 0 4px 0 var(--primary-dark);
+            padding: 0 35px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.1s ease;
         }
-        .btn-new:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
-        .table-wrapper {
-            background: var(--white); border-radius: var(--radius);
-            box-shadow: var(--shadow); overflow: hidden;
+        .btn-new:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 var(--primary-dark);
         }
-        table { width: 100%; border-collapse: collapse; }
-        th { 
-            background: #fafafa; padding: 18px; text-align: left; 
-            font-size: 11px; color: var(--text-gray); text-transform: uppercase;
-            border-bottom: 1px solid #eee;
-        }
-        td { padding: 18px; border-bottom: 1px solid #f8f8f8; cursor: pointer; }
-        tr:hover td { background: #fcfdfc; }
 
-        .na-cell { font-size: 22px; font-weight: 800; color: var(--text-dark); }
-        .name-cell { font-weight: 600; font-size: 15px; color: #333; }
+        .table-container {
+            background: var(--surface);
+            border: 2px solid var(--border-dark);
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        th {
+            background: var(--primary-light);
+            padding: 18px 20px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid var(--border-dark);
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            background: var(--surface);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: var(--primary-light);
+        }
+
+        .na-cell {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text);
+            font-family: 'Inter', monospace;
+        }
+
+        .name-cell {
+            font-weight: 600;
+            color: var(--text);
+        }
 
         .badge {
-            padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 800;
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid;
+            display: inline-block;
         }
-        .badge-active { background: var(--primary-light); color: var(--primary); }
-        .badge-expired { background: #fee2e2; color: var(--danger); }
+
+        .badge-active {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            border-color: var(--primary);
+        }
+
+        .badge-expired {
+            background: #f8e8e8;
+            color: var(--danger-dark);
+            border-color: var(--danger);
+        }
+
+        .dias-info {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
 
         /* Modais */
         .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-            display: none; align-items: center; justify-content: center; z-index: 2000;
-            backdrop-filter: blur(3px);
+            position: fixed;
+            inset: 0;
+            background: rgba(30, 30, 30, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(4px);
         }
+
         .modal {
-            background: var(--white); padding: 35px; border-radius: 20px;
-            width: 90%; max-width: 480px; position: relative;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            max-height: 90vh; overflow-y: auto;
+            background: var(--surface);
+            border: 3px solid var(--border-dark);
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 550px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
-        .modal-keys { max-width: 800px; max-height: 85vh; overflow-y: auto; padding: 25px; }
+        .modal-header {
+            background: var(--primary-light);
+            padding: 20px 25px;
+            border-bottom: 2px solid var(--border-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .modal-close {
+            background: none;
+            border: 2px solid var(--border-dark);
+            width: 36px;
+            height: 36px;
+            font-size: 20px;
+            font-weight: 800;
+            cursor: pointer;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger-dark);
+        }
+
+        .modal-content {
+            padding: 25px;
+        }
+
+        .modal-keys {
+            max-width: 1000px;
+        }
+
         .keys-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 15px; margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
         }
-        .key-card {
-            background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 12px;
-            text-align: center; position: relative; cursor: pointer; transition: 0.2s;
-        }
-        .key-card.occupied { border: 2px solid var(--danger); background: #fffcfc; }
-        .key-card h4 { font-size: 13px; color: var(--text-gray); margin-bottom: 8px; }
-        .key-card .user-name { font-weight: 800; font-size: 14px; margin-bottom: 4px; display: block; }
-        .key-card .time-info { font-weight: 800; font-size: 11px; color: var(--danger); }
-        .btn-clear-key {
-            position: absolute; top: 5px; right: 5px; background: none; border: none;
-            color: #ccc; cursor: pointer; font-size: 18px; display: none;
-        }
-        .occupied .btn-clear-key { display: block; }
-        .occupied .btn-clear-key:hover { color: var(--danger); }
 
-        .field { margin-bottom: 18px; }
-        .field label { display: block; font-size: 11px; font-weight: 800; color: #999; margin-bottom: 6px; }
-        .field input, .field textarea {
-            width: 100%; padding: 12px; border: 1.5px solid #eee;
-            border-radius: 8px; outline: none; font-size: 14px;
+        .key-card {
+            background: var(--surface);
+            border: 2px solid var(--border-dark);
+            box-shadow: var(--shadow);
+            padding: 20px 15px;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
-        .field input:focus, .field textarea:focus { border-color: var(--primary); }
+
+        .key-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .key-card.occupied {
+            background: #f8e8e8;
+            border-color: var(--danger);
+            border-width: 2px;
+        }
+
+        .key-card h4 {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .key-card .user-name {
+            font-weight: 800;
+            font-size: 18px;
+            margin-bottom: 8px;
+            display: block;
+            color: var(--text);
+            word-break: break-word;
+        }
+
+        .key-card .time-info {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--danger-dark);
+            display: block;
+            line-height: 1.4;
+        }
+
+        .key-card .time-info span {
+            display: block;
+            font-size: 16px;
+            margin-top: 4px;
+        }
+
+        .btn-clear-key {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--surface);
+            border: 2px solid var(--border-dark);
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+        }
+
+        .occupied .btn-clear-key {
+            display: flex;
+        }
+
+        .btn-clear-key:hover {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger-dark);
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-light);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .field input, .field textarea, .field select {
+            width: 100%;
+            padding: 14px;
+            background: white;
+            border: 2px solid var(--border-dark);
+            box-shadow: var(--shadow-inset);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .field input:focus, .field textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .field-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .field-row .field {
+            flex: 1;
+        }
 
         .btn-save {
-            width: 100%; padding: 15px; background: var(--text-dark); color: white;
-            border: none; border-radius: 12px; font-weight: 700; cursor: pointer;
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: 2px solid var(--primary-dark);
+            box-shadow: 0 4px 0 var(--primary-dark);
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.1s ease;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 var(--primary-dark);
+        }
+
+        .btn-renovate {
+            background: var(--danger);
+            border-color: var(--danger-dark);
+            box-shadow: 0 4px 0 var(--danger-dark);
             margin-top: 10px;
         }
-        .btn-renovate { background: var(--primary); margin-top: 10px; }
 
-        /* Estilos Aulas e Jogos */
-        .btnModern{display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:20px;border:1px solid #ddd;background:#f8f8f8;font-weight:600;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.08)}
-        .btnPanic{background: var(--danger); color: white; border: none; font-size: 17px; box-shadow: 0 6px 18px rgba(255, 71, 87, 0.3);}
-        .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center;backdrop-filter: blur(4px)}
-        .modal-custom{background:#fff;width:94%;max-width:500px;border-radius:24px;padding:20px;max-height:85vh;display:flex;flex-direction:column;position:relative;overflow-y: auto;}
-        .modal-custom.large { max-width: 800px; }
-        .player-modal{max-width:850px; background: #000; border:none;}
-        .top{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:1.2rem;margin-bottom:10px}
-        .x-btn{border:none;background:none;font-size:28px;cursor:pointer;line-height:1}
-        .red-btn{background:#d00;color:#fff;border-radius:12px;padding:5px 15px;position:absolute;right:10px;top:10px;z-index:10; border:none; cursor:pointer;}
-        .inp-custom{width:100%;padding:12px;border-radius:14px;border:1px solid #ddd;margin-top:10px;outline:none}
-        .row-custom{display:flex;gap:8px;margin-top:10px}
-        .btnSec{border-radius:14px;border:none;background: #000;padding:12px 16px;color:#fff;cursor:pointer;font-weight:600}
-        .lista-custom{margin-top:15px; overflow-y:auto; flex:1;}
-        .item-aluno, .item-nota, .item-panic{display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #eee; cursor: pointer;}
-        .grid-jogos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; overflow-y: auto; padding-bottom: 20px; }
-        .card-video { cursor: pointer; transition: transform 0.2s; }
-        .card-video:hover { transform: scale(1.03); }
-        .card-video img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; background: #eee; }
-        .card-video p { font-size: 13px; font-weight: 600; margin-top: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .scrollCustom::-webkit-scrollbar { width: 6px; }
-        .scrollCustom::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
-        .video-frame{width:100%;height:450px;border:none;border-radius:18px}
-        @media (max-width: 600px) { .grid-jogos { grid-template-columns: repeat(2, 1fr); } .row-custom { flex-direction: column; } }
+        .btn-renovate:hover {
+            box-shadow: 0 6px 0 var(--danger-dark);
+        }
+
+        .btn-delete {
+            background: #8b7a64;
+            border-color: #5f5343;
+            box-shadow: 0 4px 0 #5f5343;
+            margin-top: 10px;
+        }
+
+        .btn-delete:hover {
+            box-shadow: 0 6px 0 #5f5343;
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text);
+            border: 2px solid var(--border-dark);
+            box-shadow: 0 4px 0 var(--border-dark);
+            width: 100%;
+            padding: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 var(--border-dark);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+            border: 2px solid var(--danger-dark);
+            box-shadow: 0 4px 0 var(--danger-dark);
+            width: 100%;
+            padding: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 var(--danger-dark);
+        }
+
+        .items-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 2px solid var(--border);
+            margin-top: 20px;
+        }
+
+        .list-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .list-item:hover {
+            background: var(--primary-light);
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .list-item-info {
+            font-weight: 600;
+        }
+
+        .list-item-small {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .video-card {
+            cursor: pointer;
+            border: 2px solid var(--border-dark);
+            box-shadow: var(--shadow);
+            background: var(--surface);
+        }
+
+        .video-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .video-card img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            border-bottom: 2px solid var(--border-dark);
+        }
+
+        .video-card p {
+            padding: 12px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text);
+        }
+
+        .modal.large {
+            max-width: 900px;
+        }
+
+        .player-frame {
+            width: 100%;
+            height: 500px;
+            border: none;
+        }
+
+        #edit-na-display {
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .na-alert {
+            background: var(--primary-light);
+            border: 2px solid var(--primary);
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .na-alert .na-number {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--primary-dark);
+            letter-spacing: 2px;
+        }
+
+        .na-alert .na-message {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 700px) {
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .player-frame {
+                height: 300px;
+            }
+            
+            .keys-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
 
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-box">
+        <div class="loading-spinner"></div>
+        <span>CARREGANDO</span>
+    </div>
+</div>
+
 <header>
     <div class="logo-area">
         <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi6mEH9_67KQuAtG_EaYxlAaipOeTrrZaE6xYDSiifBV3gzax1RLvlkkB4Qi2pqc7Kx5IiJdMtDqtZzPjX0QjqDXSwnKHGtfItjPyYIBIkroZvayvs3moavENXkqJmqvUgDdcd7q4vEIM3B1NdNLGeodIUX53YBkh5d8LmpBo43vd2lGaIIJY1l0O3CbAY/s545/DE10A6B3-69C6-4B5D-B685-997DD46303AF.jpeg" class="logo-img">
-        <span class="admin-badge"></span>
+        <span class="admin-badge">ADMIN</span>
     </div>
 </header>
 
 <main class="container">
-    <div style="display:flex;gap:14px;flex-wrap:wrap; margin-bottom: 20px;">
-        <button id="btnAulas" class="btnModern" onclick="abrirModalCustom('modalAulas')"><span>Aulas Experimentais</span></button>
-        <button id="btnNotas" class="btnModern" onclick="abrirModalCustom('modalNotas')"><span>Anotações</span></button>
-        <button id="btnPanic" class="btnModern btnPanic" onclick="abrirModalCustom('modalPanic')"><span>🚨 BOTÃO DO PÂNICO</span></button>
-        <button id="btnJogos" class="btnModern" onclick="abrirModalCustom('modalJogos'); buscarVideos();"><span>Jogos e Vídeos</span></button>
+    <div class="action-bar">
+        <button class="action-btn" onclick="abrirModalCustom('modalAulas')">AULAS EXPERIMENTAIS</button>
+        <button class="action-btn" onclick="abrirModalCustom('modalNotas')">ANOTAÇÕES</button>
+        <button class="action-btn panic" onclick="abrirModalCustom('modalPanic')">BOTAO DO PANICO</button>
+        <button class="action-btn" onclick="abrirModalCustom('modalJogos'); buscarVideos();">JOGOS E VIDEOS</button>
     </div>
 
-    <div class="action-header">
-        <button class="btn-keys" onclick="openModal('modalKeys')">🔑 CHAVES</button>
+    <button class="keys-btn" onclick="openModal('modalKeys')">GESTAO DE CHAVES</button>
+
+    <div class="search-area">
+        <input type="text" id="search" class="search-box" placeholder="PESQUISAR POR ALUNO OU NA..." oninput="renderTable()">
+        <button class="btn-new" onclick="openModal('modalAdd')">NOVO ALUNO</button>
     </div>
 
-    <div class="topbar">
-        <input type="text" id="search" class="search-box" placeholder="Pesquisar por aluno ou NA..." oninput="renderTable()">
-        <button class="btn-new" onclick="openModal('modalAdd')">+ NOVO ALUNO</button>
-    </div>
-
-    <div class="table-wrapper">
+    <div class="table-container">
         <table>
             <thead>
                 <tr>
                     <th>NA</th>
-                    <th>Nome do Aluno</th>
-                    <th>Plano</th>
-                    <th>Status</th>
+                    <th>NOME DO ALUNO</th>
+                    <th>PLANO</th>
+                    <th>STATUS / DIAS</th>
                 </tr>
             </thead>
             <tbody id="aluno-list"></tbody>
@@ -195,144 +746,224 @@
     </div>
 </main>
 
-<div id="modalPanic" class="overlay" onclick="fecharAoClicarFora(event, 'modalPanic')">
-    <div class="modal-custom">
-      <div class="top"><span style="color:var(--danger)">Registros de Pânico / Tumulto</span><button class="x-btn" onclick="fecharCustom('modalPanic')">×</button></div>
-      <p style="font-size: 13px; color: #666; margin-bottom: 15px; text-align: center;">Deseja adicionar um novo registro de ocorrência agora?</p>
-      <div style="display:flex; gap:10px">
-          <button class="btnSec" style="flex:1; background:var(--danger)" onclick="registrarPanico()">REGISTRAR AGORA</button>
-          <button class="btnSec" style="flex:1; background:#999" onclick="fecharCustom('modalPanic')">CANCELAR</button>
-      </div>
-      <div class="lista-custom scrollCustom" id="listaPanic"></div>
+<!-- MODAL PANICO -->
+<div id="modalPanic" class="modal-overlay" onclick="closeModalOnOut(event, 'modalPanic')">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>REGISTROS DE PANICO</h2>
+            <button class="modal-close" onclick="closeModal('modalPanic')">X</button>
+        </div>
+        <div class="modal-content">
+            <p style="margin-bottom: 15px; font-weight: 600;">Deseja adicionar um novo registro?</p>
+            <div style="display: flex; gap: 10px; margin-bottom: 25px;">
+                <button class="btn-danger" style="width: 50%;" onclick="registrarPanico()">REGISTRAR</button>
+                <button class="btn-secondary" style="width: 50%;" onclick="closeModal('modalPanic')">CANCELAR</button>
+            </div>
+            <div class="items-list" id="listaPanic"></div>
+        </div>
     </div>
 </div>
 
-<div id="modalAulas" class="overlay" onclick="fecharAoClicarFora(event, 'modalAulas')">
-  <div class="modal-custom">
-    <div class="top"><span>Aulas Experimentais</span><button class="x-btn" onclick="fecharCustom('modalAulas')">×</button></div>
-    <input id="buscaAluno" class="inp-custom" placeholder="Pesquisar na lista...">
-    <div class="row-custom">
-      <input id="nomeAluno" class="inp-custom" placeholder="Nome do aluno">
-      <input id="telAluno" class="inp-custom" placeholder="Telefone">
-      <button id="btnCadastrarExp" class="btnSec" onclick="cadastrarAulaExperimental()">Cadastrar</button>
-    </div>
-    <div id="listaAlunos" class="lista-custom scrollCustom"></div>
-  </div>
-</div>
-
-<div id="modalNotas" class="overlay" onclick="fecharAoClicarFora(event, 'modalNotas')">
-    <div class="modal-custom">
-      <div class="top"><span>Anotações Diárias</span><button class="x-btn" onclick="fecharCustom('modalNotas')">×</button></div>
-      <button class="btnSec" style="width:100%" onclick="abrirModalCustom('modalNovaNota')">+ Nova Anotação</button>
-      <div id="listaNotas" class="lista-custom scrollCustom"></div>
+<!-- MODAL AULAS -->
+<div id="modalAulas" class="modal-overlay" onclick="closeModalOnOut(event, 'modalAulas')">
+    <div class="modal large">
+        <div class="modal-header">
+            <h2>AULAS EXPERIMENTAIS</h2>
+            <button class="modal-close" onclick="closeModal('modalAulas')">X</button>
+        </div>
+        <div class="modal-content">
+            <input id="buscaAluno" class="search-box" style="margin-bottom: 15px;" placeholder="PESQUISAR NA LISTA..." oninput="filtrarAulasExperimentais()">
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input id="nomeAluno" class="search-box" style="margin:0;" placeholder="NOME DO ALUNO">
+                <input id="telAluno" class="search-box" style="margin:0;" placeholder="TELEFONE">
+                <button class="btn-save" style="width: auto; padding: 0 25px;" onclick="cadastrarAulaExperimental()">CADASTRAR</button>
+            </div>
+            <div class="items-list" id="listaAlunos"></div>
+        </div>
     </div>
 </div>
 
-<div id="modalNovaNota" class="overlay" onclick="fecharAoClicarFora(event, 'modalNovaNota')">
-    <div class="modal-custom">
-      <div class="top"><span>Nova Anotação</span><button class="x-btn" onclick="fecharCustom('modalNovaNota')">×</button></div>
-      <input id="notaTitulo" class="inp-custom" placeholder="Título da anotação">
-      <textarea id="notaTexto" class="inp-custom" style="height:150px; resize:none" placeholder="Escreva aqui..."></textarea>
-      <button class="btn-save" onclick="salvarNota()">SALVAR AGORA</button>
+<!-- MODAL NOTAS -->
+<div id="modalNotas" class="modal-overlay" onclick="closeModalOnOut(event, 'modalNotas')">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>ANOTACOES DIARIAS</h2>
+            <button class="modal-close" onclick="closeModal('modalNotas')">X</button>
+        </div>
+        <div class="modal-content">
+            <button class="btn-save" style="margin-bottom: 20px;" onclick="abrirModalCustom('modalNovaNota')">NOVA ANOTACAO</button>
+            <div class="items-list" id="listaNotas"></div>
+        </div>
     </div>
 </div>
 
-<div id="modalVerNota" class="overlay" onclick="fecharAoClicarFora(event, 'modalVerNota')">
-    <div class="modal-custom">
-      <div class="top"><span id="verTitulo">Título</span><button class="x-btn" onclick="fecharCustom('modalVerNota')">×</button></div>
-      <p id="verData" style="font-size:11px; color:#999; margin-bottom:15px"></p>
-      <div id="verTexto" style="white-space: pre-wrap; margin-bottom: 20px; font-size:14px; line-height:1.6; border-top: 1px solid #eee; padding-top:10px"></div>
-      <div style="display:flex; gap:10px">
-          <button class="btnSec" style="flex:1; background:#007bff" id="btnPdf">Baixar PDF</button>
-          <button class="btnSec" style="flex:1; background:#ff4757" id="btnExcluirNota">Excluir</button>
-      </div>
+<!-- MODAL NOVA NOTA -->
+<div id="modalNovaNota" class="modal-overlay" onclick="closeModalOnOut(event, 'modalNovaNota')">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>NOVA ANOTACAO</h2>
+            <button class="modal-close" onclick="closeModal('modalNovaNota')">X</button>
+        </div>
+        <div class="modal-content">
+            <div class="field">
+                <label>TITULO</label>
+                <input type="text" id="notaTitulo" placeholder="Titulo da anotacao">
+            </div>
+            <div class="field">
+                <label>TEXTO</label>
+                <textarea id="notaTexto" style="height: 200px; resize: none;" placeholder="Escreva aqui..."></textarea>
+            </div>
+            <button class="btn-save" onclick="salvarNota()">SALVAR ANOTACAO</button>
+        </div>
     </div>
 </div>
 
-<div id="modalJogos" class="overlay" onclick="fecharAoClicarFora(event, 'modalJogos')">
-  <div class="modal-custom large">
-    <div class="top"><span>Jogos Reais (Sem Videogame)</span><button class="x-btn" onclick="fecharCustom('modalJogos')">×</button></div>
-    <input id="buscaVideo" class="inp-custom" placeholder="Pesquisar jogo de futebol, vôlei, etc...">
-    <div id="listaVideos" class="grid-jogos scrollCustom"></div>
-  </div>
+<!-- MODAL VER NOTA -->
+<div id="modalVerNota" class="modal-overlay" onclick="closeModalOnOut(event, 'modalVerNota')">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="verTitulo">TITULO</h2>
+            <button class="modal-close" onclick="closeModal('modalVerNota')">X</button>
+        </div>
+        <div class="modal-content">
+            <p id="verData" style="font-size: 12px; color: var(--text-light); margin-bottom: 15px;"></p>
+            <div style="border: 2px solid var(--border); padding: 15px; margin-bottom: 20px; min-height: 150px;">
+                <div id="verTexto" style="white-space: pre-wrap;"></div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-secondary" style="width: 50%;" id="btnPdf">BAIXAR PDF</button>
+                <button class="btn-danger" style="width: 50%;" id="btnExcluirNota">EXCLUIR</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div id="modalPlayer" class="overlay">
-  <div class="modal-custom player-modal">
-    <button class="red-btn" onclick="fecharCustom('modalPlayer')">FECHAR VÍDEO</button>
-    <iframe id="player" class="video-frame" allowfullscreen></iframe>
-  </div>
+<!-- MODAL JOGOS -->
+<div id="modalJogos" class="modal-overlay" onclick="closeModalOnOut(event, 'modalJogos')">
+    <div class="modal large">
+        <div class="modal-header">
+            <h2>JOGOS E VIDEOS</h2>
+            <button class="modal-close" onclick="closeModal('modalJogos')">X</button>
+        </div>
+        <div class="modal-content">
+            <input id="buscaVideo" class="search-box" style="margin-bottom: 20px;" placeholder="PESQUISAR JOGO..." onchange="buscarVideos(this.value)">
+            <div class="grid-3" id="listaVideos"></div>
+        </div>
+    </div>
 </div>
 
+<!-- MODAL PLAYER -->
+<div id="modalPlayer" class="modal-overlay" onclick="closeModalOnOut(event, 'modalPlayer')">
+    <div class="modal large" style="background: #111; border-color: #333;">
+        <div style="padding: 10px; background: #111; display: flex; justify-content: flex-end;">
+            <button class="btn-danger" style="width: auto; padding: 10px 25px;" onclick="fecharPlayer()">FECHAR VIDEO</button>
+        </div>
+        <iframe id="player" class="player-frame" allowfullscreen></iframe>
+    </div>
+</div>
+
+<!-- MODAL KEYS -->
 <div id="modalKeys" class="modal-overlay" onclick="closeModalOnOut(event, 'modalKeys')">
     <div class="modal modal-keys">
-        <h2 style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">🔑 Gestão de Chaves</h2>
-        <div class="keys-grid" id="keys-container"></div>
+        <div class="modal-header">
+            <h2>GESTAO DE CHAVES</h2>
+            <button class="modal-close" onclick="closeModal('modalKeys')">X</button>
+        </div>
+        <div class="modal-content">
+            <div class="keys-grid" id="keys-container"></div>
+        </div>
     </div>
 </div>
 
+<!-- MODAL ASSIGN KEY -->
 <div id="modalAssignKey" class="modal-overlay" onclick="closeModalOnOut(event, 'modalAssignKey')">
     <div class="modal">
-        <h2 id="assign-title" style="margin-bottom: 20px;">Atribuir Chave</h2>
-        <input type="hidden" id="key-number-val">
-        <div class="field">
-            <label>NOME DA PESSOA</label>
-            <input type="text" id="key-user-name" placeholder="Quem pegou a chave?">
+        <div class="modal-header">
+            <h2 id="assign-title">ATRIBUIR CHAVE</h2>
+            <button class="modal-close" onclick="closeModal('modalAssignKey')">X</button>
         </div>
-        <button class="btn-save" onclick="saveKeyAssignment()">CADASTRAR POSSE</button>
+        <div class="modal-content">
+            <input type="hidden" id="key-number-val">
+            <div class="field">
+                <label>NOME DA PESSOA</label>
+                <input type="text" id="key-user-name" placeholder="Quem pegou a chave?">
+            </div>
+            <button class="btn-save" onclick="saveKeyAssignment()">CADASTRAR POSSE</button>
+        </div>
     </div>
 </div>
 
+<!-- MODAL ADD -->
 <div id="modalAdd" class="modal-overlay" onclick="closeModalOnOut(event, 'modalAdd')">
     <div class="modal">
-        <h2 style="margin-bottom: 25px;">Cadastrar Usuário</h2>
-        <div class="field">
-            <label>NOME COMPLETO</label>
-            <input type="text" id="add-name" placeholder="Nome do aluno">
+        <div class="modal-header">
+            <h2>CADASTRAR ALUNO</h2>
+            <button class="modal-close" onclick="closeModal('modalAdd')">X</button>
         </div>
-        <div class="field">
-            <label>NOME DO PLANO</label>
-            <input type="text" id="add-plan" placeholder="Ex: Mensal Platinum">
-        </div>
-        <div style="display:flex; gap:10px">
-            <div class="field" style="flex:1">
-                <label>INÍCIO</label>
-                <input type="date" id="add-start">
+        <div class="modal-content">
+            <div class="na-alert" id="naAlert" style="display: none;">
+                <div class="na-number" id="naNumber"></div>
+                <div class="na-message">NA GERADO COM SUCESSO</div>
             </div>
-            <div class="field" style="flex:1">
-                <label>TÉRMINO</label>
-                <input type="date" id="add-end">
+            
+            <div class="field">
+                <label>NOME COMPLETO</label>
+                <input type="text" id="add-name" placeholder="Nome do aluno">
             </div>
+            <div class="field">
+                <label>NOME DO PLANO</label>
+                <input type="text" id="add-plan" placeholder="Ex: Mensal Platinum">
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>INICIO</label>
+                    <input type="date" id="add-start">
+                </div>
+                <div class="field">
+                    <label>TERMINO</label>
+                    <input type="date" id="add-end">
+                </div>
+            </div>
+            <button class="btn-save" onclick="saveNewUser()">GERAR NA E CADASTRAR</button>
         </div>
-        <button class="btn-save" onclick="saveNewUser()">FINALIZAR E GERAR NA</button>
     </div>
 </div>
 
+<!-- MODAL EDIT -->
 <div id="modalEdit" class="modal-overlay" onclick="closeModalOnOut(event, 'modalEdit')">
     <div class="modal">
-        <p style="font-size: 11px; font-weight: 800; color: #999;">EDITANDO ACESSO</p>
-        <h2 id="edit-na-display" style="font-size: 32px; font-weight: 900; color: var(--primary); margin-bottom: 20px;">00000</h2>
-        <input type="hidden" id="edit-na-val">
-        <div class="field">
-            <label>NOME DO ALUNO</label>
-            <input type="text" id="edit-name">
+        <div class="modal-header">
+            <h2>EDITAR ALUNO</h2>
+            <button class="modal-close" onclick="closeModal('modalEdit')">X</button>
         </div>
-        <div class="field">
-            <label>PLANO</label>
-            <input type="text" id="edit-plan">
-        </div>
-        <div style="display:flex; gap:10px">
-            <div class="field" style="flex:1">
-                <label>DATA INICIAL</label>
-                <input type="date" id="edit-start">
+        <div class="modal-content">
+            <div id="edit-na-display">00000</div>
+            <input type="hidden" id="edit-na-val">
+            
+            <div class="field">
+                <label>NOME DO ALUNO</label>
+                <input type="text" id="edit-name">
             </div>
-            <div class="field" style="flex:1">
-                <label>DATA TÉRMINO</label>
-                <input type="date" id="edit-end">
+            <div class="field">
+                <label>PLANO</label>
+                <input type="text" id="edit-plan">
             </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>DATA INICIAL</label>
+                    <input type="date" id="edit-start">
+                </div>
+                <div class="field">
+                    <label>DATA TERMINO</label>
+                    <input type="date" id="edit-end">
+                </div>
+            </div>
+            <div class="dias-info" id="diasRestantes" style="margin-bottom: 15px; text-align: center;"></div>
+            
+            <button class="btn-save" onclick="updateUser()">SALVAR ALTERACOES</button>
+            <button class="btn-save btn-renovate" onclick="renovatePlan()">RENOVAR +30 DIAS</button>
+            <button class="btn-save btn-delete" onclick="deleteUser()">EXCLUIR ALUNO</button>
         </div>
-        <button class="btn-save" onclick="updateUser()">SALVAR DADOS</button>
-        <button class="btn-save btn-renovate" onclick="renovatePlan()">RENOVAR +30 DIAS</button>
     </div>
 </div>
 
@@ -356,25 +987,66 @@ let USERS = {};
 let KEYS_DATA = {};
 const YOUTUBE_API_KEY = "AIzaSyDS9f8LJEx1CFkDdmVF5AoK02hkNvxBCEE";
 
-// --- FUNÇÕES DE MODAL ---
-function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-function abrirModalCustom(id) { document.getElementById(id).style.display = 'flex'; }
+function showLoading() {
+    document.getElementById('loadingOverlay').style.display = 'grid';
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').style.display = 'none';
+}
+
+function openModal(id) { 
+    document.getElementById(id).style.display = 'flex'; 
+}
+
+function closeModal(id) { 
+    document.getElementById(id).style.display = 'none'; 
+}
+
+function abrirModalCustom(id) { 
+    document.getElementById(id).style.display = 'flex'; 
+}
+
 function fecharCustom(id) { 
     document.getElementById(id).style.display = 'none'; 
     if(id === 'modalPlayer') document.getElementById('player').src = "";
 }
-function fecharAoClicarFora(e, id) { if(e.target.id === id) fecharCustom(id); }
-function closeModalOnOut(event, id) { if(event.target.classList.contains('modal-overlay')) closeModal(id); }
 
-// --- LÓGICA PÂNICO ---
+function closeModalOnOut(event, id) { 
+    if(event.target.classList.contains('modal-overlay')) closeModal(id); 
+}
+
+function fecharPlayer() {
+    document.getElementById('player').src = "";
+    closeModal('modalPlayer');
+}
+
+function calcularDiasRestantes(dataTermino) {
+    if (!dataTermino) return 'N/A';
+    
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    
+    const termino = new Date(dataTermino);
+    termino.setHours(0, 0, 0, 0);
+    
+    const diffTime = termino - hoje;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) return 'VENCIDO';
+    if (diffDays === 0) return 'VENCE HOJE';
+    if (diffDays === 1) return 'VENCE AMANHÃ';
+    return `${diffDays} DIAS RESTANTES`;
+}
+
+// PANICO
 async function registrarPanico() {
     const agora = new Date();
     await db.ref('panico_logs').push({
         data: agora.toLocaleDateString('pt-BR'),
         hora: agora.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit', second:'2-digit'})
     });
-    fecharCustom('modalPanic');
+    closeModal('modalPanic');
 }
 
 db.ref('panico_logs').on('value', snap => {
@@ -385,11 +1057,13 @@ db.ref('panico_logs').on('value', snap => {
         Object.keys(data).reverse().forEach(id => {
             const p = data[id];
             const div = document.createElement('div');
-            div.className = 'item-panic';
+            div.className = 'list-item';
             div.innerHTML = `
-                <div><span style="color:var(--danger); font-weight:800">🚨 OCORRÊNCIA</span><br>
-                <small>${p.data} às ${p.hora}</small></div>
-                <button class="x-btn" style="color:red; font-size:20px" onclick="excluirPanico('${id}')">×</button>
+                <div class="list-item-info">OCORRENCIA</div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span class="list-item-small">${p.data} ${p.hora}</span>
+                    <button class="btn-clear-key" style="position: static; display: flex; background: var(--danger); color: white;" onclick="excluirPanico('${id}')">X</button>
+                </div>
             `;
             lista.appendChild(div);
         });
@@ -397,23 +1071,31 @@ db.ref('panico_logs').on('value', snap => {
 });
 
 async function excluirPanico(id) {
-    if(confirm("Excluir este registro de pânico?")) await db.ref('panico_logs/'+id).remove();
+    if(confirm("Excluir este registro?")) {
+        showLoading();
+        await db.ref('panico_logs/'+id).remove();
+        hideLoading();
+    }
 }
 
-// --- LÓGICA ANOTAÇÕES ---
+// ANOTACOES
 async function salvarNota() {
     const titulo = document.getElementById('notaTitulo').value;
     const texto = document.getElementById('notaTexto').value;
-    if(!titulo || !texto) return alert("Preencha tudo");
+    if(!titulo || !texto) return alert("Preencha todos os campos");
+    
+    showLoading();
     const agora = new Date();
     await db.ref('anotacoes').push({
         titulo, texto, 
         data: agora.toLocaleDateString('pt-BR'),
         hora: agora.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})
     });
+    
     document.getElementById('notaTitulo').value = "";
     document.getElementById('notaTexto').value = "";
-    fecharCustom('modalNovaNota');
+    closeModal('modalNovaNota');
+    hideLoading();
 }
 
 db.ref('anotacoes').on('value', snap => {
@@ -424,8 +1106,14 @@ db.ref('anotacoes').on('value', snap => {
         Object.keys(data).reverse().forEach(id => {
             const n = data[id];
             const div = document.createElement('div');
-            div.className = 'item-nota';
-            div.innerHTML = `<div><strong>${n.titulo}</strong><br><small>${n.data} às ${n.hora}</small></div><span>➔</span>`;
+            div.className = 'list-item';
+            div.innerHTML = `
+                <div>
+                    <div class="list-item-info">${n.titulo}</div>
+                    <span class="list-item-small">${n.data} ${n.hora}</span>
+                </div>
+                <span>→</span>
+            `;
             div.onclick = () => verNota(id, n);
             lista.appendChild(div);
         });
@@ -436,84 +1124,133 @@ function verNota(id, n) {
     document.getElementById('verTitulo').innerText = n.titulo;
     document.getElementById('verData').innerText = `${n.data} | ${n.hora}`;
     document.getElementById('verTexto').innerText = n.texto;
-    document.getElementById('btnExcluirNota').onclick = () => {
-        if(confirm("Excluir nota?")) { db.ref('anotacoes/'+id).remove(); fecharCustom('modalVerNota'); }
+    document.getElementById('btnExcluirNota').onclick = async () => {
+        if(confirm("Excluir esta anotacao?")) {
+            showLoading();
+            await db.ref('anotacoes/'+id).remove();
+            hideLoading();
+            closeModal('modalVerNota');
+        }
     };
     document.getElementById('btnPdf').onclick = () => gerarPdfNota(n);
-    abrirModalCustom('modalVerNota');
+    openModal('modalVerNota');
 }
 
 function gerarPdfNota(n) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    doc.setFontSize(20); doc.text(n.titulo, 10, 20);
-    doc.setFontSize(10); doc.text(`${n.data} - ${n.hora}`, 10, 30);
-    doc.line(10, 35, 200, 35);
+    doc.setFontSize(20);
+    doc.text(n.titulo, 20, 20);
+    doc.setFontSize(10);
+    doc.text(`${n.data} - ${n.hora}`, 20, 30);
+    doc.line(20, 35, 190, 35);
     doc.setFontSize(12);
-    const splitText = doc.splitTextToSize(n.texto, 180);
-    doc.text(splitText, 10, 45);
+    const splitText = doc.splitTextToSize(n.texto, 170);
+    doc.text(splitText, 20, 45);
     doc.save(`anotacao_${n.titulo}.pdf`);
 }
 
-// --- LÓGICA AULAS EXPERIMENTAIS ---
+// AULAS EXPERIMENTAIS
 async function cadastrarAulaExperimental() {
     const nome = document.getElementById('nomeAluno').value.trim();
     const tel = document.getElementById('telAluno').value.trim();
-    if (!nome || !tel) return alert("Preencha os campos!");
+    if (!nome || !tel) return alert("Preencha todos os campos!");
+    
+    showLoading();
     await db.ref('aulas_experimentais').push({ nome, tel, data: Date.now() });
     document.getElementById('nomeAluno').value = "";
     document.getElementById('telAluno').value = "";
+    hideLoading();
 }
 
 db.ref('aulas_experimentais').on('value', snap => {
+    window.aulasExpData = snap.val() || {};
+    renderAulasExperimentais();
+});
+
+function renderAulasExperimentais() {
     const lista = document.getElementById('listaAlunos');
     lista.innerHTML = "";
-    const data = snap.val();
+    const data = window.aulasExpData;
+    
     if(data) {
         Object.keys(data).reverse().forEach(id => {
             const a = data[id];
             const item = document.createElement('div');
-            item.className = 'item-aluno';
-            item.innerHTML = `<div><strong>${a.nome}</strong><br><small>${a.tel}</small></div><button class="x-btn" style="color:red" onclick="deletarAulaExp('${id}')">×</button>`;
+            item.className = 'list-item';
+            item.setAttribute('data-nome', a.nome.toLowerCase());
+            item.setAttribute('data-tel', a.tel);
+            item.innerHTML = `
+                <div>
+                    <div class="list-item-info">${a.nome}</div>
+                    <span class="list-item-small">${a.tel}</span>
+                </div>
+                <button class="btn-clear-key" style="position: static; display: flex; background: var(--danger); color: white;" onclick="deletarAulaExp('${id}', event)">X</button>
+            `;
             lista.appendChild(item);
         });
     }
-});
-
-async function deletarAulaExp(id) {
-    if(confirm("Excluir aula experimental?")) await db.ref('aulas_experimentais/' + id).remove();
 }
 
-document.getElementById('buscaAluno').oninput = (e) => {
-    const v = e.target.value.toLowerCase();
-    document.querySelectorAll("#listaAlunos .item-aluno").forEach(i => {
-        i.style.display = i.innerText.toLowerCase().includes(v) ? "flex" : "none";
+function filtrarAulasExperimentais() {
+    const filtro = document.getElementById('buscaAluno').value.toLowerCase();
+    const items = document.querySelectorAll('#listaAlunos .list-item');
+    
+    items.forEach(item => {
+        const nome = item.getAttribute('data-nome');
+        if (nome.includes(filtro) || filtro === '') {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
     });
-};
+}
 
-// --- LÓGICA YOUTUBE ---
+async function deletarAulaExp(id, event) {
+    event.stopPropagation();
+    if(confirm("Excluir esta aula experimental?")) {
+        showLoading();
+        await db.ref('aulas_experimentais/' + id).remove();
+        hideLoading();
+    }
+}
+
+// YOUTUBE
 async function buscarVideos(termo = "futebol ao vivo brasil") {
     const grid = document.getElementById('listaVideos');
     const q = termo + " -gameplay -fifa -pes -roblox -nintendo -ps5 -xbox -gaming -simulador";
+    
+    showLoading();
     try {
-        const r = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&eventType=live&maxResults=15&q=${encodeURIComponent(q)}&key=${YOUTUBE_API_KEY}`);
+        const r = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&eventType=live&maxResults=12&q=${encodeURIComponent(q)}&key=${YOUTUBE_API_KEY}`);
         const data = await r.json();
         grid.innerHTML = "";
+        
         if (data.items) {
             data.items.forEach(v => {
-                grid.innerHTML += `<div class="card-video" onclick="abrirPlayer('${v.id.videoId}')"><img src="${v.snippet.thumbnails.medium.url}"><p>${v.snippet.title}</p></div>`;
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.onclick = () => abrirPlayer(v.id.videoId);
+                card.innerHTML = `
+                    <img src="${v.snippet.thumbnails.medium.url}" alt="">
+                    <p>${v.snippet.title}</p>
+                `;
+                grid.appendChild(card);
             });
         }
-    } catch (e) { console.error("Erro Youtube API"); }
+    } catch (e) { 
+        console.error("Erro Youtube API", e);
+        grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px;">Erro ao carregar videos</div>';
+    }
+    hideLoading();
 }
 
 function abrirPlayer(id) {
     document.getElementById('player').src = `https://www.youtube.com/embed/${id}?autoplay=1`;
-    abrirModalCustom('modalPlayer');
+    openModal('modalPlayer');
 }
-document.getElementById('buscaVideo').onchange = (e) => buscarVideos(e.target.value);
 
-// --- LÓGICA DE CHAVES ---
+// CHAVES
 db.ref('chaves').on('value', snap => {
     KEYS_DATA = snap.val() || {};
     renderKeys();
@@ -528,14 +1265,28 @@ function renderKeys() {
         const div = document.createElement('div');
         div.className = `key-card ${isOccupied ? 'occupied' : ''}`;
         div.onclick = () => isOccupied ? null : openAssignKey(i);
-        div.innerHTML = `<button class="btn-clear-key" onclick="clearKey(event, ${i})">✕</button><h4>CHAVE ${i}</h4><span class="user-name">${isOccupied ? keyInfo.user : 'Livre'}</span>${isOccupied ? `<span class="time-info">${keyInfo.date}<br>${keyInfo.time}</span>` : '🔑'}`;
+        
+        let timeDisplay = '';
+        if (isOccupied && keyInfo.time) {
+            const [hours, minutes] = keyInfo.time.split(':');
+            timeDisplay = `<span class="time-info">${keyInfo.date}<br><span>${hours}:${minutes}</span></span>`;
+        } else if (isOccupied) {
+            timeDisplay = `<span class="time-info">${keyInfo.date}</span>`;
+        }
+        
+        div.innerHTML = `
+            <button class="btn-clear-key" onclick="clearKey(event, ${i})">X</button>
+            <h4>CHAVE ${String(i).padStart(2,'0')}</h4>
+            <span class="user-name">${isOccupied ? keyInfo.user : 'LIVRE'}</span>
+            ${isOccupied ? timeDisplay : ''}
+        `;
         container.appendChild(div);
     }
 }
 
 function openAssignKey(num) {
     document.getElementById('key-number-val').value = num;
-    document.getElementById('assign-title').innerText = `Chave ${num}`;
+    document.getElementById('assign-title').innerText = `CHAVE ${String(num).padStart(2,'0')}`;
     document.getElementById('key-user-name').value = '';
     openModal('modalAssignKey');
 }
@@ -543,18 +1294,29 @@ function openAssignKey(num) {
 async function saveKeyAssignment() {
     const num = document.getElementById('key-number-val').value;
     const user = document.getElementById('key-user-name').value;
-    if(!user) return alert("Digite o nome");
+    if(!user) return alert("Digite o nome da pessoa");
+    
+    showLoading();
     const now = new Date();
-    await db.ref('chaves/' + num).set({ user, date: now.toLocaleDateString('pt-BR'), time: now.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) });
+    await db.ref('chaves/' + num).set({ 
+        user, 
+        date: now.toLocaleDateString('pt-BR'), 
+        time: now.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) 
+    });
     closeModal('modalAssignKey');
+    hideLoading();
 }
 
 async function clearKey(e, num) {
     e.stopPropagation();
-    if(confirm(`Liberar Chave ${num}?`)) await db.ref('chaves/' + num).remove();
+    if(confirm(`Liberar a CHAVE ${String(num).padStart(2,'0')}?`)) {
+        showLoading();
+        await db.ref('chaves/' + num).remove();
+        hideLoading();
+    }
 }
 
-// --- LÓGICA DE ALUNOS ---
+// ALUNOS
 db.ref('users').on('value', snap => {
     USERS = snap.val() || {};
     renderTable();
@@ -564,14 +1326,30 @@ function renderTable() {
     const tbody = document.getElementById('aluno-list');
     const search = document.getElementById('search').value.toLowerCase();
     tbody.innerHTML = '';
-    const today = new Date(); today.setHours(0,0,0,0);
+    
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    
     Object.keys(USERS).sort().forEach(na => {
         const u = USERS[na];
-        if (u.name.toLowerCase().includes(search) || na.includes(search)) {
-            const expired = new Date(u.endDate) < today;
+        const searchTerm = u.name.toLowerCase() + ' ' + na;
+        
+        if (searchTerm.includes(search) || search === '') {
+            const expired = !u.endDate || new Date(u.endDate) < today;
+            const diasInfo = calcularDiasRestantes(u.endDate);
+            
             const tr = document.createElement('tr');
             tr.onclick = () => openEdit(na, u);
-            tr.innerHTML = `<td class="na-cell">${na}</td><td><div class="name-cell">${u.name}</div></td><td style="color:#777">${u.planName || '---'}</td><td><span class="badge ${expired ? 'badge-expired' : 'badge-active'}">${expired ? 'INATIVO' : 'ATIVO'}</span></td>`;
+            
+            tr.innerHTML = `
+                <td class="na-cell">${na}</td>
+                <td><div class="name-cell">${u.name}</div></td>
+                <td style="color: var(--text-light); font-weight: 500;">${u.planName || '---'}</td>
+                <td>
+                    <span class="badge ${expired ? 'badge-expired' : 'badge-active'}">${expired ? 'INATIVO' : 'ATIVO'}</span>
+                    <div class="dias-info">${diasInfo}</div>
+                </td>
+            `;
             tbody.appendChild(tr);
         }
     });
@@ -581,9 +1359,38 @@ async function saveNewUser() {
     const na = Math.floor(10000 + Math.random() * 90000).toString();
     const name = document.getElementById('add-name').value;
     const end = document.getElementById('add-end').value;
-    if(!name || !end) return alert("Preencha os dados!");
-    await db.ref('users/' + na).set({ name, planName: document.getElementById('add-plan').value, startDate: document.getElementById('add-start').value, endDate: end, active: true, createdAt: new Date().toISOString().split('T')[0] });
-    closeModal('modalAdd');
+    
+    if(!name || !end) return alert("Preencha nome e data de termino!");
+    
+    showLoading();
+    await db.ref('users/' + na).set({ 
+        name, 
+        planName: document.getElementById('add-plan').value || 'Sem Plano',
+        startDate: document.getElementById('add-start').value || new Date().toISOString().split('T')[0], 
+        endDate: end, 
+        active: true,
+        createdAt: new Date().toISOString().split('T')[0]
+    });
+    
+    // Mostrar alerta com o NA gerado
+    const naAlert = document.getElementById('naAlert');
+    const naNumber = document.getElementById('naNumber');
+    naNumber.innerText = na;
+    naAlert.style.display = 'block';
+    
+    // Limpar campos
+    document.getElementById('add-name').value = "";
+    document.getElementById('add-plan').value = "";
+    document.getElementById('add-start').value = "";
+    document.getElementById('add-end').value = "";
+    
+    hideLoading();
+    
+    // Fechar modal após 3 segundos
+    setTimeout(() => {
+        closeModal('modalAdd');
+        naAlert.style.display = 'none';
+    }, 3000);
 }
 
 function openEdit(na, u) {
@@ -593,24 +1400,72 @@ function openEdit(na, u) {
     document.getElementById('edit-plan').value = u.planName || '';
     document.getElementById('edit-start').value = u.startDate || '';
     document.getElementById('edit-end').value = u.endDate || '';
+    
+    const diasInfo = calcularDiasRestantes(u.endDate);
+    document.getElementById('diasRestantes').innerText = diasInfo;
+    
     openModal('modalEdit');
 }
 
 async function updateUser() {
     const na = document.getElementById('edit-na-val').value;
-    await db.ref('users/' + na).update({ name: document.getElementById('edit-name').value, planName: document.getElementById('edit-plan').value, startDate: document.getElementById('edit-start').value, endDate: document.getElementById('edit-end').value });
+    
+    showLoading();
+    await db.ref('users/' + na).update({ 
+        name: document.getElementById('edit-name').value,
+        planName: document.getElementById('edit-plan').value,
+        startDate: document.getElementById('edit-start').value,
+        endDate: document.getElementById('edit-end').value
+    });
+    
     closeModal('modalEdit');
+    hideLoading();
 }
 
 async function renovatePlan() {
     const na = document.getElementById('edit-na-val').value;
     let base = new Date();
-    const currentEnd = new Date(document.getElementById('edit-end').value);
-    if(currentEnd > base) base = currentEnd;
+    
+    const currentEnd = document.getElementById('edit-end').value;
+    if(currentEnd) {
+        const endDate = new Date(currentEnd);
+        if(endDate > base) base = endDate;
+    }
+    
     base.setDate(base.getDate() + 30);
-    await db.ref('users/' + na).update({ endDate: base.toISOString().split('T')[0], active: true });
-    closeModal('modalEdit');
+    const newEndDate = base.toISOString().split('T')[0];
+    
+    showLoading();
+    await db.ref('users/' + na).update({ 
+        endDate: newEndDate,
+        active: true 
+    });
+    
+    // Atualizar campo no modal
+    document.getElementById('edit-end').value = newEndDate;
+    
+    const diasInfo = calcularDiasRestantes(newEndDate);
+    document.getElementById('diasRestantes').innerText = diasInfo;
+    
+    hideLoading();
 }
+
+async function deleteUser() {
+    const na = document.getElementById('edit-na-val').value;
+    const name = document.getElementById('edit-name').value;
+    
+    if(confirm(`Tem certeza que deseja EXCLUIR o aluno ${name} (NA: ${na})?`)) {
+        showLoading();
+        await db.ref('users/' + na).remove();
+        closeModal('modalEdit');
+        hideLoading();
+    }
+}
+
+// Inicializacao
+document.addEventListener('DOMContentLoaded', () => {
+    hideLoading();
+});
 </script>
 </body>
 </html>
