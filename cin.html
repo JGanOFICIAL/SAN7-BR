@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serviços Públicos - Prefeitura</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="script.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* Cabeçalho */
+        .cabecalho {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+            background: #f0f0f0;
+            border-radius: 8px;
+            padding: 5px;
+        }
+
+        .logo-placeholder {
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .acoes-cabecalho {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .icone-interrogacao {
+            width: 40px;
+            height: 40px;
+            background: #003366;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+            font-size: 20px;
+        }
+
+        .icone-interrogacao:hover {
+            transform: scale(1.1);
+        }
+
+        /* Notificação overlay */
+        .notificacao-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .notificacao-overlay.show {
+            display: flex;
+        }
+
+        .notificacao-card {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .notificacao-header {
+            background: #003366;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notificacao-header h3 {
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .fechar-card {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .fechar-card:hover {
+            transform: scale(1.2);
+        }
+
+        .notificacao-conteudo {
+            padding: 20px;
+        }
+
+        .notificacao-conteudo p {
+            margin-bottom: 15px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .notificacao-conteudo ul {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .notificacao-conteudo li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+            color: #555;
+        }
+
+        .notificacao-conteudo li i {
+            position: absolute;
+            left: 0;
+            color: #28a745;
+        }
+
+        .botao-reclamacao {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background 0.3s;
+        }
+
+        .botao-reclamacao:hover {
+            background: #c82333;
+        }
+
+        /* Conteúdo principal */
+        .conteudo-principal {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .pesquisa-municipio {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .campo-pesquisa {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .campo-pesquisa input {
+            width: 100%;
+            padding: 15px 45px 15px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .campo-pesquisa input:focus {
+            border-color: #003366;
+            outline: none;
+        }
+
+        .campo-pesquisa i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .barra-progresso {
+            height: 3px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .barra-progresso.ativo {
+            display: block;
+        }
+
+        .progresso {
+            height: 100%;
+            width: 0%;
+            background: #003366;
+            animation: progress 1.5s infinite;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        .resultados-municipios {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .resultados-municipios.show {
+            display: block;
+        }
+
+        .municipio-item {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .municipio-item:hover {
+            background: #f5f5f5;
+        }
+
+        .municipio-item h4 {
+            color: #003366;
+            margin-bottom: 5px;
+        }
+
+        .municipio-item p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .info-municipio {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .info-municipio.show {
+            display: block;
+        }
+
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .info-header h3 {
+            color: #003366;
+        }
+
+        .badge-ativo {
+            background: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .orgaos-lista {
+            margin: 15px 0;
+        }
+
+        .orgao-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .orgao-item:hover {
+            border-color: #003366;
+            box-shadow: 0 2px 10px rgba(0,51,102,0.1);
+        }
+
+        .orgao-item h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .orgao-status {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .vagas {
+            color: #28a745;
+        }
+
+        .vagas.esgotado {
+            color: #dc3545;
+        }
+
+        .botoes-acao {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn.verde {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn.verde:hover {
+            background: #218838;
+        }
+
+        .btn.branco {
+            background: white;
+            color: #003366;
+            border: 2px solid #003366;
+        }
+
+        .btn.branco:hover {
+            background: #003366;
+            color: white;
+        }
+
+        .btn.vermelho {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn.vermelho:hover {
+            background: #c82333;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 3px solid white;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Modal de formulário */
+        .modal-formulario {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-formulario.show {
+            display: flex;
+        }
+
+        .formulario-card {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .formulario-header {
+            background: #003366;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .formulario-body {
+            padding: 20px;
+        }
+
+        .campo-form {
+            margin-bottom: 15px;
+        }
+
+        .campo-form label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .campo-form input,
+        .campo-form select,
+        .campo-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .campo-form input:focus {
+            border-color: #003366;
+            outline: none;
+        }
+
+        .horarios-disponiveis {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .horario-item {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .horario-item:hover {
+            border-color: #003366;
+        }
+
+        .horario-item.selecionado {
+            background: #003366;
+            color: white;
+            border-color: #003366;
+        }
+
+        /* Comprovante */
+        .comprovante {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .comprovante.show {
+            display: flex;
+        }
+
+        .comprovante-card {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .comprovante-header {
+            background: #003366;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .comprovante-body {
+            padding: 20px;
+        }
+
+        .protocolo {
+            background: #f8f9fa;
+            border: 2px dashed #003366;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .protocolo h3 {
+            color: #003366;
+            font-size: 24px;
+            letter-spacing: 2px;
+        }
+
+        .info-linha {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .info-valor {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .btn-download {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Cabeçalho -->
+    <header class="cabecalho">
+        <div class="logo-area">
+            <img src="" alt="Logo" class="logo-img" id="logo-prefeitura">
+            <span class="logo-placeholder">URL da imagem:</span>
+            <input type="text" id="url-imagem" placeholder="Cole a URL da imagem aqui" style="display: none;">
+        </div>
+        <div class="acoes-cabecalho">
+            <div class="icone-interrogacao" id="btn-ajuda">
+                <i class="fas fa-question"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Overlay de notificação/ajuda -->
+    <div class="notificacao-overlay" id="notificacao-overlay">
+        <div class="notificacao-card">
+            <div class="notificacao-header">
+                <h3><i class="fas fa-info-circle"></i> Dicas de Segurança</h3>
+                <button class="fechar-card" id="fechar-notificacao"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="notificacao-conteudo">
+                <p>Protegemos seus dados com os mais altos padrões de segurança:</p>
+                <ul>
+                    <li><i class="fas fa-shield-alt"></i> Criptografia de ponta a ponta</li>
+                    <li><i class="fas fa-lock"></i> Dados protegidos em servidores seguros</li>
+                    <li><i class="fas fa-user-secret"></i> Privacidade garantida por lei</li>
+                    <li><i class="fas fa-clock"></i> Sessões expiram automaticamente</li>
+                </ul>
+                <button class="botao-reclamacao" id="btn-reclamacao">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Fazer Reclamação ou Elogio
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <main class="conteudo-principal">
+        <div class="pesquisa-municipio">
+            <div class="campo-pesquisa">
+                <input type="text" id="pesquisa-municipio" placeholder="Digite o nome da sua cidade...">
+                <i class="fas fa-search"></i>
+                <div class="barra-progresso" id="progresso-pesquisa">
+                    <div class="progresso"></div>
+                </div>
+            </div>
+            
+            <div class="resultados-municipios" id="resultados-municipios"></div>
+
+            <div class="info-municipio" id="info-municipio">
+                <div class="info-header">
+                    <h3 id="municipio-nome"></h3>
+                    <span class="badge-ativo">Ativo</span>
+                </div>
+                <p id="municipio-endereco"></p>
+                <p id="municipio-cnpj"></p>
+                
+                <div class="orgaos-lista" id="orgaos-lista"></div>
+
+                <div class="botoes-acao">
+                    <button class="btn verde" id="btn-agendar">
+                        <i class="fas fa-calendar-check"></i>
+                        Realizar Agendamento
+                    </button>
+                    <button class="btn branco" id="btn-consultar">
+                        <i class="fas fa-search"></i>
+                        Consultar Protocolo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de formulário -->
+    <div class="modal-formulario" id="modal-formulario">
+        <div class="formulario-card">
+            <div class="formulario-header">
+                <h3 id="formulario-titulo"></h3>
+                <button class="fechar-card" id="fechar-formulario"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="formulario-body" id="formulario-body">
+                <!-- Campos serão gerados dinamicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de consulta de protocolo -->
+    <div class="modal-formulario" id="modal-consulta">
+        <div class="formulario-card">
+            <div class="formulario-header">
+                <h3>Consultar Protocolo</h3>
+                <button class="fechar-card" id="fechar-consulta"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="formulario-body">
+                <div class="campo-form">
+                    <label>Número do Protocolo</label>
+                    <input type="text" id="protocolo-consulta" placeholder="Ex: 12345678-2026">
+                </div>
+                <button class="btn verde" id="btn-buscar-protocolo" style="width: 100%;">
+                    <i class="fas fa-search"></i>
+                    Buscar
+                </button>
+                <div id="resultado-consulta" style="margin-top: 20px; display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comprovante -->
+    <div class="comprovante" id="comprovante">
+        <div class="comprovante-card">
+            <div class="comprovante-header">
+                <h3>Comprovante de Solicitação</h3>
+                <button class="fechar-card" id="fechar-comprovante"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="comprovante-body" id="comprovante-body">
+                <!-- Conteúdo do comprovante será gerado dinamicamente -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variáveis globais
+        let municipioSelecionado = null;
+        let orgaoSelecionado = null;
+        let modeloSelecionado = null;
+        let dadosProtocolo = {};
+
+        // Carregar logo se houver URL salva
+        const urlLogo = localStorage.getItem('urlLogo');
+        if (urlLogo) {
+            document.getElementById('logo-prefeitura').src = urlLogo;
+        }
+
+        // Input de URL da imagem (para desenvolvimento)
+        document.querySelector('.logo-area').addEventListener('dblclick', () => {
+            const input = document.getElementById('url-imagem');
+            input.style.display = input.style.display === 'none' ? 'block' : 'none';
+        });
+
+        document.getElementById('url-imagem').addEventListener('change', (e) => {
+            const url = e.target.value;
+            if (url) {
+                document.getElementById('logo-prefeitura').src = url;
+                localStorage.setItem('urlLogo', url);
+            }
+        });
+
+        // Sistema de ajuda/notificação
+        document.getElementById('btn-ajuda').addEventListener('click', () => {
+            document.getElementById('notificacao-overlay').classList.add('show');
+        });
+
+        document.getElementById('fechar-notificacao').addEventListener('click', () => {
+            document.getElementById('notificacao-overlay').classList.remove('show');
+        });
+
+        // Botão de reclamação
+        document.getElementById('btn-reclamacao').addEventListener('click', () => {
+            window.location.href = 'avaliacao.html';
+        });
+
+        // Pesquisa de municípios em tempo real
+        const inputPesquisa = document.getElementById('pesquisa-municipio');
+        const resultadosDiv = document.getElementById('resultados-municipios');
+        const progresso = document.getElementById('progresso-pesquisa');
+
+        let timeoutId;
+        inputPesquisa.addEventListener('input', (e) => {
+            const termo = e.target.value;
+            
+            if (termo.length < 2) {
+                resultadosDiv.classList.remove('show');
+                return;
+            }
+
+            progresso.classList.add('ativo');
+            
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                buscarMunicipios(termo, (municipios) => {
+                    progresso.classList.remove('ativo');
+                    
+                    if (municipios.length > 0) {
+                        resultadosDiv.innerHTML = '';
+                        municipios.forEach(municipio => {
+                            const div = document.createElement('div');
+                            div.className = 'municipio-item';
+                            div.innerHTML = `
+                                <h4>${municipio.nome}</h4>
+                                <p>${municipio.endereco || 'Endereço não informado'}</p>
+                                <small>${municipio.orgao}</small>
+                            `;
+                            div.addEventListener('click', () => selecionarMunicipio(municipio));
+                            resultadosDiv.appendChild(div);
+                        });
+                        resultadosDiv.classList.add('show');
+                    } else {
+                        resultadosDiv.innerHTML = '<div class="municipio-item">Nenhum município encontrado</div>';
+                        resultadosDiv.classList.add('show');
+                    }
+                });
+            }, 500);
+        });
+
+        function selecionarMunicipio(municipio) {
+            municipioSelecionado = municipio;
+            resultadosDiv.classList.remove('show');
+            inputPesquisa.value = municipio.nome;
+            
+            document.getElementById('municipio-nome').textContent = municipio.nome;
+            document.getElementById('municipio-endereco').textContent = municipio.endereco || 'Endereço não informado';
+            document.getElementById('municipio-cnpj').textContent = municipio.cnpj ? `CNPJ: ${municipio.cnpj}` : '';
+            
+            // Buscar órgãos/serviços deste município
+            carregarOrgaos(municipio.id);
+            
+            document.getElementById('info-municipio').classList.add('show');
+        }
+
+        function carregarOrgaos(municipioId) {
+            const orgaosRef = database.ref(`modelos/${municipioId}`);
+            orgaosRef.once('value', (snapshot) => {
+                const orgaosLista = document.getElementById('orgaos-lista');
+                orgaosLista.innerHTML = '';
+                
+                snapshot.forEach((childSnapshot) => {
+                    const modelo = childSnapshot.val();
+                    modelo.id = childSnapshot.key;
+                    
+                    const div = document.createElement('div');
+                    div.className = 'orgao-item';
+                    
+                    // Verificar disponibilidade
+                    const vagas = modelo.vagas || Infinity;
+                    const vagasRestantes = vagas - (modelo.solicitacoesHoje || 0);
+                    const disponivel = vagasRestantes > 0;
+                    
+                    div.innerHTML = `
+                        <h4>${modelo.titulo}</h4>
+                        <p>${modelo.descricao || ''}</p>
+                        <div class="orgao-status">
+                            <span class="${disponivel ? 'vagas' : 'vagas esgotado'}">
+                                <i class="fas fa-users"></i> 
+                                ${disponivel ? `${vagasRestantes} vagas` : 'Esgotado'}
+                            </span>
+                            <span><i class="fas fa-clock"></i> ${modelo.horarioInicio || '08:00'} - ${modelo.horarioFim || '17:00'}</span>
+                        </div>
+                    `;
+                    
+                    div.addEventListener('click', () => {
+                        orgaoSelecionado = municipioSelecionado;
+                        modeloSelecionado = modelo;
+                        abrirFormulario(modelo);
+                    });
+                    
+                    orgaosLista.appendChild(div);
+                });
+            });
+        }
+
+        function abrirFormulario(modelo) {
+            const modal = document.getElementById('modal-formulario');
+            document.getElementById('formulario-titulo').textContent = modelo.titulo;
+            
+            const body = document.getElementById('formulario-body');
+            body.innerHTML = '';
+            
+            // Gerar campos do formulário baseado no modelo
+            if (modelo.campos && modelo.campos.length > 0) {
+                modelo.campos.forEach(campo => {
+                    const div = document.createElement('div');
+                    div.className = 'campo-form';
+                    div.innerHTML = `
+                        <label>${campo}</label>
+                        <input type="text" class="campo-dinamico" data-campo="${campo}" required>
+                    `;
+                    body.appendChild(div);
+                });
+            }
+            
+            // Seleção de horário se houver
+            if (modelo.horarios && modelo.horarios.length > 0) {
+                const divHorarios = document.createElement('div');
+                divHorarios.className = 'campo-form';
+                divHorarios.innerHTML = '<label>Selecione o horário</label><div class="horarios-disponiveis" id="horarios-container"></div>';
+                body.appendChild(divHorarios);
+                
+                const container = document.getElementById('horarios-container');
+                modelo.horarios.forEach(horario => {
+                    const btnHorario = document.createElement('div');
+                    btnHorario.className = 'horario-item';
+                    btnHorario.textContent = horario;
+                    btnHorario.addEventListener('click', () => {
+                        document.querySelectorAll('.horario-item').forEach(h => h.classList.remove('selecionado'));
+                        btnHorario.classList.add('selecionado');
+                    });
+                    container.appendChild(btnHorario);
+                });
+            }
+            
+            // Instruções
+            if (modelo.instrucoes) {
+                const divInstrucoes = document.createElement('div');
+                divInstrucoes.className = 'campo-form';
+                divInstrucoes.innerHTML = `
+                    <label>Instruções</label>
+                    <textarea readonly>${modelo.instrucoes}</textarea>
+                `;
+                body.appendChild(divInstrucoes);
+            }
+            
+            // Botão de envio
+            const btnEnviar = document.createElement('button');
+            btnEnviar.className = 'btn verde';
+            btnEnviar.style.width = '100%';
+            btnEnviar.style.marginTop = '20px';
+            btnEnviar.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Solicitação';
+            btnEnviar.addEventListener('click', enviarSolicitacao);
+            body.appendChild(btnEnviar);
+            
+            modal.classList.add('show');
+        }
+
+        function enviarSolicitacao() {
+            const btn = event.target;
+            mostrarCarregamento(btn, true);
+            
+            // Coletar dados do formulário
+            const dados = {
+                municipio: municipioSelecionado.nome,
+                orgao: orgaoSelecionado.orgao,
+                servico: modeloSelecionado.titulo,
+                data: new Date().toLocaleDateString(),
+                horario: document.querySelector('.horario-item.selecionado')?.textContent || 'Não agendado',
+                protocolo: gerarProtocolo(),
+                status: 'Pendente'
+            };
+            
+            document.querySelectorAll('.campo-dinamico').forEach(campo => {
+                dados[campo.dataset.campo] = campo.value;
+            });
+            
+            // Salvar no Firebase
+            const protocoloRef = database.ref(`protocolos/${municipioSelecionado.id}/${dados.protocolo}`);
+            protocoloRef.set(dados).then(() => {
+                mostrarCarregamento(btn, false);
+                
+                // Fechar modal
+                document.getElementById('modal-formulario').classList.remove('show');
+                
+                // Mostrar comprovante
+                mostrarComprovante(dados);
+            }).catch(error => {
+                console.error('Erro ao salvar:', error);
+                mostrarCarregamento(btn, false);
+                alert('Erro ao enviar solicitação. Tente novamente.');
+            });
+        }
+
+        function mostrarComprovante(dados) {
+            const comprovante = document.getElementById('comprovante');
+            const body = document.getElementById('comprovante-body');
+            
+            let html = `
+                <div class="protocolo">
+                    <h3>${dados.protocolo}</h3>
+                </div>
+            `;
+            
+            for (let [key, value] of Object.entries(dados)) {
+                if (key !== 'protocolo') {
+                    html += `
+                        <div class="info-linha">
+                            <span class="info-label">${key}:</span>
+                            <span class="info-valor">${value}</span>
+                        </div>
+                    `;
+                }
+            }
+            
+            html += `
+                <button class="btn-download" onclick="window.print()">
+                    <i class="fas fa-download"></i>
+                    Baixar Comprovante
+                </button>
+            `;
+            
+            body.innerHTML = html;
+            comprovante.classList.add('show');
+        }
+
+        // Botão de agendar
+        document.getElementById('btn-agendar').addEventListener('click', () => {
+            if (!municipioSelecionado) {
+                alert('Selecione um município primeiro');
+                return;
+            }
+            // Se houver apenas um órgão, abre direto
+            const orgaos = document.querySelectorAll('.orgao-item');
+            if (orgaos.length === 1) {
+                orgaos[0].click();
+            } else {
+                // Rolar até a lista de órgãos
+                document.getElementById('orgaos-lista').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        // Botão de consultar protocolo
+        document.getElementById('btn-consultar').addEventListener('click', () => {
+            document.getElementById('modal-consulta').classList.add('show');
+        });
+
+        // Buscar protocolo
+        document.getElementById('btn-buscar-protocolo').addEventListener('click', () => {
+            const protocolo = document.getElementById('protocolo-consulta').value;
+            const resultadoDiv = document.getElementById('resultado-consulta');
+            
+            if (!protocolo) {
+                alert('Digite um número de protocolo');
+                return;
+            }
+            
+            const btn = event.target;
+            mostrarCarregamento(btn, true);
+            
+            // Buscar em todos os municípios
+            database.ref('protocolos').once('value', (snapshot) => {
+                mostrarCarregamento(btn, false);
+                
+                let encontrado = false;
+                snapshot.forEach((municipioSnapshot) => {
+                    const protocoloData = municipioSnapshot.child(protocolo).val();
+                    if (protocoloData) {
+                        encontrado = protocoloData;
+                    }
+                });
+                
+                if (encontrado) {
+                    let statusClass = '';
+                    let statusIcon = '';
+                    
+                    switch(encontrado.status) {
+                        case 'Concluído':
+                            statusClass = 'verde';
+                            statusIcon = 'fas fa-check-circle';
+                            break;
+                        case 'Em espera':
+                            statusClass = 'amarelo';
+                            statusIcon = 'fas fa-clock';
+                            break;
+                        case 'Não resolvido':
+                            statusClass = 'vermelho';
+                            statusIcon = 'fas fa-times-circle';
+                            break;
+                        default:
+                            statusClass = 'azul';
+                            statusIcon = 'fas fa-hourglass-half';
+                    }
+                    
+                    resultadoDiv.innerHTML = `
+                        <div style="background: #f8f9fa; border-radius: 8px; padding: 15px;">
+                            <h4 style="color: #003366; margin-bottom: 15px;">Protocolo: ${protocolo}</h4>
+                            <div class="info-linha">
+                                <span class="info-label">Status:</span>
+                                <span class="info-valor" style="color: ${statusClass === 'verde' ? '#28a745' : statusClass === 'vermelho' ? '#dc3545' : '#ffc107'}">
+                                    <i class="${statusIcon}"></i> ${encontrado.status}
+                                </span>
+                            </div>
+                            <div class="info-linha">
+                                <span class="info-label">Município:</span>
+                                <span class="info-valor">${encontrado.municipio}</span>
+                            </div>
+                            <div class="info-linha">
+                                <span class="info-label">Serviço:</span>
+                                <span class="info-valor">${encontrado.servico}</span>
+                            </div>
+                            <div class="info-linha">
+                                <span class="info-label">Data:</span>
+                                <span class="info-valor">${encontrado.data}</span>
+                            </div>
+                            ${encontrado.atendidoPor ? `
+                            <div class="info-linha">
+                                <span class="info-label">Atendido por:</span>
+                                <span class="info-valor">${encontrado.atendidoPor} (${encontrado.cargo || 'Funcionário'})</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                    `;
+                    resultadoDiv.style.display = 'block';
+                } else {
+                    resultadoDiv.innerHTML = '<div style="color: #dc3545; text-align: center;">Protocolo não encontrado</div>';
+                    resultadoDiv.style.display = 'block';
+                }
+            });
+        });
+
+        // Fechar modais
+        document.getElementById('fechar-formulario').addEventListener('click', () => {
+            document.getElementById('modal-formulario').classList.remove('show');
+        });
+
+        document.getElementById('fechar-consulta').addEventListener('click', () => {
+            document.getElementById('modal-consulta').classList.remove('show');
+            document.getElementById('resultado-consulta').style.display = 'none';
+            document.getElementById('protocolo-consulta').value = '';
+        });
+
+        document.getElementById('fechar-comprovante').addEventListener('click', () => {
+            document.getElementById('comprovante').classList.remove('show');
+        });
+
+        // Fechar ao clicar fora
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('notificacao-overlay')) {
+                e.target.classList.remove('show');
+            }
+            if (e.target.classList.contains('modal-formulario')) {
+                e.target.classList.remove('show');
+            }
+            if (e.target.classList.contains('comprovante')) {
+                e.target.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
