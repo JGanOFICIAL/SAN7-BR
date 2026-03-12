@@ -85,7 +85,6 @@
             padding: 32px;
         }
 
-        /* CARD DE LOGIN - MINIMALISTA */
         .login-box {
             width: 100%;
             max-width: 400px;
@@ -106,9 +105,9 @@
             padding-left: 16px;
         }
 
-        /* INPUT QUADRADO */
+        /* INPUTS QUADRADOS */
         .input-group {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .input-group label {
@@ -121,29 +120,33 @@
             margin-bottom: 8px;
         }
 
-        .na-input {
+        .square-input {
             width: 100%;
-            height: 70px;
+            height: 60px;
             border: 1px solid #E5E7EB;
             border-radius: 8px;
-            padding: 0 20px;
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: 8px;
-            text-align: center;
+            padding: 0 16px;
+            font-size: 1rem;
             background: #FFFFFF;
             color: #111827;
             outline: none;
         }
 
-        .na-input:focus {
+        .square-input:focus {
             border-color: #0A192F;
+        }
+
+        .na-input {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 8px;
+            text-align: center;
         }
 
         .na-input::placeholder {
             color: #E5E7EB;
             font-weight: 400;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             letter-spacing: 4px;
         }
 
@@ -189,6 +192,11 @@
 
         .btn-square:hover {
             background: #112240;
+        }
+
+        .btn-square:disabled {
+            background: #9CA3AF;
+            cursor: not-allowed;
         }
 
         /* TIMELINE VIEW */
@@ -264,10 +272,6 @@
             margin-bottom: 12px;
         }
 
-        .termo-texto strong {
-            color: #0A192F;
-        }
-
         .protocolo-box {
             font-family: monospace;
             background: #FFFFFF;
@@ -339,11 +343,6 @@
             cursor: pointer;
         }
 
-        .btn-primary:disabled {
-            background: #E5E7EB;
-            cursor: not-allowed;
-        }
-
         .status-error {
             background: #FEE2E2;
             border: 1px solid #FECACA;
@@ -353,6 +352,17 @@
             margin: 16px 0;
             text-align: center;
             font-weight: 500;
+        }
+
+        .device-warning {
+            background: #FEF3C7;
+            border: 1px solid #FDE68A;
+            color: #92400E;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 16px 0;
+            text-align: center;
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -377,11 +387,16 @@
     <!-- TELA DE LOGIN -->
     <div id="login-view" class="login-box">
         <h2>Acesso restrito</h2>
-        <div class="subtitle">Funcionários • 5 dígitos</div>
+        <div class="subtitle">Funcionários • Autenticação dupla</div>
+
+        <div class="input-group">
+            <label>NOME COMPLETO</label>
+            <input type="text" id="nome" class="square-input" placeholder="Digite seu nome">
+        </div>
 
         <div class="input-group">
             <label>NÚMERO DE AUTENTICAÇÃO (NA)</label>
-            <input type="text" id="serie" maxlength="5" placeholder="·····" class="na-input" inputmode="numeric" pattern="\d*">
+            <input type="text" id="serie" maxlength="5" placeholder="·····" class="square-input na-input" inputmode="numeric" pattern="\d*">
         </div>
 
         <div class="remember-row">
@@ -390,7 +405,7 @@
         </div>
 
         <button class="btn-square" id="btnEntrar">
-            <span>ACESSAR SISTEMA</span>
+            <span>VALIDAR ACESSO</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
@@ -406,14 +421,18 @@
             </div>
             <div class="step" id="s2">
                 <div class="step-number">2</div>
-                <div class="step-label">Obtendo localização</div>
+                <div class="step-label">Verificando dispositivo</div>
             </div>
             <div class="step" id="s3">
                 <div class="step-number">3</div>
+                <div class="step-label">Obtendo localização</div>
+            </div>
+            <div class="step" id="s4">
+                <div class="step-number">4</div>
                 <div class="step-label">Gerando protocolo</div>
             </div>
 
-            <!-- ÁREA DO TERMO (TEXTO PRETO) -->
+            <!-- ÁREA DO TERMO -->
             <div id="termoArea" style="display: none;">
                 <div class="termo-texto" id="termoConteudo"></div>
                 <div class="protocolo-box" id="protocoloDisplay"></div>
@@ -424,6 +443,9 @@
                 <p>📍 Para acessar o sistema, é necessário permitir a localização em tempo real.</p>
                 <button class="btn-geo" id="requestGeoBtn">Permitir localização</button>
             </div>
+
+            <!-- AVISO DE DISPOSITIVO -->
+            <div id="deviceWarning" class="device-warning" style="display: none;"></div>
 
             <!-- MENSAGEM DE ERRO -->
             <div id="errorMsg" class="status-error" style="display: none;"></div>
@@ -442,7 +464,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-    // Config Firebase (mantida)
+    // Config Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
         authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
@@ -460,10 +482,12 @@
     const loginView = document.getElementById('login-view');
     const timelineView = document.getElementById('timeline-view');
     const btnEntrar = document.getElementById('btnEntrar');
+    const nomeInput = document.getElementById('nome');
     const serieInput = document.getElementById('serie');
     const btnBack = document.getElementById('btnBack');
     const btnGo = document.getElementById('btnGo');
     const errorMsg = document.getElementById('errorMsg');
+    const deviceWarning = document.getElementById('deviceWarning');
     const termoArea = document.getElementById('termoArea');
     const termoConteudo = document.getElementById('termoConteudo');
     const protocoloDisplay = document.getElementById('protocoloDisplay');
@@ -472,8 +496,19 @@
     // Estado
     let geoPermitida = false;
     let coords = null;
-    let userId = '';
-    let userNome = '';
+    let userData = null;
+    let deviceId = '';
+
+    // Gerar ID único do dispositivo
+    function getDeviceId() {
+        let device = localStorage.getItem('deviceId');
+        if (!device) {
+            device = 'dev_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('deviceId', device);
+        }
+        return device;
+    }
+    deviceId = getDeviceId();
 
     // Notificação some após 2s
     setTimeout(() => {
@@ -482,7 +517,13 @@
 
     // Login
     btnEntrar.addEventListener('click', () => {
+        const nome = nomeInput.value.trim();
         const serie = serieInput.value.trim();
+
+        if (!nome) {
+            alert('Digite seu nome completo');
+            return;
+        }
         if (!/^\d{5}$/.test(serie)) {
             alert('Digite os 5 dígitos do NA');
             return;
@@ -491,7 +532,7 @@
         loginView.style.display = 'none';
         timelineView.style.display = 'block';
         resetFlow();
-        iniciarAutenticacao(serie);
+        iniciarAutenticacao(nome, serie);
     });
 
     function resetFlow() {
@@ -501,8 +542,10 @@
             if (s.id === 's1') num.textContent = '1';
             if (s.id === 's2') num.textContent = '2';
             if (s.id === 's3') num.textContent = '3';
+            if (s.id === 's4') num.textContent = '4';
         });
         errorMsg.style.display = 'none';
+        deviceWarning.style.display = 'none';
         btnGo.style.display = 'none';
         btnBack.style.display = 'none';
         termoArea.style.display = 'none';
@@ -519,27 +562,76 @@
         }
     }
 
-    function iniciarAutenticacao(serie) {
+    function iniciarAutenticacao(nome, serie) {
         setStepStatus('s1', 'active');
-        userId = serie;
-
-        setTimeout(() => {
-            db.ref('usuarios/' + serie).once('value').then(snap => {
-                if (snap.exists()) {
-                    userNome = snap.val().nome || 'Funcionário';
-                    setStepStatus('s1', 'done');
-                    setStepStatus('s2', 'active');
-                    solicitarLocalizacao();
-                } else {
-                    falharAutenticacao('NA não reconhecido.');
+        
+        // Buscar usuário pelo NA
+        db.ref('usuarios/' + serie).once('value').then(snap => {
+            if (snap.exists()) {
+                const usuario = snap.val();
+                
+                // VERIFICAR SE O NOME CORRESPONDE (case insensitive)
+                if (usuario.nome.toLowerCase() !== nome.toLowerCase()) {
+                    falharAutenticacao('Nome não corresponde ao NA informado.');
+                    return;
                 }
-            }).catch(() => {
-                falharAutenticacao('Erro de conexão.');
-            });
-        }, 1000);
+
+                userData = usuario;
+                userData.na = serie;
+                setStepStatus('s1', 'done');
+                setStepStatus('s2', 'active');
+                
+                // Verificar se já está logado em outro dispositivo
+                verificarDispositivo(serie);
+            } else {
+                falharAutenticacao('NA não encontrado.');
+            }
+        }).catch(() => {
+            falharAutenticacao('Erro de conexão.');
+        });
     }
 
-    function solicitarLocalizacao() {
+    function verificarDispositivo(serie) {
+        // Verificar se existe sessão ativa para este NA
+        db.ref('sessoes_ativas/' + serie).once('value').then(snap => {
+            const sessao = snap.val();
+            
+            if (sessao && sessao.deviceId !== deviceId) {
+                // Já está logado em outro dispositivo
+                deviceWarning.innerHTML = `
+                    ⚠️ Este NA já está sendo usado em outro dispositivo.<br>
+                    Data: ${new Date(sessao.timestamp).toLocaleString('pt-BR')}<br>
+                    Se continuar, a outra sessão será encerrada.
+                `;
+                deviceWarning.style.display = 'block';
+                
+                // Oferecer opção de continuar (matar outra sessão)
+                setTimeout(() => {
+                    if (confirm('Deseja encerrar a outra sessão e continuar aqui?')) {
+                        encerrarSessaoAnterior(serie);
+                    } else {
+                        falharAutenticacao('Acesso negado por segurança.');
+                    }
+                }, 500);
+            } else {
+                // Dispositivo livre ou é o mesmo
+                setStepStatus('s2', 'done');
+                setStepStatus('s3', 'active');
+                solicitarLocalizacao(serie);
+            }
+        });
+    }
+
+    function encerrarSessaoAnterior(serie) {
+        // Remover sessão anterior
+        db.ref('sessoes_ativas/' + serie).remove().then(() => {
+            setStepStatus('s2', 'done');
+            setStepStatus('s3', 'active');
+            solicitarLocalizacao(serie);
+        });
+    }
+
+    function solicitarLocalizacao(serie) {
         if (!navigator.geolocation) {
             mostrarGeoBox();
             return;
@@ -553,9 +645,9 @@
                     lng: pos.coords.longitude,
                     accuracy: pos.coords.accuracy
                 };
-                setStepStatus('s2', 'done');
-                setStepStatus('s3', 'active');
-                gerarTermoEProtocolo();
+                setStepStatus('s3', 'done');
+                setStepStatus('s4', 'active');
+                gerarTermoEProtocolo(serie);
             },
             (err) => {
                 console.log('Geo error:', err);
@@ -569,36 +661,46 @@
         geoBox.style.display = 'block';
         document.getElementById('requestGeoBtn').onclick = () => {
             geoBox.style.display = 'none';
-            solicitarLocalizacao();
+            solicitarLocalizacao(userData.na);
         };
     }
 
-    function gerarTermoEProtocolo() {
+    function gerarTermoEProtocolo(serie) {
         setTimeout(() => {
             const protocolo = 'NA-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2,6).toUpperCase();
             const dataHora = new Date().toLocaleString('pt-BR', { 
                 day: '2-digit', month: '2-digit', year: 'numeric', 
-                hour: '2-digit', minute: '2-digit' 
+                hour: '2-digit', minute: '2-digit', second: '2-digit'
             });
 
-            // TERMO EM TEXTO PRETO (3-4 linhas)
-            const termo = `Eu, ${userNome}, portador do NA ${userId}, declaro que em ${dataHora} acessei o sistema DomusFit.\n` +
+            // Registrar sessão ativa
+            db.ref('sessoes_ativas/' + serie).set({
+                deviceId: deviceId,
+                nome: userData.nome,
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                dataHora: dataHora
+            });
+
+            // TERMO EM TEXTO PRETO
+            const termo = `Eu, ${userData.nome}, portador do NA ${serie}, declaro que em ${dataHora} acessei o sistema DomusFit.\n` +
                          `Localização: latitude ${coords.lat.toFixed(4)}, longitude ${coords.lng.toFixed(4)}.\n` +
-                         `Este acesso está registrado sob protocolo ${protocolo}.`;
+                         `Dispositivo ID: ${deviceId.substring(0,8)}...\n` +
+                         `Protocolo: ${protocolo}`;
 
             termoConteudo.innerHTML = termo.replace(/\n/g, '<br>');
             protocoloDisplay.textContent = `Protocolo: ${protocolo}`;
             termoArea.style.display = 'block';
-            setStepStatus('s3', 'done');
+            setStepStatus('s4', 'done');
 
             // Salvar log no Firebase
             db.ref('logs_acesso').push({
-                usuarioId: userId,
-                nome: userNome,
+                usuarioId: serie,
+                nome: userData.nome,
                 protocolo: protocolo,
                 timestamp: firebase.database.ServerValue.TIMESTAMP,
                 dataHora: dataHora,
                 localizacao: coords,
+                deviceId: deviceId,
                 userAgent: navigator.userAgent
             });
 
@@ -611,6 +713,7 @@
         setStepStatus('s1', 'error');
         setStepStatus('s2', 'error');
         setStepStatus('s3', 'error');
+        setStepStatus('s4', 'error');
         errorMsg.textContent = msg;
         errorMsg.style.display = 'block';
         btnBack.style.display = 'block';
@@ -619,6 +722,7 @@
     btnBack.addEventListener('click', () => {
         timelineView.style.display = 'none';
         loginView.style.display = 'block';
+        nomeInput.value = '';
         serieInput.value = '';
     });
 
