@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DomusFit • Acesso Restrito</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -20,49 +20,48 @@
             flex-direction: column;
         }
 
-        /* HEADER LIMPO E MINIMALISTA */
+        /* HEADER QUADRADO E FIXO */
         header {
-            height: 70px;
-            padding: 0 5%;
+            height: 80px;
+            padding: 0 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #f0f0f0;
-            background: rgba(255,255,255,0.98);
-            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #E5E7EB;
+            background: #FFFFFF;
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
         .logo {
-            width: 150px;
-            height: 40px;
+            width: 160px;
+            height: 44px;
             background: url('https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000083-d9fb4d9fb6/700/3F36BE85-5E12-4237-844C-9BD82571F2C4.webp') no-repeat center left;
             background-size: contain;
         }
 
-        .menu-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: #f5f5f5;
+        .menu-square {
+            width: 44px;
+            height: 44px;
+            background: #F3F4F6;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: default;
         }
 
-        /* NOTIFICAÇÃO INICIAL (some após 2s) */
+        /* NOTIFICAÇÃO */
         .notification-bar {
             background: #0A192F;
-            color: white;
+            color: #FFFFFF;
             text-align: center;
-            padding: 12px;
+            padding: 14px;
             font-size: 0.9rem;
             font-weight: 500;
-            letter-spacing: 0.3px;
-            transition: opacity 0.5s ease;
+            border-bottom: 1px solid #1E2A3A;
+            transition: opacity 0.4s;
         }
 
         .notification-bar span {
@@ -72,176 +71,175 @@
 
         .hidden-notification {
             opacity: 0;
-            pointer-events: none;
             height: 0;
             padding: 0;
+            overflow: hidden;
         }
 
         /* CONTEÚDO PRINCIPAL */
-        .main-content {
+        .main-container {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 32px;
         }
 
-        .login-card {
+        /* CARD DE LOGIN - MINIMALISTA */
+        .login-box {
             width: 100%;
-            max-width: 440px;
-            background: white;
-            border-radius: 32px;
-            padding: 40px 30px;
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.03);
-            border: 1px solid #f0f0f0;
-            transition: all 0.2s;
+            max-width: 400px;
         }
 
-        .login-card h2 {
-            font-weight: 600;
+        .login-box h2 {
             font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
             margin-bottom: 8px;
-            color: #0A192F;
         }
 
-        .login-card .sub {
+        .login-box .subtitle {
             color: #6B7280;
             font-size: 0.9rem;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             border-left: 3px solid #FFD700;
-            padding-left: 12px;
+            padding-left: 16px;
         }
 
-        /* INPUT REDONDO E MINIMALISTA */
+        /* INPUT QUADRADO */
         .input-group {
             margin-bottom: 24px;
         }
 
         .input-group label {
             display: block;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 0.75rem;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             color: #9CA3AF;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
-        .pin-input {
+        .na-input {
             width: 100%;
-            padding: 20px 20px;
-            border: 1.5px solid #E5E7EB;
-            border-radius: 60px;
-            font-size: 1.8rem;
-            font-weight: 600;
+            height: 70px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 0 20px;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 8px;
             text-align: center;
-            letter-spacing: 12px;
-            background: #F9FAFB;
-            transition: 0.2s;
+            background: #FFFFFF;
             color: #111827;
             outline: none;
         }
 
-        .pin-input:focus {
+        .na-input:focus {
             border-color: #0A192F;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(10,25,47,0.05);
         }
 
-        /* teclado numérico no celular */
-        .pin-input[type="text"] {
-            -webkit-text-security: disc;
+        .na-input::placeholder {
+            color: #E5E7EB;
+            font-weight: 400;
+            font-size: 1.5rem;
+            letter-spacing: 4px;
         }
 
-        .checkbox-line {
+        /* CHECKBOX */
+        .remember-row {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin: 25px 0 30px;
+            margin: 24px 0 32px;
         }
 
-        .checkbox-line input {
+        .remember-row input[type="checkbox"] {
             width: 18px;
             height: 18px;
+            border: 1px solid #D1D5DB;
+            border-radius: 4px;
             accent-color: #0A192F;
         }
 
-        .checkbox-line label {
+        .remember-row label {
             color: #4B5563;
             font-size: 0.9rem;
         }
 
-        .btn-primary {
+        /* BOTÃO QUADRADO */
+        .btn-square {
             width: 100%;
+            height: 60px;
             background: #0A192F;
             color: white;
             border: none;
-            padding: 20px;
-            border-radius: 60px;
+            border-radius: 8px;
             font-weight: 700;
             font-size: 1rem;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 6px 14px rgba(10,25,47,0.12);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-        }
-
-        .btn-primary:hover {
-            background: #112240;
-            transform: scale(1.01);
-        }
-
-        /* ÁREA DE TIMELINE E DECLARAÇÃO */
-        #timeline-view {
-            display: none;
-            width: 100%;
-            max-width: 440px;
-        }
-
-        .timeline-steps {
-            background: white;
-            border-radius: 28px;
-            padding: 30px;
-            border: 1px solid #f0f0f0;
-        }
-
-        .step-item {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            margin-bottom: 24px;
-        }
-
-        .step-badge {
-            width: 42px;
-            height: 42px;
-            border-radius: 42px;
-            background: #F3F4F6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: #6B7280;
             transition: 0.2s;
         }
 
-        .step-item.active .step-badge {
+        .btn-square:hover {
+            background: #112240;
+        }
+
+        /* TIMELINE VIEW */
+        #timeline-view {
+            display: none;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .timeline-container {
+            background: #FFFFFF;
+            border: 1px solid #F3F4F6;
+            border-radius: 8px;
+            padding: 32px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #9CA3AF;
+            background: #FFFFFF;
+        }
+
+        .step.active .step-number {
             background: #0A192F;
+            border-color: #0A192F;
             color: white;
-            box-shadow: 0 0 0 4px rgba(10,25,47,0.1);
         }
 
-        .step-item.done .step-badge {
+        .step.done .step-number {
             background: #059669;
+            border-color: #059669;
             color: white;
         }
 
-        .step-item.error .step-badge {
+        .step.error .step-number {
             background: #DC2626;
+            border-color: #DC2626;
             color: white;
         }
 
@@ -250,87 +248,111 @@
             color: #1F2937;
         }
 
-        /* TERMO DE DECLARAÇÃO (DOC) */
-        .declaration-doc {
+        /* TERMO EM PRETO */
+        .termo-texto {
             background: #F9FAFB;
-            border-radius: 20px;
-            padding: 20px;
-            margin: 24px 0 20px;
-            font-size: 0.85rem;
-            color: #1F2937;
-            border-left: 3px solid #0A192F;
-            line-height: 1.6;
+            padding: 24px;
+            border-radius: 8px;
+            margin: 24px 0;
+            border: 1px solid #E5E7EB;
         }
 
-        .declaration-doc strong {
+        .termo-texto p {
+            color: #111827;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .termo-texto strong {
             color: #0A192F;
         }
 
-        .protocolo {
-            background: white;
-            padding: 12px 16px;
-            border-radius: 60px;
-            border: 1px dashed #0A192F;
-            font-size: 0.8rem;
-            display: inline-block;
-            margin-top: 10px;
+        .protocolo-box {
             font-family: monospace;
+            background: #FFFFFF;
+            padding: 12px 16px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: #1F2937;
+            margin-top: 16px;
+        }
+
+        /* PERMISSÃO LOCALIZAÇÃO */
+        .geo-box {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .geo-box p {
+            color: #374151;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .btn-geo {
+            background: #FFFFFF;
+            border: 1px solid #0A192F;
+            color: #0A192F;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .btn-geo:hover {
+            background: #F3F4F6;
         }
 
         /* BOTÕES DE AÇÃO */
-        .action-buttons {
+        .action-row {
             display: flex;
             gap: 12px;
-            margin-top: 20px;
+            margin-top: 24px;
         }
 
-        .btn-outline {
+        .btn-secondary {
             flex: 1;
-            background: transparent;
-            border: 1.5px solid #E5E7EB;
-            padding: 16px;
-            border-radius: 60px;
+            height: 50px;
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
             font-weight: 600;
             color: #374151;
             cursor: pointer;
         }
 
-        .btn-success {
+        .btn-primary {
             flex: 1;
+            height: 50px;
             background: #0A192F;
             border: none;
-            padding: 16px;
-            border-radius: 60px;
+            border-radius: 8px;
             font-weight: 600;
             color: white;
             cursor: pointer;
         }
 
-        /* LOCALIZAÇÃO PERMISSÃO */
-        .geo-permission-box {
-            background: #F3F4F6;
-            border-radius: 18px;
-            padding: 18px;
-            margin: 20px 0;
+        .btn-primary:disabled {
+            background: #E5E7EB;
+            cursor: not-allowed;
+        }
+
+        .status-error {
+            background: #FEE2E2;
+            border: 1px solid #FECACA;
+            color: #B91C1C;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 16px 0;
             text-align: center;
-            border: 1px solid #E5E7EB;
-        }
-
-        .geo-permission-box p {
-            font-size: 0.85rem;
-            color: #4B5563;
-            margin-bottom: 12px;
-        }
-
-        .btn-geo {
-            background: white;
-            border: 1px solid #0A192F;
-            color: #0A192F;
-            padding: 12px 20px;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
+            font-weight: 500;
         }
     </style>
 </head>
@@ -338,71 +360,78 @@
 
 <header>
     <div class="logo"></div>
-    <div class="menu-icon">⚲</div>
+    <div class="menu-square">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+    </div>
 </header>
 
-<!-- NOTIFICAÇÃO INICIAL (some 2s) -->
 <div id="notification" class="notification-bar">
-    ⚠️ A partir de agora, <span>históricos de autenticação</span> e <span>geolocalização</span> serão registrados.
+    A partir de agora, <span>históricos de autenticação</span> e <span>geolocalização</span> serão registrados.
 </div>
 
-<main class="main-content">
+<main class="main-container">
     <!-- TELA DE LOGIN -->
-    <div id="login-view" class="login-card">
+    <div id="login-view" class="login-box">
         <h2>Acesso restrito</h2>
-        <div class="sub">funcionários • 5 dígitos</div>
+        <div class="subtitle">Funcionários • 5 dígitos</div>
 
         <div class="input-group">
-            <label>ID de autenticação</label>
-            <input type="text" id="serie" maxlength="5" placeholder="·····" class="pin-input" inputmode="numeric" pattern="\d*">
+            <label>NÚMERO DE AUTENTICAÇÃO (NA)</label>
+            <input type="text" id="serie" maxlength="5" placeholder="·····" class="na-input" inputmode="numeric" pattern="\d*">
         </div>
 
-        <div class="checkbox-line">
+        <div class="remember-row">
             <input type="checkbox" id="remember" checked>
-            <label for="remember">Manter sessão neste dispositivo</label>
+            <label for="remember">Lembrar neste dispositivo</label>
         </div>
 
-        <button class="btn-primary" id="btnEntrar">
-            <span>Validar acesso</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <button class="btn-square" id="btnEntrar">
+            <span>ACESSAR SISTEMA</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
         </button>
     </div>
 
-    <!-- TIMELINE + DECLARAÇÃO + PROTOCOLO -->
+    <!-- TELA PÓS-LOGIN -->
     <div id="timeline-view">
-        <div class="timeline-steps">
-            <div class="step-item" id="s1">
-                <div class="step-badge">1</div>
-                <div class="step-label">Validando chave</div>
+        <div class="timeline-container">
+            <div class="step" id="s1">
+                <div class="step-number">1</div>
+                <div class="step-label">Validando credenciais</div>
             </div>
-            <div class="step-item" id="s2">
-                <div class="step-badge">2</div>
-                <div class="step-label">Verificando localização</div>
+            <div class="step" id="s2">
+                <div class="step-number">2</div>
+                <div class="step-label">Obtendo localização</div>
             </div>
-            <div class="step-item" id="s3">
-                <div class="step-badge">3</div>
+            <div class="step" id="s3">
+                <div class="step-number">3</div>
                 <div class="step-label">Gerando protocolo</div>
             </div>
 
-            <!-- ÁREA DA DECLARAÇÃO (DOC) -->
-            <div id="declarationArea" style="display: none;">
-                <div class="declaration-doc" id="docText"></div>
-                <div class="protocolo" id="protocoloDisplay"></div>
+            <!-- ÁREA DO TERMO (TEXTO PRETO) -->
+            <div id="termoArea" style="display: none;">
+                <div class="termo-texto" id="termoConteudo"></div>
+                <div class="protocolo-box" id="protocoloDisplay"></div>
             </div>
 
-            <!-- PERMISSÃO DE LOCALIZAÇÃO (se negado) -->
-            <div id="geoPermissionBox" class="geo-permission-box" style="display: none;">
-                <p>🌍 Para acessar o sistema, é necessário permitir a localização em tempo real.</p>
+            <!-- PERMISSÃO DE LOCALIZAÇÃO -->
+            <div id="geoBox" class="geo-box" style="display: none;">
+                <p>📍 Para acessar o sistema, é necessário permitir a localização em tempo real.</p>
                 <button class="btn-geo" id="requestGeoBtn">Permitir localização</button>
             </div>
 
             <!-- MENSAGEM DE ERRO -->
-            <div id="statusMsg" style="background:#FEE2E2; color:#B91C1C; padding:12px; border-radius:50px; margin:15px 0; text-align:center; display:none;"></div>
+            <div id="errorMsg" class="status-error" style="display: none;"></div>
 
             <!-- BOTÕES -->
-            <div class="action-buttons">
-                <button class="btn-outline" id="btnBack" style="display: none;">↻ Voltar</button>
-                <button class="btn-success" id="btnGo" style="display: none;">Continuar →</button>
+            <div class="action-row">
+                <button class="btn-secondary" id="btnBack" style="display: none;">VOLTAR</button>
+                <button class="btn-primary" id="btnGo" style="display: none;">CONTINUAR</button>
             </div>
         </div>
     </div>
@@ -413,7 +442,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-    // FIREBASE (config mantida)
+    // Config Firebase (mantida)
     const firebaseConfig = {
         apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
         authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
@@ -426,7 +455,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Elementos DOM
+    // Elementos
     const notification = document.getElementById('notification');
     const loginView = document.getElementById('login-view');
     const timelineView = document.getElementById('timeline-view');
@@ -434,179 +463,171 @@
     const serieInput = document.getElementById('serie');
     const btnBack = document.getElementById('btnBack');
     const btnGo = document.getElementById('btnGo');
-    const statusMsg = document.getElementById('statusMsg');
-    const declarationArea = document.getElementById('declarationArea');
-    const docText = document.getElementById('docText');
+    const errorMsg = document.getElementById('errorMsg');
+    const termoArea = document.getElementById('termoArea');
+    const termoConteudo = document.getElementById('termoConteudo');
     const protocoloDisplay = document.getElementById('protocoloDisplay');
-    const geoBox = document.getElementById('geoPermissionBox');
+    const geoBox = document.getElementById('geoBox');
 
-    // estado da localização
+    // Estado
     let geoPermitida = false;
-    let coordsAtuais = null;
+    let coords = null;
     let userId = '';
     let userNome = '';
 
-    // notificação some após 2 segundos
+    // Notificação some após 2s
     setTimeout(() => {
         notification.classList.add('hidden-notification');
     }, 2000);
 
-    // EVENTO LOGIN
+    // Login
     btnEntrar.addEventListener('click', () => {
         const serie = serieInput.value.trim();
         if (!/^\d{5}$/.test(serie)) {
-            alert('Digite exatamente 5 dígitos numéricos');
+            alert('Digite os 5 dígitos do NA');
             return;
         }
 
-        // Troca para timeline
         loginView.style.display = 'none';
         timelineView.style.display = 'block';
         resetFlow();
-        startAuth(serie);
+        iniciarAutenticacao(serie);
     });
 
     function resetFlow() {
-        document.querySelectorAll('.step-item').forEach(s => {
+        document.querySelectorAll('.step').forEach(s => {
             s.classList.remove('active', 'done', 'error');
-            s.querySelector('.step-badge').innerHTML = s.id.replace('s','');
+            const num = s.querySelector('.step-number');
+            if (s.id === 's1') num.textContent = '1';
+            if (s.id === 's2') num.textContent = '2';
+            if (s.id === 's3') num.textContent = '3';
         });
-        statusMsg.style.display = 'none';
+        errorMsg.style.display = 'none';
         btnGo.style.display = 'none';
         btnBack.style.display = 'none';
-        declarationArea.style.display = 'none';
+        termoArea.style.display = 'none';
         geoBox.style.display = 'none';
         geoPermitida = false;
     }
 
-    function setStep(id, state) {
-        const el = document.getElementById(id);
-        if (state === 'active') el.classList.add('active');
-        else if (state === 'done') {
-            el.classList.remove('active');
-            el.classList.add('done');
-            el.querySelector('.step-badge').innerHTML = '✓';
-        } else if (state === 'error') {
-            el.classList.add('error');
-            el.querySelector('.step-badge').innerHTML = '✕';
+    function setStepStatus(id, status) {
+        const step = document.getElementById(id);
+        step.classList.remove('active', 'done', 'error');
+        step.classList.add(status);
+        if (status === 'done') {
+            step.querySelector('.step-number').textContent = '✓';
         }
     }
 
-    // INÍCIO DO FLUXO DE AUTENTICAÇÃO
-    function startAuth(serie) {
-        setStep('s1', 'active');
+    function iniciarAutenticacao(serie) {
+        setStepStatus('s1', 'active');
         userId = serie;
 
-        // step 1: verificar no firebase
         setTimeout(() => {
             db.ref('usuarios/' + serie).once('value').then(snap => {
                 if (snap.exists()) {
-                    const userData = snap.val();
-                    userNome = userData.nome || 'Funcionário';
-                    setStep('s1', 'done');
-                    // parte 2: geolocalização
-                    setStep('s2', 'active');
-                    solicitarGeolocalizacao();
+                    userNome = snap.val().nome || 'Funcionário';
+                    setStepStatus('s1', 'done');
+                    setStepStatus('s2', 'active');
+                    solicitarLocalizacao();
                 } else {
-                    erroAutenticacao('Chave não reconhecida.');
+                    falharAutenticacao('NA não reconhecido.');
                 }
-            }).catch(e => erroAutenticacao('Erro de conexão.'));
-        }, 800);
+            }).catch(() => {
+                falharAutenticacao('Erro de conexão.');
+            });
+        }, 1000);
     }
 
-    function solicitarGeolocalizacao() {
+    function solicitarLocalizacao() {
         if (!navigator.geolocation) {
-            mostrarBotaoGeo();
+            mostrarGeoBox();
             return;
         }
 
         navigator.geolocation.getCurrentPosition(
             (pos) => {
-                // sucesso
                 geoPermitida = true;
-                coordsAtuais = {
+                coords = {
                     lat: pos.coords.latitude,
                     lng: pos.coords.longitude,
-                    accuracy: pos.coords.accuracy,
-                    timestamp: new Date().toISOString()
+                    accuracy: pos.coords.accuracy
                 };
-                setStep('s2', 'done');
-                setStep('s3', 'active');
-                gerarProtocoloEDeclaracao();
+                setStepStatus('s2', 'done');
+                setStepStatus('s3', 'active');
+                gerarTermoEProtocolo();
             },
             (err) => {
-                console.warn('geo error', err);
-                mostrarBotaoGeo();
+                console.log('Geo error:', err);
+                mostrarGeoBox();
             },
-            { enableHighAccuracy: true, timeout: 10000 }
+            { enableHighAccuracy: true, timeout: 8000 }
         );
     }
 
-    function mostrarBotaoGeo() {
+    function mostrarGeoBox() {
         geoBox.style.display = 'block';
         document.getElementById('requestGeoBtn').onclick = () => {
-            solicitarGeolocalizacao(); // nova tentativa
+            geoBox.style.display = 'none';
+            solicitarLocalizacao();
         };
-        // se já tinha step2 como active, mantém; mas se negou, colocamos como erro? melhor active até permitir
     }
 
-    function gerarProtocoloEDeclaracao() {
+    function gerarTermoEProtocolo() {
         setTimeout(() => {
-            // gera protocolo (randômico + timestamp)
-            const protocolo = 'PROT-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2,8).toUpperCase();
-            const dataAtual = new Date().toLocaleString('pt-BR', { dateStyle: 'long', timeStyle: 'short' });
+            const protocolo = 'NA-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2,6).toUpperCase();
+            const dataHora = new Date().toLocaleString('pt-BR', { 
+                day: '2-digit', month: '2-digit', year: 'numeric', 
+                hour: '2-digit', minute: '2-digit' 
+            });
 
-            // texto da declaração (3-4 linhas)
-            const declaracao = `Eu, ${userNome}, portador do número de controle ${userId}, declaro que na data ${dataAtual}, acessei o sistema DomusFit (página restrita). A localização foi compartilhada: latitude ${coordsAtuais?.lat.toFixed(4) || '--'}, longitude ${coordsAtuais?.lng.toFixed(4) || '--'}. A autenticação ocorreu via dispositivo seguro.`;
+            // TERMO EM TEXTO PRETO (3-4 linhas)
+            const termo = `Eu, ${userNome}, portador do NA ${userId}, declaro que em ${dataHora} acessei o sistema DomusFit.\n` +
+                         `Localização: latitude ${coords.lat.toFixed(4)}, longitude ${coords.lng.toFixed(4)}.\n` +
+                         `Este acesso está registrado sob protocolo ${protocolo}.`;
 
-            docText.innerText = declaracao;
-            protocoloDisplay.innerText = `Protocolo: ${protocolo}`;
-            declarationArea.style.display = 'block';
-            setStep('s3', 'done');
+            termoConteudo.innerHTML = termo.replace(/\n/g, '<br>');
+            protocoloDisplay.textContent = `Protocolo: ${protocolo}`;
+            termoArea.style.display = 'block';
+            setStepStatus('s3', 'done');
 
-            // SALVAR LOG NO FIREBASE (histórico de autenticação)
-            const logRef = db.ref('logs_acesso').push();
-            logRef.set({
+            // Salvar log no Firebase
+            db.ref('logs_acesso').push({
                 usuarioId: userId,
                 nome: userNome,
                 protocolo: protocolo,
                 timestamp: firebase.database.ServerValue.TIMESTAMP,
-                dataLegivel: dataAtual,
-                localizacao: coordsAtuais,
+                dataHora: dataHora,
+                localizacao: coords,
                 userAgent: navigator.userAgent
             });
 
             btnGo.style.display = 'block';
             btnBack.style.display = 'block';
-        }, 1000);
+        }, 1200);
     }
 
-    function erroAutenticacao(msg) {
-        setStep('s1', 'error');
-        setStep('s2', 'error');
-        setStep('s3', 'error');
-        statusMsg.innerText = msg;
-        statusMsg.style.display = 'block';
+    function falharAutenticacao(msg) {
+        setStepStatus('s1', 'error');
+        setStepStatus('s2', 'error');
+        setStepStatus('s3', 'error');
+        errorMsg.textContent = msg;
+        errorMsg.style.display = 'block';
         btnBack.style.display = 'block';
     }
 
-    // Voltar para o login
     btnBack.addEventListener('click', () => {
         timelineView.style.display = 'none';
         loginView.style.display = 'block';
         serieInput.value = '';
     });
 
-    // Continuar para index2.html
     btnGo.addEventListener('click', () => {
         window.location.href = 'index2.html';
     });
-
-    // Lembrar (checkbox) - já existe visualmente
-
 </script>
 
-<!-- INCLUSÃO DO ARQUIVO DE SEGURANÇA (mantido) -->
+<!-- ARQUIVO DE SEGURANÇA -->
 <script src="san7doc.acesso-seguro.js" defer></script>
 
 </body>
