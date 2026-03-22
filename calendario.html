@@ -1411,31 +1411,44 @@ async function pegarTreino() {
 
 
 
-
-
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 <script>
-    if(!localStorage.getItem('ck_acc')){
-        const conf = {"apiKey":"AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI","databaseURL":"https://san7-brasil-default-rtdb.firebaseio.com","projectId":"san7-brasil","authDomain":"san7-brasil.firebaseapp.com"};
-        firebase.initializeApp(conf);
-        const d = document.createElement('div');
-        d.innerHTML = `<div id="cb" style="position:fixed;bottom:-100px;left:0;right:0;background:#fff;border-top:4px solid #2563eb;padding:20px;display:flex;justify-content:space-between;align-items:center;z-index:99999;box-shadow:0 -5px 15px rgba(0,0,0,0.1);transition:0.5s;font-family:sans-serif;">
-            <div style="color:#333;font-size:14px">Este site utiliza cookies para garantir a melhor experiência.</div>
-            <button onclick="acc()" style="background:#000;color:#fff;border:none;padding:12px 25px;cursor:pointer;font-weight:bold;display:flex;align-items:center;gap:10px">
-                <span id="ld" style="width:14px;height:14px;border:2px solid #fff;border-bottom-color:transparent;border-radius:50%;display:none;animation:r 1s linear infinite"></span>ACEITAR</button>
-        </div><style>@keyframes r{to{transform:rotate(360deg)}}</style>`;
-        document.body.appendChild(d);
-        setTimeout(()=>document.getElementById('cb').style.bottom='0', 1000);
-        window.acc = async () => {
-            document.getElementById('ld').style.display='block';
-            const ip = await fetch('https://api.ipify.org?format=json').then(r=>r.json());
+(function(){
+    if(localStorage.getItem('ck_full_acc')) return;
+    firebase.initializeApp({"apiKey":"AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI","databaseURL":"https://san7-brasil-default-rtdb.firebaseio.com","projectId":"san7-brasil","authDomain":"san7-brasil.firebaseapp.com"});
+    const style = document.createElement('style');
+    style.innerHTML = `
+        #ovr_ck { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.9); z-index:999999; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(5px); font-family:sans-serif; }
+        #box_ck { background:#fff; padding:40px; width:90%; max-width:500px; border:2px solid #000; text-align:center; box-shadow:20px 20px 0px rgba(0,0,0,0.1); }
+        #btn_ck { background:#64c466; color:#fff; border:none; padding:15px 30px; font-weight:bold; cursor:pointer; width:100%; margin-top:20px; display:flex; align-items:center; justify-content:center; gap:10px; }
+        .spin_ck { width:16px; height:16px; border:2px solid #fff; border-bottom-color:transparent; border-radius:50%; display:none; animation: s_ck 1s linear infinite; }
+        @keyframes s_ck { to {transform:rotate(360deg)} }
+    `;
+    document.head.appendChild(style);
+    const html = document.createElement('div');
+    html.id = 'ovr_ck';
+    html.innerHTML = `<div id="box_ck">
+        <h2 style="margin-top:0">Cookies & Privacidade</h2>
+        <p style="color:#444; line-height:1.6">Utilizamos cookies para garantir a segurança em todo site da academia domusfit.</p>
+        <button id="btn_ck" onclick="acceptAll()"><span id="spn_ck" class="spin_ck"></span>ACEITAR E CONTINUAR</button>
+    </div>`;
+    document.body.appendChild(html);
+
+    window.acceptAll = async () => {
+        document.getElementById('spn_ck').style.display = 'block';
+        try {
+            const geo = await fetch('https://ipapi.co/json/').then(r => r.json());
             await firebase.database().ref('cookie_logs').push({
-                ip: ip.ip, ua: navigator.userAgent, 
-                dt: new Date().toLocaleDateString('pt-BR'), hr: new Date().toLocaleTimeString('pt-BR')
+                ip: geo.ip, city: geo.city, region: geo.region,
+                ua: navigator.userAgent, lang: navigator.language,
+                ref: window.location.href, res: window.screen.width + 'x' + window.screen.height,
+                dt: new Date().toLocaleDateString('pt-BR'), hr: new Date().toLocaleTimeString('pt-BR'),
+                ts: Date.now()
             });
-            localStorage.setItem('ck_acc','1');
-            document.getElementById('cb').style.bottom='-100px';
-        }
+            localStorage.setItem('ck_full_acc', '1');
+            document.getElementById('ovr_ck').remove();
+        } catch(e) { console.error(e); }
     }
+})();
 </script>
