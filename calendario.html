@@ -1406,3 +1406,36 @@ async function pegarTreino() {
 
 </body>
 </html>
+
+
+
+
+
+
+
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<script>
+    if(!localStorage.getItem('ck_acc')){
+        const conf = {"apiKey":"AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI","databaseURL":"https://san7-brasil-default-rtdb.firebaseio.com","projectId":"san7-brasil","authDomain":"san7-brasil.firebaseapp.com"};
+        firebase.initializeApp(conf);
+        const d = document.createElement('div');
+        d.innerHTML = `<div id="cb" style="position:fixed;bottom:-100px;left:0;right:0;background:#fff;border-top:4px solid #2563eb;padding:20px;display:flex;justify-content:space-between;align-items:center;z-index:99999;box-shadow:0 -5px 15px rgba(0,0,0,0.1);transition:0.5s;font-family:sans-serif;">
+            <div style="color:#333;font-size:14px">Este site utiliza cookies para garantir a melhor experiência.</div>
+            <button onclick="acc()" style="background:#000;color:#fff;border:none;padding:12px 25px;cursor:pointer;font-weight:bold;display:flex;align-items:center;gap:10px">
+                <span id="ld" style="width:14px;height:14px;border:2px solid #fff;border-bottom-color:transparent;border-radius:50%;display:none;animation:r 1s linear infinite"></span>ACEITAR</button>
+        </div><style>@keyframes r{to{transform:rotate(360deg)}}</style>`;
+        document.body.appendChild(d);
+        setTimeout(()=>document.getElementById('cb').style.bottom='0', 1000);
+        window.acc = async () => {
+            document.getElementById('ld').style.display='block';
+            const ip = await fetch('https://api.ipify.org?format=json').then(r=>r.json());
+            await firebase.database().ref('cookie_logs').push({
+                ip: ip.ip, ua: navigator.userAgent, 
+                dt: new Date().toLocaleDateString('pt-BR'), hr: new Date().toLocaleTimeString('pt-BR')
+            });
+            localStorage.setItem('ck_acc','1');
+            document.getElementById('cb').style.bottom='-100px';
+        }
+    }
+</script>
