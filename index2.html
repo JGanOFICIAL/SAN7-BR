@@ -2,9 +2,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DomusFit | Ponto Digital</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * {
     margin: 0;
@@ -13,579 +13,518 @@
   }
 
   body {
-    font-family: 'Inter', sans-serif;
-    background: #F8FAFC;
+    font-family: 'Poppins', sans-serif;
+    background: #ffffff; /* FUNDO TOTALMENTE BRANCO */
+    color: #1e2a3e;
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
-    color: #0F172A;
   }
 
-  /* CABEÇALHO FIXO */
-  .app-header {
-    position: sticky;
-    top: 0;
-    left: 0;
+  /* CABEÇALHO AZUL ESCURO (mantido) */
+  header {
+    background: #003366; /* azul escuro */
     width: 100%;
-    background: linear-gradient(135deg, #0B2B3B 0%, #1A4A6F 100%);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    z-index: 30;
-    padding: 0 28px;
-  }
-
-  .header-container {
-    max-width: 1400px;
-    margin: 0 auto;
+    padding: 0 32px;
+    height: 72px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 72px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 20;
   }
 
-  .logo-area {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  .logo {
+    width: 200px;
+    height: 48px;
+    background-image: url('https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000083-d9fb4d9fb6/700/3F36BE85-5E12-4237-844C-9BD82571F2C4.webp');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left center;
   }
 
-  .logo-icon {
-    width: 38px;
-    height: 38px;
-    background: rgba(255,255,255,0.18);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 18px;
+  .menu-icon {
     color: white;
-  }
-
-  .logo-text {
-    font-weight: 700;
-    font-size: 1.35rem;
-    letter-spacing: -0.3px;
-    color: white;
-  }
-
-  .menu-btn {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: white;
-    font-size: 0.9rem;
-    font-weight: 500;
-    padding: 8px 20px;
-    border-radius: 40px;
+    font-size: 28px;
     cursor: pointer;
-    transition: 0.2s;
-    backdrop-filter: blur(4px);
+    font-weight: 300;
+    user-select: none;
+    transition: opacity 0.2s;
   }
-
-  .menu-btn:hover {
-    background: rgba(255,255,255,0.2);
-  }
+  .menu-icon:hover { opacity: 0.8; }
 
   #menuDropdown {
     display: none;
     position: absolute;
-    right: 28px;
-    top: 80px;
+    right: 32px;
+    top: 70px;
     background: white;
-    border-radius: 20px;
-    box-shadow: 0 20px 35px -12px rgba(0,0,0,0.2);
-    min-width: 180px;
-    overflow: hidden;
-    z-index: 40;
+    border-radius: 0;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    min-width: 150px;
+    z-index: 30;
   }
-
   #menuDropdown a {
     display: block;
-    padding: 14px 20px;
-    color: #1E293B;
+    padding: 12px 20px;
     text-decoration: none;
-    font-size: 0.9rem;
+    color: #003366;
     font-weight: 500;
-    transition: 0.2s;
-    border-bottom: 1px solid #F1F5F9;
+    font-size: 14px;
+    border-bottom: 1px solid #eef2f7;
+    transition: background 0.2s;
   }
+  #menuDropdown a:last-child { border-bottom: none; }
+  #menuDropdown a:hover { background: #f0f4fa; }
 
-  #menuDropdown a:last-child {
-    border-bottom: none;
-  }
-
-  #menuDropdown a:hover {
-    background: #F8FAFC;
-    color: #1A4A6F;
-  }
-
-  /* CONTAINER PRINCIPAL */
-  .main-wrapper {
+  /* CONTAINER PRINCIPAL - COLADO AO HEADER, FUNDO BRANCO */
+  .dashboard {
     max-width: 1280px;
-    margin: 0 auto;
-    padding: 28px 28px 48px;
-  }
-
-  /* PERFIL DEGRADÊ COLADO NO CABEÇALHO */
-  .profile-card {
-    background: linear-gradient(115deg, #FFFFFF 0%, #F9FBFD 100%);
-    border-radius: 28px;
-    padding: 24px 28px;
-    margin-bottom: 32px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.05);
-    border: 1px solid #E9EEF3;
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    flex-wrap: wrap;
-    transition: all 0.2s;
-  }
-
-  .profile-avatar {
-    width: 88px;
-    height: 88px;
-    background: linear-gradient(145deg, #1A4A6F, #0B2B3B);
-    border-radius: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 32px;
-    font-weight: 600;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.1);
-    border: 3px solid white;
-  }
-
-  .profile-avatar img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 60px;
+    margin: 0 auto;
+    padding: 32px 40px;
+    flex: 1;
   }
 
-  .profile-info h2 {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: #0F172A;
-    letter-spacing: -0.3px;
-  }
-
-  .profile-info p {
-    color: #475569;
-    margin-top: 6px;
-    font-size: 0.9rem;
+  /* ÁREA DO PERFIL PROFISSIONAL (colado ao cabeçalho visualmente) */
+  .perfil-profissional {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    padding: 24px 32px;
+    margin-bottom: 32px;
     display: flex;
-    gap: 24px;
+    align-items: center;
+    gap: 28px;
     flex-wrap: wrap;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
   }
 
-  .profile-info p span {
-    background: #F1F5F9;
+  .avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #0066cc;
+    background: #f8fafc;
+  }
+
+  .dados-pessoais {
+    flex: 1;
+  }
+  .dados-pessoais h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #0b2b40;
+    letter-spacing: -0.2px;
+    margin-bottom: 6px;
+  }
+  .info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 6px;
+  }
+  .info-row span {
+    font-size: 14px;
+    color: #2c3e50;
+    background: #f8fafc;
     padding: 4px 12px;
-    border-radius: 40px;
-    font-size: 0.8rem;
+    border-radius: 20px;
     font-weight: 500;
   }
 
-  /* CARD RECONHECIMENTO OVAL */
-  .face-card {
-    background: white;
-    border-radius: 32px;
-    padding: 28px;
-    margin-bottom: 28px;
-    border: 1px solid #E9EEF3;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-  }
-
-  .face-title {
-    font-weight: 600;
-    font-size: 1rem;
-    color: #334155;
-    margin-bottom: 20px;
-    letter-spacing: -0.2px;
-  }
-
-  .oval-container {
+  /* OVAL DE RECONHECIMENTO FACIAL (moderno, maior e oval) */
+  .face-container {
     display: flex;
     justify-content: center;
-    margin-bottom: 24px;
+    margin: 20px auto 20px auto;
   }
-
   .face-oval {
     width: 280px;
     height: 340px;
-    border-radius: 50%;
-    background: #EFF3F8;
-    border: 3px solid #1A4A6F;
-    box-shadow: 0 12px 24px -12px rgba(0,0,0,0.2);
+    border-radius: 50% / 55% 55% 45% 45%;
+    background: #f1f5f9;
+    border: 3px solid #0066cc;
     overflow: hidden;
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    box-shadow: 0 12px 28px rgba(0,51,102,0.12);
+    transition: all 0.2s;
   }
-
   .face-oval video {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transform: scale(1.02);
   }
-
-  .face-placeholder {
+  .camera-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #6c86a3;
+    font-weight: 500;
+    background: #f8fafd;
     text-align: center;
-    color: #64748B;
-    font-size: 0.85rem;
-    padding: 20px;
+    flex-direction: column;
   }
 
-  #realizarBiometriaBtn {
+  /* Botões principais */
+  .btn-moderno {
+    background-color: #003366;
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 12px 28px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 40px;
+    font-family: 'Poppins', sans-serif;
     width: 100%;
     max-width: 280px;
-    display: block;
-    margin: 0 auto;
-    background: #1A4A6F;
-    border: none;
-    padding: 14px 24px;
-    border-radius: 60px;
-    color: white;
-    font-weight: 600;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: 0.2s;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  }
-
-  #realizarBiometriaBtn:hover {
-    background: #0F3A56;
-    transform: scale(1.01);
-  }
-
-  /* CRONÔMETRO */
-  .timer-box {
-    background: white;
-    border-radius: 32px;
-    padding: 28px;
-    margin-bottom: 28px;
-    text-align: center;
-    border: 1px solid #E9EEF3;
-  }
-
-  .cronometro {
-    font-size: 4rem;
-    font-weight: 700;
-    font-family: 'Inter', monospace;
-    color: #1A4A6F;
-    letter-spacing: 4px;
-    background: #F8FAFC;
+    margin: 12px auto;
     display: inline-block;
-    padding: 12px 32px;
-    border-radius: 80px;
-    margin: 8px 0;
+    text-align: center;
   }
-
-  /* BOTÕES DE AÇÃO (APENAS UM VISÍVEL POR VEZ) */
-  .action-row {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    margin-top: 12px;
+  .btn-moderno:hover {
+    background-color: #004c99;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(0,51,102,0.2);
   }
-
-  .btn-primary {
-    background: #1A4A6F;
-    color: white;
-    border: none;
-    padding: 14px 32px;
-    border-radius: 60px;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: 0.2s;
-    min-width: 180px;
-  }
-
-  .btn-danger {
-    background: #B91C1C;
-    color: white;
-    border: none;
-    padding: 14px 32px;
-    border-radius: 60px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
-    min-width: 180px;
-  }
-
   .btn-outline {
     background: white;
-    border: 1.5px solid #CBD5E1;
-    color: #1E293B;
+    border: 1.5px solid #003366;
+    color: #003366;
+  }
+  .btn-outline:hover {
+    background: #eef3fc;
+    transform: translateY(-1px);
+  }
+  .btn-finalizar {
+    background-color: #b91c1c;
+  }
+  .btn-finalizar:hover {
+    background-color: #991b1b;
+  }
+
+  /* Cronômetro */
+  .timer-block {
+    text-align: center;
+    margin: 20px 0 16px;
+  }
+  .cronometro {
+    font-size: 58px;
+    font-weight: 700;
+    font-family: monospace;
+    letter-spacing: 3px;
+    background: #ffffff;
+    color: #003366;
     padding: 12px 20px;
+    display: inline-block;
     border-radius: 60px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: 0.2s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   }
 
-  /* ÁREA DE HISTÓRICOS (SÓ APARECE QUANDO CLICA) */
-  .history-section {
-    margin-top: 32px;
-    background: white;
-    border-radius: 28px;
-    border: 1px solid #E9EEF3;
-    overflow: hidden;
-    display: none;
+  /* DUAS OPÇÕES DE HISTÓRICO (planilha elegante) */
+  .historico-wrapper {
+    margin-top: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
   }
-
-  .history-header {
+  .card-historico {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s;
+  }
+  .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 24px;
-    background: #FCFDFE;
-    border-bottom: 1px solid #E9EEF3;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .history-header h3 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #0F172A;
-  }
-
-  .close-history {
-    background: none;
-    border: none;
-    font-size: 24px;
+    padding: 18px 24px;
+    background: #f9fbfe;
+    border-bottom: 1px solid #e2edf7;
     cursor: pointer;
-    color: #94A3B8;
-    padding: 0 8px;
   }
-
-  .search-fields {
+  .card-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #003366;
+  }
+  .toggle-icon {
+    font-size: 22px;
+    color: #2c6e9e;
+    font-weight: 500;
+  }
+  .planilha-content {
+    padding: 20px 24px;
+    display: none;
+    border-top: none;
+  }
+  .planilha-content.active {
+    display: block;
+  }
+  .filtro-mes {
     display: flex;
     gap: 12px;
-    padding: 16px 24px;
-    background: #FFFFFF;
-    border-bottom: 1px solid #E9EEF3;
+    justify-content: flex-end;
+    margin-bottom: 20px;
     flex-wrap: wrap;
   }
-
-  .search-fields input {
-    padding: 12px 16px;
-    border: 1px solid #CBD5E1;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    flex: 1;
-    min-width: 120px;
-    outline: none;
-    transition: 0.2s;
+  .filtro-mes input, .filtro-mes select {
+    padding: 8px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 32px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    background: white;
   }
-
-  .search-fields input:focus {
-    border-color: #1A4A6F;
-    box-shadow: 0 0 0 2px rgba(26,74,111,0.1);
-  }
-
-  .search-fields button {
-    background: #1A4A6F;
+  .filtro-mes button {
+    background: #003366;
     border: none;
-    padding: 0 24px;
-    border-radius: 12px;
+    padding: 8px 24px;
+    border-radius: 32px;
     color: white;
     font-weight: 500;
     cursor: pointer;
+    transition: 0.2s;
   }
-
-  .total-hours {
-    padding: 14px 24px;
-    background: #F1F6FA;
-    font-weight: 500;
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid #E2E8F0;
-  }
-
-  .history-table {
-    overflow-x: auto;
-  }
-
-  table {
+  .tabela-historico {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.85rem;
+    font-size: 14px;
   }
-
-  th, td {
-    padding: 14px 12px;
+  .tabela-historico th {
+    background: #003366;
+    color: white;
+    padding: 12px 8px;
+    font-weight: 500;
     text-align: center;
-    border-bottom: 1px solid #E9EEF3;
+    border: none;
   }
-
-  th {
-    background: #F8FAFC;
+  .tabela-historico td {
+    padding: 10px 6px;
+    text-align: center;
+    border-bottom: 1px solid #e2edf7;
+    background: white;
+  }
+  .total-horas {
+    margin-top: 18px;
+    text-align: right;
     font-weight: 600;
-    color: #334155;
+    font-size: 15px;
+    padding: 12px 16px;
+    background: #f0f6fe;
+    border-radius: 28px;
+    color: #003366;
   }
+  .btn-download {
+    background: #2c7a4d;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 32px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 18px;
+    font-size: 13px;
+    transition: 0.2s;
+  }
+  .btn-download:hover { background: #1f5e3a; }
 
-  /* MODAL CAMERA OVAL */
+  /* MODAL SOBREPOSIÇÃO (comprovante finalização) */
   .modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(6px);
-    display: none;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.2s;
   }
-
-  .modal-oval {
+  .modal-overlay.active {
+    visibility: visible;
+    opacity: 1;
+  }
+  .modal-card {
     background: white;
-    border-radius: 48px;
-    padding: 32px;
-    max-width: 440px;
     width: 90%;
+    max-width: 440px;
+    padding: 28px 24px;
     text-align: center;
-    box-shadow: 0 30px 40px rgba(0,0,0,0.3);
+    border-radius: 32px;
+    box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+  }
+  .modal-card h4 {
+    font-size: 24px;
+    color: #003366;
+    margin-bottom: 16px;
+  }
+  .comprovante-detalhe {
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 20px;
+    margin: 20px 0;
+    font-size: 15px;
+    text-align: left;
+  }
+  .modal-card button {
+    background: #003366;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 40px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
   }
 
-  .modal-oval h3 {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    color: #0F172A;
-  }
-
-  .camera-oval {
-    width: 260px;
-    height: 320px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin: 0 auto 24px;
-    background: #1e293b;
-    border: 4px solid #1A4A6F;
-  }
-
-  .camera-oval video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .spinner-overlay {
+  /* Spinner durante biometria */
+  .spinner-ball {
     display: inline-block;
-    width: 32px;
-    height: 32px;
-    border: 3px solid rgba(26,74,111,0.2);
-    border-top-color: #1A4A6F;
+    width: 48px;
+    height: 48px;
+    border: 5px solid rgba(0,51,102,0.2);
+    border-top-color: #003366;
     border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    margin-left: 12px;
-    vertical-align: middle;
+    animation: spin 0.8s linear infinite;
+    margin: 20px auto;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* link suporte cabeçalho branco */
+  .suporte-link {
+    margin-left: 16px;
+    font-size: 13px;
+    background: white;
+    padding: 6px 12px;
+    border-radius: 60px;
+    font-weight: 500;
+  }
+  .suporte-link a {
+    color: #003366;
+    text-decoration: none;
   }
 
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-
-  button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+  @media (max-width: 780px) {
+    .dashboard { padding: 20px; }
+    .cronometro { font-size: 44px; }
+    .face-oval { width: 220px; height: 270px; }
   }
 </style>
 </head>
 <body>
 
-<header class="app-header">
-  <div class="header-container">
-    <div class="logo-area">
-      <div class="logo-icon">D</div>
-      <div class="logo-text">DomusFit <span>| ponto</span></div>
-    </div>
-    <button class="menu-btn" id="menuBtn">Menu</button>
-    <div id="menuDropdown">
-      <a href="#" id="btnHistoricoAtual">Horas acumuladas (mês atual)</a>
-      <a href="#" id="btnMesesAnteriores">Buscar meses anteriores</a>
-      <a href="login2.html">Sair</a>
-    </div>
+<header>
+  <div class="logo"></div>
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <div class="suporte-link"><a href="https://wa.me/5584991778690" target="_blank">Suporte</a></div>
+    <div class="menu-icon" id="menuIcon">☰</div>
+  </div>
+  <div id="menuDropdown">
+    <a href="login2.html">Sair</a>
   </div>
 </header>
 
-<div class="main-wrapper">
-  <!-- PERFIL DEGRADÊ COLADO -->
-  <div class="profile-card">
-    <div class="profile-avatar" id="avatarContainer">
-      <span id="avatarInitial">U</span>
-      <img id="fotoPerfil" style="display:none;">
-    </div>
-    <div class="profile-info">
-      <h2 id="nomeFunc">Carregando...</h2>
-      <p><span id="naFunc">NA: ---</span> <span id="telFunc">Telefone: ---</span></p>
-    </div>
-  </div>
-
-  <!-- ÁREA RECONHECIMENTO OVAL -->
-  <div class="face-card">
-    <div class="face-title">Reconhecimento facial</div>
-    <div class="oval-container">
-      <div class="face-oval" id="facePreviewOval">
-        <div class="face-placeholder" id="placeholderText">Câmera inativa</div>
-        <video id="videoPreview" autoplay muted style="display: none;"></video>
+<div class="dashboard">
+  <!-- PERFIL PROFISSIONAL (colado ao cabeçalho) -->
+  <div class="perfil-profissional">
+    <img id="fotoPerfil" class="avatar" src="" alt="foto">
+    <div class="dados-pessoais">
+      <h2 id="nomeFuncionario">Carregando...</h2>
+      <div class="info-row">
+        <span>🔹 NA: <span id="naSerie"></span></span>
+        <span>📞 Tel: <span id="telefoneContato"></span></span>
       </div>
     </div>
-    <button id="realizarBiometriaBtn">Realizar biometria</button>
   </div>
 
-  <!-- CRONÔMETRO + BOTÕES (INICIAR / FINALIZAR) -->
-  <div class="timer-box">
+  <!-- OVAL PARA RECONHECIMENTO FACIAL MODERNO -->
+  <div class="face-container">
+    <div class="face-oval" id="faceOval">
+      <div class="camera-placeholder" id="cameraPlaceholder">
+        📸 Câmera inativa<br><span style="font-size:12px;">Permita acesso ao iniciar ponto</span>
+      </div>
+      <video id="videoFeed" autoplay playsinline muted style="display: none; width:100%; height:100%; object-fit: cover;"></video>
+    </div>
+  </div>
+
+  <!-- Botão biometria e temporizador -->
+  <div style="text-align: center;">
+    <button id="realizarBiometriaBtn" class="btn-moderno">🖐️ REALIZAR BIOMETRIA</button>
+  </div>
+
+  <div class="timer-block">
     <div class="cronometro" id="cronometroDisplay">00:00:00</div>
-    <div class="action-row" id="actionButtons">
-      <button id="btnIniciar" class="btn-primary">Iniciar ponto</button>
-      <button id="btnFinalizar" class="btn-danger" style="display: none;">Finalizar dia</button>
-    </div>
   </div>
 
-  <!-- ÁREA DE HISTÓRICO (aparece apenas ao clicar nos menus) -->
-  <div id="historicoPanel" class="history-section">
-    <div class="history-header">
-      <h3 id="historicoTitle">Histórico do mês</h3>
-      <button class="close-history" id="closeHistoricoBtn">✕</button>
+  <div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 30px;">
+    <button id="finalizarDiaBtn" class="btn-moderno btn-finalizar">🏁 FINALIZAR DIA</button>
+  </div>
+
+  <!-- DUAS PLANILHAS: MÊS ATUAL + MESES ANTERIORES (com download) -->
+  <div class="historico-wrapper">
+    <!-- Planilha 1: Mês Atual -->
+    <div class="card-historico">
+      <div class="card-header" data-target="planilhaAtual">
+        <h3>📅 Histórico do Mês Atual</h3>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div id="planilhaAtual" class="planilha-content">
+        <div class="total-horas" id="totalHorasAtual">Total de horas: --</div>
+        <table class="tabela-historico">
+          <thead><tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr></thead>
+          <tbody id="historicoAtualBody"><tr><td colspan="4">Nenhum registro</td></tr></tbody>
+        </table>
+      </div>
     </div>
-    <div class="search-fields" id="searchFieldsArea">
-      <input type="number" id="mesInput" placeholder="Mês (1-12)" min="1" max="12">
-      <input type="number" id="anoInput" placeholder="Ano" value="2026">
-      <button id="buscarBtn">Buscar</button>
-    </div>
-    <div id="totalHorasPanel" class="total-hours"></div>
-    <div class="history-table">
-      <table>
-        <thead>
-          <tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th> </tr>
-        </thead>
-        <tbody id="historicoBody"></tbody>
-      </table>
+
+    <!-- Planilha 2: Meses Anteriores (com consulta) -->
+    <div class="card-historico">
+      <div class="card-header" data-target="planilhaAnterior">
+        <h3>🗂️ Consultar Meses Anteriores</h3>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div id="planilhaAnterior" class="planilha-content">
+        <div class="filtro-mes">
+          <input type="number" id="mesConsulta" placeholder="Mês (1-12)" min="1" max="12" value="1">
+          <input type="number" id="anoConsulta" placeholder="Ano" value="2025">
+          <button id="buscarMesAntigo">Buscar</button>
+        </div>
+        <div class="total-horas" id="totalHorasAntigo">Total de horas: --</div>
+        <table class="tabela-historico">
+          <thead><tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr></thead>
+          <tbody id="historicoAntigoBody"><tr><td colspan="4">Selecione mês/ano</td></tr></tbody>
+        </table>
+        <div style="display: flex; justify-content: flex-end;">
+          <button id="downloadMesAntigoBtn" class="btn-download">⬇️ Baixar Planilha (PDF)</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- MODAL CÂMERA OVAL + SPINNER -->
-<div id="cameraModal" class="modal-overlay">
-  <div class="modal-oval">
-    <h3>Reconhecimento facial</h3>
-    <div class="camera-oval">
-      <video id="modalVideo" autoplay muted></video>
-    </div>
-    <div id="modalStatus">Posicione o rosto no molde oval</div>
-    <button id="cancelarModalBtn" style="margin-top: 20px; background:#E2E8F0; border:none; padding:10px 24px; border-radius:40px;">Cancelar</button>
+<!-- Modal comprovante finalização -->
+<div id="comprovanteModal" class="modal-overlay">
+  <div class="modal-card">
+    <h4>✅ Comprovante do Dia</h4>
+    <div id="comprovanteTexto" class="comprovante-detalhe"></div>
+    <button id="fecharModalFinalizar">OK, minimizar</button>
   </div>
 </div>
 
+<!-- Scripts Firebase e libs -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 <script>
+  // FIREBASE CONFIG
   const firebaseConfig = {
     apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
     authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
@@ -596,266 +535,276 @@
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
-
   const serie = localStorage.getItem("usuarioAtual");
   if (!serie) window.location.href = "login2.html";
 
-  let startTime = null;
-  let timerInterval = null;
-  let active = false;
-  let currentStream = null;
-
   // elementos DOM
-  const nomeSpan = document.getElementById("nomeFunc");
-  const naSpan = document.getElementById("naFunc");
-  const telSpan = document.getElementById("telFunc");
-  const avatarInitial = document.getElementById("avatarInitial");
-  const fotoPerfilImg = document.getElementById("fotoPerfil");
-  const cronometroSpan = document.getElementById("cronometroDisplay");
-  const btnIniciar = document.getElementById("btnIniciar");
-  const btnFinalizar = document.getElementById("btnFinalizar");
-  const historicoPanel = document.getElementById("historicoPanel");
-  const historicoBody = document.getElementById("historicoBody");
-  const totalHorasPanel = document.getElementById("totalHorasPanel");
-  const closeHistorico = document.getElementById("closeHistoricoBtn");
-  const btnHistoricoAtual = document.getElementById("btnHistoricoAtual");
-  const btnMesesAnteriores = document.getElementById("btnMesesAnteriores");
-  const buscarBtn = document.getElementById("buscarBtn");
-  const mesInput = document.getElementById("mesInput");
-  const anoInput = document.getElementById("anoInput");
-  const historicoTitle = document.getElementById("historicoTitle");
+  const nomeEl = document.getElementById("nomeFuncionario");
+  const naEl = document.getElementById("naSerie");
+  const telEl = document.getElementById("telefoneContato");
+  const fotoEl = document.getElementById("fotoPerfil");
+  const cronDisplay = document.getElementById("cronometroDisplay");
+  const historicoAtualBody = document.getElementById("historicoAtualBody");
+  const totalHorasAtualSpan = document.getElementById("totalHorasAtual");
+  const historicoAntigoBody = document.getElementById("historicoAntigoBody");
+  const totalHorasAntigoSpan = document.getElementById("totalHorasAntigo");
 
-  let currentMode = "atual"; // 'atual' ou 'anterior'
+  let startTime = null, intervalId = null, pontoAtivo = false;
+  let streamAtual = null; // para camera
 
-  function formatDuration(ms) {
-    const h = Math.floor(ms / 3600000);
-    const m = Math.floor((ms % 3600000) / 60000);
-    return `${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m`;
-  }
-
-  function updateCronometro() {
-    if (!startTime) return;
-    const diff = Date.now() - startTime;
-    const h = String(Math.floor(diff / 3600000)).padStart(2,'0');
-    const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2,'0');
-    const s = String(Math.floor((diff % 60000) / 1000)).padStart(2,'0');
-    cronometroSpan.innerText = `${h}:${m}:${s}`;
-  }
-
-  function loadUserData() {
-    db.ref("usuarios/" + serie).on("value", snap => {
-      if (snap.exists()) {
-        const data = snap.val();
-        nomeSpan.innerText = data.nome || "Usuário";
-        naSpan.innerText = `NA: ${serie}`;
-        telSpan.innerText = `Telefone: ${data.telefone || "—"}`;
-        const firstLetter = (data.nome?.charAt(0) || "U").toUpperCase();
-        avatarInitial.innerText = firstLetter;
-        if (data.foto) {
-          fotoPerfilImg.src = data.foto;
-          fotoPerfilImg.style.display = "block";
-          avatarInitial.style.display = "none";
-        } else {
-          fotoPerfilImg.style.display = "none";
-          avatarInitial.style.display = "flex";
-        }
-      }
-    });
-  }
-
-  function loadActivePonto() {
-    db.ref("pontos/" + serie + "/ativo").on("value", snap => {
-      if (snap.exists() && snap.val().inicio) {
-        active = true;
-        startTime = snap.val().inicio;
-        if (timerInterval) clearInterval(timerInterval);
-        timerInterval = setInterval(updateCronometro, 1000);
-        updateCronometro();
-        btnIniciar.style.display = "none";
-        btnFinalizar.style.display = "block";
-      } else {
-        active = false;
-        startTime = null;
-        clearInterval(timerInterval);
-        cronometroSpan.innerText = "00:00:00";
-        btnIniciar.style.display = "block";
-        btnFinalizar.style.display = "none";
-      }
-    });
-  }
-
-  function getCurrentDateKey() {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  }
-
-  async function openCameraModal() {
-    const modal = document.getElementById("cameraModal");
-    const modalVideo = document.getElementById("modalVideo");
-    modal.style.display = "flex";
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      currentStream = stream;
-      modalVideo.srcObject = stream;
-      modalVideo.play();
-    } catch (err) {
-      alert("Permissão de câmera negada.");
-      modal.style.display = "none";
-      return false;
-    }
-    return true;
-  }
-
-  function closeCameraModal() {
-    if (currentStream) {
-      currentStream.getTracks().forEach(t => t.stop());
-      currentStream = null;
-    }
-    const modal = document.getElementById("cameraModal");
-    modal.style.display = "none";
-  }
-
-  function showComprovante(inicioTime, fimTime) {
-    const inicioStr = new Date(inicioTime).toLocaleTimeString();
-    const fimStr = new Date(fimTime).toLocaleTimeString();
-    const duracaoMs = fimTime - inicioTime;
-    const duracaoStr = formatDuration(duracaoMs);
-    alert(`COMPROVANTE\nInício: ${inicioStr}\nTérmino: ${fimStr}\nDuração: ${duracaoStr}\nDia finalizado com sucesso.`);
-  }
-
-  btnIniciar.onclick = async () => {
-    if (active) return;
-    const cameraOk = await openCameraModal();
-    if (!cameraOk) return;
-
-    const modalStatus = document.getElementById("modalStatus");
-    modalStatus.innerText = "Reconhecendo... aguarde";
-    const btnCancel = document.getElementById("cancelarModalBtn");
-    btnCancel.disabled = true;
-
-    setTimeout(async () => {
-      modalStatus.innerHTML = 'Processando <span class="spinner-overlay"></span>';
-      setTimeout(async () => {
-        closeCameraModal();
-        const agora = Date.now();
-        await db.ref("pontos/" + serie + "/ativo").set({ inicio: agora });
-        await db.ref("historico/" + serie + "/" + getCurrentDateKey() + "/inicio").set(agora);
-        alert("Ponto iniciado com sucesso!");
-        btnCancel.disabled = false;
-        modalStatus.innerText = "Posicione o rosto no molde oval";
-      }, 2000);
-    }, 800);
-  };
-
-  btnFinalizar.onclick = async () => {
-    if (!active) return;
-    const fim = Date.now();
-    let inicioReg = null;
-    const snapInicio = await db.ref("pontos/" + serie + "/ativo").once("value");
-    if (snapInicio.exists()) inicioReg = snapInicio.val().inicio;
-    await db.ref("pontos/" + serie + "/ativo").remove();
-    const dataKey = getCurrentDateKey();
-    await db.ref("historico/" + serie + "/" + dataKey + "/fim").set(fim);
-    if (inicioReg) {
-      showComprovante(inicioReg, fim);
-    } else {
-      alert("Dia finalizado. Comprovante registrado.");
-    }
-  };
-
-  document.getElementById("cancelarModalBtn").onclick = () => {
-    closeCameraModal();
-  };
-
-  async function carregarHistorico(mes, ano, titulo) {
-    historicoTitle.innerText = titulo;
-    historicoBody.innerHTML = '<tr><td colspan="4">Carregando...</td></tr>';
-    const snapshot = await db.ref("historico/" + serie).once("value");
-    if (!snapshot.exists()) {
-      historicoBody.innerHTML = '<tr><td colspan="4">Nenhum registro</td></tr>';
-      totalHorasPanel.innerHTML = "";
-      return;
-    }
-    const pontos = snapshot.val();
-    const entradas = Object.entries(pontos).filter(([data]) => {
-      const [yy, mm] = data.split("-").map(Number);
-      return yy === ano && mm === mes;
-    }).sort((a,b) => new Date(b[0]) - new Date(a[0]));
-
-    let totalMs = 0;
-    let rows = "";
-    entradas.forEach(([data, val]) => {
-      const entrada = val.inicio ? new Date(val.inicio).toLocaleTimeString() : "--";
-      const saida = val.fim ? new Date(val.fim).toLocaleTimeString() : "--";
-      let duracao = "--";
-      if (val.inicio && val.fim) {
-        const diff = val.fim - val.inicio;
-        totalMs += diff;
-        duracao = formatDuration(diff);
-      }
-      rows += `<tr><td>${data}</td><td>${entrada}</td><td>${saida}</td><td>${duracao}</td></tr>`;
-    });
-    if (rows === "") rows = '<tr><td colspan="4">Nenhum registro neste período</td></tr>';
-    historicoBody.innerHTML = rows;
-    if (totalMs > 0) {
-      totalHorasPanel.innerHTML = `<span>Total de horas:</span> <strong>${formatDuration(totalMs)}</strong>`;
-    } else {
-      totalHorasPanel.innerHTML = `<span>Nenhuma hora registrada</span>`;
-    }
-  }
-
-  function abrirHistorico(mode) {
-    historicoPanel.style.display = "block";
-    const hoje = new Date();
-    if (mode === "atual") {
-      const mesAtual = hoje.getMonth() + 1;
-      const anoAtual = hoje.getFullYear();
-      mesInput.value = mesAtual;
-      anoInput.value = anoAtual;
-      carregarHistorico(mesAtual, anoAtual, `Histórico - ${mesAtual}/${anoAtual}`);
-    } else {
-      mesInput.value = "";
-      anoInput.value = "";
-      carregarHistorico(hoje.getMonth() + 1, hoje.getFullYear(), "Buscar meses anteriores");
-    }
-    currentMode = mode;
-  }
-
-  btnHistoricoAtual.onclick = (e) => {
-    e.preventDefault();
-    abrirHistorico("atual");
-  };
-  btnMesesAnteriores.onclick = (e) => {
-    e.preventDefault();
-    abrirHistorico("anterior");
-  };
-  closeHistorico.onclick = () => {
-    historicoPanel.style.display = "none";
-  };
-  buscarBtn.onclick = async () => {
-    const mes = parseInt(mesInput.value);
-    const ano = parseInt(anoInput.value);
-    if (isNaN(mes) || isNaN(ano) || mes < 1 || mes > 12 || ano < 2000) {
-      alert("Informe mês (1-12) e ano válido.");
-      return;
-    }
-    await carregarHistorico(mes, ano, `Histórico - ${mes}/${ano}`);
-  };
-
-  const menuBtn = document.getElementById("menuBtn");
-  const menuDrop = document.getElementById("menuDropdown");
-  menuBtn.onclick = () => {
-    if (menuDrop.style.display === "block") menuDrop.style.display = "none";
-    else menuDrop.style.display = "block";
-  };
-  document.addEventListener("click", (e) => {
-    if (!menuBtn.contains(e.target) && !menuDrop.contains(e.target)) {
-      menuDrop.style.display = "none";
+  // Carrega dados do funcionário
+  db.ref("usuarios/" + serie).on("value", snap => {
+    if (snap.exists()) {
+      const user = snap.val();
+      nomeEl.textContent = user.nome || "Servidor";
+      naEl.textContent = serie;
+      telEl.textContent = user.telefone || "não informado";
+      fotoEl.src = user.foto || "";
     }
   });
 
-  loadUserData();
-  loadActivePonto();
+  // monitora ponto ativo
+  db.ref("pontos/" + serie + "/ativo").on("value", s => {
+    if (s.exists() && s.val().inicio) {
+      pontoAtivo = true;
+      startTime = s.val().inicio;
+      if (intervalId) clearInterval(intervalId);
+      intervalId = setInterval(atualizarCronometroUI, 1000);
+    } else {
+      pontoAtivo = false;
+      clearInterval(intervalId);
+      cronDisplay.textContent = "00:00:00";
+    }
+  });
+
+  function atualizarCronometroUI() {
+    if (!startTime) return;
+    const diff = Date.now() - startTime;
+    const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
+    const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+    const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+    cronDisplay.textContent = `${h}:${m}:${s}`;
+  }
+
+  // Função para iniciar ponto com biometria (câmera + 3s)
+  async function iniciarPontoComBiometria() {
+    if (pontoAtivo) { alert("Já existe um ponto em andamento."); return; }
+    const ovalDiv = document.getElementById("faceOval");
+    const placeholder = document.getElementById("cameraPlaceholder");
+    const video = document.getElementById("videoFeed");
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      streamAtual = stream;
+      video.srcObject = stream;
+      video.style.display = "block";
+      placeholder.style.display = "none";
+      await video.play();
+
+      // Simula "carrega a bolinha durante 3 segundos" com spinner
+      const spinnerDiv = document.createElement("div");
+      spinnerDiv.className = "spinner-ball";
+      ovalDiv.appendChild(spinnerDiv);
+      video.style.opacity = "0.5";
+
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      // remove spinner
+      if (spinnerDiv && spinnerDiv.remove) spinnerDiv.remove();
+      video.style.opacity = "1";
+
+      // Finaliza captura
+      if (streamAtual) streamAtual.getTracks().forEach(t => t.stop());
+      video.style.display = "none";
+      placeholder.style.display = "flex";
+
+      const agora = Date.now();
+      await db.ref("pontos/" + serie + "/ativo").set({ inicio: agora });
+      await db.ref("historico/" + serie + "/" + getDataChave()).set({ inicio: agora });
+      alert("✅ Ponto iniciado com sucesso!");
+    } catch (err) {
+      alert("Permissão de câmera negada ou erro: " + err.message);
+      if (streamAtual) streamAtual.getTracks().forEach(t => t.stop());
+      video.style.display = "none";
+      placeholder.style.display = "flex";
+    }
+  }
+
+  function getDataChave() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  // Finalizar dia: mostra comprovante (início, fim, duração)
+  document.getElementById("finalizarDiaBtn").onclick = async () => {
+    if (!pontoAtivo) { alert("Nenhum ponto em andamento."); return; }
+    const fim = Date.now();
+    const dataChave = getDataChave();
+    const inicioRegistro = startTime;
+    if (!inicioRegistro) return;
+
+    const duracaoMs = fim - inicioRegistro;
+    const horas = Math.floor(duracaoMs / 3600000);
+    const minutos = Math.floor((duracaoMs % 3600000) / 60000);
+    const duracaoStr = `${horas}h ${minutos}m`;
+
+    const inicioFormat = new Date(inicioRegistro).toLocaleTimeString();
+    const fimFormat = new Date(fim).toLocaleTimeString();
+
+    await db.ref("pontos/" + serie + "/ativo").remove();
+    await db.ref("historico/" + serie + "/" + dataChave).update({ fim: fim });
+
+    // Exibe comprovante
+    const compDiv = document.getElementById("comprovanteTexto");
+    compDiv.innerHTML = `
+      <strong>📌 Data:</strong> ${new Date().toLocaleDateString()}<br>
+      <strong>⏱️ Início:</strong> ${inicioFormat}<br>
+      <strong>⏹️ Término:</strong> ${fimFormat}<br>
+      <strong>⌛ Duração:</strong> ${duracaoStr}<br>
+      <strong>👤 Funcionário:</strong> ${nomeEl.innerText} (${serie})
+    `;
+    document.getElementById("comprovanteModal").classList.add("active");
+  };
+
+  document.getElementById("fecharModalFinalizar").onclick = () => {
+    document.getElementById("comprovanteModal").classList.remove("active");
+  };
+
+  // carregar histórico do mês atual (atualiza automático)
+  function carregarHistoricoAtual() {
+    const hoje = new Date();
+    const mesAtual = hoje.getMonth() + 1;
+    const anoAtual = hoje.getFullYear();
+    carregarHistoricoPorMesAno(mesAtual, anoAtual, historicoAtualBody, totalHorasAtualSpan);
+  }
+
+  // carregar mês consultado (anterior)
+  function carregarConsultaAntiga() {
+    let mes = parseInt(document.getElementById("mesConsulta").value);
+    let ano = parseInt(document.getElementById("anoConsulta").value);
+    if (isNaN(mes) || mes < 1 || mes > 12) mes = 1;
+    if (isNaN(ano) || ano < 2000) ano = new Date().getFullYear();
+    carregarHistoricoPorMesAno(mes, ano, historicoAntigoBody, totalHorasAntigoSpan, true);
+  }
+
+  async function carregarHistoricoPorMesAno(mes, ano, tbodyElement, totalElement, isConsulta = false) {
+    const snapshot = await db.ref("historico/" + serie).once("value");
+    tbodyElement.innerHTML = "";
+    let totalMs = 0;
+    let linhas = [];
+
+    if (snapshot.exists()) {
+      const pontos = snapshot.val();
+      for (const [dataStr, registro] of Object.entries(pontos)) {
+        const [yy, mm] = dataStr.split("-").map(Number);
+        if (yy === ano && mm === mes && registro.inicio) {
+          const inicio = new Date(registro.inicio).toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' });
+          const fim = registro.fim ? new Date(registro.fim).toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' }) : "--:--";
+          let duracao = "--";
+          if (registro.inicio && registro.fim) {
+            const diff = registro.fim - registro.inicio;
+            totalMs += diff;
+            const h = Math.floor(diff / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            duracao = `${h}h ${m}m`;
+          }
+          linhas.push({ data: dataStr, inicio, fim, duracao });
+        }
+      }
+    }
+    linhas.sort((a,b)=> new Date(b.data) - new Date(a.data));
+    for (let row of linhas) {
+      const tr = tbodyElement.insertRow();
+      tr.insertCell(0).innerText = row.data;
+      tr.insertCell(1).innerText = row.inicio;
+      tr.insertCell(2).innerText = row.fim;
+      tr.insertCell(3).innerText = row.duracao;
+    }
+    if (linhas.length === 0) {
+      tbodyElement.innerHTML = '<tr><td colspan="4">Nenhum registro para o período</td></tr>';
+      totalElement.innerText = "Total de horas: 0h 0m";
+    } else {
+      const totalH = Math.floor(totalMs / 3600000);
+      const totalM = Math.floor((totalMs % 3600000) / 60000);
+      totalElement.innerText = `Total de horas: ${totalH}h ${totalM}m`;
+    }
+    if (isConsulta) {
+      window.dadosConsultaExport = { linhas, mes, ano, totalMs, nomeFunc: nomeEl.innerText, serie };
+    }
+  }
+
+  // BOTÃO REALIZAR BIOMETRIA
+  document.getElementById("realizarBiometriaBtn").onclick = () => {
+    if (pontoAtivo) {
+      alert("Você já possui um ponto aberto. Finalize o dia antes de iniciar outro.");
+      return;
+    }
+    iniciarPontoComBiometria();
+  };
+
+  // toggle das planilhas
+  document.querySelectorAll(".card-header").forEach(header => {
+    header.addEventListener("click", () => {
+      const targetId = header.getAttribute("data-target");
+      const content = document.getElementById(targetId);
+      if (content.classList.contains("active")) {
+        content.classList.remove("active");
+        header.querySelector(".toggle-icon").innerHTML = "▼";
+      } else {
+        content.classList.add("active");
+        header.querySelector(".toggle-icon").innerHTML = "▲";
+        if (targetId === "planilhaAtual") carregarHistoricoAtual();
+      }
+    });
+  });
+  document.getElementById("planilhaAtual").classList.add("active");
+  carregarHistoricoAtual();
+
+  document.getElementById("buscarMesAntigo").onclick = () => {
+    carregarConsultaAntiga();
+    document.getElementById("planilhaAnterior").classList.add("active");
+    document.querySelector("[data-target='planilhaAnterior'] .toggle-icon").innerHTML = "▲";
+  };
+
+  // Download da planilha de meses anteriores em PDF
+  document.getElementById("downloadMesAntigoBtn").onclick = () => {
+    if (!window.dadosConsultaExport || window.dadosConsultaExport.linhas.length === 0) {
+      alert("Nenhum dado carregado. Consulte um mês anterior primeiro.");
+      return;
+    }
+    const { linhas, mes, ano, totalMs, nomeFunc, serie } = window.dadosConsultaExport;
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.text("Comprovante Mensal - DomusFit", 14, 18);
+    doc.setFontSize(11);
+    doc.text(`Funcionário: ${nomeFunc} (NA: ${serie})`, 14, 28);
+    doc.text(`Mês/Ano: ${mes}/${ano}`, 14, 35);
+    const totalH = Math.floor(totalMs / 3600000);
+    const totalM = Math.floor((totalMs % 3600000) / 60000);
+    doc.text(`Total horas trabalhadas: ${totalH}h ${totalM}m`, 14, 42);
+    const tableBody = linhas.map(l => [l.data, l.inicio, l.fim, l.duracao]);
+    doc.autoTable({
+      startY: 48,
+      head: [["Data", "Entrada", "Saída", "Duração"]],
+      body: tableBody,
+      theme: 'striped',
+      headStyles: { fillColor: [0, 51, 102] }
+    });
+    doc.save(`Historico_${serie}_${mes}_${ano}.pdf`);
+  };
+
+  // menu dropdown
+  const menuIcon = document.getElementById("menuIcon");
+  const menuDrop = document.getElementById("menuDropdown");
+  menuIcon.onclick = (e) => {
+    e.stopPropagation();
+    menuDrop.style.display = menuDrop.style.display === "block" ? "none" : "block";
+  };
+  document.addEventListener("click", (e) => {
+    if (!menuIcon.contains(e.target) && !menuDrop.contains(e.target)) menuDrop.style.display = "none";
+  });
 </script>
 </body>
 </html>
