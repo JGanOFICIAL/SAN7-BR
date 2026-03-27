@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DomusFit | Ponto Digital</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   * {
     margin: 0;
@@ -14,327 +14,320 @@
 
   body {
     font-family: 'Poppins', sans-serif;
-    background: #ffffff; /* FUNDO TOTALMENTE BRANCO */
-    color: #1e2a3e;
-    display: flex;
-    flex-direction: column;
+    background: #FFFFFF;
+    color: #1A2C3E;
     min-height: 100vh;
   }
 
-  /* CABEÇALHO AZUL ESCURO (mantido) */
+  /* CABECALHO AZUL ESCURO */
   header {
-    background: #003366; /* azul escuro */
+    background: #003366;
     width: 100%;
-    padding: 0 32px;
-    height: 72px;
+    padding: 0 40px;
+    height: 80px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     position: sticky;
     top: 0;
-    z-index: 20;
+    z-index: 100;
   }
 
   .logo {
     width: 200px;
-    height: 48px;
+    height: 52px;
     background-image: url('https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000083-d9fb4d9fb6/700/3F36BE85-5E12-4237-844C-9BD82571F2C4.webp');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: left center;
   }
 
-  .menu-icon {
+  .menu-btn {
     color: white;
     font-size: 28px;
+    font-weight: 400;
     cursor: pointer;
-    font-weight: 300;
-    user-select: none;
+    letter-spacing: 2px;
     transition: opacity 0.2s;
   }
-  .menu-icon:hover { opacity: 0.8; }
+  .menu-btn:hover { opacity: 0.8; }
 
   #menuDropdown {
     display: none;
     position: absolute;
-    right: 32px;
+    right: 40px;
     top: 70px;
     background: white;
-    border-radius: 0;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    min-width: 150px;
-    z-index: 30;
+    min-width: 160px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 101;
   }
   #menuDropdown a {
     display: block;
-    padding: 12px 20px;
+    padding: 14px 20px;
     text-decoration: none;
     color: #003366;
     font-weight: 500;
     font-size: 14px;
-    border-bottom: 1px solid #eef2f7;
+    border-bottom: 1px solid #EFF2F7;
     transition: background 0.2s;
   }
-  #menuDropdown a:last-child { border-bottom: none; }
-  #menuDropdown a:hover { background: #f0f4fa; }
+  #menuDropdown a:hover { background: #F5F8FF; }
 
-  /* CONTAINER PRINCIPAL - COLADO AO HEADER, FUNDO BRANCO */
-  .dashboard {
-    max-width: 1280px;
-    width: 100%;
+  /* CONTAINER PRINCIPAL */
+  .container {
+    max-width: 1400px;
     margin: 0 auto;
     padding: 32px 40px;
-    flex: 1;
   }
 
-  /* ÁREA DO PERFIL PROFISSIONAL (colado ao cabeçalho visualmente) */
-  .perfil-profissional {
-    background: #ffffff;
-    border: 1px solid #e9ecef;
-    padding: 24px 32px;
-    margin-bottom: 32px;
+  /* PERFIL PROFISSIONAL - COLADO AO CABECALHO */
+  .profile-card {
+    background: #FFFFFF;
+    border: 1px solid #E8EDF2;
+    padding: 28px 32px;
+    margin-bottom: 36px;
     display: flex;
     align-items: center;
     gap: 28px;
     flex-wrap: wrap;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
   }
-
-  .avatar {
-    width: 80px;
-    height: 80px;
+  .profile-avatar {
+    width: 84px;
+    height: 84px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #0066cc;
-    background: #f8fafc;
+    border: 3px solid #0066CC;
+    background: #F0F4FA;
   }
-
-  .dados-pessoais {
-    flex: 1;
+  .profile-info h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #003366;
+    letter-spacing: -0.3px;
+    margin-bottom: 8px;
   }
-  .dados-pessoais h2 {
-    font-size: 22px;
-    font-weight: 600;
-    color: #0b2b40;
-    letter-spacing: -0.2px;
-    margin-bottom: 6px;
-  }
-  .info-row {
+  .info-badges {
     display: flex;
+    gap: 20px;
     flex-wrap: wrap;
-    gap: 24px;
-    margin-top: 6px;
   }
-  .info-row span {
+  .info-badges span {
+    background: #F8FAFE;
+    padding: 6px 18px;
+    border-radius: 40px;
     font-size: 14px;
-    color: #2c3e50;
-    background: #f8fafc;
-    padding: 4px 12px;
-    border-radius: 20px;
     font-weight: 500;
+    color: #1F3A5F;
+    border: 1px solid #E2E9F2;
   }
 
-  /* OVAL DE RECONHECIMENTO FACIAL (moderno, maior e oval) */
-  .face-container {
+  /* OVAL DE RECONHECIMENTO FACIAL - MAIOR, MODERNO */
+  .face-oval-container {
     display: flex;
     justify-content: center;
-    margin: 20px auto 20px auto;
+    margin: 16px 0 24px 0;
   }
   .face-oval {
-    width: 280px;
-    height: 340px;
+    width: 340px;
+    height: 420px;
     border-radius: 50% / 55% 55% 45% 45%;
-    background: #f1f5f9;
-    border: 3px solid #0066cc;
+    background: #F2F6FC;
+    border: 3px solid #0066CC;
     overflow: hidden;
     position: relative;
-    box-shadow: 0 12px 28px rgba(0,51,102,0.12);
+    box-shadow: 0 20px 35px rgba(0,51,102,0.12);
     transition: all 0.2s;
   }
   .face-oval video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scale(1.02);
   }
   .camera-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: #6c86a3;
+    background: #F8FBFE;
+    color: #5D7A9C;
     font-weight: 500;
-    background: #f8fafd;
     text-align: center;
     flex-direction: column;
+    gap: 12px;
   }
+  .spinner-ball {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border: 5px solid rgba(0,51,102,0.2);
+    border-top: 5px solid #003366;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    z-index: 15;
+  }
+  @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
 
-  /* Botões principais */
-  .btn-moderno {
-    background-color: #003366;
+  /* BOTOES PRINCIPAIS */
+  .btn-primary {
+    background: #003366;
     border: none;
     color: white;
     font-weight: 600;
-    padding: 12px 28px;
-    font-size: 15px;
+    padding: 14px 36px;
+    font-size: 16px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    border-radius: 40px;
+    border-radius: 0;
     font-family: 'Poppins', sans-serif;
+    transition: all 0.2s;
     width: 100%;
-    max-width: 280px;
+    max-width: 320px;
     margin: 12px auto;
     display: inline-block;
     text-align: center;
+    letter-spacing: 0.5px;
   }
-  .btn-moderno:hover {
-    background-color: #004c99;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 12px rgba(0,51,102,0.2);
+  .btn-primary:hover {
+    background: #004C99;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,51,102,0.2);
   }
-  .btn-outline {
-    background: white;
-    border: 1.5px solid #003366;
-    color: #003366;
+  .btn-danger {
+    background: #B22234;
   }
-  .btn-outline:hover {
-    background: #eef3fc;
-    transform: translateY(-1px);
-  }
-  .btn-finalizar {
-    background-color: #b91c1c;
-  }
-  .btn-finalizar:hover {
-    background-color: #991b1b;
+  .btn-danger:hover {
+    background: #8B1A1A;
   }
 
-  /* Cronômetro */
-  .timer-block {
+  /* CRONOMETRO */
+  .timer-area {
     text-align: center;
-    margin: 20px 0 16px;
+    margin: 20px 0 20px;
   }
   .cronometro {
-    font-size: 58px;
+    font-size: 64px;
     font-weight: 700;
-    font-family: monospace;
-    letter-spacing: 3px;
-    background: #ffffff;
+    font-family: 'Courier New', monospace;
+    background: #FFFFFF;
     color: #003366;
-    padding: 12px 20px;
+    padding: 12px 28px;
     display: inline-block;
-    border-radius: 60px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 2px solid #E2E9F2;
+    letter-spacing: 4px;
   }
 
-  /* DUAS OPÇÕES DE HISTÓRICO (planilha elegante) */
-  .historico-wrapper {
-    margin-top: 48px;
+  /* PLANILHAS (HISTORICO) */
+  .history-section {
+    margin-top: 56px;
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 28px;
   }
-  .card-historico {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    transition: all 0.2s;
+  .history-card {
+    background: #FFFFFF;
+    border: 1px solid #E8EDF2;
   }
-  .card-header {
+  .history-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 18px 24px;
-    background: #f9fbfe;
-    border-bottom: 1px solid #e2edf7;
+    padding: 18px 28px;
+    background: #FAFDFF;
+    border-bottom: 1px solid #E8EDF2;
     cursor: pointer;
+    transition: background 0.2s;
   }
-  .card-header h3 {
+  .history-header h3 {
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 700;
     color: #003366;
+    letter-spacing: -0.2px;
   }
-  .toggle-icon {
-    font-size: 22px;
-    color: #2c6e9e;
-    font-weight: 500;
+  .arrow-icon {
+    font-size: 20px;
+    font-weight: 600;
+    color: #2C6E9E;
   }
-  .planilha-content {
-    padding: 20px 24px;
+  .history-content {
+    padding: 24px 28px;
     display: none;
-    border-top: none;
   }
-  .planilha-content.active {
+  .history-content.active {
     display: block;
   }
-  .filtro-mes {
+  .filter-bar {
     display: flex;
-    gap: 12px;
     justify-content: flex-end;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 24px;
     flex-wrap: wrap;
   }
-  .filtro-mes input, .filtro-mes select {
-    padding: 8px 14px;
-    border: 1px solid #cbd5e1;
-    border-radius: 32px;
+  .filter-bar input, .filter-bar select {
+    padding: 8px 16px;
+    border: 1px solid #CBD5E1;
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
     background: white;
+    border-radius: 0;
   }
-  .filtro-mes button {
+  .filter-bar button {
     background: #003366;
     border: none;
-    padding: 8px 24px;
-    border-radius: 32px;
+    padding: 8px 28px;
     color: white;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     transition: 0.2s;
+    border-radius: 0;
   }
-  .tabela-historico {
+  .total-hours {
+    text-align: right;
+    padding: 14px 20px;
+    background: #F8FBFE;
+    font-weight: 700;
+    font-size: 15px;
+    color: #003366;
+    margin-bottom: 20px;
+    border-left: 4px solid #003366;
+  }
+  .history-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
   }
-  .tabela-historico th {
+  .history-table th {
     background: #003366;
     color: white;
-    padding: 12px 8px;
-    font-weight: 500;
-    text-align: center;
-    border: none;
-  }
-  .tabela-historico td {
-    padding: 10px 6px;
-    text-align: center;
-    border-bottom: 1px solid #e2edf7;
-    background: white;
-  }
-  .total-horas {
-    margin-top: 18px;
-    text-align: right;
+    padding: 14px 8px;
     font-weight: 600;
-    font-size: 15px;
-    padding: 12px 16px;
-    background: #f0f6fe;
-    border-radius: 28px;
-    color: #003366;
-  }
-  .btn-download {
-    background: #2c7a4d;
+    text-align: center;
     border: none;
-    padding: 8px 20px;
-    border-radius: 32px;
-    color: white;
-    font-weight: 500;
-    cursor: pointer;
-    margin-top: 18px;
-    font-size: 13px;
-    transition: 0.2s;
   }
-  .btn-download:hover { background: #1f5e3a; }
+  .history-table td {
+    padding: 12px 8px;
+    text-align: center;
+    border-bottom: 1px solid #E9EFF4;
+  }
+  .btn-download-pdf {
+    background: #2C6E2F;
+    border: none;
+    padding: 10px 28px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 24px;
+    float: right;
+    border-radius: 0;
+    font-size: 13px;
+  }
+  .btn-download-pdf:hover { background: #1F5422; }
 
-  /* MODAL SOBREPOSIÇÃO (comprovante finalização) */
+  /* MODAL COMPROVANTE */
   .modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -354,67 +347,53 @@
   .modal-card {
     background: white;
     width: 90%;
-    max-width: 440px;
-    padding: 28px 24px;
+    max-width: 460px;
+    padding: 32px 28px;
     text-align: center;
-    border-radius: 32px;
     box-shadow: 0 20px 35px rgba(0,0,0,0.2);
   }
   .modal-card h4 {
     font-size: 24px;
     color: #003366;
-    margin-bottom: 16px;
+    font-weight: 700;
+    margin-bottom: 20px;
   }
-  .comprovante-detalhe {
-    background: #f8fafc;
-    padding: 16px;
-    border-radius: 20px;
+  .comprovante-box {
+    background: #F8FBFE;
+    padding: 20px;
+    text-align: left;
     margin: 20px 0;
     font-size: 15px;
-    text-align: left;
+    border-left: 4px solid #003366;
   }
   .modal-card button {
     background: #003366;
     border: none;
-    padding: 12px 24px;
-    border-radius: 40px;
+    padding: 12px 28px;
     color: white;
     font-weight: 600;
     cursor: pointer;
-    margin-top: 8px;
+    width: 100%;
   }
 
-  /* Spinner durante biometria */
-  .spinner-ball {
-    display: inline-block;
-    width: 48px;
-    height: 48px;
-    border: 5px solid rgba(0,51,102,0.2);
-    border-top-color: #003366;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 20px auto;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* link suporte cabeçalho branco */
-  .suporte-link {
-    margin-left: 16px;
-    font-size: 13px;
+  .suporte-link-top {
     background: white;
-    padding: 6px 12px;
-    border-radius: 60px;
-    font-weight: 500;
+    padding: 6px 16px;
+    border-radius: 30px;
+    margin-right: 16px;
   }
-  .suporte-link a {
+  .suporte-link-top a {
     color: #003366;
     text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
   }
 
   @media (max-width: 780px) {
-    .dashboard { padding: 20px; }
+    .container { padding: 20px; }
     .cronometro { font-size: 44px; }
-    .face-oval { width: 220px; height: 270px; }
+    .face-oval { width: 260px; height: 330px; }
+    .profile-card { padding: 20px; }
   }
 </style>
 </head>
@@ -423,108 +402,106 @@
 <header>
   <div class="logo"></div>
   <div style="display: flex; align-items: center; gap: 12px;">
-    <div class="suporte-link"><a href="https://wa.me/5584991778690" target="_blank">Suporte</a></div>
-    <div class="menu-icon" id="menuIcon">☰</div>
+    <div class="suporte-link-top"><a href="https://wa.me/5584991778690" target="_blank">SUPORTE</a></div>
+    <div class="menu-btn" id="menuIcon">≡</div>
   </div>
   <div id="menuDropdown">
-    <a href="login2.html">Sair</a>
+    <a href="login2.html">SAIR</a>
   </div>
 </header>
 
-<div class="dashboard">
-  <!-- PERFIL PROFISSIONAL (colado ao cabeçalho) -->
-  <div class="perfil-profissional">
-    <img id="fotoPerfil" class="avatar" src="" alt="foto">
-    <div class="dados-pessoais">
+<div class="container">
+  <!-- PERFIL PROFISSIONAL -->
+  <div class="profile-card">
+    <img id="fotoPerfil" class="profile-avatar" src="" alt="foto">
+    <div class="profile-info">
       <h2 id="nomeFuncionario">Carregando...</h2>
-      <div class="info-row">
-        <span>🔹 NA: <span id="naSerie"></span></span>
-        <span>📞 Tel: <span id="telefoneContato"></span></span>
+      <div class="info-badges">
+        <span>NA: <span id="naSerie"></span></span>
+        <span>TELEFONE: <span id="telefoneContato"></span></span>
       </div>
     </div>
   </div>
 
-  <!-- OVAL PARA RECONHECIMENTO FACIAL MODERNO -->
-  <div class="face-container">
+  <!-- OVAL DE RECONHECIMENTO (aparece após permissão) -->
+  <div class="face-oval-container">
     <div class="face-oval" id="faceOval">
       <div class="camera-placeholder" id="cameraPlaceholder">
-        📸 Câmera inativa<br><span style="font-size:12px;">Permita acesso ao iniciar ponto</span>
+        CAMERA INATIVA<br><span style="font-size:12px;">Clique em Iniciar Ponto</span>
       </div>
       <video id="videoFeed" autoplay playsinline muted style="display: none; width:100%; height:100%; object-fit: cover;"></video>
     </div>
   </div>
 
-  <!-- Botão biometria e temporizador -->
+  <!-- BOTAO INICIAR PONTO -->
   <div style="text-align: center;">
-    <button id="realizarBiometriaBtn" class="btn-moderno">🖐️ REALIZAR BIOMETRIA</button>
+    <button id="iniciarPontoBtn" class="btn-primary">INICIAR PONTO</button>
   </div>
 
-  <div class="timer-block">
+  <!-- TEMPORIZADOR -->
+  <div class="timer-area">
     <div class="cronometro" id="cronometroDisplay">00:00:00</div>
   </div>
 
-  <div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 30px;">
-    <button id="finalizarDiaBtn" class="btn-moderno btn-finalizar">🏁 FINALIZAR DIA</button>
+  <div style="display: flex; justify-content: center; margin: 16px 0 24px;">
+    <button id="finalizarDiaBtn" class="btn-primary btn-danger">FINALIZAR DIA</button>
   </div>
 
-  <!-- DUAS PLANILHAS: MÊS ATUAL + MESES ANTERIORES (com download) -->
-  <div class="historico-wrapper">
-    <!-- Planilha 1: Mês Atual -->
-    <div class="card-historico">
-      <div class="card-header" data-target="planilhaAtual">
-        <h3>📅 Histórico do Mês Atual</h3>
-        <span class="toggle-icon">▼</span>
+  <!-- PLANILHAS (HISTORICO) -->
+  <div class="history-section">
+    <!-- CARD 1: HISTORICO DO MES ATUAL -->
+    <div class="history-card">
+      <div class="history-header" data-target="planilhaMesAtual">
+        <h3>HISTORICO DO MES ATUAL</h3>
+        <span class="arrow-icon">▼</span>
       </div>
-      <div id="planilhaAtual" class="planilha-content">
-        <div class="total-horas" id="totalHorasAtual">Total de horas: --</div>
-        <table class="tabela-historico">
-          <thead><tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr></thead>
+      <div id="planilhaMesAtual" class="history-content">
+        <div id="totalHorasAtual" class="total-hours">Total de horas: --</div>
+        <table class="history-table">
+          <thead><tr><th>DATA</th><th>ENTRADA</th><th>SAIDA</th><th>DURACAO</th></tr></thead>
           <tbody id="historicoAtualBody"><tr><td colspan="4">Nenhum registro</td></tr></tbody>
         </table>
       </div>
     </div>
 
-    <!-- Planilha 2: Meses Anteriores (com consulta) -->
-    <div class="card-historico">
-      <div class="card-header" data-target="planilhaAnterior">
-        <h3>🗂️ Consultar Meses Anteriores</h3>
-        <span class="toggle-icon">▼</span>
+    <!-- CARD 2: MESES ANTERIORES (CONSULTA) -->
+    <div class="history-card">
+      <div class="history-header" data-target="planilhaMesesAntigos">
+        <h3>CONSULTAR MESES ANTERIORES</h3>
+        <span class="arrow-icon">▼</span>
       </div>
-      <div id="planilhaAnterior" class="planilha-content">
-        <div class="filtro-mes">
-          <input type="number" id="mesConsulta" placeholder="Mês (1-12)" min="1" max="12" value="1">
-          <input type="number" id="anoConsulta" placeholder="Ano" value="2025">
-          <button id="buscarMesAntigo">Buscar</button>
+      <div id="planilhaMesesAntigos" class="history-content">
+        <div class="filter-bar">
+          <input type="number" id="mesConsulta" placeholder="MES (1-12)" min="1" max="12" value="1">
+          <input type="number" id="anoConsulta" placeholder="ANO" value="2025">
+          <button id="buscarMesAntigoBtn">BUSCAR</button>
         </div>
-        <div class="total-horas" id="totalHorasAntigo">Total de horas: --</div>
-        <table class="tabela-historico">
-          <thead><tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr></thead>
-          <tbody id="historicoAntigoBody"><tr><td colspan="4">Selecione mês/ano</td></tr></tbody>
+        <div id="totalHorasAntigo" class="total-hours">Total de horas: --</div>
+        <table class="history-table">
+          <thead><tr><th>DATA</th><th>ENTRADA</th><th>SAIDA</th><th>DURACAO</th></tr></thead>
+          <tbody id="historicoAntigoBody"><tr><td colspan="4">Selecione mes/ano</td></tr></tbody>
         </table>
-        <div style="display: flex; justify-content: flex-end;">
-          <button id="downloadMesAntigoBtn" class="btn-download">⬇️ Baixar Planilha (PDF)</button>
-        </div>
+        <button id="downloadPDFAntigoBtn" class="btn-download-pdf">BAIXAR PLANILHA (PDF)</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal comprovante finalização -->
+<!-- MODAL COMPROVANTE FINALIZACAO -->
 <div id="comprovanteModal" class="modal-overlay">
   <div class="modal-card">
-    <h4>✅ Comprovante do Dia</h4>
-    <div id="comprovanteTexto" class="comprovante-detalhe"></div>
-    <button id="fecharModalFinalizar">OK, minimizar</button>
+    <h4>COMPROVANTE DO DIA</h4>
+    <div id="comprovanteTexto" class="comprovante-box"></div>
+    <button id="fecharModalBtn">OK</button>
   </div>
 </div>
 
-<!-- Scripts Firebase e libs -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 <script>
-  // FIREBASE CONFIG
+  // FIREBASE
   const firebaseConfig = {
     apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
     authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
@@ -538,46 +515,46 @@
   const serie = localStorage.getItem("usuarioAtual");
   if (!serie) window.location.href = "login2.html";
 
-  // elementos DOM
-  const nomeEl = document.getElementById("nomeFuncionario");
-  const naEl = document.getElementById("naSerie");
-  const telEl = document.getElementById("telefoneContato");
-  const fotoEl = document.getElementById("fotoPerfil");
+  // DOM elements
+  const nomeSpan = document.getElementById("nomeFuncionario");
+  const naSpan = document.getElementById("naSerie");
+  const telSpan = document.getElementById("telefoneContato");
+  const fotoImg = document.getElementById("fotoPerfil");
   const cronDisplay = document.getElementById("cronometroDisplay");
   const historicoAtualBody = document.getElementById("historicoAtualBody");
   const totalHorasAtualSpan = document.getElementById("totalHorasAtual");
   const historicoAntigoBody = document.getElementById("historicoAntigoBody");
   const totalHorasAntigoSpan = document.getElementById("totalHorasAntigo");
 
-  let startTime = null, intervalId = null, pontoAtivo = false;
-  let streamAtual = null; // para camera
+  let startTime = null, timerInterval = null, pontoAtivo = false;
+  let currentStream = null;
 
-  // Carrega dados do funcionário
+  // Carregar dados do funcionario
   db.ref("usuarios/" + serie).on("value", snap => {
     if (snap.exists()) {
       const user = snap.val();
-      nomeEl.textContent = user.nome || "Servidor";
-      naEl.textContent = serie;
-      telEl.textContent = user.telefone || "não informado";
-      fotoEl.src = user.foto || "";
+      nomeSpan.textContent = user.nome || "Servidor";
+      naSpan.textContent = serie;
+      telSpan.textContent = user.telefone || "nao informado";
+      fotoImg.src = user.foto || "";
     }
   });
 
-  // monitora ponto ativo
-  db.ref("pontos/" + serie + "/ativo").on("value", s => {
-    if (s.exists() && s.val().inicio) {
+  // Monitorar ponto ativo
+  db.ref("pontos/" + serie + "/ativo").on("value", snap => {
+    if (snap.exists() && snap.val().inicio) {
       pontoAtivo = true;
-      startTime = s.val().inicio;
-      if (intervalId) clearInterval(intervalId);
-      intervalId = setInterval(atualizarCronometroUI, 1000);
+      startTime = snap.val().inicio;
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(updateCronometroUI, 1000);
     } else {
       pontoAtivo = false;
-      clearInterval(intervalId);
+      clearInterval(timerInterval);
       cronDisplay.textContent = "00:00:00";
     }
   });
 
-  function atualizarCronometroUI() {
+  function updateCronometroUI() {
     if (!startTime) return;
     const diff = Date.now() - startTime;
     const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
@@ -586,60 +563,66 @@
     cronDisplay.textContent = `${h}:${m}:${s}`;
   }
 
-  // Função para iniciar ponto com biometria (câmera + 3s)
-  async function iniciarPontoComBiometria() {
-    if (pontoAtivo) { alert("Já existe um ponto em andamento."); return; }
+  function getTodayKey() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  // INICIAR PONTO COM BIOMETRIA: Pede câmera, mostra oval, bolinha 2s, depois +1s? (total 3s) conforme solicitado.
+  async function iniciarPontoCompleto() {
+    if (pontoAtivo) { alert("Ja existe um ponto em andamento."); return; }
     const ovalDiv = document.getElementById("faceOval");
     const placeholder = document.getElementById("cameraPlaceholder");
     const video = document.getElementById("videoFeed");
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      streamAtual = stream;
+      currentStream = stream;
       video.srcObject = stream;
       video.style.display = "block";
       placeholder.style.display = "none";
       await video.play();
 
-      // Simula "carrega a bolinha durante 3 segundos" com spinner
-      const spinnerDiv = document.createElement("div");
-      spinnerDiv.className = "spinner-ball";
-      ovalDiv.appendChild(spinnerDiv);
-      video.style.opacity = "0.5";
-
-      await new Promise(resolve => setTimeout(resolve, 3000));
-
-      // remove spinner
-      if (spinnerDiv && spinnerDiv.remove) spinnerDiv.remove();
+      // Exibe bolinha por 2 segundos (carregando)
+      const spinner = document.createElement("div");
+      spinner.className = "spinner-ball";
+      ovalDiv.appendChild(spinner);
+      video.style.opacity = "0.7";
+      
+      await new Promise(resolve => setTimeout(resolve, 2000)); // bolinha 2s
+      
+      // Remove bolinha, mantém camera por mais 1 segundo (total 3 segundos de analise)
+      if (spinner && spinner.remove) spinner.remove();
       video.style.opacity = "1";
+      await new Promise(resolve => setTimeout(resolve, 1000)); // mais 1 segundo
 
-      // Finaliza captura
-      if (streamAtual) streamAtual.getTracks().forEach(t => t.stop());
+      // Fecha camera
+      if (currentStream) currentStream.getTracks().forEach(t => t.stop());
       video.style.display = "none";
       placeholder.style.display = "flex";
 
       const agora = Date.now();
       await db.ref("pontos/" + serie + "/ativo").set({ inicio: agora });
-      await db.ref("historico/" + serie + "/" + getDataChave()).set({ inicio: agora });
-      alert("✅ Ponto iniciado com sucesso!");
+      await db.ref("historico/" + serie + "/" + getTodayKey()).set({ inicio: agora });
+      alert("Ponto iniciado com sucesso!");
     } catch (err) {
-      alert("Permissão de câmera negada ou erro: " + err.message);
-      if (streamAtual) streamAtual.getTracks().forEach(t => t.stop());
+      alert("Permissao de camera negada ou erro: " + err.message);
+      if (currentStream) currentStream.getTracks().forEach(t => t.stop());
       video.style.display = "none";
       placeholder.style.display = "flex";
     }
   }
 
-  function getDataChave() {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  }
+  document.getElementById("iniciarPontoBtn").onclick = () => {
+    if (pontoAtivo) { alert("Ponto ja em andamento. Finalize antes."); return; }
+    iniciarPontoCompleto();
+  };
 
-  // Finalizar dia: mostra comprovante (início, fim, duração)
+  // FINALIZAR DIA - mostra comprovante
   document.getElementById("finalizarDiaBtn").onclick = async () => {
     if (!pontoAtivo) { alert("Nenhum ponto em andamento."); return; }
     const fim = Date.now();
-    const dataChave = getDataChave();
+    const dataChave = getTodayKey();
     const inicioRegistro = startTime;
     if (!inicioRegistro) return;
 
@@ -647,59 +630,39 @@
     const horas = Math.floor(duracaoMs / 3600000);
     const minutos = Math.floor((duracaoMs % 3600000) / 60000);
     const duracaoStr = `${horas}h ${minutos}m`;
-
     const inicioFormat = new Date(inicioRegistro).toLocaleTimeString();
     const fimFormat = new Date(fim).toLocaleTimeString();
 
     await db.ref("pontos/" + serie + "/ativo").remove();
     await db.ref("historico/" + serie + "/" + dataChave).update({ fim: fim });
 
-    // Exibe comprovante
     const compDiv = document.getElementById("comprovanteTexto");
     compDiv.innerHTML = `
-      <strong>📌 Data:</strong> ${new Date().toLocaleDateString()}<br>
-      <strong>⏱️ Início:</strong> ${inicioFormat}<br>
-      <strong>⏹️ Término:</strong> ${fimFormat}<br>
-      <strong>⌛ Duração:</strong> ${duracaoStr}<br>
-      <strong>👤 Funcionário:</strong> ${nomeEl.innerText} (${serie})
+      DATA: ${new Date().toLocaleDateString()}<br>
+      INICIO: ${inicioFormat}<br>
+      TERMINO: ${fimFormat}<br>
+      DURACAO: ${duracaoStr}<br>
+      FUNCIONARIO: ${nomeSpan.innerText} (${serie})
     `;
     document.getElementById("comprovanteModal").classList.add("active");
   };
-
-  document.getElementById("fecharModalFinalizar").onclick = () => {
+  document.getElementById("fecharModalBtn").onclick = () => {
     document.getElementById("comprovanteModal").classList.remove("active");
   };
 
-  // carregar histórico do mês atual (atualiza automático)
-  function carregarHistoricoAtual() {
-    const hoje = new Date();
-    const mesAtual = hoje.getMonth() + 1;
-    const anoAtual = hoje.getFullYear();
-    carregarHistoricoPorMesAno(mesAtual, anoAtual, historicoAtualBody, totalHorasAtualSpan);
-  }
-
-  // carregar mês consultado (anterior)
-  function carregarConsultaAntiga() {
-    let mes = parseInt(document.getElementById("mesConsulta").value);
-    let ano = parseInt(document.getElementById("anoConsulta").value);
-    if (isNaN(mes) || mes < 1 || mes > 12) mes = 1;
-    if (isNaN(ano) || ano < 2000) ano = new Date().getFullYear();
-    carregarHistoricoPorMesAno(mes, ano, historicoAntigoBody, totalHorasAntigoSpan, true);
-  }
-
-  async function carregarHistoricoPorMesAno(mes, ano, tbodyElement, totalElement, isConsulta = false) {
+  // FUNCOES DE HISTORICO
+  async function carregarHistoricoPorMesAno(mes, ano, tbody, totalSpan, isConsultaStore = false) {
     const snapshot = await db.ref("historico/" + serie).once("value");
-    tbodyElement.innerHTML = "";
+    tbody.innerHTML = "";
     let totalMs = 0;
     let linhas = [];
-
     if (snapshot.exists()) {
       const pontos = snapshot.val();
       for (const [dataStr, registro] of Object.entries(pontos)) {
         const [yy, mm] = dataStr.split("-").map(Number);
         if (yy === ano && mm === mes && registro.inicio) {
-          const inicio = new Date(registro.inicio).toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' });
-          const fim = registro.fim ? new Date(registro.fim).toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' }) : "--:--";
+          const inicio = new Date(registro.inicio).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+          const fim = registro.fim ? new Date(registro.fim).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }) : "--:--";
           let duracao = "--";
           if (registro.inicio && registro.fim) {
             const diff = registro.fim - registro.inicio;
@@ -712,90 +675,96 @@
         }
       }
     }
-    linhas.sort((a,b)=> new Date(b.data) - new Date(a.data));
+    linhas.sort((a,b) => new Date(b.data) - new Date(a.data));
     for (let row of linhas) {
-      const tr = tbodyElement.insertRow();
+      const tr = tbody.insertRow();
       tr.insertCell(0).innerText = row.data;
       tr.insertCell(1).innerText = row.inicio;
       tr.insertCell(2).innerText = row.fim;
       tr.insertCell(3).innerText = row.duracao;
     }
     if (linhas.length === 0) {
-      tbodyElement.innerHTML = '<tr><td colspan="4">Nenhum registro para o período</td></tr>';
-      totalElement.innerText = "Total de horas: 0h 0m";
+      tbody.innerHTML = '<tr><td colspan="4">Nenhum registro para o periodo</td></tr>';
+      totalSpan.innerText = "Total de horas: 0h 0m";
     } else {
       const totalH = Math.floor(totalMs / 3600000);
       const totalM = Math.floor((totalMs % 3600000) / 60000);
-      totalElement.innerText = `Total de horas: ${totalH}h ${totalM}m`;
+      totalSpan.innerText = `Total de horas: ${totalH}h ${totalM}m`;
     }
-    if (isConsulta) {
-      window.dadosConsultaExport = { linhas, mes, ano, totalMs, nomeFunc: nomeEl.innerText, serie };
+    if (isConsultaStore) {
+      window.dadosConsultaExport = { linhas, mes, ano, totalMs, nomeFunc: nomeSpan.innerText, serie };
     }
+    return linhas;
   }
 
-  // BOTÃO REALIZAR BIOMETRIA
-  document.getElementById("realizarBiometriaBtn").onclick = () => {
-    if (pontoAtivo) {
-      alert("Você já possui um ponto aberto. Finalize o dia antes de iniciar outro.");
-      return;
-    }
-    iniciarPontoComBiometria();
-  };
+  async function carregarMesAtual() {
+    const hoje = new Date();
+    const mes = hoje.getMonth() + 1;
+    const ano = hoje.getFullYear();
+    await carregarHistoricoPorMesAno(mes, ano, historicoAtualBody, totalHorasAtualSpan, false);
+  }
 
-  // toggle das planilhas
-  document.querySelectorAll(".card-header").forEach(header => {
+  // toggle das planilhas (mostra apenas ao clicar)
+  document.querySelectorAll(".history-header").forEach(header => {
     header.addEventListener("click", () => {
       const targetId = header.getAttribute("data-target");
       const content = document.getElementById(targetId);
       if (content.classList.contains("active")) {
         content.classList.remove("active");
-        header.querySelector(".toggle-icon").innerHTML = "▼";
+        header.querySelector(".arrow-icon").innerHTML = "▼";
       } else {
         content.classList.add("active");
-        header.querySelector(".toggle-icon").innerHTML = "▲";
-        if (targetId === "planilhaAtual") carregarHistoricoAtual();
+        header.querySelector(".arrow-icon").innerHTML = "▲";
+        if (targetId === "planilhaMesAtual") carregarMesAtual();
+        else if (targetId === "planilhaMesesAntigos") {
+          // nao carrega automaticamente, apenas mostra vazio
+        }
       }
     });
   });
-  document.getElementById("planilhaAtual").classList.add("active");
-  carregarHistoricoAtual();
 
-  document.getElementById("buscarMesAntigo").onclick = () => {
-    carregarConsultaAntiga();
-    document.getElementById("planilhaAnterior").classList.add("active");
-    document.querySelector("[data-target='planilhaAnterior'] .toggle-icon").innerHTML = "▲";
+  // botao buscar meses anteriores
+  document.getElementById("buscarMesAntigoBtn").onclick = async () => {
+    let mes = parseInt(document.getElementById("mesConsulta").value);
+    let ano = parseInt(document.getElementById("anoConsulta").value);
+    if (isNaN(mes) || mes < 1 || mes > 12) mes = 1;
+    if (isNaN(ano) || ano < 2000) ano = new Date().getFullYear();
+    await carregarHistoricoPorMesAno(mes, ano, historicoAntigoBody, totalHorasAntigoSpan, true);
+    document.getElementById("planilhaMesesAntigos").classList.add("active");
+    const header = document.querySelector("[data-target='planilhaMesesAntigos']");
+    header.querySelector(".arrow-icon").innerHTML = "▲";
   };
 
-  // Download da planilha de meses anteriores em PDF
-  document.getElementById("downloadMesAntigoBtn").onclick = () => {
+  // download PDF meses anteriores
+  document.getElementById("downloadPDFAntigoBtn").onclick = () => {
     if (!window.dadosConsultaExport || window.dadosConsultaExport.linhas.length === 0) {
-      alert("Nenhum dado carregado. Consulte um mês anterior primeiro.");
+      alert("Nenhum dado carregado. Consulte um mes anterior primeiro.");
       return;
     }
-    const { linhas, mes, ano, totalMs, nomeFunc, serie } = window.dadosConsultaExport;
+    const { linhas, mes, ano, totalMs, nomeFunc, serie: serieNum } = window.dadosConsultaExport;
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
-    doc.text("Comprovante Mensal - DomusFit", 14, 18);
+    doc.text("RELATORIO MENSAL - DOMUSFIT", 14, 18);
     doc.setFontSize(11);
-    doc.text(`Funcionário: ${nomeFunc} (NA: ${serie})`, 14, 28);
-    doc.text(`Mês/Ano: ${mes}/${ano}`, 14, 35);
+    doc.text(`Funcionario: ${nomeFunc} (NA: ${serieNum})`, 14, 28);
+    doc.text(`Periodo: ${mes}/${ano}`, 14, 35);
     const totalH = Math.floor(totalMs / 3600000);
     const totalM = Math.floor((totalMs % 3600000) / 60000);
     doc.text(`Total horas trabalhadas: ${totalH}h ${totalM}m`, 14, 42);
-    const tableBody = linhas.map(l => [l.data, l.inicio, l.fim, l.duracao]);
+    const bodyTable = linhas.map(l => [l.data, l.inicio, l.fim, l.duracao]);
     doc.autoTable({
-      startY: 48,
-      head: [["Data", "Entrada", "Saída", "Duração"]],
-      body: tableBody,
+      startY: 50,
+      head: [["DATA", "ENTRADA", "SAIDA", "DURACAO"]],
+      body: bodyTable,
       theme: 'striped',
       headStyles: { fillColor: [0, 51, 102] }
     });
-    doc.save(`Historico_${serie}_${mes}_${ano}.pdf`);
+    doc.save(`Historico_${serieNum}_${mes}_${ano}.pdf`);
   };
 
-  // menu dropdown
+  // Menu
   const menuIcon = document.getElementById("menuIcon");
   const menuDrop = document.getElementById("menuDropdown");
   menuIcon.onclick = (e) => {
