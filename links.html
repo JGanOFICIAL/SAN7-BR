@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>DomusFit - Academia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            color: #111;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            border-bottom: 1px solid #ddd;
+            z-index: 1000;
+            padding: 0 20px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: -6px;
+        }
+
+        .menu-icon {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: #111;
+            padding: 8px 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .header-right {
+            width: 30px;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100vh;
+            background: white;
+            border-right: 1px solid #ccc;
+            z-index: 1100;
+            transition: left 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 20px;
+        }
+
+        .side-menu.open {
+            left: 0;
+        }
+
+        .menu-header {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 35px;
+        }
+
+        .close-menu {
+            background: transparent;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: #111;
+            padding: 4px 8px;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .btn-menu {
+            background: transparent;
+            border: none;
+            padding: 10px 0;
+            text-align: left;
+            text-decoration: none;
+            color: #111;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .btn-menu i {
+            font-size: 1.1rem;
+            color: #111;
+            width: 24px;
+        }
+
+        .btn-menu:hover {
+            background: #f5f5f5;
+            padding-left: 6px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 1050;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.2s;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .main-content {
+            margin-top: 75px;
+            padding: 0 25px 50px 25px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            transition: opacity 0.3s ease;
+        }
+
+        .main-content.hide-content {
+            display: none;
+        }
+
+        .contato-titulo {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 25px;
+        }
+
+        .social-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            align-items: flex-start;
+            margin-bottom: 40px;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #111;
+            font-size: 1rem;
+            padding: 4px 0;
+        }
+
+        .social-link i {
+            font-size: 1.5rem;
+            width: 30px;
+            color: #111;
+        }
+
+        .carousel-section {
+            margin-bottom: 40px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .carousel-container {
+            width: 100%;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            cursor: grab;
+        }
+
+        .carousel-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .carousel-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .carousel-container::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: 16px;
+            width: max-content;
+        }
+
+        .carousel-image {
+            width: 280px;
+            height: 180px;
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            flex-shrink: 0;
+            object-fit: cover;
+            display: block;
+        }
+
+        .sobre-academia {
+            border-top: 1px solid #ddd;
+            padding-top: 25px;
+            margin-top: 10px;
+        }
+
+        .sobre-academia h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #111;
+        }
+
+        .sobre-texto {
+            margin-bottom: 18px;
+            font-size: 0.95rem;
+            color: #2c2c2c;
+            line-height: 1.45;
+        }
+
+        .botao-avaliacao {
+            margin: 30px 0 25px 0;
+            text-align: left;
+        }
+
+        .btn-avaliar {
+            background-color: #2c5f8a;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn-avaliar:hover {
+            background-color: #1e405e;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.75rem;
+            color: #777;
+            border-top: 1px solid #ececec;
+            padding-top: 18px;
+            text-align: left;
+        }
+
+        .form-page {
+            display: none;
+            margin-top: 100px;
+            max-width: 550px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 25px;
+        }
+
+        .form-page.active {
+            display: block;
+        }
+
+        .form-container-simples {
+            background: transparent;
+            padding: 0;
+        }
+
+        .form-container-simples h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #111;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input, .custom-select-simples {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #aaa;
+            background: white;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .custom-select-simples {
+            position: relative;
+            cursor: pointer;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .select-trigger-simples {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .select-options-simples {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #aaa;
+            border-top: none;
+            z-index: 10;
+            display: none;
+            margin-top: -1px;
+        }
+
+        .select-options-simples.show {
+            display: block;
+        }
+
+        .select-option-simples {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .select-option-simples:hover {
+            background: #f0f0f0;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #aaa;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .btn-submit-form {
+            background-color: #2c5f8a;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-back {
+            background-color: transparent;
+            border: 1px solid #2c5f8a;
+            color: #2c5f8a;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            transition: 0.2s;
+        }
+
+        .btn-back:hover {
+            background-color: #f0f0f0;
+        }
+
+        @media (max-width: 650px) {
+            .carousel-image {
+                width: 220px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-left">
+            <button class="menu-icon" id="menuToggleBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="logo-title">DomusFit</div>
+        </div>
+        <div class="header-right"></div>
+    </header>
+
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-header">
+            <button class="close-menu" id="closeMenuBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="menu-buttons">
+            <a href="https://domusfit.site/login.html" class="btn-menu" target="_blank">
+                <i class="fas fa-user"></i> Área do Aluno
+            </a>
+            <a href="https://domusfit.site/login2.html" class="btn-menu" target="_blank">
+                <i class="fas fa-briefcase"></i> Área do Funcionário
+            </a>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="main-content" id="mainContent">
+        <div class="contato-titulo">Contato Academia DomusFit</div>
+
+        <div class="social-vertical">
+            <a href="https://www.instagram.com/domusfit__?igsh=MWpsMzNtYWx5cDRsOQ==" class="social-link" target="_blank">
+                <i class="fab fa-instagram"></i> Instagram
+            </a>
+            <a href="https://wa.me/5584991078696" class="social-link" target="_blank">
+                <i class="fab fa-whatsapp"></i> WhatsApp
+            </a>
+            <a href="https://domusfit.site/login.html" class="social-link" target="_blank">
+                <i class="fas fa-globe"></i> Site oficial
+            </a>
+        </div>
+
+        <div class="carousel-section">
+            <div class="carousel-container" id="carouselContainer">
+                <div class="carousel-track" id="carouselTrack">
+                    <img class="carousel-image" src="https://assets-cdn.wellhub.com/images/?su=https%3A%2F%2Fimages.partners.gympass.com%2Fimage%2Fpartners%2F97830848-093b-4777-8c8c-4169d758367e%2Flg_73d530c2-05a5-4f5c-916a-744da947127e_IMG20251016WA0008.jpg&h=360" alt="Imagem 1" data-url-placeholder="URL da imagem 1">
+                    <img class="carousel-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgei9KNNh_XDEM4KIicrXMdqAwwrzHLRfOGZUsdEt2bw&s" alt="Imagem 2" data-url-placeholder="URL da imagem 2">
+                    <img class="carousel-image" src="https://assets-cdn.wellhub.com/images/?su=https://images.partners.gympass.com/image/partners/97830848-093b-4777-8c8c-4169d758367e/lg_908ebbc2-c0ee-48d6-b462-b4e2bd3d2fd7_IMG20251015WA0002.jpg" alt="Imagem 3" data-url-placeholder="URL da imagem 3">
+                    <img class="carousel-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjLVS6CR8RWRT5wXcSQ3TKIt6-jtEF_dQaYPWgc9WMbQ&s=10" alt="Imagem 4" data-url-placeholder="URL da imagem 4">
+                </div>
+            </div>
+        </div>
+
+        <div class="sobre-academia">
+            <h2>Sobre a DomusFit</h2>
+            <div class="sobre-texto">
+                A DomusFit é uma academia dedicada ao bem-estar e à evolução pessoal. Oferecemos um ambiente acolhedor e motivador para todos que buscam melhorar sua qualidade de vida.
+            </div>
+            <div class="sobre-texto">
+                Nossa estrutura foi pensada para proporcionar conforto e segurança, com profissionais preparados para auxiliar em cada etapa da sua jornada.
+            </div>
+        </div>
+
+        <div class="botao-avaliacao">
+            <button class="btn-avaliar" id="openFormBtn">Enviar avaliação</button>
+        </div>
+
+        <footer>
+            DomusFit Academia
+        </footer>
+    </div>
+
+    <div class="form-page" id="formPage">
+        <div class="form-container-simples">
+            <h2>Avaliação</h2>
+            <form id="avaliacaoFormSimples">
+                <div class="form-group">
+                    <label>Nome completo</label>
+                    <input type="text" id="nomeSimples" required>
+                </div>
+                <div class="form-group">
+                    <label>Treina ou não na academia?</label>
+                    <div class="custom-select-simples" id="customSelectSimples">
+                        <div class="select-trigger-simples">
+                            <span id="selectedOptionSimples">Selecione</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="select-options-simples" id="selectOptionsSimples">
+                            <div class="select-option-simples" data-value="Sim, treino na DomusFit">Sim, treino na DomusFit</div>
+                            <div class="select-option-simples" data-value="Não, ainda não treino">Não, ainda não treino</div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="treinaStatusSimples" required>
+                </div>
+                <div class="form-group">
+                    <label>Sua avaliação</label>
+                    <textarea rows="4" id="avaliacaoTextoSimples" required placeholder="Deixe sua opinião..."></textarea>
+                </div>
+                <button type="submit" class="btn-submit-form" id="submitBtnSimples">
+                    <span>Enviar</span>
+                    <i class="fas fa-spinner fa-spin" style="display: none;"></i>
+                </button>
+                <button type="button" class="btn-back" id="backToMainBtn">Voltar para os links</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const menuToggle = document.getElementById('menuToggleBtn');
+            const sideMenu = document.getElementById('sideMenu');
+            const overlay = document.getElementById('overlay');
+            const closeBtn = document.getElementById('closeMenuBtn');
+            const openFormBtn = document.getElementById('openFormBtn');
+            const mainContent = document.getElementById('mainContent');
+            const formPage = document.getElementById('formPage');
+            const backToMainBtn = document.getElementById('backToMainBtn');
+            const carouselContainer = document.getElementById('carouselContainer');
+            const carouselTrack = document.getElementById('carouselTrack');
+            
+            let autoScrollInterval;
+
+            function startAutoScroll() {
+                if(autoScrollInterval) clearInterval(autoScrollInterval);
+                autoScrollInterval = setInterval(() => {
+                    if(carouselContainer && carouselTrack) {
+                        const scrollAmount = carouselContainer.scrollLeft + 220;
+                        const maxScroll = carouselTrack.scrollWidth - carouselContainer.clientWidth;
+                        if(scrollAmount >= maxScroll) {
+                            carouselContainer.scrollTo({ left: 0, behavior: 'smooth' });
+                        } else {
+                            carouselContainer.scrollBy({ left: 220, behavior: 'smooth' });
+                        }
+                    }
+                }, 2000);
+            }
+
+            if(carouselContainer && carouselTrack) {
+                startAutoScroll();
+                carouselContainer.addEventListener('mouseenter', () => {
+                    if(autoScrollInterval) clearInterval(autoScrollInterval);
+                });
+                carouselContainer.addEventListener('mouseleave', () => {
+                    startAutoScroll();
+                });
+            }
+
+            function abrirMenu() {
+                sideMenu.classList.add('open');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function fecharMenu() {
+                sideMenu.classList.remove('open');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            if (menuToggle) {
+                menuToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    abrirMenu();
+                });
+            }
+            if (closeBtn) {
+                closeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    fecharMenu();
+                });
+            }
+            if (overlay) {
+                overlay.addEventListener('click', () => { fecharMenu(); });
+            }
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && sideMenu.classList.contains('open')) fecharMenu();
+            });
+            if (sideMenu) sideMenu.addEventListener('click', (e) => e.stopPropagation());
+
+            const customSelect = document.getElementById('customSelectSimples');
+            const selectOptionsDiv = document.getElementById('selectOptionsSimples');
+            const selectedOptionSpan = document.getElementById('selectedOptionSimples');
+            const treinaStatusHidden = document.getElementById('treinaStatusSimples');
+
+            if(customSelect) {
+                customSelect.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectOptionsDiv.classList.toggle('show');
+                });
+                document.querySelectorAll('.select-option-simples').forEach(opt => {
+                    opt.addEventListener('click', (e) => {
+                        const value = opt.getAttribute('data-value');
+                        selectedOptionSpan.innerText = opt.innerText;
+                        treinaStatusHidden.value = value;
+                        selectOptionsDiv.classList.remove('show');
+                    });
+                });
+                document.addEventListener('click', () => {
+                    selectOptionsDiv.classList.remove('show');
+                });
+            }
+
+            if(openFormBtn) {
+                openFormBtn.addEventListener('click', () => {
+                    mainContent.style.display = 'none';
+                    formPage.classList.add('active');
+                    document.body.style.overflow = 'auto';
+                    window.scrollTo(0, 0);
+                });
+            }
+
+            if(backToMainBtn) {
+                backToMainBtn.addEventListener('click', () => {
+                    mainContent.style.display = 'block';
+                    formPage.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            }
+
+            const form = document.getElementById('avaliacaoFormSimples');
+            const submitBtn = document.getElementById('submitBtnSimples');
+            const spinner = submitBtn.querySelector('.fa-spinner');
+            const btnTextSpan = submitBtn.querySelector('span');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const nome = document.getElementById('nomeSimples').value.trim();
+                const treinaStatusVal = treinaStatusHidden.value;
+                const avaliacao = document.getElementById('avaliacaoTextoSimples').value.trim();
+
+                if(!nome || !treinaStatusVal || !avaliacao) {
+                    alert("Preencha todos os campos.");
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                btnTextSpan.style.display = 'none';
+                spinner.style.display = 'inline-block';
+
+                setTimeout(() => {
+                    const mensagem = `*Avaliação DomusFit*%0A%0A*Nome:* ${encodeURIComponent(nome)}%0A*Status:* ${encodeURIComponent(treinaStatusVal)}%0A*Avaliação:* ${encodeURIComponent(avaliacao)}`;
+                    const whatsappUrl = `https://wa.me/5584991078696?text=${mensagem}`;
+                    window.open(whatsappUrl, '_blank');
+                    
+                    submitBtn.disabled = false;
+                    btnTextSpan.style.display = 'inline';
+                    spinner.style.display = 'none';
+                    
+                    document.getElementById('nomeSimples').value = '';
+                    selectedOptionSpan.innerText = 'Selecione';
+                    treinaStatusHidden.value = '';
+                    document.getElementById('avaliacaoTextoSimples').value = '';
+                    
+                    mainContent.style.display = 'block';
+                    formPage.classList.remove('active');
+                    document.body.style.overflow = '';
+                }, 2000);
+            });
+        })();
+    </script>
+</body>
+</html>
