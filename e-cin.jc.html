@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Agendamento - João Câmara/RN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #ccc;
+            padding: 1rem 1.5rem;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.3rem;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #333;
+            margin: 4px 0;
+        }
+
+        .header h1 {
+            font-size: 0.9rem;
+            font-weight: normal;
+            color: #333;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background: white;
+            border-right: 1px solid #ccc;
+            z-index: 1001;
+            transition: left 0.3s;
+            padding-top: 70px;
+        }
+
+        .side-menu.open {
+            left: 0;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+        }
+
+        .overlay.open {
+            display: block;
+        }
+
+        .menu-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            background: white;
+            text-align: left;
+            width: 100%;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .menu-item:hover {
+            background: #f5f5f5;
+        }
+
+        .botoes-principais {
+            background: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            border-bottom: 1px solid #eee;
+            margin-top: 60px;
+        }
+
+        .btn-acao {
+            padding: 0.7rem 1.5rem;
+            background: #3B5D88;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn-acao.verde {
+            background: #4caf50;
+        }
+
+        .btn-acao.laranja {
+            background: #ff9800;
+        }
+
+        .btn-voltar {
+            padding: 0.5rem 1rem;
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .container {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+            padding-bottom: 2rem;
+            max-width: 550px;
+        }
+
+        .aviso {
+            background: #f5f5f5;
+            padding: 0.8rem;
+            margin-bottom: 1.5rem;
+            border-left: 3px solid #3B5D88;
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        .aviso-fechado {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+
+        .aviso-esgotado {
+            background: #fff3e0;
+            border-left-color: #ff9800;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-size: 0.8rem;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ccc;
+            font-size: 0.85rem;
+            background: white;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3B5D88;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 0.7rem;
+            background: #3B5D88;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3B5D88;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .comprovante {
+            background: white;
+            position: relative;
+        }
+
+        .comprovante-content {
+            border: 1px dashed #999;
+            padding: 1rem;
+            position: relative;
+        }
+
+        .qrcode-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            text-align: center;
+        }
+
+        .qrcode-canvas {
+            width: 70px;
+            height: 70px;
+        }
+
+        .serial-number {
+            font-size: 0.6rem;
+            color: #666;
+            margin-top: 4px;
+            text-align: center;
+        }
+
+        .protocolo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 0.8rem 0;
+            letter-spacing: 2px;
+        }
+
+        .info-line {
+            margin: 0.4rem 0;
+            padding: 0.3rem 0;
+            border-bottom: 1px dotted #ccc;
+            font-size: 0.8rem;
+        }
+
+        .status {
+            padding: 0.2rem 0.5rem;
+            display: inline-block;
+            font-size: 0.75rem;
+        }
+
+        .status-pendente { background: #ff9800; color: white; }
+        .status-nao-compareceu { background: #9e9e9e; color: white; }
+        .status-atendido { background: #4caf50; color: white; }
+
+        .solicitacao-card {
+            background: #f9f9f9;
+            border: 1px solid #eee;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+
+        .solicitacao-card:hover {
+            background: #f0f0f0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .info-text {
+            background: #f5f5f5;
+            padding: 0.8rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+        }
+
+        hr {
+            margin: 0.8rem 0;
+            border: none;
+            border-top: 1px dotted #ccc;
+        }
+
+        .btn-download {
+            background: #3B5D88;
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .secao-titulo {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            font-weight: normal;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 0.3rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #ccc;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1rem 0;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #3B5D88;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .scanner-box {
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .scanner-video {
+            width: 100%;
+            height: auto;
+        }
+
+        .scanner-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn-scanner {
+            background: #3B5D88;
+            color: white;
+            border: none;
+            padding: 0.6rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            flex: 1;
+        }
+
+        .btn-scanner.cancelar {
+            background: #f0f0f0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="menu-toggle" onclick="toggleMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <h1>ESCOLA DE CONTAS</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" onclick="toggleMenu()"></div>
+
+    <div class="side-menu">
+        <button class="menu-item" onclick="window.location.href='suporte.html'">CENTRAL DE INFORMAÇÕES E DÚVIDAS FREQUENTES</button>
+    </div>
+
+    <div class="botoes-principais">
+        <button class="btn-acao" id="btnNovo" onclick="mostrarFormulario()">Novo Agendamento</button>
+        <button class="btn-acao verde" id="btnConsultar" onclick="mostrarConsulta()">Consultar Protocolo</button>
+        <button class="btn-acao laranja" id="btnQRCode" onclick="mostrarOpcoesQRCode()">Consultar QR Code</button>
+    </div>
+
+    <div class="container" id="conteudoPrincipal"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js"></script>
+    <script src="script4.js"></script>
+    <script>
+        let db = null;
+        let configAtendimento = null;
+        let scannerActive = false;
+        let scannerStream = null;
+
+        function toggleMenu() {
+            const menu = document.querySelector('.side-menu');
+            const overlay = document.querySelector('.overlay');
+            menu.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
+        function formatarCPF(cpf) {
+            cpf = cpf.replace(/\D/g, '');
+            if (cpf.length <= 3) return cpf;
+            if (cpf.length <= 6) return cpf.replace(/(\d{3})(\d+)/, '$1.$2');
+            if (cpf.length <= 9) return cpf.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
+            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d+)/, '$1.$2.$3-$4');
+        }
+
+        function formatarData(data) {
+            data = data.replace(/\D/g, '');
+            if (data.length <= 2) return data;
+            if (data.length <= 4) return data.replace(/(\d{2})(\d+)/, '$1/$2');
+            return data.replace(/(\d{2})(\d{2})(\d+)/, '$1/$2/$3');
+        }
+
+        function formatarTelefone(tel) {
+            tel = tel.replace(/\D/g, '');
+            if (tel.length <= 2) return tel;
+            if (tel.length <= 7) return tel.replace(/(\d{2})(\d+)/, '($1) $2');
+            if (tel.length <= 11) return tel.replace(/(\d{2})(\d{5})(\d+)/, '($1) $2-$3');
+            return tel;
+        }
+
+        function esconderBotoes() {
+            document.getElementById('btnNovo').style.display = 'none';
+            document.getElementById('btnConsultar').style.display = 'none';
+            document.getElementById('btnQRCode').style.display = 'none';
+        }
+
+        function mostrarBotoes() {
+            document.getElementById('btnNovo').style.display = 'block';
+            document.getElementById('btnConsultar').style.display = 'block';
+            document.getElementById('btnQRCode').style.display = 'block';
+        }
+
+        function gerarNumeroSerie() {
+            return Math.floor(1000000000000000 + Math.random() * 9000000000000000).toString();
+        }
+
+        function gerarQRCodeData(protocolo, serial) {
+            return `https://joaocamara.rn.gov.br/agendamento?protocolo=${protocolo}&serial=${serial}`;
+        }
+
+        function adicionarQRCode(protocolo, serial) {
+            const container = document.getElementById('qrcode-placeholder');
+            if (container) {
+                container.innerHTML = '';
+                new QRCode(container, {
+                    text: gerarQRCodeData(protocolo, serial),
+                    width: 70,
+                    height: 70
+                });
+                document.getElementById('serial-number').innerText = serial;
+            }
+        }
+
+        function mostrarOpcoesQRCode() {
+            esconderBotoes();
+            const container = document.getElementById('conteudoPrincipal');
+            container.innerHTML = `
+                <div class="secao-titulo">Consultar QR Code</div>
+                <button class="btn-scanner" onclick="iniciarScanner()">Escanear com Camera</button>
+                <div class="upload-area" onclick="document.getElementById('qrFileInput').click()">
+                    <p>Ou faca upload do print do QR Code</p>
+                    <p style="font-size:0.7rem; margin-top:0.5rem;">Formatos: PNG, JPG, JPEG</p>
+                </div>
+                <input type="file" id="qrFileInput" accept="image/*" class="file-input" onchange="lerQRCodeArquivo(this)">
+                <div id="qrResultado" style="margin-top: 1rem;"></div>
+                <button class="btn-voltar" onclick="voltarInicio()">Voltar</button>
+            `;
+        }
+
+        function iniciarScanner() {
+            const container = document.getElementById('conteudoPrincipal');
+            container.innerHTML = `
+                <div class="secao-titulo">Escanear QR Code</div>
+                <div class="scanner-box">
+                    <video id="scannerVideo" class="scanner-video" autoplay playsinline></video>
+                </div>
+                <div class="scanner-controls">
+                    <button class="btn-scanner cancelar" onclick="pararScanner()">Cancelar</button>
+                </div>
+                <div id="scannerResultado" style="margin-top: 1rem;"></div>
+            `;
+
+            const video = document.getElementById('scannerVideo');
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                .then(function(stream) {
+                    scannerStream = stream;
+                    video.srcObject = stream;
+                    video.setAttribute('playsinline', true);
+                    video.play();
+                    scannerActive = true;
+                    requestAnimationFrame(scanQRCode);
+                })
+                .catch(function(err) {
+                    document.getElementById('scannerResultado').innerHTML = '<div class="info-text">Nao foi possivel acessar a camera: ' + err.message + '</div>';
+                });
+        }
+
+        function pararScanner() {
+            if (scannerStream) {
+                scannerStream.getTracks().forEach(track => track.stop());
+                scannerStream = null;
+            }
+            scannerActive = false;
+            mostrarOpcoesQRCode();
+        }
+
+        function scanQRCode() {
+            if (!scannerActive) return;
+            const video = document.getElementById('scannerVideo');
+            if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const context = canvas.getContext('2d');
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height);
+                if (code) {
+                    const url = code.data;
+                    const protocoloMatch = url.match(/protocolo=(\d+)/);
+                    const serialMatch = url.match(/serial=(\d+)/);
+                    if (protocoloMatch) {
+                        pararScanner();
+                        buscarPorProtocoloSerial(protocoloMatch[1], serialMatch ? serialMatch[1] : null);
+                        return;
+                    }
+                }
+            }
+            requestAnimationFrame(scanQRCode);
+        }
+
+        window.lerQRCodeArquivo = function(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                document.getElementById('qrResultado').innerHTML = '<div class="loading"><div class="spinner"></div><p>Processando imagem...</p></div>';
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const context = canvas.getContext('2d');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        context.drawImage(img, 0, 0, img.width, img.height);
+                        const imageData = context.getImageData(0, 0, img.width, img.height);
+                        const code = jsQR(imageData.data, imageData.width, imageData.height);
+                        if (code) {
+                            const url = code.data;
+                            const protocoloMatch = url.match(/protocolo=(\d+)/);
+                            const serialMatch = url.match(/serial=(\d+)/);
+                            if (protocoloMatch) {
+                                buscarPorProtocoloSerial(protocoloMatch[1], serialMatch ? serialMatch[1] : null);
+                            } else {
+                                document.getElementById('qrResultado').innerHTML = '<div class="info-text">QR Code invalido. Nao foi possivel identificar o protocolo.</div>';
+                            }
+                        } else {
+                            document.getElementById('qrResultado').innerHTML = '<div class="info-text">Nao foi possivel ler o QR Code. Tente outra imagem.</div>';
+                        }
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function buscarPorProtocoloSerial(protocolo, serial) {
+            const resultadoDiv = document.getElementById('qrResultado');
+            if (resultadoDiv) {
+                resultadoDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Consultando protocolo...</p></div>';
+            }
+            const snapshot = await db.ref('solicitacoes').orderByChild('protocolo').equalTo(protocolo).once('value');
+            const solicitacoes = snapshot.val();
+            if (!solicitacoes) {
+                if (resultadoDiv) resultadoDiv.innerHTML = '<div class="info-text">Nenhuma solicitacao encontrada para este protocolo.</div>';
+                return;
+            }
+            const solicitacao = Object.values(solicitacoes)[0];
+            exibirDetalhesConsultaQR(solicitacao);
+        }
+
+        function exibirDetalhesConsultaQR(solicitacao) {
+            const resultadoDiv = document.getElementById('qrResultado');
+            if (!resultadoDiv) return;
+            const dataFormatada = new Date(solicitacao.dataSolicitacao).toLocaleString('pt-BR');
+            const statusText = solicitacao.status === 'pendente' ? 'Pendente' : (solicitacao.status === 'atendido' ? 'Atendido' : 'Nao Compareceu');
+            const statusClass = solicitacao.status;
+            let infoAdicional = '';
+            if (solicitacao.recebido) {
+                infoAdicional = '<div class="info-text" style="background:#e8f5e9; margin-top:0.5rem;">Documento chegou na Escola de Contas do Municipio de Joao Camara e ja esta disponivel para retirada.</div>';
+            } else if (solicitacao.atendido) {
+                infoAdicional = '<div class="info-text" style="margin-top:0.5rem;">Documento em processamento na Escola de Contas do Municipio de Joao Camara</div>';
+            } else {
+                infoAdicional = '<div class="info-text" style="margin-top:0.5rem;">Aguardando atendimento.</div>';
+            }
+            resultadoDiv.innerHTML = `
+                <div class="comprovante" style="padding:0;">
+                    <div class="comprovante-content">
+                        <div style="font-weight:bold; margin-bottom:0.8rem;">DADOS DA SOLICITACAO</div>
+                        <div class="info-line"><strong>Nome:</strong> ${solicitacao.nome}</div>
+                        <div class="info-line"><strong>CPF:</strong> ${solicitacao.cpf}</div>
+                        <div class="info-line"><strong>Data Nasc.:</strong> ${solicitacao.dataNascimento}</div>
+                        <div class="info-line"><strong>Cidade:</strong> ${solicitacao.cidade}</div>
+                        <div class="info-line"><strong>Telefone:</strong> ${solicitacao.telefone}</div>
+                        <div class="info-line"><strong>Data Solicitacao:</strong> ${dataFormatada}</div>
+                        <div class="info-line"><strong>Data Atendimento:</strong> ${solicitacao.dataAgendamento || 'Nao informado'}</div>
+                        <div class="info-line"><strong>Protocolo:</strong> ${solicitacao.protocolo}</div>
+                        <div class="info-line"><strong>Numero Serie:</strong> ${solicitacao.numeroSerie || '-'}</div>
+                        <div class="info-line"><strong>Status:</strong> <span class="status status-${statusClass}">${statusText}</span></div>
+                        ${infoAdicional}
+                    </div>
+                </div>
+            `;
+        }
+
+        function voltarInicio() {
+            if (scannerActive) {
+                pararScanner();
+            }
+            mostrarBotoes();
+            document.getElementById('conteudoPrincipal').innerHTML = '';
+        }
+
+        function verificarPodeAgendar() {
+            if (!configAtendimento) return false;
+            if (configAtendimento.atendimentoAtivo !== 'sim') return false;
+            const agora = new Date();
+            const horaAtual = agora.getHours() + agora.getMinutes() / 60;
+            const horaInicio = configAtendimento.horarioInicioAgendamento || '00:00';
+            const horaFim = configAtendimento.horarioFimAgendamento || '23:59';
+            const [horaInicioInt, minInicio] = horaInicio.split(':').map(Number);
+            const [horaFimInt, minFim] = horaFim.split(':').map(Number);
+            const horaInicioDecimal = horaInicioInt + minInicio / 60;
+            const horaFimDecimal = horaFimInt + minFim / 60;
+            if (horaAtual < horaInicioDecimal || horaAtual >= horaFimDecimal) return false;
+            const fichasUsadas = configAtendimento.fichasUsadas || 0;
+            if (fichasUsadas >= configAtendimento.numFichas) return false;
+            return true;
+        }
+
+        function atualizarAvisoHorarioDinamico() {
+            const avisoDiv = document.getElementById('avisoHorario');
+            if (!avisoDiv || !configAtendimento) return;
+            const fichasRestantes = configAtendimento.numFichas - (configAtendimento.fichasUsadas || 0);
+            const horaInicio = configAtendimento.horarioInicioAgendamento || '00:00';
+            const horaFim = configAtendimento.horarioFimAgendamento || '23:59';
+            const dataAtendimento = configAtendimento.dataAtendimento;
+            if (configAtendimento.atendimentoAtivo !== 'sim') {
+                avisoDiv.innerHTML = `SISTEMA DE AGENDAMENTO INDISPONIVEL<br><br>Proximo agendamento sera para o dia ${dataAtendimento}.<br>Periodo de inscricao: ${horaInicio} as ${horaFim} do dia atual.<br>Fichas disponiveis: ${fichasRestantes}<br><br>Escola de Contas do Municipio de Joao Camara<br>Horario de funcionamento: 08:00 as 17:00`;
+                avisoDiv.className = 'aviso aviso-fechado';
+            } else if (fichasRestantes <= 0) {
+                avisoDiv.innerHTML = `TODAS AS FICHAS FORAM ESGOTADAS<br><br>As ${fichasRestantes} fichas para o dia ${dataAtendimento} ja foram preenchidas.<br>Proximo periodo de agendamento sera divulgado em breve.<br><br>Escola de Contas do Municipio de Joao Camara<br>Horario de funcionamento: 08:00 as 17:00`;
+                avisoDiv.className = 'aviso aviso-esgotado';
+            } else if (verificarPodeAgendar()) {
+                avisoDiv.innerHTML = `PERIODO DE AGENDAMENTO ABERTO<br><br>Voce pode realizar sua inscricao para o dia ${dataAtendimento}.<br>Fichas restantes: ${fichasRestantes}<br>Prazo para retirada do documento: 30 dias apos o atendimento.<br><br>Documentos necessarios no dia do atendimento:<br>- Certidao de Nascimento (original ou copia)<br>- RG (Caso tenha)<br>- Comprovante de residencia atualizado<br>- Protocolo de agendamento`;
+                avisoDiv.className = 'aviso';
+            } else {
+                avisoDiv.innerHTML = `AGUARDANDO PERIODO DE AGENDAMENTO<br><br>O agendamento para o dia ${dataAtendimento} sera realizado no horario das ${horaInicio} as ${horaFim} do dia atual.<br>Fichas disponiveis: ${fichasRestantes}<br><br>Escola de Contas do Municipio de Joao Camara<br>Horario de funcionamento: 08:00 as 17:00`;
+                avisoDiv.className = 'aviso aviso-fechado';
+            }
+        }
+
+        function mostrarFormulario() {
+            esconderBotoes();
+            const container = document.getElementById('conteudoPrincipal');
+            if (!configAtendimento) {
+                container.innerHTML = '<div class="aviso">Carregando informacoes do sistema...</div><button class="btn-voltar" onclick="voltarInicio()">Voltar</button>';
+                return;
+            }
+            const podeAgendar = verificarPodeAgendar();
+            let html = `<div id="avisoHorario" class="aviso"></div>`;
+            if (podeAgendar) {
+                html += `
+                    <div id="formularioDiv">
+                        <div class="secao-titulo">NOVO AGENDAMENTO</div>
+                        <div id="formAgendamento">
+                            <div class="form-group">
+                                <label>Nome Completo</label>
+                                <input type="text" id="nome" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label>CPF</label>
+                                <input type="text" id="cpf" maxlength="14" autocomplete="off" placeholder="000.000.000-00">
+                            </div>
+                            <div class="form-group">
+                                <label>Data de Nascimento</label>
+                                <input type="text" id="dataNasc" placeholder="DD/MM/AAAA" maxlength="10" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label>Cidade onde reside</label>
+                                <input type="text" id="cidade" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label>Telefone</label>
+                                <input type="text" id="telefone" maxlength="15" autocomplete="off" placeholder="(00) 00000-0000">
+                            </div>
+                            <button class="btn-primary" onclick="confirmarAgendamento()">Confirmar Agendamento</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                const fichasRestantes = configAtendimento.numFichas - (configAtendimento.fichasUsadas || 0);
+                const horaInicio = configAtendimento.horarioInicioAgendamento || '00:00';
+                const horaFim = configAtendimento.horarioFimAgendamento || '23:59';
+                const dataAtendimento = configAtendimento.dataAtendimento;
+                html += `
+                    <div class="aviso aviso-fechado">
+                        AGENDAMENTO INDISPONIVEL NO MOMENTO<br><br>
+                        O agendamento para o dia ${dataAtendimento} podera ser realizado no horario das ${horaInicio} as ${horaFim}.<br>
+                        Fichas disponiveis: ${fichasRestantes}<br><br>
+                        Escola de Contas do Municipio de Joao Camara<br>
+                        Horario de funcionamento: 08:00 as 17:00
+                    </div>
+                `;
+            }
+            html += `<button class="btn-voltar" onclick="voltarInicio()">Voltar</button>`;
+            container.innerHTML = html;
+            if (podeAgendar) {
+                setTimeout(() => {
+                    const cpfInput = document.getElementById('cpf');
+                    const dataInput = document.getElementById('dataNasc');
+                    const telInput = document.getElementById('telefone');
+                    if (cpfInput) cpfInput.addEventListener('input', function(e) { e.target.value = formatarCPF(e.target.value); });
+                    if (dataInput) dataInput.addEventListener('input', function(e) { e.target.value = formatarData(e.target.value); });
+                    if (telInput) telInput.addEventListener('input', function(e) { e.target.value = formatarTelefone(e.target.value); });
+                }, 10);
+            }
+            atualizarAvisoHorarioDinamico();
+        }
+
+        function mostrarConsulta() {
+            esconderBotoes();
+            const container = document.getElementById('conteudoPrincipal');
+            container.innerHTML = `
+                <div id="consultaDiv">
+                    <div class="secao-titulo">CONSULTAR PROTOCOLO</div>
+                    <div class="form-group">
+                        <label>CPF</label>
+                        <input type="text" id="consultaCpf" maxlength="14" autocomplete="off" placeholder="000.000.000-00">
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Nascimento</label>
+                        <input type="text" id="consultaDataNasc" placeholder="DD/MM/AAAA" maxlength="10" autocomplete="off">
+                    </div>
+                    <button class="btn-primary" onclick="realizarConsulta()" style="background:#4caf50;">Consultar</button>
+                    <div id="resultadoConsulta" style="margin-top: 1rem;"></div>
+                </div>
+                <button class="btn-voltar" onclick="voltarInicio()">Voltar</button>
+            `;
+            setTimeout(() => {
+                const cpfInput = document.getElementById('consultaCpf');
+                const dataInput = document.getElementById('consultaDataNasc');
+                if (cpfInput) cpfInput.addEventListener('input', function(e) { e.target.value = formatarCPF(e.target.value); });
+                if (dataInput) dataInput.addEventListener('input', function(e) { e.target.value = formatarData(e.target.value); });
+            }, 10);
+        }
+
+        function gerarProtocolo() {
+            return Math.floor(1000 + Math.random() * 9000).toString();
+        }
+
+        async function confirmarAgendamento() {
+            if (!verificarPodeAgendar()) {
+                alert('Fora do periodo de agendamento ou fichas esgotadas. Nao e possivel realizar novo agendamento.');
+                return;
+            }
+            const nome = document.getElementById('nome').value;
+            const cpf = document.getElementById('cpf').value;
+            const dataNasc = document.getElementById('dataNasc').value;
+            const cidade = document.getElementById('cidade').value;
+            const telefone = document.getElementById('telefone').value;
+            if (!nome || !cpf || !dataNasc || !cidade || !telefone) {
+                alert('Preencha todos os campos');
+                return;
+            }
+            const container = document.getElementById('conteudoPrincipal');
+            container.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Processando agendamento...</p>
+                </div>
+                <button class="btn-voltar" onclick="voltarInicio()">Voltar</button>
+            `;
+            const protocolo = gerarProtocolo();
+            const numeroSerie = gerarNumeroSerie();
+            const dataSolicitacao = new Date().toISOString();
+            const dataAgendamento = configAtendimento.dataAtendimento;
+            const solicitacao = {
+                nome: nome,
+                cpf: cpf,
+                dataNascimento: dataNasc,
+                cidade: cidade,
+                telefone: telefone,
+                protocolo: protocolo,
+                numeroSerie: numeroSerie,
+                dataSolicitacao: dataSolicitacao,
+                dataAgendamento: dataAgendamento,
+                status: 'pendente',
+                atendido: false,
+                recebido: false,
+                atendente: null,
+                horarioAtendimento: null
+            };
+            try {
+                const snapshot = await db.ref('solicitacoes').orderByChild('cpf').equalTo(cpf).once('value');
+                const existing = snapshot.val();
+                let id = protocolo;
+                if (existing) {
+                    id = protocolo + '_' + Date.now();
+                }
+                await db.ref('solicitacoes/' + id).set(solicitacao);
+                const novasFichasUsadas = (configAtendimento.fichasUsadas || 0) + 1;
+                await db.ref('configAtendimento/atual').update({ fichasUsadas: novasFichasUsadas });
+                configAtendimento.fichasUsadas = novasFichasUsadas;
+                setTimeout(() => {
+                    exibirComprovante(solicitacao);
+                }, 1000);
+            } catch (error) {
+                alert('Erro ao salvar agendamento: ' + error.message);
+                mostrarFormulario();
+            }
+        }
+
+        function exibirComprovante(solicitacao) {
+            const dataFormatada = new Date(solicitacao.dataSolicitacao).toLocaleString('pt-BR');
+            const container = document.getElementById('conteudoPrincipal');
+            container.innerHTML = `
+                <div class="comprovante" id="comprovanteContent">
+                    <div class="comprovante-content">
+                        <div id="qrcode-placeholder" class="qrcode-container"></div>
+                        <div id="serial-number" class="serial-number"></div>
+                        <div style="text-align:center; margin-bottom:0.8rem; font-size:0.9rem;">COMPROVANTE DE AGENDAMENTO</div>
+                        <div class="info-line"><strong>Nome:</strong> ${solicitacao.nome}</div>
+                        <div class="info-line"><strong>CPF:</strong> ${solicitacao.cpf}</div>
+                        <div class="info-line"><strong>Data Nasc.:</strong> ${solicitacao.dataNascimento}</div>
+                        <div class="info-line"><strong>Cidade:</strong> ${solicitacao.cidade}</div>
+                        <div class="info-line"><strong>Telefone:</strong> ${solicitacao.telefone}</div>
+                        <div class="info-line"><strong>Data Solicitacao:</strong> ${dataFormatada}</div>
+                        <div class="info-line"><strong>Data Atendimento:</strong> ${solicitacao.dataAgendamento}</div>
+                        <hr>
+                        <div class="protocolo">${solicitacao.protocolo}</div>
+                        <div style="text-align:center; font-size:0.7rem;">Numero de Controle</div>
+                        <hr>
+                        <div class="info-text" style="margin-top:0.5rem;">
+                            <strong>DOCUMENTOS NECESSARIOS NO DIA DO ATENDIMENTO:</strong><br>
+                            - Certidao de Nascimento (original ou copia)<br>
+                            - RG (Caso tenha)<br>
+                            - Comprovante de residencia atualizado<br>
+                            - Este comprovante de agendamento
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-download" onclick="baixarPDF()">Baixar PDF</button>
+                <button class="btn-voltar" onclick="voltarInicio()" style="margin-top:0.5rem;">Voltar</button>
+            `;
+            setTimeout(() => {
+                adicionarQRCode(solicitacao.protocolo, solicitacao.numeroSerie);
+            }, 100);
+            window.comprovanteData = solicitacao;
+        }
+
+        window.baixarPDF = function() {
+            const element = document.getElementById('comprovanteContent');
+            html2pdf().set({ margin: 0.5, filename: `protocolo_${window.comprovanteData.protocolo}.pdf` }).from(element).save();
+        }
+
+        async function realizarConsulta() {
+            const cpf = document.getElementById('consultaCpf').value;
+            const dataNasc = document.getElementById('consultaDataNasc').value;
+            if (!cpf || !dataNasc) {
+                alert('Preencha CPF e Data de Nascimento');
+                return;
+            }
+            const resultadoDiv = document.getElementById('resultadoConsulta');
+            resultadoDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Consultando...</p></div>';
+            const snapshot = await db.ref('solicitacoes').orderByChild('cpf').equalTo(cpf).once('value');
+            const solicitacoes = snapshot.val();
+            if (!solicitacoes) {
+                resultadoDiv.innerHTML = '<div class="info-text">Nenhuma solicitacao encontrada para o CPF informado.</div>';
+                return;
+            }
+            const lista = Object.values(solicitacoes).filter(s => s.dataNascimento === dataNasc);
+            if (lista.length === 0) {
+                resultadoDiv.innerHTML = '<div class="info-text">Nenhuma solicitacao encontrada. Verifique os dados informados.</div>';
+                return;
+            }
+            if (lista.length === 1) {
+                exibirDetalhesConsulta(lista[0], resultadoDiv);
+            } else {
+                let html = '<div class="info-text" style="margin-bottom:0.5rem;">Multiplas solicitacoes encontradas. Clique em uma para ver os detalhes:</div>';
+                lista.forEach(s => {
+                    const data = new Date(s.dataSolicitacao).toLocaleDateString('pt-BR');
+                    let statusText = s.status === 'pendente' ? 'Pendente' : (s.status === 'atendido' ? 'Atendido' : 'Nao Compareceu');
+                    let statusClass = s.status;
+                    html += `
+                        <div class="solicitacao-card" onclick="exibirDetalhesConsultaCompleto('${s.protocolo}')">
+                            <div><strong>Protocolo:</strong> ${s.protocolo}</div>
+                            <div><strong>Data:</strong> ${data}</div>
+                            <div><strong>Status:</strong> <span class="status status-${statusClass}">${statusText}</span></div>
+                        </div>
+                    `;
+                });
+                resultadoDiv.innerHTML = html;
+            }
+        }
+
+        window.exibirDetalhesConsultaCompleto = async function(protocolo) {
+            const resultadoDiv = document.getElementById('resultadoConsulta');
+            resultadoDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Carregando...</p></div>';
+            const snapshot = await db.ref('solicitacoes').orderByChild('protocolo').equalTo(protocolo).once('value');
+            const solicitacoes = snapshot.val();
+            if (solicitacoes) {
+                const solicitacao = Object.values(solicitacoes)[0];
+                exibirDetalhesConsulta(solicitacao, resultadoDiv);
+            }
+        }
+
+        function exibirDetalhesConsulta(solicitacao, resultadoDiv) {
+            const dataFormatada = new Date(solicitacao.dataSolicitacao).toLocaleString('pt-BR');
+            const statusText = solicitacao.status === 'pendente' ? 'Pendente' : (solicitacao.status === 'atendido' ? 'Atendido' : 'Nao Compareceu');
+            const statusClass = solicitacao.status;
+            let infoAdicional = '';
+            if (solicitacao.recebido) {
+                infoAdicional = '<div class="info-text" style="background:#e8f5e9; margin-top:0.5rem;">Documento chegou na Escola de Contas do Municipio de Joao Camara e ja esta disponivel para retirada.</div>';
+            } else if (solicitacao.atendido) {
+                infoAdicional = '<div class="info-text" style="margin-top:0.5rem;">Documento em processamento na Escola de Contas do Municipio de Joao Camara</div>';
+            } else {
+                const dataSolicitacaoObj = new Date(solicitacao.dataSolicitacao);
+                const hoje = new Date();
+                const diasRestantes = 30 - Math.floor((hoje - dataSolicitacaoObj) / (1000 * 60 * 60 * 24));
+                infoAdicional = `<div class="info-text" style="margin-top:0.5rem;">Aguardando atendimento. Prazo de 30 dias para retirada do documento. Dias restantes: ${diasRestantes > 0 ? diasRestantes : 0}</div>`;
+            }
+            resultadoDiv.innerHTML = `
+                <div class="comprovante" style="padding:0;">
+                    <div class="comprovante-content">
+                        <div style="font-weight:bold; margin-bottom:0.8rem;">DADOS DA SOLICITACAO</div>
+                        <div class="info-line"><strong>Nome:</strong> ${solicitacao.nome}</div>
+                        <div class="info-line"><strong>CPF:</strong> ${solicitacao.cpf}</div>
+                        <div class="info-line"><strong>Data Nasc.:</strong> ${solicitacao.dataNascimento}</div>
+                        <div class="info-line"><strong>Cidade:</strong> ${solicitacao.cidade}</div>
+                        <div class="info-line"><strong>Telefone:</strong> ${solicitacao.telefone}</div>
+                        <div class="info-line"><strong>Data Solicitacao:</strong> ${dataFormatada}</div>
+                        <div class="info-line"><strong>Data Atendimento:</strong> ${solicitacao.dataAgendamento || 'Nao informado'}</div>
+                        <div class="info-line"><strong>Protocolo:</strong> ${solicitacao.protocolo}</div>
+                        <div class="info-line"><strong>Numero Serie:</strong> ${solicitacao.numeroSerie || '-'}</div>
+                        <div class="info-line"><strong>Status:</strong> <span class="status status-${statusClass}">${statusText}</span></div>
+                        ${infoAdicional}
+                    </div>
+                </div>
+            `;
+        }
+
+        async function carregarConfiguracao() {
+            const snapshot = await db.ref('configAtendimento/atual').once('value');
+            configAtendimento = snapshot.val();
+            if (!configAtendimento) {
+                const amanha = new Date();
+                amanha.setDate(amanha.getDate() + 1);
+                const dataAtendimento = amanha.toLocaleDateString('pt-BR');
+                configAtendimento = {
+                    dataAtendimento: dataAtendimento,
+                    atendimentoAtivo: 'sim',
+                    numFichas: 50,
+                    horarioInicioAgendamento: '18:00',
+                    horarioFimAgendamento: '20:00',
+                    fichasUsadas: 0
+                };
+                await db.ref('configAtendimento/atual').set(configAtendimento);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            await new Promise(resolve => {
+                const checkDB = setInterval(() => {
+                    if (typeof firebase !== 'undefined' && firebase.apps.length > 0 && window.db) {
+                        clearInterval(checkDB);
+                        db = window.db;
+                        carregarConfiguracao().then(() => {
+                            resolve();
+                        });
+                    }
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>
