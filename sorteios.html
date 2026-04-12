@@ -948,3 +948,144 @@
     </script>
 </body>
 </html>
+
+
+<style>
+:root{
+  --azul: #48658a;
+}
+
+#menuFloat {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 14px;
+  background: var(--azul);
+  color: #fff;
+  font-weight: bold;
+  font-size: 13px;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+  cursor: pointer;
+  z-index: 9999;
+  user-select: none;
+}
+
+#telaFull {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  z-index: 10000;
+  display: none;
+  flex-direction: column;
+  animation: abrir 0.35s ease;
+}
+
+@keyframes abrir {
+  from {transform: scale(0.9); opacity: 0;}
+  to {transform: scale(1); opacity: 1;}
+}
+
+@keyframes fechar {
+  from {transform: scale(1); opacity: 1;}
+  to {transform: scale(0.9); opacity: 0;}
+}
+
+#fechar {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  font-size: 26px;
+  color: var(--azul);
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#conteudo {
+  flex: 1;
+  overflow-y: auto;
+  padding: 60px 15px 20px;
+  text-align: center;
+}
+
+#imagemLista {
+  max-width: 100%;
+  border-radius: 12px;
+}
+
+#acoes {
+  padding: 15px;
+  text-align: center;
+}
+
+.linkAcao {
+  display: block;
+  margin: 8px 0;
+  color: var(--azul);
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: none;
+}
+</style>
+
+<div id="menuFloat" onclick="abrirMenu()">Datas dos jogos</div>
+
+<div id="telaFull">
+  <div id="fechar" onclick="fecharMenu()">×</div>
+
+  <div id="conteudo">
+    <img id="imagemLista" src="">
+  </div>
+
+  <div id="acoes">
+    <span class="linkAcao" onclick="baixarImagem()">Baixar imagem</span>
+    <span class="linkAcao" onclick="baixarPDF()">Baixar em PDF</span>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+function abrirMenu(){
+  document.getElementById("telaFull").style.display = "flex";
+  document.getElementById("menuFloat").style.display = "none";
+}
+
+function fecharMenu(){
+  let tela = document.getElementById("telaFull");
+  tela.style.animation = "fechar 0.3s ease";
+  setTimeout(()=>{
+    tela.style.display = "none";
+    tela.style.animation = "";
+    document.getElementById("menuFloat").style.display = "block";
+  },250);
+}
+
+function baixarImagem(){
+  html2canvas(document.getElementById("conteudo")).then(canvas=>{
+    let link = document.createElement("a");
+    link.download = "datas.png";
+    link.href = canvas.toDataURL();
+    link.click();
+  });
+}
+
+function baixarPDF(){
+  html2canvas(document.getElementById("conteudo")).then(canvas=>{
+    const { jsPDF } = window.jspdf;
+    let pdf = new jsPDF();
+    let img = canvas.toDataURL("image/png");
+    let largura = 190;
+    let altura = (canvas.height * largura) / canvas.width;
+    pdf.addImage(img, 'PNG', 10, 10, largura, altura);
+    pdf.save("datas.pdf");
+  });
+}
+
+/* CONFIG */
+document.getElementById("imagemLista").src = "https://www.estadao.com.br/resizer/v2/ZOABYS3KZZBFXGKDZGKNBGY4D4.png?quality=80&auth=26f7d324fa8ef0b355277f125cdf8927eaa706b8c493d8f5d7bbaf283c3136d4&width=329";
+</script>
