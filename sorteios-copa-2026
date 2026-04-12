@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>DomusFit Copa26 - Sistema de Sorteios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: white;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header Fixo */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-icon {
+            font-size: 28px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #4A628A;
+            font-weight: bold;
+            padding: 0;
+            width: auto;
+            height: auto;
+        }
+
+        .logo-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4A628A;
+            letter-spacing: -0.5px;
+        }
+
+        /* Container Principal */
+        .main-container {
+            margin-top: 80px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Seções */
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards e Containers */
+        .info-box {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 0;
+            margin-bottom: 2rem;
+        }
+
+        .info-box h2 {
+            color: #4A628A;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .info-box p {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .info-box ul {
+            margin-left: 2rem;
+            margin-top: 1rem;
+        }
+
+        .info-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Formulários */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #4A628A;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4A628A;
+        }
+
+        /* Botões */
+        button {
+            background-color: #4A628A;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            width: auto;
+            height: auto;
+        }
+
+        button:hover {
+            background-color: #3a4e6e;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-left: 8px;
+            rotate vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform:(360deg); }
+        }
+
+        /* Grid de Jogos */
+        .games-grid {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .game-card {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .game-card:hover {
+            background-color: #e9ecef;
+        }
+
+        .game-card h3 {
+            color: #4A628A;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Resultados e Listas */
+        .winners-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .winner-item {
+            background-color: #d4edda;
+            padding: 1rem;
+            border-left: 4px solid #28a745;
+        }
+
+        .participant-item {
+            background-color: #f8f9fa;
+            padding: 1rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <button class="menu-icon" id="menuButton">☰</button>
+            <div class="logo-title">Domus Suite</div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- Seção Principal com informações -->
+        <div id="homeSection" class="section active">
+            <div class="info-box">
+                <h2>Como funciona o sorteio</h2>
+                <p>Bem-vindo ao sistema de sorteios oficial da Copa do Mundo para jogos do Brasil!</p>
+                <p>O cadastro é simples e rápido:</p>
+                <ul>
+                    <li>Informe seu nome completo</li>
+                    <li>Informe seu número de telefone com DDD</li>
+                    <li>Ao acertar o resultado do jogo, você concorre automaticamente à premiação</li>
+                </ul>
+                <p>Participe e torça pelo Brasil!</p>
+            </div>
+            <div class="button-group">
+                <button id="acessarButton">Acessar</button>
+                <button id="consultarButton">Consultar</button>
+                <button id="ganhadoresButton">Lista de Ganhadores</button>
+            </div>
+        </div>
+
+        <!-- Seção de Aposta -->
+        <div id="apostaSection" class="section">
+            <div id="jogoInfo" style="margin-bottom: 1rem; padding: 1rem; background-color: #f8f9fa;">
+                <h3 id="jogoTitle">Carregando jogo...</h3>
+                <p id="jogoDetalhe"></p>
+            </div>
+            <form id="apostaForm">
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="nomeCompleto" required placeholder="Digite seu nome completo">
+                </div>
+                <div class="form-group">
+                    <label>Telefone (com DDD)</label>
+                    <input type="tel" id="telefone" required placeholder="(11) 99999-9999" maxlength="16">
+                </div>
+                <div class="form-group">
+                    <label>Placar do Jogo</label>
+                    <input type="text" id="placar" required placeholder="Ex: Brasil 2 x 1 Argentina ou 0 x 0">
+                </div>
+                <button type="submit" id="entrarJogoButton">Entrar no Jogo</button>
+            </form>
+        </div>
+
+        <!-- Seção de Consulta -->
+        <div id="consultaSection" class="section">
+            <form id="consultaForm">
+                <div class="form-group">
+                    <label>Consultar por:</label>
+                    <select id="consultaTipo">
+                        <option value="id">ID da Inscrição</option>
+                        <option value="telefone">Número de Telefone</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Valor da Consulta</label>
+                    <input type="text" id="consultaValor" required placeholder="Digite o valor para consulta">
+                </div>
+                <button type="submit" id="buscarButton">Buscar</button>
+            </form>
+            <div id="consultaResultado" style="margin-top: 2rem;"></div>
+        </div>
+
+        <!-- Seção de Ganhadores -->
+        <div id="ganhadoresSection" class="section">
+            <h3 style="color: #4A628A; margin-bottom: 1rem;">Lista de Ganhadores</h3>
+            <div id="ganhadoresLista"></div>
+        </div>
+
+        <!-- Modal do Comprovante -->
+        <div id="comprovanteModal" class="modal">
+            <div class="modal-content">
+                <h3 style="color: #4A628A; margin-bottom: 1rem;">Comprovante de Inscrição</h3>
+                <div id="comprovanteConteudo"></div>
+                <button id="fecharComprovante" style="margin-top: 1rem;">Entendi</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI",
+            authDomain: "san7-brasil.firebaseapp.com",
+            databaseURL: "https://san7-brasil-default-rtdb.firebaseio.com",
+            projectId: "san7-brasil",
+            storageBucket: "san7-brasil.firebasestorage.app",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Variáveis globais
+        let jogoAtual = null;
+        let isLoading = false;
+
+        // Função para mostrar loading no botão
+        function setButtonLoading(button, loading) {
+            if (loading) {
+                button.disabled = true;
+                const originalText = button.textContent;
+                button.setAttribute('data-original-text', originalText);
+                button.innerHTML = `${originalText} <span class="loading"></span>`;
+            } else {
+                button.disabled = false;
+                const originalText = button.getAttribute('data-original-text');
+                if (originalText) {
+                    button.textContent = originalText;
+                }
+            }
+        }
+
+        // Máscara para telefone
+        function mascaraTelefone(valor) {
+            valor = valor.replace(/\D/g, '');
+            if (valor.length <= 2) {
+                return `(${valor}`;
+            } else if (valor.length <= 7) {
+                return `(${valor.substring(0,2)}) ${valor.substring(2)}`;
+            } else {
+                return `(${valor.substring(0,2)}) ${valor.substring(2,7)}-${valor.substring(7,11)}`;
+            }
+        }
+
+        // Gerar ID de 8 dígitos
+        function gerarId() {
+            return Math.floor(10000000 + Math.random() * 90000000).toString();
+        }
+
+        // Carregar jogo ativo
+        function carregarJogoAtivo() {
+            database.ref('jogos').orderByChild('status').equalTo('ativo').once('value', (snapshot) => {
+                const jogos = [];
+                snapshot.forEach((child) => {
+                    jogos.push({ id: child.key, ...child.val() });
+                });
+                if (jogos.length > 0) {
+                    jogoAtual = jogos[0];
+                    const dataInicio = new Date(jogoAtual.dataHoraInicio);
+                    document.getElementById('jogoTitle').innerHTML = `Brasil vs ${jogoAtual.adversario}`;
+                    document.getElementById('jogoDetalhe').innerHTML = `Início das inscrições: ${dataInicio.toLocaleString()} | Prêmio: ${jogoAtual.premio}`;
+                } else {
+                    document.getElementById('jogoTitle').innerHTML = 'Nenhum jogo ativo no momento';
+                    document.getElementById('jogoDetalhe').innerHTML = 'Aguardando próximo jogo do Brasil';
+                }
+            });
+        }
+
+        // Salvar aposta
+        function salvarAposta(event) {
+            event.preventDefault();
+            const button = document.getElementById('entrarJogoButton');
+            
+            if (!jogoAtual) {
+                alert('Nenhum jogo ativo disponível para apostas');
+                return;
+            }
+
+            const nome = document.getElementById('nomeCompleto').value;
+            const telefone = document.getElementById('telefone').value;
+            const placar = document.getElementById('placar').value;
+
+            if (!nome || !telefone || !placar) {
+                alert('Por favor, preencha todos os campos');
+                return;
+            }
+
+            const dataAtual = new Date();
+            const dataLimite = new Date(jogoAtual.dataHoraInicio);
+            dataLimite.setMinutes(dataLimite.getMinutes() - 10);
+
+            if (dataAtual > dataLimite) {
+                alert('O prazo para apostas neste jogo já expirou (10 minutos antes do início)');
+                return;
+            }
+
+            setButtonLoading(button, true);
+
+            const inscricaoId = gerarId();
+            const aposta = {
+                id: inscricaoId,
+                nome: nome,
+                telefone: telefone,
+                placar: placar,
+                jogoId: jogoAtual.id,
+                dataHora: dataAtual.toISOString(),
+                acertou: false,
+                jogoConcluido: false
+            };
+
+            database.ref(`apostas/${inscricaoId}`).set(aposta)
+                .then(() => {
+                    database.ref(`jogos/${jogoAtual.id}/apostas/${inscricaoId}`).set(true);
+                    mostrarComprovante(aposta);
+                    document.getElementById('apostaForm').reset();
+                })
+                .catch((error) => {
+                    console.error('Erro ao salvar aposta:', error);
+                    alert('Erro ao realizar aposta. Tente novamente.');
+                })
+                .finally(() => {
+                    setButtonLoading(button, false);
+                });
+        }
+
+        // Mostrar comprovante
+        function mostrarComprovante(aposta) {
+            const data = new Date(aposta.dataHora);
+            const comprovanteHtml = `
+                <p><strong>Seja bem-vindo, ${aposta.nome}!</strong></p>
+                <p><strong>Número de Inscrição:</strong> ${aposta.id}</p>
+                <p><strong>Telefone:</strong> ${aposta.telefone}</p>
+                <p><strong>Data da Inscrição:</strong> ${data.toLocaleString()}</p>
+                <p><strong>Jogo:</strong> Brasil vs ${jogoAtual.adversario}</p>
+                <p><strong>Placar apostado:</strong> ${aposta.placar}</p>
+                <hr>
+                <p><strong>Termos de Uso:</strong></p>
+                <ul>
+                    <li>Apostas permitidas apenas até 10 minutos antes do início do jogo</li>
+                    <li>Resultados serão divulgados em tempo real no Instagram oficial</li>
+                    <li>O sorteio será realizado em até 24 horas após o resultado do jogo</li>
+                    <li>Consulte seus resultados a qualquer momento pelo ID ou telefone</li>
+                </ul>
+            `;
+            document.getElementById('comprovanteConteudo').innerHTML = comprovanteHtml;
+            document.getElementById('comprovanteModal').classList.add('active');
+        }
+
+        // Consultar aposta
+        function consultarAposta(event) {
+            event.preventDefault();
+            const tipo = document.getElementById('consultaTipo').value;
+            const valor = document.getElementById('consultaValor').value;
+            const resultadoDiv = document.getElementById('consultaResultado');
+
+            if (!valor) {
+                alert('Digite o valor para consulta');
+                return;
+            }
+
+            resultadoDiv.innerHTML = '<p>Carregando...</p>';
+
+            let query;
+            if (tipo === 'id') {
+                query = database.ref(`apostas/${valor}`).once('value');
+            } else {
+                query = database.ref('apostas').orderByChild('telefone').equalTo(valor).once('value');
+            }
+
+            query.then((snapshot) => {
+                if (tipo === 'id') {
+                    const aposta = snapshot.val();
+                    if (aposta) {
+                        exibirResultadoConsulta([aposta]);
+                    } else {
+                        resultadoDiv.innerHTML = '<p>Nenhuma aposta encontrada com este ID</p>';
+                    }
+                } else {
+                    const apostas = [];
+                    snapshot.forEach((child) => {
+                        apostas.push(child.val());
+                    });
+                    if (apostas.length > 0) {
+                        exibirResultadoConsulta(apostas);
+                    } else {
+                        resultadoDiv.innerHTML = '<p>Nenhuma aposta encontrada para este telefone</p>';
+                    }
+                }
+            }).catch((error) => {
+                console.error('Erro na consulta:', error);
+                resultadoDiv.innerHTML = '<p>Erro ao realizar consulta</p>';
+            });
+        }
+
+        // Exibir resultado da consulta
+        function exibirResultadoConsulta(apostas) {
+            const resultadoDiv = document.getElementById('consultaResultado');
+            let html = '<div class="winners-list">';
+            
+            apostas.forEach((aposta) => {
+                const acertouClass = aposta.acertou ? 'winner-item' : 'participant-item';
+                const status = aposta.acertou ? 'GANHADOR - Acertou o resultado!' : 'Participante - Aguardando resultado';
+                html += `
+                    <div class="${acertouClass}">
+                        <p><strong>Nome:</strong> ${aposta.nome}</p>
+                        <p><strong>ID:</strong> ${aposta.id}</p>
+                        <p><strong>Placar Apostado:</strong> ${aposta.placar}</p>
+                        <p><strong>Status:</strong> ${status}</p>
+                        ${aposta.premio ? `<p><strong>Prêmio:</strong> ${aposta.premio}</p>` : ''}
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            resultadoDiv.innerHTML = html;
+        }
+
+        // Carregar lista de ganhadores
+        function carregarGanhadores() {
+            const ganhadoresDiv = document.getElementById('ganhadoresLista');
+            ganhadoresDiv.innerHTML = '<p>Carregando ganhadores...</p>';
+            
+            database.ref('apostas').orderByChild('acertou').equalTo(true).once('value', (snapshot) => {
+                const ganhadores = [];
+                snapshot.forEach((child) => {
+                    ganhadores.push(child.val());
+                });
+                
+                if (ganhadores.length === 0) {
+                    ganhadoresDiv.innerHTML = '<p>Nenhum ganhador registrado ainda</p>';
+                    return;
+                }
+                
+                let html = '<div class="games-grid">';
+                ganhadores.forEach((ganhador) => {
+                    html += `
+                        <div class="winner-item">
+                            <p><strong>Nome:</strong> ${ganhador.nome}</p>
+                            <p><strong>ID:</strong> ${ganhador.id}</p>
+                            <p><strong>Placar:</strong> ${ganhador.placar}</p>
+                            <p><strong>Data:</strong> ${new Date(ganhador.dataHora).toLocaleString()}</p>
+                            ${ganhador.premio ? `<p><strong>Prêmio:</strong> ${ganhador.premio}</p>` : ''}
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                ganhadoresDiv.innerHTML = html;
+            });
+        }
+
+        // Navegação entre seções
+        function mostrarSecao(secaoId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(secaoId).classList.add('active');
+        }
+
+        // Event Listeners
+        document.getElementById('acessarButton').addEventListener('click', () => {
+            mostrarSecao('apostaSection');
+            carregarJogoAtivo();
+        });
+        
+        document.getElementById('consultarButton').addEventListener('click', () => {
+            mostrarSecao('consultaSection');
+            document.getElementById('consultaResultado').innerHTML = '';
+            document.getElementById('consultaForm').reset();
+        });
+        
+        document.getElementById('ganhadoresButton').addEventListener('click', () => {
+            mostrarSecao('ganhadoresSection');
+            carregarGanhadores();
+        });
+        
+        document.getElementById('apostaForm').addEventListener('submit', salvarAposta);
+        document.getElementById('consultaForm').addEventListener('submit', consultarAposta);
+        document.getElementById('fecharComprovante').addEventListener('click', () => {
+            document.getElementById('comprovanteModal').classList.remove('active');
+            mostrarSecao('homeSection');
+        });
+        
+        // Máscara para telefone
+        document.getElementById('telefone').addEventListener('input', (e) => {
+            e.target.value = mascaraTelefone(e.target.value);
+        });
+        
+        // Menu button (sidebar simulation)
+        document.getElementById('menuButton').addEventListener('click', () => {
+            // Simple menu toggle - you can expand this
+            alert('Menu: Navegue usando os botões principais');
+        });
+        
+        // Fechar modal ao clicar fora
+        document.getElementById('comprovanteModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('comprovanteModal')) {
+                document.getElementById('comprovanteModal').classList.remove('active');
+            }
+        });
+        
+        // Carregar dados iniciais
+        carregarJogoAtivo();
+    </script>
+</body>
+</html>
