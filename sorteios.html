@@ -14,7 +14,7 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: white;
-            color: #333;
+            color: black;
             line-height: 1.6;
         }
 
@@ -25,9 +25,9 @@
             left: 0;
             right: 0;
             background-color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             z-index: 1000;
             padding: 1rem 2rem;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
         }
 
         .header-content {
@@ -43,7 +43,7 @@
             cursor: pointer;
             background: none;
             border: none;
-            color: #4A628A;
+            color: black;
             font-weight: bold;
             padding: 0;
             width: auto;
@@ -53,8 +53,47 @@
         .logo-title {
             font-size: 1.5rem;
             font-weight: bold;
-            color: #4A628A;
+            color: black;
             letter-spacing: -0.5px;
+        }
+
+        /* Menu Lateral */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background-color: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 2000;
+            transition: left 0.3s ease;
+            padding: 2rem 1.5rem;
+        }
+
+        .side-menu.active {
+            left: 0;
+        }
+
+        .side-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1999;
+            display: none;
+        }
+
+        .side-menu-overlay.active {
+            display: block;
+        }
+
+        .side-menu button {
+            width: 100%;
+            margin-top: 1rem;
+            background-color: #4A628A;
         }
 
         /* Container Principal */
@@ -64,6 +103,7 @@
             max-width: 1200px;
             margin-left: auto;
             margin-right: auto;
+            min-height: calc(100vh - 160px);
         }
 
         /* Seções */
@@ -81,35 +121,39 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Cards e Containers */
+        /* Cards e Containers - sem bordas, texto preto */
         .info-box {
-            background-color: #f8f9fa;
-            padding: 2rem;
-            border-radius: 0;
+            background-color: white;
+            padding: 1rem 0;
             margin-bottom: 2rem;
+            color: black;
         }
 
         .info-box h2 {
-            color: #4A628A;
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
+            color: black;
+            margin-bottom: 0.75rem;
+            font-size: 1.3rem;
+            font-weight: 600;
         }
 
         .info-box p {
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            color: black;
         }
 
         .info-box ul {
-            margin-left: 2rem;
-            margin-top: 1rem;
+            margin-left: 1.5rem;
+            margin-top: 0.75rem;
         }
 
         .info-box li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
+            color: black;
         }
 
-        /* Formulários */
+        /* Formulários - sem bordas */
         .form-group {
             margin-bottom: 1.5rem;
         }
@@ -118,21 +162,23 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
-            color: #4A628A;
+            color: black;
         }
 
         input, select {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
+            padding: 12px 0;
+            border: none;
+            border-bottom: 1px solid #ddd;
             font-size: 1rem;
             transition: all 0.3s;
             background: white;
+            color: black;
         }
 
         input:focus, select:focus {
             outline: none;
-            border-color: #4A628A;
+            border-bottom-color: #4A628A;
         }
 
         /* Botões */
@@ -165,6 +211,26 @@
             flex-wrap: wrap;
         }
 
+        /* Botão Voltar Flutuante */
+        .back-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #2E5A2E;
+            color: white;
+            border: none;
+            border-radius: 0;
+            padding: 12px 24px;
+            font-size: 1rem;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .back-button:hover {
+            background-color: #1e3a1e;
+        }
+
         /* Loading Spinner */
         .loading {
             display: inline-block;
@@ -182,45 +248,80 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Grid de Jogos */
-        .games-grid {
-            display: grid;
+        /* Sem Jogo Message */
+        .no-game-message {
+            text-align: center;
+            padding: 2rem;
+            background-color: white;
+        }
+
+        .no-game-message h3 {
+            color: black;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .no-game-message p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .quick-links {
+            display: flex;
             gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
             margin-top: 1rem;
         }
 
-        .game-card {
-            background-color: #f8f9fa;
-            padding: 1rem;
+        .quick-link {
+            background-color: #4A628A;
+            color: white;
+            padding: 10px 20px;
             cursor: pointer;
             transition: all 0.3s;
         }
 
-        .game-card:hover {
-            background-color: #e9ecef;
+        .quick-link:hover {
+            background-color: #3a4e6e;
         }
 
-        .game-card h3 {
-            color: #4A628A;
+        /* Jogo Info */
+        .jogo-info-card {
+            background-color: white;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-left: 3px solid #4A628A;
+        }
+
+        .jogo-info-card h3 {
+            color: black;
             margin-bottom: 0.5rem;
         }
 
+        .jogo-info-card p {
+            color: #555;
+            font-size: 0.9rem;
+        }
+
         /* Resultados e Listas */
-        .winners-list {
+        .winners-list, .participants-list {
             display: grid;
             gap: 1rem;
             margin-top: 1rem;
         }
 
         .winner-item {
-            background-color: #d4edda;
+            background-color: #f0f7f0;
             padding: 1rem;
-            border-left: 4px solid #28a745;
+            border-left: 4px solid #2E5A2E;
+            color: black;
         }
 
         .participant-item {
             background-color: #f8f9fa;
             padding: 1rem;
+            color: black;
         }
 
         /* Modal */
@@ -250,6 +351,10 @@
             overflow-y: auto;
         }
 
+        .modal-content p, .modal-content li {
+            color: black;
+        }
+
         /* Responsivo */
         @media (max-width: 768px) {
             .main-container {
@@ -263,6 +368,12 @@
             button {
                 width: 100%;
             }
+
+            .back-button {
+                bottom: 20px;
+                right: 20px;
+                padding: 10px 20px;
+            }
         }
     </style>
 </head>
@@ -274,19 +385,19 @@
         </div>
     </div>
 
+    <!-- Menu Lateral -->
+    <div class="side-menu-overlay" id="menuOverlay"></div>
+    <div class="side-menu" id="sideMenu">
+        <button id="loginAlunoBtn">Login como Aluno</button>
+    </div>
+
     <div class="main-container">
         <!-- Seção Principal com informações -->
         <div id="homeSection" class="section active">
             <div class="info-box">
                 <h2>Como funciona o sorteio</h2>
-                <p>Bem-vindo ao sistema de sorteios oficial da Copa do Mundo para jogos do Brasil!</p>
-                <p>O cadastro é simples e rápido:</p>
-                <ul>
-                    <li>Informe seu nome completo</li>
-                    <li>Informe seu número de telefone com DDD</li>
-                    <li>Ao acertar o resultado do jogo, você concorre automaticamente à premiação</li>
-                </ul>
-                <p>Participe e torça pelo Brasil!</p>
+                <p>Cadastro simples: nome completo e telefone com DDD. Ao acertar o resultado do jogo do Brasil, você concorre automaticamente à premiação.</p>
+                <p>Sorteios realizados em até 24h após o resultado.</p>
             </div>
             <div class="button-group">
                 <button id="acessarButton">Acessar</button>
@@ -297,10 +408,7 @@
 
         <!-- Seção de Aposta -->
         <div id="apostaSection" class="section">
-            <div id="jogoInfo" style="margin-bottom: 1rem; padding: 1rem; background-color: #f8f9fa;">
-                <h3 id="jogoTitle">Carregando jogo...</h3>
-                <p id="jogoDetalhe"></p>
-            </div>
+            <div id="jogoInfoContainer"></div>
             <form id="apostaForm">
                 <div class="form-group">
                     <label>Nome Completo</label>
@@ -339,19 +447,22 @@
 
         <!-- Seção de Ganhadores -->
         <div id="ganhadoresSection" class="section">
-            <h3 style="color: #4A628A; margin-bottom: 1rem;">Lista de Ganhadores</h3>
+            <h3 style="color: black; margin-bottom: 1rem;">Lista de Ganhadores</h3>
             <div id="ganhadoresLista"></div>
         </div>
 
         <!-- Modal do Comprovante -->
         <div id="comprovanteModal" class="modal">
             <div class="modal-content">
-                <h3 style="color: #4A628A; margin-bottom: 1rem;">Comprovante de Inscrição</h3>
+                <h3 style="color: black; margin-bottom: 1rem;">Comprovante de Inscrição</h3>
                 <div id="comprovanteConteudo"></div>
                 <button id="fecharComprovante" style="margin-top: 1rem;">Entendi</button>
             </div>
         </div>
     </div>
+
+    <!-- Botão Voltar Flutuante -->
+    <button class="back-button" id="backButton" style="display: none;">Voltar</button>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -374,6 +485,7 @@
         // Variáveis globais
         let jogoAtual = null;
         let isLoading = false;
+        let currentSection = 'homeSection';
 
         // Função para mostrar loading no botão
         function setButtonLoading(button, loading) {
@@ -410,27 +522,58 @@
 
         // Carregar jogo ativo
         function carregarJogoAtivo() {
-            database.ref('jogos').orderByChild('status').equalTo('ativo').once('value', (snapshot) => {
-                const jogos = [];
-                snapshot.forEach((child) => {
-                    jogos.push({ id: child.key, ...child.val() });
+            return new Promise((resolve) => {
+                database.ref('jogos').orderByChild('status').equalTo('ativo').once('value', (snapshot) => {
+                    const jogos = [];
+                    snapshot.forEach((child) => {
+                        jogos.push({ id: child.key, ...child.val() });
+                    });
+                    if (jogos.length > 0) {
+                        jogoAtual = jogos[0];
+                        resolve(true);
+                    } else {
+                        jogoAtual = null;
+                        resolve(false);
+                    }
                 });
-                if (jogos.length > 0) {
-                    jogoAtual = jogos[0];
-                    const dataInicio = new Date(jogoAtual.dataHoraInicio);
-                    document.getElementById('jogoTitle').innerHTML = `Brasil vs ${jogoAtual.adversario}`;
-                    document.getElementById('jogoDetalhe').innerHTML = `Início das inscrições: ${dataInicio.toLocaleString()} | Prêmio: ${jogoAtual.premio}`;
-                } else {
-                    document.getElementById('jogoTitle').innerHTML = 'Nenhum jogo ativo no momento';
-                    document.getElementById('jogoDetalhe').innerHTML = 'Aguardando próximo jogo do Brasil';
-                }
             });
         }
 
+        // Mostrar info do jogo na seção de aposta
+        async function mostrarInfoJogo() {
+            const hasJogo = await carregarJogoAtivo();
+            const container = document.getElementById('jogoInfoContainer');
+            
+            if (hasJogo && jogoAtual) {
+                const dataInicio = new Date(jogoAtual.dataHoraInicio);
+                container.innerHTML = `
+                    <div class="jogo-info-card">
+                        <h3>Brasil vs ${jogoAtual.adversario}</h3>
+                        <p>Início das inscrições: ${dataInicio.toLocaleString()}</p>
+                        <p>Prêmio: ${jogoAtual.premio}</p>
+                        <p>As apostas encerram 10 minutos antes do jogo</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="no-game-message">
+                        <h3>Nenhum jogo ativo no momento</h3>
+                        <p>Aguardando próximo jogo do Brasil na TV</p>
+                        <div class="quick-links">
+                            <div class="quick-link" onclick="irParaConsultar()">Consultar Apostas</div>
+                            <div class="quick-link" onclick="irParaGanhadores()">Ver Ganhadores</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
         // Salvar aposta
-        function salvarAposta(event) {
+        async function salvarAposta(event) {
             event.preventDefault();
             const button = document.getElementById('entrarJogoButton');
+            
+            await carregarJogoAtivo();
             
             if (!jogoAtual) {
                 alert('Nenhum jogo ativo disponível para apostas');
@@ -592,7 +735,7 @@
                     return;
                 }
                 
-                let html = '<div class="games-grid">';
+                let html = '<div class="winners-list">';
                 ganhadores.forEach((ganhador) => {
                     html += `
                         <div class="winner-item">
@@ -609,18 +752,54 @@
             });
         }
 
-        // Navegação entre seções
+        // Funções de navegação
         function mostrarSecao(secaoId) {
             document.querySelectorAll('.section').forEach(section => {
                 section.classList.remove('active');
             });
             document.getElementById(secaoId).classList.add('active');
+            currentSection = secaoId;
+            
+            const backButton = document.getElementById('backButton');
+            if (secaoId === 'homeSection') {
+                backButton.style.display = 'none';
+            } else {
+                backButton.style.display = 'block';
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function voltarParaHome() {
+            mostrarSecao('homeSection');
+        }
+
+        function irParaConsultar() {
+            mostrarSecao('consultaSection');
+            document.getElementById('consultaResultado').innerHTML = '';
+            document.getElementById('consultaForm').reset();
+        }
+
+        function irParaGanhadores() {
+            mostrarSecao('ganhadoresSection');
+            carregarGanhadores();
+        }
+
+        // Menu lateral
+        function openMenu() {
+            document.getElementById('sideMenu').classList.add('active');
+            document.getElementById('menuOverlay').classList.add('active');
+        }
+
+        function closeMenu() {
+            document.getElementById('sideMenu').classList.remove('active');
+            document.getElementById('menuOverlay').classList.remove('active');
         }
 
         // Event Listeners
-        document.getElementById('acessarButton').addEventListener('click', () => {
+        document.getElementById('acessarButton').addEventListener('click', async () => {
             mostrarSecao('apostaSection');
-            carregarJogoAtivo();
+            await mostrarInfoJogo();
         });
         
         document.getElementById('consultarButton').addEventListener('click', () => {
@@ -640,16 +819,18 @@
             document.getElementById('comprovanteModal').classList.remove('active');
             mostrarSecao('homeSection');
         });
+        document.getElementById('backButton').addEventListener('click', voltarParaHome);
+        
+        // Menu
+        document.getElementById('menuButton').addEventListener('click', openMenu);
+        document.getElementById('menuOverlay').addEventListener('click', closeMenu);
+        document.getElementById('loginAlunoBtn').addEventListener('click', () => {
+            window.location.href = 'login.html';
+        });
         
         // Máscara para telefone
         document.getElementById('telefone').addEventListener('input', (e) => {
             e.target.value = mascaraTelefone(e.target.value);
-        });
-        
-        // Menu button (sidebar simulation)
-        document.getElementById('menuButton').addEventListener('click', () => {
-            // Simple menu toggle - you can expand this
-            alert('Menu: Navegue usando os botões principais');
         });
         
         // Fechar modal ao clicar fora
