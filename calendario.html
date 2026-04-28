@@ -1422,4 +1422,63 @@ async function pegarTreino() {
 
 
 
-<html><head><meta charset="UTF-8"><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script><style>body{margin:0;font-family:Arial}#overlay{position:fixed;bottom:-100%;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center;transition:.4s}#box{background:#fff;width:100%;max-width:400px;border-radius:15px 15px 0 0;padding:20px;text-align:center;animation:up .4s}@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}.btn{padding:12px;margin:10px;border-radius:10px;border:1px solid #ccc;cursor:pointer}.active{background:#4caf50;color:#fff;border:none}#notif{position:fixed;top:20px;right:-300px;background:#fff;padding:10px 20px;border-radius:10px;box-shadow:0 5px 15px rgba(0,0,0,.1);transition:.5s}#notif.show{right:20px}#mini{position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,.5);color:#fff;padding:10px 15px;border-radius:20px;cursor:pointer}#loading{width:15px;height:15px;border:2px solid #fff;border-top:2px solid transparent;border-radius:50%;display:inline-block;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}#footer{position:fixed;bottom:5px;width:100%;text-align:center;color:#fff;font-size:12px;opacity:.6}</style></head><body><div id="overlay"><div id="box"><div id="close" style="text-align:right;cursor:pointer">✕</div><h3>O que você está achando do sistema de treino da SAN7DOC para a Domusfit?</h3><div id="like" class="btn">Estou gostando</div><div id="dislike" class="btn">Não estou gostando</div></div></div><div id="notif"></div><div id="mini">Avaliar</div><div id="footer">SAN7DOC</div><script>const firebaseConfig={apiKey:"AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI",databaseURL:"https://san7-brasil-default-rtdb.firebaseio.com",projectId:"san7-brasil",authDomain:"san7-brasil.firebaseapp.com"};firebase.initializeApp(firebaseConfig);const db=firebase.database();let device=localStorage.getItem("device")||("dev_"+Math.random().toString(36).substr(2,9));localStorage.setItem("device",device);function getIP(){return fetch("https://api.ipify.org?format=json").then(r=>r.json()).then(d=>d.ip)}function show(){if(!localStorage.getItem("avaliado"))document.getElementById("overlay").style.bottom="0"}setTimeout(show,1500);document.getElementById("close").onclick=()=>{document.getElementById("overlay").style.bottom="-100%";notify("Deixe sua avaliação depois 😉")};document.getElementById("overlay").onclick=e=>{if(e.target.id==="overlay"){document.getElementById("overlay").style.bottom="-100%";notify("Não esqueça de avaliar 😉")}};function notify(msg){let n=document.getElementById("notif");n.innerText=msg;n.classList.add("show");setTimeout(()=>n.classList.remove("show"),3000)}document.getElementById("mini").onclick=()=>{document.getElementById("mini").innerHTML='<span id="loading"></span>';setTimeout(()=>{document.getElementById("overlay").style.bottom="0";document.getElementById("mini").innerHTML="Avaliar"},800)};function enviar(tipo){document.getElementById(tipo).classList.add("active");getIP().then(ip=>{db.ref("avaliacoes/"+device).set({tipo:tipo,ip:ip,data:new Date().toLocaleString(),device:navigator.userAgent});localStorage.setItem("avaliado","1");setTimeout(()=>{document.getElementById("overlay").style.bottom="-100%";notify("Avaliação enviada 👍")},1000)})}document.getElementById("like").onclick=()=>enviar("gostando");document.getElementById("dislike").onclick=()=>enviar("nao_gostando");</script></body></html>
+
+<style>
+#san7-eval-container { font-family: sans-serif; position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; align-items: flex-end; }
+#san7-notif { background: #fff; padding: 15px 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; border: none; margin-bottom: 10px; }
+#san7-notif.active { transform: translateX(0); }
+#san7-modal { display: none; position: fixed; bottom: -100%; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: flex-end; transition: bottom 0.5s ease; }
+#san7-modal.active { display: flex; bottom: 0; }
+#san7-card { background: #fff; width: 100%; max-width: 500px; padding: 30px; border-radius: 20px 20px 0 0; position: relative; text-align: center; }
+.san7-close { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; }
+.san7-options { display: flex; gap: 15px; justify-content: center; margin: 20px 0; }
+.san7-btn { padding: 12px 20px; border: 2px solid #eee; border-radius: 10px; cursor: pointer; transition: 0.3s; position: relative; }
+.san7-btn.selected { background: #2ecc71; color: #fff; border-color: #2ecc71; }
+.san7-loader { width: 15px; height: 15px; border: 2px solid #fff; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; display: none; margin-left: 10px; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.san7-footer { font-size: 10px; opacity: 0.5; margin-top: 15px; color: #000; }
+</style>
+<div id="san7-eval-container">
+<div id="san7-notif" onclick="openSan7Modal()">Deixe sua avaliação do sistema</div>
+</div>
+<div id="san7-modal" onclick="if(event.target==this) closeSan7Modal()">
+<div id="san7-card">
+<span class="san7-close" onclick="closeSan7Modal()">&times;</span>
+<h3>O que está achando do sistema de treino desenvolvido pela SAN7DOC para a academia Domusfit?</h3>
+<div class="san7-options">
+<div class="san7-btn" onclick="submitEval('Estou gostando', this)">Estou gostando <div class="san7-loader"></div></div>
+<div class="san7-btn" onclick="submitEval('Não estou gostando', this)">Não estou gostando <div class="san7-loader"></div></div>
+</div>
+<div class="san7-footer">Desenvolvido por SAN7DOC</div>
+</div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script>
+const firebaseConfig = { apiKey: "AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI", databaseURL: "https://san7-brasil-default-rtdb.firebaseio.com", projectId: "san7-brasil", authDomain: "san7-brasil.firebaseapp.com" };
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const storageKey = 'san7_eval_done';
+window.onload = () => { if(!localStorage.getItem(storageKey)) setTimeout(() => { document.getElementById('san7-notif').classList.add('active'); }, 2000); };
+function openSan7Modal() { document.getElementById('san7-modal').classList.add('active'); }
+function closeSan7Modal() { document.getElementById('san7-modal').classList.remove('active'); }
+async function submitEval(val, el) {
+el.classList.add('selected');
+el.querySelector('.san7-loader').style.display = 'inline-block';
+const ipData = await fetch('https://api.ipify.org?format=json').then(r => r.json());
+const data = {
+avaliacao: val,
+dispositivo: navigator.userAgent,
+ip: ipData.ip,
+dataHora: new Date().toLocaleString('pt-BR'),
+timestamp: Date.now()
+};
+db.ref('avaliacoes').push(data).then(() => {
+localStorage.setItem(storageKey, 'true');
+setTimeout(() => {
+closeSan7Modal();
+document.getElementById('san7-notif').style.transform = 'translateX(120%)';
+}, 1000);
+});
+}
+</script>
