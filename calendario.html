@@ -1419,33 +1419,33 @@ async function pegarTreino() {
 
 
 <style>
-#san7-eval-overlay { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(0, 0, 0, 0.8) !important; display: flex !important; justify-content: center !important; align-items: center !important; z-index: 2147483647 !important; font-family: sans-serif !important; opacity: 0; visibility: hidden; transition: all 0.4s ease-in-out; }
+#san7-eval-overlay { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(0, 0, 0, 0.7) !important; display: flex !important; justify-content: center !important; align-items: center !important; z-index: 2147483647 !important; font-family: sans-serif !important; opacity: 0; visibility: hidden; transition: all 0.3s ease-in-out; }
 #san7-eval-overlay.active { opacity: 1; visibility: visible; }
-.san7-box { background: #007bff !important; color: white !important; padding: 30px !important; width: 90% !important; max-width: 380px !important; text-align: center !important; border-radius: 0 !important; position: relative !important; transform: translateY(50px); transition: transform 0.5s ease; border: none !important; box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important; }
-#san7-eval-overlay.active .san7-box { transform: translateY(0); }
-.san7-box h1 { margin: 0 0 10px 0 !important; font-size: 1.5rem !important; text-transform: uppercase !important; color: white !important; }
-.san7-box p { margin: 0 0 20px 0 !important; font-size: 0.9rem !important; line-height: 1.4 !important; opacity: 0.9 !important; color: white !important; }
-.san7-btns { display: flex !important; justify-content: center !important; gap: 10px !important; }
-.san7-btn { padding: 12px !important; border: none !important; border-radius: 30px !important; cursor: pointer !important; font-weight: bold !important; transition: 0.3s !important; flex: 1 !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 0.85rem !important; }
+.san7-box { background: #007bff !important; color: white !important; padding: 20px !important; width: 85% !important; max-width: 320px !important; text-align: center !important; border-radius: 0 !important; position: relative !important; transform: scale(0.9); transition: transform 0.3s ease; border: none !important; box-shadow: 0 10px 25px rgba(0,0,0,0.4) !important; }
+#san7-eval-overlay.active .san7-box { transform: scale(1); }
+.san7-box h1 { margin: 0 0 8px 0 !important; font-size: 1.2rem !important; text-transform: uppercase !important; color: white !important; font-weight: bold !important; }
+.san7-box p { margin: 0 0 15px 0 !important; font-size: 0.85rem !important; line-height: 1.3 !important; opacity: 0.9 !important; color: white !important; }
+.san7-btns { display: flex !important; justify-content: center !important; gap: 8px !important; }
+.san7-btn { padding: 10px !important; border: none !important; border-radius: 30px !important; cursor: pointer !important; font-weight: bold !important; transition: 0.2s !important; flex: 1 !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 0.75rem !important; min-height: 38px !important; }
 .btn-gostando { background: white !important; color: #007bff !important; }
 .btn-naogostando { background: #dc3545 !important; color: white !important; }
-#san7-feedback-form { display: none; margin-top: 15px !important; text-align: left !important; animation: san7SlideUp 0.4s ease; }
-@keyframes san7SlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-.san7-textarea { width: 100% !important; height: 80px !important; border: none !important; padding: 10px !important; margin-bottom: 10px !important; border-radius: 0 !important; font-family: sans-serif !important; resize: none !important; box-sizing: border-box !important; color: #333 !important; background: white !important; }
-.san7-form-btns { display: flex !important; gap: 10px !important; }
+#san7-feedback-form { display: none; margin-top: 12px !important; text-align: left !important; animation: san7Fade 0.3s ease; }
+@keyframes san7Fade { from { opacity: 0; } to { opacity: 1; } }
+.san7-textarea { width: 100% !important; height: 60px !important; border: none !important; padding: 8px !important; margin-bottom: 8px !important; border-radius: 0 !important; font-family: sans-serif !important; resize: none !important; box-sizing: border-box !important; color: #333 !important; background: white !important; font-size: 0.8rem !important; }
+.san7-form-btns { display: flex !important; gap: 8px !important; }
 .btn-send { background: #28a745 !important; color: white !important; }
-.btn-skip { background: rgba(255,255,255,0.2) !important; color: white !important; }
-.san7-loader { border: 2px solid rgba(0,0,0,0.1) !important; border-top: 2px solid #007bff !important; border-radius: 50% !important; width: 16px !important; height: 16px !important; animation: san7spin 0.8s linear infinite !important; }
-.btn-naogostando .san7-loader, .btn-send .san7-loader { border-top-color: white !important; }
+.btn-skip { background: rgba(255,255,255,0.2); color: white !important; }
+.san7-loader { border: 2px solid rgba(255,255,255,0.3) !important; border-top: 2px solid white !important; border-radius: 50% !important; width: 14px !important; height: 14px !important; animation: san7spin 0.8s linear infinite !important; }
+.btn-gostando .san7-loader { border-top-color: #007bff !important; border-bottom-color: transparent; }
 @keyframes san7spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-.san7-notif-top { position: fixed !important; top: -100px !important; right: 20px !important; background: white !important; color: #333 !important; padding: 15px 25px !important; box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important; transition: all 0.5s ease !important; z-index: 2147483647 !important; border-radius: 0 !important; font-weight: bold !important; font-size: 0.9rem !important; pointer-events: none; }
+.san7-notif-top { position: fixed !important; top: -80px !important; right: 20px !important; background: white !important; color: #333 !important; padding: 12px 20px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important; transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; z-index: 2147483647 !important; border-radius: 0 !important; font-weight: bold !important; font-size: 0.85rem !important; }
 .san7-notif-top.show { top: 20px !important; }
-.san7-brand { margin-top: 25px !important; font-size: 10px !important; opacity: 0.6 !important; letter-spacing: 2px !important; color: white !important; }
+.san7-brand { margin-top: 15px !important; font-size: 9px !important; opacity: 0.7 !important; letter-spacing: 1px !important; color: white !important; }
 </style>
 
 <div id="san7-eval-overlay">
     <div class="san7-box">
-        <h1>AVALIE PARA CONTINUAR</h1>
+        <h1>AVALIE</h1>
         <p id="san7-main-text">O que acha do sistema de treino SAN7DOC para a Domusfit?</p>
         <div class="san7-btns" id="san7-main-btns">
             <button class="san7-btn btn-gostando" onclick="sendEval('Estou gostando', this)">Estou gostando</button>
@@ -1468,19 +1468,19 @@ async function pegarTreino() {
 <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
 <script>
 (function() {
-    const firebaseConfig = {
+    const config = {
         apiKey: "AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI",
         databaseURL: "https://san7-brasil-default-rtdb.firebaseio.com",
         projectId: "san7-brasil",
         authDomain: "san7-brasil.firebaseapp.com"
     };
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
+    if (!firebase.apps.length) firebase.initializeApp(config);
+    const db = firebase.database();
     const overlay = document.getElementById('san7-eval-overlay');
     const toast = document.getElementById('san7Toast');
 
     window.addEventListener('load', () => {
-        setTimeout(() => { overlay.classList.add('active'); }, 1000);
+        setTimeout(() => { overlay.classList.add('active'); }, 800);
     });
 
     window.handleNotLiking = function(btn) {
@@ -1489,28 +1489,31 @@ async function pegarTreino() {
             document.getElementById('san7-main-btns').style.display = 'none';
             document.getElementById('san7-main-text').innerText = 'Conte-nos o motivo:';
             document.getElementById('san7-feedback-form').style.display = 'block';
-        }, 800);
+        }, 600);
     };
 
     window.sendEval = function(status, btn, isFeedback = false) {
-        const originalContent = btn.innerHTML;
+        const original = btn.innerHTML;
         btn.innerHTML = '<div class="san7-loader"></div>';
         btn.disabled = true;
         const feedback = isFeedback ? document.getElementById('feedback-text').value : "";
-        const evalData = {
+        
+        db.ref('evaluations').push({
             evaluation: status,
             description: feedback,
             date: new Date().toLocaleDateString('pt-BR'),
             time: new Date().toLocaleTimeString('pt-BR'),
             timestamp: firebase.database.ServerValue.TIMESTAMP
-        };
-        database.ref('evaluations').push(evalData).then(() => {
+        }).then(() => {
             overlay.classList.remove('active');
             toast.classList.add('show');
-            setTimeout(() => {
+            setTimeout(() => { 
                 toast.classList.remove('show');
-                location.reload();
+                overlay.style.display = 'none'; 
             }, 2500);
+        }).catch(() => {
+            btn.innerHTML = original;
+            btn.disabled = false;
         });
     };
 })();
