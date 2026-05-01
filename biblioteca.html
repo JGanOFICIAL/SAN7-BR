@@ -17,7 +17,6 @@
             color: #333;
         }
 
-        /* Cabeçalho fixo */
         .header {
             position: fixed;
             top: 0;
@@ -70,12 +69,11 @@
             cursor: pointer;
         }
 
-        /* Banner de boas-vindas */
         .welcome-banner {
             position: relative;
             width: 100%;
             height: 400px;
-            background-image: url('https://placehold.co/1200x400/e0e7ff/004a8f?text=Biblioteca+Virtual');
+            background-image: url('https://placehold.co/1200x400/1a3a5c/ffffff?text=Biblioteca+Virtual+de+Joao+Camara');
             background-size: cover;
             background-position: center;
             margin-top: 85px;
@@ -135,7 +133,6 @@
             background: #003366;
         }
 
-        /* Conteudo principal */
         .main-content {
             max-width: 1200px;
             margin-left: auto;
@@ -143,7 +140,6 @@
             padding: 30px 20px;
         }
 
-        /* Caixas de informacao */
         .info-box {
             background: white;
             border: 1px solid #ddd;
@@ -198,7 +194,6 @@
             text-align: center;
         }
 
-        /* Formularios */
         .form-box {
             max-width: 500px;
             margin: 0 auto;
@@ -223,11 +218,24 @@
             border: 1px solid #ccc;
             font-size: 0.9rem;
             background: white;
+            transition: border-color 0.2s;
         }
 
         .form-group input:focus {
             outline: none;
             border-color: #004a8f;
+        }
+
+        .form-group input.error {
+            border-color: #dc2626;
+            background-color: #fef2f2;
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 0.75rem;
+            margin-top: 5px;
+            display: block;
         }
 
         .btn-primary {
@@ -265,7 +273,6 @@
             text-decoration: underline;
         }
 
-        /* Comprovante */
         .comprovante {
             background: white;
             border: 2px dashed #004a8f;
@@ -289,7 +296,6 @@
             color: #333;
         }
 
-        /* Biblioteca */
         .search-box {
             margin-bottom: 30px;
         }
@@ -303,7 +309,7 @@
 
         .items-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 25px;
         }
 
@@ -311,7 +317,7 @@
             background: white;
             border: 1px solid #ddd;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .item-card:hover {
@@ -321,9 +327,10 @@
 
         .card-cover {
             height: 200px;
-            background-size: cover;
+            background-size: contain;
+            background-repeat: no-repeat;
             background-position: center;
-            background-color: #f0f0f0;
+            background-color: #f5f5f5;
         }
 
         .card-info {
@@ -353,7 +360,6 @@
             color: #004a8f;
         }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -384,7 +390,6 @@
             color: #999;
         }
 
-        /* Leitor */
         .reader-overlay {
             display: none;
             position: fixed;
@@ -430,7 +435,6 @@
             cursor: pointer;
         }
 
-        /* Grid de paginas - 3 por linha */
         .pages-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -478,13 +482,6 @@
             color: white;
         }
 
-        /* Conteudo da pagina */
-        .page-content-view {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-        }
-
         .image-gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -503,7 +500,6 @@
             transform: scale(1.02);
         }
 
-        /* Modal de imagem expandida */
         .image-modal {
             display: none;
             position: fixed;
@@ -593,6 +589,12 @@
             to { transform: rotate(360deg); }
         }
 
+        @media (max-width: 1024px) {
+            .items-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
             .welcome-banner {
                 height: 300px;
@@ -603,6 +605,9 @@
             }
             .banner-content p {
                 font-size: 0.9rem;
+            }
+            .items-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
             .pages-grid {
                 grid-template-columns: repeat(3, 1fr);
@@ -620,6 +625,9 @@
         }
 
         @media (max-width: 480px) {
+            .items-grid {
+                grid-template-columns: 1fr;
+            }
             .pages-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -631,7 +639,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="biblioteca.js"></script>
+    <script src="script.js"></script>
 </head>
 <body>
 <div class="header">
@@ -648,8 +656,7 @@
     </div>
 </div>
 
-<!-- Banner de boas-vindas -->
-<div id="welcomeBanner" class="welcome-banner" style="background-image: url('https://noticiasconcursos.com.br/wp-content/uploads/2019/05/prefeitura-de-joao-camara-rn.jpg');">
+<div id="welcomeBanner" class="welcome-banner" style="background-image: url('https://placehold.co/1200x400/1a3a5c/ffffff?text=Biblioteca+Virtual+de+Joao+Camara');">
     <div class="banner-content">
         <h2>Biblioteca Virtual</h2>
         <p>Conhecimento, cultura e transparencia ao alcance de todos</p>
@@ -658,7 +665,6 @@
 </div>
 
 <div class="main-content" id="mainContent">
-    <!-- Pagina inicial com informacoes -->
     <div id="homePage">
         <div class="features">
             <div class="feature-item">
@@ -695,37 +701,61 @@
         <div class="info-box">
             <h2>Como acessar o conteudo?</h2>
             <p>1. Cadastre-se gratuitamente informando seus dados pessoais e criando uma senha.<br>
-            2. Após o cadastro, use seu CPF e senha para acessar a biblioteca.<br>
+            2. Após o cadastro, use seu e-mail e senha para acessar a biblioteca.<br>
             3. Navegue pelo acervo, pesquise por titulos ou descricoes e clique no conteudo desejado.<br>
             4. Utilize o sistema de marcadores para salvar a pagina onde voce parou e retomar depois.<br>
             5. Gerencie seus dados pessoais e sua foto de perfil clicando na sua imagem no canto superior direito.</p>
         </div>
     </div>
 
-<br><br><br><br>
-
-    <!-- Area de login/cadastro -->
     <div id="authArea" style="display:none;">
         <div id="loginForm" class="form-box">
-            <div class="form-group">
-                <label>CPF</label>
-                <input type="text" id="loginCpf" placeholder="000.000.000-00" maxlength="14">
+            <div class="form-group" id="loginEmailGroup">
+                <label>E-mail</label>
+                <input type="email" id="loginEmail" placeholder="seu@email.com">
+                <span class="error-message" id="loginEmailError"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="loginSenhaGroup">
                 <label>Senha</label>
                 <input type="password" id="loginSenha" placeholder="Digite sua senha">
+                <span class="error-message" id="loginSenhaError"></span>
             </div>
-            <button class="btn-primary" id="btnLogin">Entrar</button>
+            <button class="btn-primary" id="btnLogin"><span id="loginSpinner"></span>Entrar</button>
             <button class="btn-link" id="showRegisterBtn">Criar nova conta</button>
             <button class="btn-link" id="backToHomeBtn">Voltar</button>
         </div>
 
         <div id="registerForm" class="form-box" style="display:none;">
-            <div class="form-group"><label>Nome completo</label><input type="text" id="regNome" placeholder="Digite seu nome completo"></div>
-            <div class="form-group"><label>CPF</label><input type="text" id="regCpf" maxlength="14" placeholder="000.000.000-00"></div>
-            <div class="form-group"><label>Data de nascimento</label><input type="text" id="regNasc" placeholder="DD/MM/AAAA" maxlength="10"></div>
-            <div class="form-group"><label>Telefone com DDD</label><input type="text" id="regTelefone" maxlength="15" placeholder="(84) 91234-5678"></div>
-            <div class="form-group"><label>Criar senha</label><input type="password" id="regSenha" placeholder="Crie uma senha segura"></div>
+            <div class="form-group" id="regNomeGroup">
+                <label>Nome completo</label>
+                <input type="text" id="regNome" placeholder="Digite seu nome completo">
+                <span class="error-message" id="regNomeError"></span>
+            </div>
+            <div class="form-group" id="regEmailGroup">
+                <label>E-mail</label>
+                <input type="email" id="regEmail" placeholder="seu@email.com">
+                <span class="error-message" id="regEmailError"></span>
+            </div>
+            <div class="form-group" id="regNascGroup">
+                <label>Data de nascimento</label>
+                <input type="text" id="regNasc" placeholder="DD/MM/AAAA" maxlength="10">
+                <span class="error-message" id="regNascError"></span>
+            </div>
+            <div class="form-group" id="regTelefoneGroup">
+                <label>Telefone com DDD</label>
+                <input type="text" id="regTelefone" maxlength="15" placeholder="(84) 91234-5678">
+                <span class="error-message" id="regTelefoneError"></span>
+            </div>
+            <div class="form-group" id="regSenhaGroup">
+                <label>Criar senha</label>
+                <input type="password" id="regSenha" placeholder="Crie uma senha segura">
+                <span class="error-message" id="regSenhaError"></span>
+            </div>
+            <div class="form-group" id="regConfirmSenhaGroup">
+                <label>Confirmar senha</label>
+                <input type="password" id="regConfirmSenha" placeholder="Confirme sua senha">
+                <span class="error-message" id="regConfirmSenhaError"></span>
+            </div>
             <button class="btn-primary" id="btnRegister"><span id="registerSpinner"></span> Cadastrar</button>
             <button class="btn-link" id="backToLoginBtn">Voltar para login</button>
         </div>
@@ -733,7 +763,6 @@
         <div id="comprovanteArea" style="display:none;"></div>
     </div>
 
-    <!-- Biblioteca -->
     <div id="bibliotecaArea" style="display:none;">
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="Pesquisar por titulo, descricao ou autor...">
@@ -742,7 +771,6 @@
     </div>
 </div>
 
-<!-- Modal Meus Dados -->
 <div id="meusDadosModal" class="modal">
     <div class="modal-content">
         <span class="close-modal" id="closeModal">&times;</span>
@@ -752,7 +780,6 @@
     </div>
 </div>
 
-<!-- Leitor -->
 <div id="readerModal" class="reader-overlay">
     <div class="reader-container">
         <div class="reader-header">
@@ -763,7 +790,6 @@
     </div>
 </div>
 
-<!-- Modal de imagem expandida com zoom e download -->
 <div id="imageModal" class="image-modal">
     <span class="image-modal-close">&times;</span>
     <img id="expandedImage" src="" style="transform: scale(1); transition: transform 0.2s;">
@@ -775,17 +801,19 @@
     <button class="download-btn" id="downloadImageBtn">Baixar Imagem</button>
 </div>
 
+<div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+    </div>
+</div>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script>
+    new window.VLibras.Widget('https://vlibras.gov.br/app');
+</script>
+
 <script>
     (function(){
-        // Mascaras
-        function maskCPF(input) {
-            let v = input.value.replace(/\D/g, '');
-            if(v.length > 11) v = v.slice(0,11);
-            if(v.length > 9) v = v.replace(/^(\d{3})(\d{3})(\d{3})(\d{0,2})/, '$1.$2.$3-$4');
-            else if(v.length > 6) v = v.replace(/^(\d{3})(\d{3})(\d{0,3})/, '$1.$2.$3');
-            else if(v.length > 3) v = v.replace(/^(\d{3})(\d{0,3})/, '$1.$2');
-            input.value = v;
-        }
         function maskDate(input) {
             let v = input.value.replace(/\D/g, '');
             if(v.length > 8) v = v.slice(0,8);
@@ -801,12 +829,8 @@
             input.value = v;
         }
 
-        const cpfLogin = document.getElementById('loginCpf');
-        const regCpf = document.getElementById('regCpf');
         const regNasc = document.getElementById('regNasc');
         const regTelefone = document.getElementById('regTelefone');
-        if(cpfLogin) cpfLogin.addEventListener('input', (e)=>maskCPF(e.target));
-        if(regCpf) regCpf.addEventListener('input', (e)=>maskCPF(e.target));
         if(regNasc) regNasc.addEventListener('input', (e)=>maskDate(e.target));
         if(regTelefone) regTelefone.addEventListener('input', (e)=>maskPhone(e.target));
 
@@ -846,7 +870,18 @@
         const profilePhotoContainer = document.getElementById('profilePhotoContainer');
         const profilePhoto = document.getElementById('profilePhoto');
 
-        // Abrir area de login pelo banner
+        function clearErrors() {
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+            document.querySelectorAll('.form-group input').forEach(el => el.classList.remove('error'));
+        }
+
+        function showError(inputId, errorId, message) {
+            const input = document.getElementById(inputId);
+            const errorSpan = document.getElementById(errorId);
+            if(input) input.classList.add('error');
+            if(errorSpan) errorSpan.textContent = message;
+        }
+
         btnAcessarBanner.onclick = () => {
             if(currentUser) {
                 welcomeBanner.style.display = 'none';
@@ -861,6 +896,7 @@
                 loginFormDiv.style.display = 'block';
                 registerFormDiv.style.display = 'none';
                 comprovanteDiv.style.display = 'none';
+                clearErrors();
             }
         };
 
@@ -868,31 +904,55 @@
             welcomeBanner.style.display = 'block';
             homePage.style.display = 'block';
             authArea.style.display = 'none';
+            clearErrors();
         };
 
-        // Login
         async function doLogin() {
-            const cpf = document.getElementById('loginCpf').value.replace(/\D/g, '');
+            clearErrors();
+            const email = document.getElementById('loginEmail').value.trim();
             const senha = document.getElementById('loginSenha').value;
-            if(!cpf || !senha) { alert("Preencha CPF e senha"); return; }
+            let hasError = false;
+
+            if(!email) {
+                showError('loginEmail', 'loginEmailError', 'E-mail obrigatorio');
+                hasError = true;
+            } else if(!email.includes('@')) {
+                showError('loginEmail', 'loginEmailError', 'E-mail invalido');
+                hasError = true;
+            }
+            if(!senha) {
+                showError('loginSenha', 'loginSenhaError', 'Senha obrigatoria');
+                hasError = true;
+            }
+            if(hasError) return;
+
+            const spinner = document.getElementById('loginSpinner');
+            spinner.innerHTML = '<div class="spinner"></div>';
+            btnLogin.disabled = true;
+
             const snapshot = await firebase.database().ref('usuarios').once('value');
             let found = false;
             snapshot.forEach(child => {
                 const user = child.val();
-                if(user.cpf === cpf && user.senha === senha) {
+                if(user.email === email && user.senha === senha) {
                     found = true;
                     currentUser = { id: child.key, ...user };
                 }
             });
             if(found) {
-                localStorage.setItem('lastUser', JSON.stringify({ cpf: currentUser.cpf, senha: currentUser.senha }));
+                localStorage.setItem('lastUser', JSON.stringify({ email: currentUser.email, senha: currentUser.senha }));
                 welcomeBanner.style.display = 'none';
                 homePage.style.display = 'none';
                 authArea.style.display = 'none';
                 bibliotecaArea.style.display = 'block';
                 updateUserUI();
                 loadItems();
-            } else { alert("CPF ou senha invalidos"); }
+            } else {
+                showError('loginEmail', 'loginEmailError', 'E-mail ou senha incorretos');
+                showError('loginSenha', 'loginSenhaError', 'E-mail ou senha incorretos');
+            }
+            spinner.innerHTML = '';
+            btnLogin.disabled = false;
         }
 
         function updateUserUI() {
@@ -913,7 +973,7 @@
             const data = userSnap.val();
             document.getElementById('modalDataContent').innerHTML = `
                 <div class="form-group"><label>Nome completo</label><input disabled value="${escapeHtml(data.nome)}"></div>
-                <div class="form-group"><label>CPF</label><input disabled value="${data.cpf}"></div>
+                <div class="form-group"><label>E-mail</label><input disabled value="${data.email}"></div>
                 <div class="form-group"><label>Data de nascimento</label><input disabled value="${data.nascimento}"></div>
                 <div class="form-group"><label>Telefone</label><input id="editTelefone" value="${data.telefone || ''}" maxlength="15"></div>
                 <div class="form-group"><label>Senha</label><input id="editSenha" type="text" value="${data.senha}"></div>
@@ -966,24 +1026,43 @@
         closeModalSpan.onclick = () => modal.style.display = 'none';
         window.onclick = (e) => { if(e.target === modal) modal.style.display = 'none'; };
 
-        // Cadastro
         btnRegister.onclick = async () => {
-            const nome = document.getElementById('regNome').value;
-            const cpf = document.getElementById('regCpf').value.replace(/\D/g,'');
+            clearErrors();
+            const nome = document.getElementById('regNome').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
             const nasc = document.getElementById('regNasc').value;
             const telefone = document.getElementById('regTelefone').value;
             const senha = document.getElementById('regSenha').value;
-            if(!nome||!cpf||!nasc||!telefone||!senha) { alert("Preencha todos os campos"); return; }
+            const confirmSenha = document.getElementById('regConfirmSenha').value;
+            let hasError = false;
+
+            if(!nome) { showError('regNome', 'regNomeError', 'Nome obrigatorio'); hasError = true; }
+            if(!email) { showError('regEmail', 'regEmailError', 'E-mail obrigatorio'); hasError = true; }
+            else if(!email.includes('@')) { showError('regEmail', 'regEmailError', 'E-mail invalido'); hasError = true; }
+            if(!nasc) { showError('regNasc', 'regNascError', 'Data de nascimento obrigatoria'); hasError = true; }
+            if(!telefone) { showError('regTelefone', 'regTelefoneError', 'Telefone obrigatorio'); hasError = true; }
+            if(!senha) { showError('regSenha', 'regSenhaError', 'Senha obrigatoria'); hasError = true; }
+            else if(senha.length < 6) { showError('regSenha', 'regSenhaError', 'Senha deve ter no minimo 6 caracteres'); hasError = true; }
+            if(senha !== confirmSenha) { showError('regConfirmSenha', 'regConfirmSenhaError', 'Senhas nao conferem'); hasError = true; }
+            if(hasError) return;
+
             const spinner = document.getElementById('registerSpinner');
             spinner.innerHTML = '<div class="spinner"></div>';
             btnRegister.disabled = true;
-            const existing = await firebase.database().ref('usuarios').orderByChild('cpf').equalTo(cpf).once('value');
-            if(existing.exists()) { alert("CPF ja cadastrado"); btnRegister.disabled=false; spinner.innerHTML=''; return; }
-            const newUser = { nome, cpf, nascimento: nasc, telefone, senha, fotoUrl: '' };
+
+            const existing = await firebase.database().ref('usuarios').orderByChild('email').equalTo(email).once('value');
+            if(existing.exists()) {
+                showError('regEmail', 'regEmailError', 'E-mail ja cadastrado');
+                spinner.innerHTML = '';
+                btnRegister.disabled = false;
+                return;
+            }
+
+            const newUser = { nome, email, nascimento: nasc, telefone, senha, fotoUrl: '' };
             await firebase.database().ref('usuarios').push(newUser);
             spinner.innerHTML = '';
-            btnRegister.disabled=false;
-            
+            btnRegister.disabled = false;
+
             loginFormDiv.style.display = 'none';
             registerFormDiv.style.display = 'none';
             comprovanteDiv.style.display = 'block';
@@ -991,11 +1070,11 @@
                 <div class="comprovante">
                     <h3 style="color:#004a8f; margin-bottom:15px;">COMPROVANTE DE CADASTRO</h3>
                     <div class="comprovante-line"><div class="comprovante-label">Nome completo:</div><div class="comprovante-value">${escapeHtml(nome)}</div></div>
-                    <div class="comprovante-line"><div class="comprovante-label">CPF:</div><div class="comprovante-value">${cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')}</div></div>
+                    <div class="comprovante-line"><div class="comprovante-label">E-mail:</div><div class="comprovante-value">${escapeHtml(email)}</div></div>
                     <div class="comprovante-line"><div class="comprovante-label">Data de nascimento:</div><div class="comprovante-value">${nasc}</div></div>
                     <div class="comprovante-line"><div class="comprovante-label">Telefone:</div><div class="comprovante-value">${telefone}</div></div>
                     <div class="comprovante-line"><div class="comprovante-label">Senha de acesso:</div><div class="comprovante-value">${senha}</div></div>
-                    <div class="comprovante-line"><div class="comprovante-label">Login (CPF):</div><div class="comprovante-value">${cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')}</div></div>
+                    <div class="comprovante-line"><div class="comprovante-label">Login (E-mail):</div><div class="comprovante-value">${escapeHtml(email)}</div></div>
                     <br>
                     <button class="btn-primary" id="backToLoginFromComprovante">Fazer login agora</button>
                 </div>
@@ -1003,8 +1082,8 @@
             document.getElementById('backToLoginFromComprovante')?.addEventListener('click', () => { location.reload(); });
         };
 
-        showRegisterBtn.onclick = () => { loginFormDiv.style.display='none'; registerFormDiv.style.display='block'; comprovanteDiv.style.display='none'; };
-        backToLoginBtn.onclick = () => { loginFormDiv.style.display='block'; registerFormDiv.style.display='none'; comprovanteDiv.style.display='none'; };
+        showRegisterBtn.onclick = () => { loginFormDiv.style.display='none'; registerFormDiv.style.display='block'; comprovanteDiv.style.display='none'; clearErrors(); };
+        backToLoginBtn.onclick = () => { loginFormDiv.style.display='block'; registerFormDiv.style.display='none'; comprovanteDiv.style.display='none'; clearErrors(); };
         btnLogin.onclick = doLogin;
 
         async function loadItems() {
@@ -1019,7 +1098,7 @@
             const filtered = items.filter(item => item.titulo?.toLowerCase().includes(searchTerm) || item.descricao?.toLowerCase().includes(searchTerm));
             itensContainer.innerHTML = filtered.map(item => `
                 <div class="item-card" data-id="${item.id}">
-                    <div class="card-cover" style="background-image: url('${item.capaUrl || ''}'); background-size:contain; background-repeat:no-repeat; background-position:center; background-color:#f5f5f5;"></div>
+                    <div class="card-cover" style="background-image: url('${item.capaUrl || ''}');"></div>
                     <div class="card-info">
                         <div class="card-title">${escapeHtml(item.titulo)}</div>
                         <div class="card-desc">${escapeHtml(item.descricao?.substring(0,100))}</div>
@@ -1040,7 +1119,6 @@
             currentItem = item;
             showingPagesGrid = true;
             readerModalDiv.style.display = 'block';
-            
             if(item.tipo === 'video') {
                 togglePagesView.style.display = 'none';
                 document.getElementById('readerContent').innerHTML = `
@@ -1067,14 +1145,12 @@
                     </div>
                 `;
             });
-            pagesHtml += '</div>';
-            pagesHtml += '<div id="pageContentView" style="display:none;"></div>';
+            pagesHtml += '</div><div id="pageContentView" style="display:none;"></div>';
             document.getElementById('readerContent').innerHTML = `
                 <h2 style="color:#004a8f;">${escapeHtml(currentItem.titulo)}</h2>
                 <p style="margin:15px 0;">${escapeHtml(currentItem.descricao)}</p>
                 ${pagesHtml}
             `;
-            
             document.querySelectorAll('.page-grid-item').forEach(item => {
                 item.addEventListener('click', () => {
                     const idx = parseInt(item.dataset.pageidx);
@@ -1096,7 +1172,6 @@
                 <div id="pageImagesContent"></div>
             `;
             document.getElementById('readerContent').innerHTML = htmlContent;
-            
             if(pageData.imagens && pageData.imagens.length) {
                 let imagesHtml = '<div class="image-gallery">';
                 pageData.imagens.forEach(img => {
@@ -1104,7 +1179,6 @@
                 });
                 imagesHtml += '</div>';
                 document.getElementById('pageImagesContent').innerHTML = imagesHtml;
-                
                 document.querySelectorAll('.gallery-img').forEach(img => {
                     img.addEventListener('click', () => {
                         expandedImage.src = img.dataset.src;
@@ -1114,7 +1188,6 @@
                     });
                 });
             }
-            
             document.getElementById('saveMarkerBtn')?.addEventListener('click', () => {
                 localStorage.setItem(`marker_${currentItem.id}_${currentUser?.id}`, pageIdx);
                 alert("Marcador salvo com sucesso!");
@@ -1132,14 +1205,9 @@
             }
         };
 
-        closeReader.onclick = () => { 
-            readerModalDiv.style.display = 'none';
-            showingPagesGrid = true;
-        };
-        
+        closeReader.onclick = () => { readerModalDiv.style.display = 'none'; showingPagesGrid = true; };
         searchInput?.addEventListener('input', () => renderItems(allItems));
 
-        // Zoom controls
         zoomInBtn.onclick = () => {
             currentZoom = Math.min(currentZoom + 0.2, 3);
             expandedImage.style.transform = `scale(${currentZoom})`;
@@ -1153,21 +1221,18 @@
             expandedImage.style.transform = `scale(1)`;
         };
 
-        // Fechar modal de imagem
         document.querySelector('.image-modal-close').onclick = () => {
             imageModal.style.display = 'none';
             currentZoom = 1;
             expandedImage.style.transform = `scale(1)`;
         };
-        
         downloadImageBtn.onclick = () => {
             const link = document.createElement('a');
             link.download = 'imagem.png';
             link.href = expandedImage.src;
             link.click();
         };
-        
-        imageModal.onclick = (e) => { 
+        imageModal.onclick = (e) => {
             if(e.target === imageModal) {
                 imageModal.style.display = 'none';
                 currentZoom = 1;
@@ -1177,14 +1242,13 @@
 
         function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
-        // Auto-login
         const lastUserJson = localStorage.getItem('lastUser');
         if(lastUserJson) {
             const lastUser = JSON.parse(lastUserJson);
             firebase.database().ref('usuarios').once('value').then(snapshot => {
                 snapshot.forEach(child => {
                     const user = child.val();
-                    if(user.cpf === lastUser.cpf && user.senha === lastUser.senha) {
+                    if(user.email === lastUser.email && user.senha === lastUser.senha) {
                         currentUser = { id: child.key, ...user };
                         updateUserUI();
                         setTimeout(() => {
@@ -1202,14 +1266,3 @@
 </script>
 </body>
 </html>
-
-<div vw class="enabled">
-    <div vw-access-button class="active"></div>
-    <div vw-plugin-wrapper>
-        <div class="vw-plugin-top-wrapper"></div>
-    </div>
-</div>
-<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-<script>
-    new window.VLibras.Widget('https://vlibras.gov.br/app');
-</script>
