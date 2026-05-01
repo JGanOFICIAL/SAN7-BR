@@ -1,4 +1,3 @@
-// Configuracao do Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI",
     databaseURL: "https://san7-brasil-default-rtdb.firebaseio.com",
@@ -6,17 +5,14 @@ const firebaseConfig = {
     authDomain: "san7-brasil.firebaseapp.com"
 };
 
-// Inicializar Firebase
 if (typeof firebase !== 'undefined' && !firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
-// Configuracoes do Cloudinary
 const CLOUD_NAME = "dzmjto17f";
 const UPLOAD_PRESET = "ml_default";
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
-// Funcao de upload para o Cloudinary
 async function uploadToCloudinary(file) {
     return new Promise((resolve, reject) => {
         const formData = new FormData();
@@ -42,7 +38,6 @@ async function uploadToCloudinary(file) {
     });
 }
 
-// Disponibilizar funcao globalmente
 window.CloudinaryUpload = uploadToCloudinary;
 
 console.log("Firebase e Cloudinary configurados.");
