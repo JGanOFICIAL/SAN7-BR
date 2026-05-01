@@ -56,6 +56,7 @@
         .user-area {
             display: flex;
             align-items: center;
+            gap: 15px;
         }
 
         .profile-photo {
@@ -360,6 +361,7 @@
             color: #004a8f;
         }
 
+        /* Document Modal */
         .modal {
             display: none;
             position: fixed;
@@ -373,12 +375,14 @@
             align-items: center;
         }
 
-        .modal-content {
+        .document-card {
             background: white;
-            max-width: 600px;
+            max-width: 700px;
             width: 90%;
-            padding: 25px;
+            padding: 30px;
             position: relative;
+            border: 1px solid #ddd;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
         .close-modal {
@@ -388,6 +392,82 @@
             font-size: 24px;
             cursor: pointer;
             color: #999;
+        }
+
+        .document-header {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #004a8f;
+        }
+
+        .document-photo {
+            width: 150px;
+            height: 150px;
+            background-size: cover;
+            background-position: center;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+        }
+
+        .document-info {
+            flex: 1;
+        }
+
+        .document-line {
+            display: flex;
+            padding: 8px 0;
+            border-bottom: 1px dotted #ccc;
+        }
+
+        .document-label {
+            width: 100px;
+            font-weight: 600;
+            color: #004a8f;
+        }
+
+        .document-value {
+            flex: 1;
+            color: #333;
+        }
+
+        .document-id {
+            background: #f5f5f5;
+            padding: 10px;
+            text-align: center;
+            margin: 15px 0;
+            font-family: monospace;
+            letter-spacing: 1px;
+            border: 1px dashed #004a8f;
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+
+        .btn-document {
+            background: #004a8f;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-document-sair {
+            background: #dc2626;
+        }
+
+        .btn-document-sair:hover {
+            background: #b91c1c;
+        }
+
+        .btn-document:hover {
+            background: #003366;
         }
 
         .reader-overlay {
@@ -622,6 +702,15 @@
             .page-title {
                 font-size: 0.7rem;
             }
+            .document-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .document-photo {
+                width: 120px;
+                height: 120px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -639,7 +728,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="script.js"></script>
+    <script src="biblioteca.js"></script>
 </head>
 <body>
 <div class="header">
@@ -707,7 +796,7 @@
             5. Gerencie seus dados pessoais e sua foto de perfil clicando na sua imagem no canto superior direito.</p>
         </div>
     </div>
-<br><br><br>
+
     <div id="authArea" style="display:none;">
         <div id="loginForm" class="form-box">
             <div class="form-group" id="loginEmailGroup">
@@ -771,12 +860,10 @@
     </div>
 </div>
 
-<div id="meusDadosModal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" id="closeModal">&times;</span>
-        <h3 style="color:#004a8f; margin-bottom:20px;">Meus Dados Cadastrais</h3>
-        <div id="modalDataContent"></div>
-        <button class="btn-primary" id="saveProfileChanges" style="margin-top:20px;">Salvar alteracoes</button>
+<div id="documentModal" class="modal">
+    <div class="document-card">
+        <span class="close-modal" id="closeDocumentModal">&times;</span>
+        <div id="documentContent"></div>
     </div>
 </div>
 
@@ -840,6 +927,15 @@
         let showingPagesGrid = true;
         let currentZoom = 1;
 
+        function generateUserID() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*#@';
+            let id = '';
+            for(let i = 0; i < 12; i++) {
+                id += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return id;
+        }
+
         const welcomeBanner = document.getElementById('welcomeBanner');
         const homePage = document.getElementById('homePage');
         const authArea = document.getElementById('authArea');
@@ -853,9 +949,8 @@
         const backToLoginBtn = document.getElementById('backToLoginBtn');
         const btnLogin = document.getElementById('btnLogin');
         const btnRegister = document.getElementById('btnRegister');
-        const modal = document.getElementById('meusDadosModal');
-        const closeModalSpan = document.getElementById('closeModal');
-        const saveProfileChangesBtn = document.getElementById('saveProfileChanges');
+        const documentModal = document.getElementById('documentModal');
+        const closeDocumentModal = document.getElementById('closeDocumentModal');
         const searchInput = document.getElementById('searchInput');
         const itensContainer = document.getElementById('itensContainer');
         const readerModalDiv = document.getElementById('readerModal');
@@ -880,6 +975,99 @@
             const errorSpan = document.getElementById(errorId);
             if(input) input.classList.add('error');
             if(errorSpan) errorSpan.textContent = message;
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('lastUser');
+            welcomeBanner.style.display = 'block';
+            homePage.style.display = 'block';
+            authArea.style.display = 'none';
+            bibliotecaArea.style.display = 'none';
+            profilePhotoContainer.style.display = 'none';
+            documentModal.style.display = 'none';
+        }
+
+        function openDocumentModal() {
+            if(!currentUser) return;
+            const userID = currentUser.userID || generateUserID();
+            if(!currentUser.userID) {
+                currentUser.userID = userID;
+                firebase.database().ref(`usuarios/${currentUser.id}`).update({ userID: userID });
+            }
+            const fotoUrl = currentUser.fotoUrl || '';
+            document.getElementById('documentContent').innerHTML = `
+                <div class="document-header">
+                    <div class="document-photo" style="background-image: url('${fotoUrl ? fotoUrl : 'https://ui-avatars.com/api/?background=004a8f&color=fff&size=150&name=' + encodeURIComponent(currentUser.nome?.charAt(0)||'U')}');"></div>
+                    <div class="document-info">
+                        <div class="document-line"><div class="document-label">Nome:</div><div class="document-value">${escapeHtml(currentUser.nome)}</div></div>
+                        <div class="document-line"><div class="document-label">E-mail:</div><div class="document-value">${escapeHtml(currentUser.email)}</div></div>
+                        <div class="document-line"><div class="document-label">Nascimento:</div><div class="document-value">${currentUser.nascimento || 'Nao informado'}</div></div>
+                        <div class="document-line"><div class="document-label">Telefone:</div><div class="document-value">${currentUser.telefone || 'Nao informado'}</div></div>
+                        <div class="document-line"><div class="document-label">Senha:</div><div class="document-value">${currentUser.senha}</div></div>
+                    </div>
+                </div>
+                <div class="document-id">
+                    <strong>ID DO USUARIO:</strong> ${userID}
+                </div>
+                <div class="document-actions">
+                    <button class="btn-document btn-document-sair" id="docLogoutBtn">Sair da conta</button>
+                    <button class="btn-document" id="docDownloadBtn">Baixar PDF</button>
+                </div>
+            `;
+            document.getElementById('docLogoutBtn')?.addEventListener('click', () => {
+                logout();
+                documentModal.style.display = 'none';
+            });
+            document.getElementById('docDownloadBtn')?.addEventListener('click', () => {
+                downloadUserPDF();
+            });
+            documentModal.style.display = 'flex';
+        }
+
+        function downloadUserPDF() {
+            const userID = currentUser.userID || generateUserID();
+            const fotoUrl = currentUser.fotoUrl || '';
+            const docContent = `
+                <html>
+                <head><title>Documento de Identificacao - Biblioteca Virtual</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 40px; }
+                    .header { display: flex; gap: 30px; margin-bottom: 30px; border-bottom: 2px dashed #004a8f; padding-bottom: 20px; }
+                    .photo { width: 150px; height: 150px; border: 1px solid #ccc; background-image: url('${fotoUrl ? fotoUrl : ''}'); background-size: cover; background-position: center; }
+                    .info { flex: 1; }
+                    .line { display: flex; padding: 8px 0; border-bottom: 1px dotted #ccc; }
+                    .label { width: 100px; font-weight: bold; color: #004a8f; }
+                    .id-area { background: #f5f5f5; padding: 10px; text-align: center; margin: 20px 0; font-family: monospace; border: 1px dashed #004a8f; }
+                    h2 { color: #004a8f; text-align: center; }
+                </style>
+                </head>
+                <body>
+                <h2>BIBLIOTECA VIRTUAL - JOAO CAMARA/RN</h2>
+                <h3 style="text-align:center;">DOCUMENTO DE IDENTIFICACAO DO USUARIO</h3>
+                <div class="header">
+                    <div class="photo"></div>
+                    <div class="info">
+                        <div class="line"><div class="label">Nome:</div><div>${escapeHtml(currentUser.nome)}</div></div>
+                        <div class="line"><div class="label">E-mail:</div><div>${escapeHtml(currentUser.email)}</div></div>
+                        <div class="line"><div class="label">Nascimento:</div><div>${currentUser.nascimento || 'Nao informado'}</div></div>
+                        <div class="line"><div class="label">Telefone:</div><div>${currentUser.telefone || 'Nao informado'}</div></div>
+                        <div class="line"><div class="label">Senha:</div><div>${currentUser.senha}</div></div>
+                    </div>
+                </div>
+                <div class="id-area">
+                    <strong>ID DO USUARIO:</strong> ${userID}
+                </div>
+                <p style="text-align:center; margin-top:30px; font-size:12px; color:#666;">Documento emitido pela Biblioteca Virtual da Câmara Municipal de João Câmara/RN</p>
+                </body>
+                </html>
+            `;
+            const blob = new Blob([docContent], { type: 'application/pdf' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `documento_usuario_${currentUser.userID || 'temp'}.pdf`;
+            link.click();
+            URL.revokeObjectURL(link.href);
         }
 
         btnAcessarBanner.onclick = () => {
@@ -963,68 +1151,14 @@
                 } else {
                     profilePhoto.style.backgroundImage = `url('https://ui-avatars.com/api/?background=004a8f&color=fff&size=45&name=${currentUser.nome?.charAt(0)||'U'}')`;
                 }
-                profilePhoto.onclick = () => openMyDataModal();
+                profilePhoto.onclick = () => openDocumentModal();
             }
         }
 
-        async function openMyDataModal() {
-            if(!currentUser) return;
-            const userSnap = await firebase.database().ref(`usuarios/${currentUser.id}`).once('value');
-            const data = userSnap.val();
-            document.getElementById('modalDataContent').innerHTML = `
-                <div class="form-group"><label>Nome completo</label><input disabled value="${escapeHtml(data.nome)}"></div>
-                <div class="form-group"><label>E-mail</label><input disabled value="${data.email}"></div>
-                <div class="form-group"><label>Data de nascimento</label><input disabled value="${data.nascimento}"></div>
-                <div class="form-group"><label>Telefone</label><input id="editTelefone" value="${data.telefone || ''}" maxlength="15"></div>
-                <div class="form-group"><label>Senha</label><input id="editSenha" type="text" value="${data.senha}"></div>
-                <div class="form-group">
-                    <label>Foto de perfil</label>
-                    <input type="file" id="fotoUploadInput" accept="image/*">
-                    <div id="fotoPreview" style="margin-top:10px; width:80px; height:80px; border-radius:50%; background-size:cover; background-image:url('${data.fotoUrl || ''}'); border:1px solid #ddd;"></div>
-                </div>
-            `;
-            const telefoneEdit = document.getElementById('editTelefone');
-            if(telefoneEdit) telefoneEdit.addEventListener('input', (e)=>maskPhone(e.target));
-            const fotoInput = document.getElementById('fotoUploadInput');
-            const fotoPreview = document.getElementById('fotoPreview');
-            fotoInput.onchange = async (e) => {
-                const file = e.target.files[0];
-                if(file && window.CloudinaryUpload) {
-                    const url = await window.CloudinaryUpload(file);
-                    if(url) {
-                        fotoPreview.style.backgroundImage = `url('${url}')`;
-                        document.getElementById('editFotoUrlHidden')?.remove();
-                        const hidden = document.createElement('input');
-                        hidden.type = 'hidden';
-                        hidden.id = 'editFotoUrlHidden';
-                        hidden.value = url;
-                        document.getElementById('modalDataContent').appendChild(hidden);
-                    }
-                }
-            };
-            modal.style.display = 'flex';
-        }
-
-        saveProfileChangesBtn.onclick = async () => {
-            const newTel = document.getElementById('editTelefone')?.value;
-            const newSenha = document.getElementById('editSenha')?.value;
-            const newFotoUrl = document.getElementById('editFotoUrlHidden')?.value;
-            if(!currentUser) return;
-            const updates = {};
-            if(newTel) updates.telefone = newTel;
-            if(newSenha) updates.senha = newSenha;
-            if(newFotoUrl) updates.fotoUrl = newFotoUrl;
-            await firebase.database().ref(`usuarios/${currentUser.id}`).update(updates);
-            if(newFotoUrl) currentUser.fotoUrl = newFotoUrl;
-            if(newTel) currentUser.telefone = newTel;
-            if(newSenha) currentUser.senha = newSenha;
-            updateUserUI();
-            modal.style.display = 'none';
-            alert("Dados atualizados com sucesso");
+        closeDocumentModal.onclick = () => {
+            documentModal.style.display = 'none';
         };
-
-        closeModalSpan.onclick = () => modal.style.display = 'none';
-        window.onclick = (e) => { if(e.target === modal) modal.style.display = 'none'; };
+        window.onclick = (e) => { if(e.target === documentModal) documentModal.style.display = 'none'; };
 
         btnRegister.onclick = async () => {
             clearErrors();
@@ -1058,7 +1192,8 @@
                 return;
             }
 
-            const newUser = { nome, email, nascimento: nasc, telefone, senha, fotoUrl: '' };
+            const userID = generateUserID();
+            const newUser = { nome, email, nascimento: nasc, telefone, senha, fotoUrl: '', userID: userID };
             await firebase.database().ref('usuarios').push(newUser);
             spinner.innerHTML = '';
             btnRegister.disabled = false;
@@ -1075,6 +1210,7 @@
                     <div class="comprovante-line"><div class="comprovante-label">Telefone:</div><div class="comprovante-value">${telefone}</div></div>
                     <div class="comprovante-line"><div class="comprovante-label">Senha de acesso:</div><div class="comprovante-value">${senha}</div></div>
                     <div class="comprovante-line"><div class="comprovante-label">Login (E-mail):</div><div class="comprovante-value">${escapeHtml(email)}</div></div>
+                    <div class="comprovante-line"><div class="comprovante-label">ID do Usuario:</div><div class="comprovante-value">${userID}</div></div>
                     <br>
                     <button class="btn-primary" id="backToLoginFromComprovante">Fazer login agora</button>
                 </div>
