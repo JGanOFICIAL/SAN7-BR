@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Personal Trainer Pro Suite | Studio Manager</title>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+        body { background: #f1f5f9; height: 100vh; overflow: hidden; }
+        .app-wrapper { display: flex; height: 100vh; width: 100%; position: relative; }
+        
+        /* Menu lateral com imagem de fundo configurável */
+        .sidebar-menu {
+            width: 300px;
+            background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070'); /* URL padrão - substitua aqui */
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1rem;
+            gap: 0.75rem;
+            z-index: 10;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+        .sidebar-menu::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(0deg, rgba(249,115,22,0.85) 0%, rgba(0,0,0,0.7) 100%);
+            pointer-events: none;
+        }
+        .sidebar-menu > * { position: relative; z-index: 2; }
+        .sidebar-menu button {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 0.9rem 1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: left;
+            color: #ffffff;
+            backdrop-filter: blur(4px);
+        }
+        .sidebar-menu button:hover { background: #f97316; transform: translateX(6px); border-color: #f97316; }
+        .sidebar-menu.hidden { display: none; }
+        
+        .main-panel { flex: 1; background: #f8fafc; display: flex; flex-direction: column; overflow-y: auto; }
+        .top-menu-bar {
+            background: white; padding: 1rem 2rem; border-bottom: 1px solid #e2e8f0;
+            display: flex; gap: 2rem; flex-wrap: wrap; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .menu-letter-item {
+            font-weight: 700; font-size: 0.95rem; color: #0f172a; cursor: pointer;
+            padding: 0.5rem 0; border-bottom: 2px solid transparent; transition: 0.2s;
+        }
+        .menu-letter-item:hover { color: #f97316; border-bottom-color: #f97316; }
+        .function-container { padding: 2rem; background: #ffffff; margin: 1.5rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); min-height: 80%; position: relative; }
+        .back-arrow {
+            position: absolute; top: 20px; left: 20px; background: #f97316; color: white;
+            width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; cursor: pointer; font-weight: bold; font-size: 1.4rem;
+            transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 20;
+        }
+        .back-arrow:hover { background: #ea580c; transform: scale(1.05); }
+        button, .btn-like {
+            background: #f97316; color: white; border: none; padding: 0.7rem 1.4rem;
+            border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer;
+            transition: 0.2s; display: inline-flex; align-items: center; gap: 8px;
+        }
+        button.secondary { background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; }
+        button.danger { background: #fee2e2; color: #b91c1c; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { font-weight: 600; margin-bottom: 0.5rem; display: block; color: #1e293b; }
+        input, textarea, select { width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; background: white; }
+        .student-card-grid { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1rem; }
+        .student-avatar { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; background: #e2e8f0; }
+        .history-list { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1.2rem; }
+        .history-item { background: #f8fafc; border-radius: 12px; padding: 1rem; cursor: pointer; border: 1px solid #e2e8f0; transition: 0.2s; }
+        .history-item:hover { background: #fff7ed; border-left: 4px solid #f97316; }
+        .flex-btns { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 1.8rem; }
+        .progress-footer { position: fixed; bottom: 0; left: 0; right: 0; height: 4px; background: transparent; z-index: 1000; pointer-events: none; }
+        .progress-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #f97316, #fdba74); transition: width 0.2s ease; }
+        .toast-notification { position: fixed; bottom: 20px; right: 20px; background: #1e293b; color: white; padding: 12px 20px; border-radius: 8px; font-size: 0.85rem; z-index: 1100; box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: fadeSlide 0.3s ease; }
+        @keyframes fadeSlide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .choice-panel { background: #fff7ed; border-radius: 16px; padding: 1.5rem; text-align: center; margin-bottom: 1.5rem; border: 1px solid #ffedd5; }
+        .image-upload-area { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
+        .image-preview-card { position: relative; width: 120px; height: 120px; border: 2px solid #e2e8f0; background: #f8fafc; border-radius: 8px; overflow: hidden; }
+        .image-preview-card img { width: 100%; height: 100%; object-fit: cover; }
+        .remove-img-icon { position: absolute; top: 5px; right: 5px; background: #b91c1c; color: white; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; }
+        .dashboard-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: #f8fafc; padding: 1rem; border: 1px solid #e2e8f0; text-align: center; border-radius: 12px; }
+    </style>
+</head>
+<body>
+<div class="app-wrapper">
+    <div class="sidebar-menu hidden" id="sidebarMenu"></div>
+    <div class="main-panel">
+        <div class="top-menu-bar" id="topMenuBar"></div>
+        <div id="functionView" class="function-container"></div>
+    </div>
+</div>
+<div class="progress-footer"><div class="progress-bar-fill" id="progressFill"></div></div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI",
+        databaseURL: "https://san7-brasil-default-rtdb.firebaseio.com",
+        projectId: "san7-brasil",
+        authDomain: "san7-brasil.firebaseapp.com"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const CLOUD_NAME = "dzmjto17f";
+    const UPLOAD_PRESET = "ml_default";
+    const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+
+    let currentFeature = null, sidebarCallbackFn = null, goBackCallback = null;
+    let currentImageUrls = [];
+
+    function showProgress(p) { const fill = document.getElementById('progressFill'); if(fill) fill.style.width = Math.min(100, p) + '%'; }
+    function resetProgress() { showProgress(0); }
+    function toast(msg, isError = false) {
+        const t = document.createElement('div'); t.className = 'toast-notification'; t.innerText = msg;
+        t.style.background = isError ? '#b91c1c' : '#0f172a'; document.body.appendChild(t);
+        setTimeout(() => t.remove(), 2800);
+    }
+    async function withProgress(promise, successMsg) {
+        showProgress(30);
+        try { const res = await promise; showProgress(100); setTimeout(resetProgress, 500); toast(successMsg || "Operacao concluida"); return res; } 
+        catch(e) { showProgress(0); toast("Erro: "+e.message, true); throw e; }
+    }
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+    // Gerador de PDF profissional com layout moderno
+    function generateStyledPDF(title, contentHTML, filename) {
+        const pdfContainer = document.createElement('div');
+        pdfContainer.style.fontFamily = "'Inter', 'Segoe UI', sans-serif";
+        pdfContainer.style.padding = "35px";
+        pdfContainer.style.maxWidth = "900px";
+        pdfContainer.style.margin = "0 auto";
+        pdfContainer.style.backgroundColor = "#ffffff";
+        pdfContainer.style.color = "#1e293b";
+        pdfContainer.innerHTML = `
+            <div style="text-align: center; margin-bottom: 35px; border-bottom: 3px solid #f97316; padding-bottom: 15px;">
+                <h1 style="color: #f97316; font-size: 28px; margin-bottom: 8px;">${escapeHtml(title)}</h1>
+                <p style="color: #64748b; font-size: 12px;">Documento oficial - Personal Trainer Flaviana</p>
+            </div>
+            <div style="margin-bottom: 40px; line-height: 1.6;">${contentHTML}</div>
+            <div style="border-top: 2px dashed #f97316; margin: 25px 0 15px 0;"></div>
+            <div style="text-align: center; font-style: italic; color: #475569; font-size: 12px;">
+                <p>Flaviana Silva - Personal Trainer</p>
+                <p>CREF: 010068 | Joao Camara - RN</p>
+                <p>Documento gerado em ${new Date().toLocaleString()}</p>
+            </div>
+        `;
+        html2pdf().set({ filename: `${filename.replace(/[^a-z0-9]/gi, '_')}.pdf`, margin: 0.5, pagebreak: { mode: 'avoid-all' } }).from(pdfContainer).save();
+    }
+
+    const menuItems = [
+        { letter: "A", name: "Lista de Alunos", feature: "studentsList" },
+        { letter: "B", name: "Cadastrar Aluno", feature: "registerStudent" },
+        { letter: "C", name: "Gerar Declaracao", feature: "declaration" },
+        { letter: "D", name: "Gerar Rotina", feature: "routine" },
+        { letter: "E", name: "Avaliacao Fisica", feature: "assessment" },
+        { letter: "F", name: "Financeiro Avancado", feature: "finance" },
+        { letter: "G", name: "Agenda Personal", feature: "schedule" },
+        { letter: "H", name: "Anotacoes com Imagens", feature: "quicknotes" },
+        { letter: "I", name: "Metricas de Performance", feature: "metrics" },
+        { letter: "J", name: "Relatorios Gerenciais", feature: "reports" },
+        { letter: "K", name: "Meta Financeira Fixa", feature: "financialGoals" }
+    ];
+
+    function renderTopMenu() {
+        const bar = document.getElementById('topMenuBar'); bar.innerHTML = '';
+        menuItems.forEach(item => { const div = document.createElement('div'); div.className = 'menu-letter-item';
+            div.innerText = `${item.letter}. ${item.name}`; div.addEventListener('click', () => askCreateOrHistory(item.feature)); bar.appendChild(div); });
+    }
+    function askCreateOrHistory(feature) {
+        currentFeature = feature; const view = document.getElementById('functionView');
+        view.innerHTML = `<div class="choice-panel"><h3 style="margin-bottom:1rem">${menuItems.find(i=>i.feature===feature)?.name}</h3><div class="flex-btns" style="justify-content:center"><button id="choiceCreate">Criar Novo</button><button id="choiceHistory" class="secondary">Ver Historico</button></div></div>`;
+        document.getElementById('choiceCreate').onclick = () => showCreateInterface(feature);
+        document.getElementById('choiceHistory').onclick = () => showHistoryInterface(feature);
+        buildSidebarMenu(feature);
+    }
+    function buildSidebarMenu(active) {
+        const sidebar = document.getElementById('sidebarMenu'); sidebar.innerHTML = '';
+        menuItems.forEach(item => { const btn = document.createElement('button'); btn.textContent = item.name;
+            btn.onclick = () => { if(active === item.feature && sidebarCallbackFn) sidebarCallbackFn(); else askCreateOrHistory(item.feature); };
+            sidebar.appendChild(btn); });
+        sidebar.classList.remove('hidden');
+    }
+    function addBackArrow(callback) { const container = document.getElementById('functionView'); const existing = document.getElementById('globalBackArrow'); if(existing) existing.remove();
+        const arrow = document.createElement('div'); arrow.id = 'globalBackArrow'; arrow.className = 'back-arrow'; arrow.innerHTML = '←';
+        arrow.onclick = () => { if(callback) callback(); }; container.style.position = 'relative'; container.appendChild(arrow); goBackCallback = callback; }
+    function showCreateInterface(feature) { sidebarCallbackFn = () => askCreateOrHistory(feature); buildSidebarMenu(feature);
+        if(feature === "studentsList") renderCreateStudentsList(); else if(feature === "registerStudent") renderCreateStudentForm();
+        else if(feature === "declaration") renderCreateDeclaration(); else if(feature === "routine") renderCreateRoutine();
+        else if(feature === "assessment") renderCreateAssessment(); else if(feature === "finance") renderCreateFinance();
+        else if(feature === "schedule") renderCreateSchedule(); else if(feature === "quicknotes") renderCreateQuickNotes();
+        else if(feature === "metrics") renderCreateMetrics(); else if(feature === "reports") renderCreateReports();
+        else if(feature === "financialGoals") renderCreateFinancialGoals(); }
+    function showHistoryInterface(feature) { sidebarCallbackFn = () => askCreateOrHistory(feature); buildSidebarMenu(feature);
+        if(feature === "studentsList") renderHistoryStudentsList(); else if(feature === "registerStudent") renderHistoryStudentsRegister();
+        else if(feature === "declaration") renderHistoryDeclarations(); else if(feature === "routine") renderHistoryRoutines();
+        else if(feature === "assessment") renderHistoryAssessments(); else if(feature === "finance") renderHistoryFinance();
+        else if(feature === "schedule") renderHistorySchedule(); else if(feature === "quicknotes") renderHistoryQuickNotes();
+        else if(feature === "metrics") renderHistoryMetrics(); else if(feature === "reports") renderHistoryReports();
+        else if(feature === "financialGoals") renderHistoryFinancialGoals(); }
+
+    // ========== 1. LISTA DE ALUNOS ==========
+    async function renderCreateStudentsList() {
+        document.getElementById('functionView').innerHTML = `<div><h3>Caderno de Lista</h3><textarea id="listContent" rows="8" placeholder="Digite aqui sua lista de alunos..."></textarea><div class="flex-btns"><button id="saveListBtn">Salvar Lista</button></div></div>`;
+        document.getElementById('saveListBtn').onclick = async() => { const content = document.getElementById('listContent').value; if(!content.trim()) return toast("Conteudo vazio", true);
+            await withProgress(db.ref('studentsLists').push({ content, createdAt: new Date().toISOString() }), "Lista salva"); askCreateOrHistory('studentsList'); };
+        addBackArrow(() => askCreateOrHistory('studentsList'));
+    }
+    async function renderHistoryStudentsList() { const snap = await db.ref('studentsLists').once('value'); const items = snap.val()||{};
+        let html = `<div class="flex-btns"><button id="newItemBtn">Nova Lista</button></div><div class="history-list">`;
+        Object.entries(items).forEach(([id,data])=> html+=`<div class="history-item" data-id="${id}" data-content="${escapeHtml(data.content)}">${new Date(data.createdAt).toLocaleString()} - ${data.content.substring(0,60)}</div>`);
+        html+=`</div>`; document.getElementById('functionView').innerHTML = html;
+        document.querySelectorAll('.history-item').forEach(el=>el.addEventListener('click',()=>showListDetail(el.dataset.id, el.dataset.content)));
+        document.getElementById('newItemBtn')?.addEventListener('click',()=>showCreateInterface('studentsList')); addBackArrow(() => askCreateOrHistory('studentsList'));
+    }
+    async function showListDetail(id, content){ document.getElementById('functionView').innerHTML = `<div><textarea id="editContent" rows="8">${escapeHtml(content)}</textarea><div class="flex-btns"><button id="updateBtn">Salvar</button><button id="pdfBtn">Gerar PDF</button><button id="delBtn" class="danger">Excluir</button></div></div>`;
+        document.getElementById('updateBtn').onclick = async()=>{ await db.ref(`studentsLists/${id}`).update({ content: document.getElementById('editContent').value }); toast("Atualizado"); renderHistoryStudentsList(); };
+        document.getElementById('pdfBtn').onclick = ()=> generateStyledPDF("Lista de Alunos", `<div style="white-space: pre-wrap;">${escapeHtml(document.getElementById('editContent').value)}</div>`, `lista_alunos_${Date.now()}`);
+        document.getElementById('delBtn').onclick = async()=>{ await db.ref(`studentsLists/${id}`).remove(); toast("Excluido"); renderHistoryStudentsList(); };
+        addBackArrow(() => renderHistoryStudentsList());
+    }
+
+    // ========== 2. CADASTRO ALUNO ==========
+    async function renderCreateStudentForm(){ document.getElementById('functionView').innerHTML = `<div><h3>Cadastrar Aluno</h3><div class="form-group"><label>Foto</label><input type="file" id="photoFile" accept="image/*"></div><div class="form-group"><label>Nome Completo *</label><input id="studentName"></div><div class="form-group"><label>Genero</label><select id="gender"><option>Feminino</option><option>Masculino</option></select></div><div class="form-group"><label>Idade</label><input id="age" type="number"></div><div class="form-group"><label>Academia</label><input id="gym"></div><div class="form-group"><label>Telefone</label><input id="phone"></div><div class="form-group"><label>Anotacoes</label><textarea id="notes"></textarea></div><button id="saveStudentBtn">Salvar Aluno</button></div>`;
+        document.getElementById('saveStudentBtn').onclick = async()=>{ const name = document.getElementById('studentName').value.trim(); if(!name) return toast("Nome obrigatorio", true);
+            const btn = document.getElementById('saveStudentBtn'); btn.disabled=true; btn.innerHTML="Salvando..."; showProgress(20); let photoUrl="";
+            const file = document.getElementById('photoFile').files[0]; if(file){ const fd=new FormData(); fd.append("file",file); fd.append("upload_preset",UPLOAD_PRESET); const res=await fetch(CLOUDINARY_URL,{method:"POST",body:fd}); const data=await res.json(); photoUrl=data.secure_url; showProgress(70); }
+            const student = { name, gender:document.getElementById('gender').value, age:document.getElementById('age').value, gym:document.getElementById('gym').value, phone:document.getElementById('phone').value, notes:document.getElementById('notes').value, photoUrl, createdAt: new Date().toISOString() };
+            await db.ref('students').push(student); showProgress(100); setTimeout(resetProgress,300); toast("Aluno cadastrado"); btn.disabled=false; btn.innerHTML="Salvar Aluno"; askCreateOrHistory('registerStudent');
+        }; addBackArrow(() => askCreateOrHistory('registerStudent'));
+    }
+    async function renderHistoryStudentsRegister() { const snap = await db.ref('students').once('value'); const students = snap.val()||{};
+        let html = `<div class="flex-btns"><button id="newStdBtn">Novo Aluno</button></div><div class="student-card-grid">`;
+        for(const [id, s] of Object.entries(students)) html+=`<div style="background:#fff;border:1px solid #e2e8f0;padding:1rem;text-align:center;border-radius:12px"><img src="${s.photoUrl||'https://via.placeholder.com/80'}" class="student-avatar"><h4>${escapeHtml(s.name)}</h4><p>${s.gender} - ${s.age} anos</p><button class="viewStdBtn secondary" data-id="${id}">Ver Dados</button></div>`;
+        html+=`</div>`; document.getElementById('functionView').innerHTML = html;
+        document.querySelectorAll('.viewStdBtn').forEach(btn=>btn.addEventListener('click',()=>showStudentFullDetail(btn.dataset.id, students[btn.dataset.id])));
+        document.getElementById('newStdBtn')?.addEventListener('click',()=>showCreateInterface('registerStudent')); addBackArrow(() => askCreateOrHistory('registerStudent'));
+    }
+    async function showStudentFullDetail(id, student){ document.getElementById('functionView').innerHTML = `<div><h2>Editar Aluno</h2><div class="form-group"><label>Foto Atual</label><img src="${student.photoUrl||'https://via.placeholder.com/80'}" style="width:80px;border-radius:50%"><input type="file" id="newPhoto" accept="image/*"></div><div class="form-group"><label>Nome</label><input id="editName" value="${escapeHtml(student.name)}"></div><div class="form-group"><label>Genero</label><select id="editGender"><option ${student.gender==='Feminino'?'selected':''}>Feminino</option><option ${student.gender==='Masculino'?'selected':''}>Masculino</option></select></div><div class="form-group"><label>Idade</label><input id="editAge" value="${student.age||''}"></div><div class="form-group"><label>Academia</label><input id="editGym" value="${escapeHtml(student.gym||'')}"></div><div class="form-group"><label>Telefone</label><input id="editPhone" value="${escapeHtml(student.phone||'')}"></div><div class="form-group"><label>Anotacoes</label><textarea id="editNotes">${escapeHtml(student.notes||'')}</textarea></div><div class="flex-btns"><button id="updateFullStudent">Salvar Alteracoes</button><button id="deleteFullStudent" class="danger">Excluir Aluno</button><button id="pdfStudentBtn">Gerar PDF Aluno</button></div></div>`;
+        document.getElementById('updateFullStudent').onclick = async() => { let photoUrl = student.photoUrl; const file = document.getElementById('newPhoto').files[0]; if(file){ showProgress(30); const fd=new FormData(); fd.append("file",file); fd.append("upload_preset",UPLOAD_PRESET); const res=await fetch(CLOUDINARY_URL,{method:"POST",body:fd}); const data=await res.json(); photoUrl=data.secure_url; }
+            await db.ref(`students/${id}`).update({ name: document.getElementById('editName').value, gender: document.getElementById('editGender').value, age: document.getElementById('editAge').value, gym: document.getElementById('editGym').value, phone: document.getElementById('editPhone').value, notes: document.getElementById('editNotes').value, photoUrl }); toast("Atualizado"); renderHistoryStudentsRegister(); };
+        document.getElementById('deleteFullStudent').onclick = async()=>{ await db.ref(`students/${id}`).remove(); toast("Removido"); renderHistoryStudentsRegister(); };
+        document.getElementById('pdfStudentBtn').onclick = ()=> generateStyledPDF(`Ficha do Aluno: ${student.name}`, `<p><strong>Nome:</strong> ${escapeHtml(student.name)}</p><p><strong>Genero:</strong> ${student.gender}</p><p><strong>Idade:</strong> ${student.age}</p><p><strong>Academia:</strong> ${student.gym||'-'}</p><p><strong>Telefone:</strong> ${student.phone||'-'}</p><p><strong>Anotacoes:</strong> ${escapeHtml(student.notes||'')}</p><hr style="border-top:1px dashed #ccc;"><p><em>Data de cadastro: ${new Date(student.createdAt).toLocaleString()}</em></p>`, `aluno_${student.name}`);
+        addBackArrow(() => renderHistoryStudentsRegister());
+    }
+
+    // ========== 3. DECLARACAO ==========
+    function renderCreateDeclaration(){ document.getElementById('functionView').innerHTML = `<div><h3>Gerar Declaracao</h3><input id="declTitle" placeholder="Titulo"><textarea id="declBody" rows="5" placeholder="Corpo do texto..."></textarea><button id="saveDeclBtn">Salvar Declaracao</button></div>`;
+        document.getElementById('saveDeclBtn').onclick = async()=>{ const title=document.getElementById('declTitle').value, body=document.getElementById('declBody').value; if(!body) return; await withProgress(db.ref('declarations').push({title,body,createdAt:new Date().toISOString()}),"Declaracao salva"); askCreateOrHistory('declaration'); }; addBackArrow(() => askCreateOrHistory('declaration'));}
+    async function renderHistoryDeclarations(){ const snap=await db.ref('declarations').once('value'); let html=`<div class="flex-btns"><button id="newDeclBtn">Nova Declaracao</button></div><div class="history-list">`; for(const [id,d] of Object.entries(snap.val()||{})) html+=`<div class="history-item" data-id="${id}" data-title="${escapeHtml(d.title)}" data-body="${escapeHtml(d.body)}">${d.title} - ${new Date(d.createdAt).toLocaleString()}</div>`; html+=`</div>`; document.getElementById('functionView').innerHTML=html; document.querySelectorAll('.history-item').forEach(el=>el.addEventListener('click',()=>showDeclarationDetail(el.dataset.id, el.dataset.title, el.dataset.body))); document.getElementById('newDeclBtn')?.addEventListener('click',()=>showCreateInterface('declaration')); addBackArrow(()=>askCreateOrHistory('declaration'));}
+    async function showDeclarationDetail(id,title,body){ document.getElementById('functionView').innerHTML=`<div><h3>${escapeHtml(title)}</h3><p>${escapeHtml(body)}</p><div class="flex-btns"><button id="editDeclBtn">Editar</button><button id="pdfDeclBtn">Gerar PDF</button><button id="delDeclBtn">Excluir</button></div></div>`;
+        document.getElementById('editDeclBtn').onclick = async()=>{ const nt=prompt("Novo titulo",title), nb=prompt("Corpo",body); if(nt && nb) await db.ref(`declarations/${id}`).update({title:nt, body:nb}); toast("Atualizado"); renderHistoryDeclarations(); };
+        document.getElementById('pdfDeclBtn').onclick = ()=> generateStyledPDF(title || "Declaracao", `<p style="font-size:14px; line-height:1.8;">${escapeHtml(body)}</p>`, `declaracao_${Date.now()}`);
+        document.getElementById('delDeclBtn').onclick = async()=>{ await db.ref(`declarations/${id}`).remove(); toast("Excluido"); renderHistoryDeclarations(); };
+        addBackArrow(()=>renderHistoryDeclarations());
+    }
+
+    // ========== 4. ROTINA ==========
+    async function renderCreateRoutine(){ const ss=await db.ref('students').once('value'); const students=ss.val()||{}; let opts='<option value="">Selecione Aluno</option>'; for(const [id,stu] of Object.entries(students)) opts+=`<option value="${id}">${escapeHtml(stu.name)}</option>`; document.getElementById('functionView').innerHTML=`<div><select id="studentSelect">${opts}</select><div id="profilePreview"></div><textarea id="routineText" rows="6" placeholder="Exercicios..."></textarea><div class="flex-btns"><button id="saveRoutineBtn">Salvar Rotina</button><button id="downloadRoutineBtn">PDF</button></div></div>`;
+        const sel=document.getElementById('studentSelect'); sel.onchange=()=>{ const id=sel.value; if(id && students[id]) document.getElementById('profilePreview').innerHTML=`<div style="padding:10px;background:#fef3c7;border-radius:8px;">${students[id].name} | ${students[id].age} anos</div>`; };
+        document.getElementById('saveRoutineBtn').onclick = async()=>{ const sid=sel.value; if(!sid) return toast("Selecione aluno"); const txt=document.getElementById('routineText').value; if(!txt) return; await withProgress(db.ref('routines').push({studentId:sid, studentName:students[sid]?.name, routineText:txt, createdAt:new Date().toISOString()}),"Rotina salva"); askCreateOrHistory('routine'); };
+        document.getElementById('downloadRoutineBtn').onclick = ()=>{ const id=sel.value; if(!id) return; generateStyledPDF(`Rotina de Treino - ${students[id]?.name}`, `<div style="white-space: pre-wrap; font-family: monospace;">${escapeHtml(document.getElementById('routineText').value)}</div>`, `rotina_${students[id]?.name}`); };
+        addBackArrow(()=>askCreateOrHistory('routine'));
+    }
+    async function renderHistoryRoutines(){ const snap=await db.ref('routines').once('value'); let html=`<div class="flex-btns"><button id="newRtBtn">Nova Rotina</button></div><div class="history-list">`; for(const [id,r] of Object.entries(snap.val()||{})) html+=`<div class="history-item" data-id="${id}" data-text="${escapeHtml(r.routineText)}" data-name="${escapeHtml(r.studentName)}">Rotina: ${r.studentName} - ${new Date(r.createdAt).toLocaleString()}</div>`; html+=`</div>`; document.getElementById('functionView').innerHTML=html; document.querySelectorAll('.history-item').forEach(el=>el.addEventListener('click',()=>showRoutineDetail(el.dataset.id, el.dataset.name, el.dataset.text))); document.getElementById('newRtBtn')?.addEventListener('click',()=>showCreateInterface('routine')); addBackArrow(()=>askCreateOrHistory('routine'));}
+    async function showRoutineDetail(id,name,text){ document.getElementById('functionView').innerHTML=`<div><textarea id="editRoutine" rows="6">${escapeHtml(text)}</textarea><div class="flex-btns"><button id="updRoutine">Salvar</button><button id="pdfRoutine">PDF</button><button id="delRoutine">Excluir</button></div></div>`;
+        document.getElementById('updRoutine').onclick = async()=>{ await db.ref(`routines/${id}`).update({ routineText: document.getElementById('editRoutine').value }); toast("Atualizada"); renderHistoryRoutines(); };
+        document.getElementById('pdfRoutine').onclick = ()=> generateStyledPDF(`Rotina - ${name}`, `<div style="white-space: pre-wrap;">${escapeHtml(document.getElementById('editRoutine').value)}</div>`, `rotina_${name}`);
+        document.getElementById('delRoutine').onclick = async()=>{ await db.ref(`routines/${id}`).remove(); toast("Excluida"); renderHistoryRoutines(); };
+        addBackArrow(()=>renderHistoryRoutines());
+    }
+
+    // ========== 5. AVALIACAO FISICA ==========
+    function renderCreateAssessment(){ document.getElementById('functionView').innerHTML=`<div><h3>Avaliacao Fisica</h3><input id="studentAssess" placeholder="Nome Aluno"><input id="weight" placeholder="Peso (kg)"><input id="height" placeholder="Altura (cm)"><input id="bodyfat" placeholder="Percentual Gordura"><textarea id="obsAssess" placeholder="Observacoes"></textarea><button id="saveAssessBtn">Salvar Avaliacao</button></div>`;
+        document.getElementById('saveAssessBtn').onclick = async()=>{ const student=document.getElementById('studentAssess').value; if(!student) return; await withProgress(db.ref('assessments').push({ student, weight:document.getElementById('weight').value, height:document.getElementById('height').value, bodyfat:document.getElementById('bodyfat').value, obs:document.getElementById('obsAssess').value, createdAt:new Date().toISOString() }), "Avaliacao salva"); askCreateOrHistory('assessment'); }; addBackArrow(()=>askCreateOrHistory('assessment'));}
+    async function renderHistoryAssessments(){ const snap=await db.ref('assessments').once('value'); let html=`<div class="flex-btns"><button id="newAssBtn">Nova Avaliacao</button></div><div class="history-list">`; for(const [id,a] of Object.entries(snap.val()||{})) html+=`<div class="history-item" data-id="${id}" data-content='${JSON.stringify(a)}'>${a.student} - ${new Date(a.createdAt).toLocaleString()}</div>`; html+=`</div>`; document.getElementById('functionView').innerHTML=html; document.querySelectorAll('.history-item').forEach(el=>el.addEventListener('click',()=>showAssessDetail(el.dataset.id, JSON.parse(el.dataset.content)))); document.getElementById('newAssBtn')?.addEventListener('click',()=>showCreateInterface('assessment')); addBackArrow(()=>askCreateOrHistory('assessment'));}
+    async function showAssessDetail(id,data){ document.getElementById('functionView').innerHTML=`<div><h3>${data.student}</h3><p><strong>Peso:</strong> ${data.weight} kg | <strong>Altura:</strong> ${data.height} cm | <strong>Gordura:</strong> ${data.bodyfat||'-'}%</p><p><strong>Observacoes:</strong> ${data.obs}</p><div class="flex-btns"><button id="pdfAssessBtn">Gerar PDF</button><button id="delAssBtn">Excluir</button></div></div>`;
+        document.getElementById('pdfAssessBtn').onclick = ()=> generateStyledPDF(`Avaliacao Fisica - ${data.student}`, `<p><strong>Peso:</strong> ${data.weight} kg</p><p><strong>Altura:</strong> ${data.height} cm</p><p><strong>Percentual de Gordura:</strong> ${data.bodyfat||'-'}%</p><p><strong>Observacoes:</strong> ${data.obs}</p><hr style="border-top:1px dashed #ccc;"><p><em>Data da avaliacao: ${new Date(data.createdAt).toLocaleString()}</em></p>`, `avaliacao_${data.student}`);
+        document.getElementById('delAssBtn').onclick = async()=>{ await db.ref(`assessments/${id}`).remove(); toast("Removido"); renderHistoryAssessments(); }; addBackArrow(()=>renderHistoryAssessments()); }
+
+    // ========== 6. FINANCEIRO ==========
+    function renderCreateFinance(){ document.getElementById('functionView').innerHTML=`<div><h3>Financeiro Avancado</h3><select id="transType"><option>Receita</option><option>Despesa</option><option>MetaFinanceira</option><option>Mensalidade Aluno</option></select><input id="studentFin" placeholder="Aluno / Descricao"><input id="amount" placeholder="Valor R$"><input id="dueDate" type="date"><select id="category"><option>Mensalidade</option><option>Suplementos</option><option>Consultoria</option><option>Meta Pessoal</option><option>Equipamentos</option></select><textarea id="descFin" placeholder="Descricao"></textarea><div class="flex-btns"><button id="saveFinanceBtn">Registrar</button><button id="reportFinanceBtn" class="secondary">Resumo</button><button id="metasFinanceBtn" class="secondary">Metas</button></div></div>`;
+        document.getElementById('saveFinanceBtn').onclick = async()=>{ const aluno=document.getElementById('studentFin').value; if(!aluno) return toast("Informe o aluno"); await withProgress(db.ref('finances').push({ aluno, valor:document.getElementById('amount').value, tipo:document.getElementById('transType').value, category:document.getElementById('category').value, dueDate:document.getElementById('dueDate').value, desc:document.getElementById('descFin').value, createdAt:new Date().toISOString() }), "Registro salvo"); askCreateOrHistory('finance'); };
+        document.getElementById('reportFinanceBtn').onclick = async()=>{ const snap=await db.ref('finances').once('value'); let total=0; Object.values(snap.val()||{}).forEach(f=>{ if(f.tipo==='Receita') total+=parseFloat(f.valor)||0; else if(f.tipo==='Despesa') total-=parseFloat(f.valor)||0; }); toast(`Saldo: R$ ${total.toFixed(2)}`); };
+        document.getElementById('metasFinanceBtn').onclick = async()=>{ const snap=await db.ref('finances').once('value'); let metas=[]; Object.values(snap.val()||{}).forEach(f=>{ if(f.tipo==='MetaFinanceira') metas.push(`${f.aluno}: R$ ${f.valor}`); }); toast(metas.length? metas.join(' | ') : "Sem metas"); };
+        addBackArrow(()=>askCreateOrHistory('finance'));
+    }
+    async function renderHistoryFinance(){ const snap=await db.ref('finances').once('value'); let html=`<div class="flex-btns"><button id="newFinBtn">Novo</button></div><div class="history-list">`; for(const [id,f] of Object.entries(snap.val()||{})) html+=`<div class="history-item" data-id="${id}" data-content='${JSON.stringify(f)}'>${f.tipo}: ${f.aluno} - R$ ${f.valor}</div>`; html+=`</div>`; document.getElementById('functionView').innerHTML=html; document.querySelectorAll('.history-item').forEach(el=>el.addEventListener('click',()=>showFinanceDetail(el.dataset.id, JSON.parse(el.dataset.content)))); document.getElementById('newFinBtn')?.addEventListener('click',()=>showCreateInterface('finance')); addBackArrow(()=>askCreateOrHistory('finance'));}
+    async function showFinanceDetail(id,data){ document.getElementById('functionView').innerHTML=`<div><h3>${data.aluno}</h3><p><strong>Valor:</strong> R$ ${data.valor} | <strong>Tipo:</strong> ${data.tipo}</p><p><strong>Descricao:</strong> ${data.desc}</p><div class="flex-btns"><button id="pdfFinBtn">PDF</button><button id="delFinBtn">Excluir</button></div></div>`;
+        document.getElementById('pdfFinBtn').onclick = ()=> generateStyledPDF(`Registro Financeiro - ${data.aluno}`, `<p><strong>Tipo:</strong> ${data.tipo}</p><p><strong>Valor:</strong> R$ ${data.valor}</p><p><strong>Categoria:</strong> ${data.category}</p><p><strong>Descricao:</strong> ${data.desc}</p>`, `financeiro_${data.aluno}`);
+        document.getElementById('delFinBtn').onclick = async()=>{ await db.ref(`finances/${id}`).remove(); toast("Excluido"); renderHistoryFinance(); }; addBackArrow(()=>renderHistoryFinance()); }
+
+    // ========== 7. AGENDA ==========
+    function renderCreateSchedule(){ document.getElementById('functionView').innerHTML=`<div><h3>Agenda</h3><input id="studentSched" placeholder="Aluno"><input type="datetime-local" id="datetimeSched"><input id="serviceType" placeholder="Tipo Sessao"><textarea id="notesSched" placeholder="Obs"></textarea><button id="saveSchedBtn">Agendar</button></div>`;
+        document.getElementById('saveSchedBtn').onclick = async()=>{ const aluno=document.getElementById('studentSched').value; if(!aluno) return; await withProgress(db.ref('schedules').push({ aluno, datetime:document.getElementById('datetimeSched').value, service:document.getElementById('serviceType').value, notes:document.getElementById('notesSched').value, createdAt:new Date().toISOString() }), "Agendado"); askCreateOrHistory('schedule'); }; addBackArrow(()=>askCreateOrHistory('schedule'));}
+    async function renderHistorySchedule(){ const snap=await db.ref('schedules').once('value'); let html=`<div class="flex-btns"><button id="newSchBtn">Novo</button></div><div class="history-list">`; for(const [id,s] of Object.entries(snap.val()||{})) html+=`<div class="history-item" data-id="${id}" data-content='${JSON.stringify(s)}'>${s.aluno} - ${s.datetime}</div>`; html+=`</div>`; document.getElementById('functionView').innerHTML=html; document.querySelectorAll('.history-item').forEach(el=>el.addEventListener('click',()=>showScheduleDetail(el.dataset.id, JSON.parse(el.dataset.content)))); document.getElementById('newSchBtn')?.addEventListener('click',()=>showCreateInterface('schedule')); addBackArrow(()=>askCreateOrHistory('schedule'));}
+    async function showScheduleDetail(id,data){ document.getElementById('functionView').innerHTML=`<div><h3>${data.aluno}</h3><p><strong>Data:</strong> ${data.datetime}</p><p><strong>Servico:</strong> ${data.service}</p><p><strong>Obs:</strong> ${data.notes}</p><div class="flex-btns"><button id="pdfSchedBtn">PDF</button><button id="delSchedBtn">Excluir</button></div></div>`;
+        document.getElementById('pdfSchedBtn').onclick = ()=> generateStyledPDF(`Agendamento - ${data.aluno}`, `<p><strong>Servico:</strong> ${data.service}</p><p><strong>Data/Hora:</strong> ${data.datetime}</p><p><strong>Observacoes:</strong> ${data.notes}</p>`, `agenda_${data.aluno}`);
+        document.getElementById('delSchedBtn').onclick = async()=>{ await db.ref(`schedules/${id}`).remove(); toast("Removido"); renderHistorySchedule(); }; addBackArrow(()=>renderHistorySchedule()); }
+
+    // ========== 8. ANOTACOES COM IMAGENS ==========
+    async function renderCreateQuickNotes(){
+        currentImageUrls = [];
+        function renderPreview() { const container = document.getElementById('imagePreviewContainer'); if(!container) return; container.innerHTML = '';
+            currentImageUrls.forEach((url, idx) => { const div = document.createElement('div'); div.className = 'image-preview-card';
+                div.innerHTML = `<img src="${url}"><div class="remove-img-icon" data-url="${url}">X</div>`; container.appendChild(div); });
+            document.querySelectorAll('.remove-img-icon').forEach(el=>el.addEventListener('click',(e)=>{ const url = el.dataset.url; currentImageUrls = currentImageUrls.filter(u=>u!==url); renderPreview(); toast("Imagem removida"); }));
+        }
+        document.getElementById('functionView').innerHTML = `<div><h3>Anotacao com Imagens</h3><input id="noteTitle" placeholder="Titulo"><textarea id="noteBody" rows="6" placeholder="Conteudo..."></textarea><div class="form-group"><label>Imagens (max 5)</label><input type="file" id="multiImages" accept="image/*" multiple><div id="imagePreviewContainer" class="image-upload-area"></div></div><div class="flex-btns"><button id="saveNoteWithImages">Salvar</button></div></div>`;
+        const fileInput = document.getElementById('multiImages');
+        fileInput.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files); if(currentImageUrls.length + files.length > 5) return toast("Maximo 5 imagens");
+            for(const file of files){ const fd = new FormData(); fd.append("file",file); fd.append("upload_preset",UPLOAD_PRESET); showProgress(40);
+                const res = await fetch(CLOUDINARY_URL,{method:"POST",body:fd}); const data = await res.json(); currentImageUrls.push(data.secure_url);
+                showProgress(100); resetProgress(); renderPreview(); }
+        });
+        renderPreview();
+        document.getElementById('saveNoteWithImages').onclick = async()=>{ const title=document.getElementById('noteTitle').value; const body=document.getElementById('noteBody').value; if(!body) return toast("Conteudo obrigatorio");
+            await withProgress(db.ref('quicknotes').push({ title, body, images: currentImageUrls, createdAt:new Date().toISOString() }), "Anotacao salva"); askCreateOrHistory('quicknotes'); };
+        addBackArrow(()=>askCreateOrHistory('quicknotes'));
+    }
+    async function renderHistoryQuickNotes(){ const snap=await db.ref('quicknotes').once('value'); let html=`<div class="flex-btns"><button id="newNoteBtn">Nova</button></div><div class="history-list">`; for(const [id,n] of Object.entries(snap.val()||{})) html+=`<div class="history-item" data-id="${id}" data-content='${JSON.stringify(n)}'>${n.title||'Anotacao'} - ${new Date(n.createdAt).toLocaleString()}</div>`; html+=`</div>`; document.getElementById('functionView').innerHTML=html; document.querySelectorAll('.history-item').forEach(el=>el.addEventListener('click',()=>showNoteWithImagesDetail(el.dataset.id, JSON.parse(el.dataset.content)))); document.getElementById('newNoteBtn')?.addEventListener('click',()=>showCreateInterface('quicknotes')); addBackArrow(()=>askCreateOrHistory('quicknotes'));}
+    async function showNoteWithImagesDetail(id,data){ let imgsHtml=''; if(data.images) data.images.forEach(url=>imgsHtml+=`<img src="${url}" style="width:80px;margin:5px;border-radius:8px;">`);
+        document.getElementById('functionView').innerHTML=`<div><h3>${escapeHtml(data.title||'')}</h3><p>${escapeHtml(data.body)}</p><div>${imgsHtml}</div><div class="flex-btns"><button id="pdfNoteBtn">PDF</button><button id="delNoteBtn">Excluir</button></div></div>`;
+        document.getElementById('pdfNoteBtn').onclick = ()=> generateStyledPDF(data.title || "Anotacao", `<p>${escapeHtml(data.body)}</p>`, `anotacao_${Date.now()}`);
+        document.getElementById('delNoteBtn').onclick = async()=>{ await db.ref(`quicknotes/${id}`).remove(); toast("Excluida"); renderHistoryQuickNotes(); };
+        addBackArrow(()=>renderHistoryQuickNotes());
+    }
+
+    // ========== 9. METRICAS ==========
+    function renderCreateMetrics(){ document.getElementById('functionView').innerHTML=`<div><h3>Metricas</h3><input id="metricStudent" placeholder="Aluno"><select id="metricType"><option>Carga Maxima</option><option>Resistencia</option><option>Flexibilidade</option></select><input id="metricValue" placeholder="Valor"><textarea id="metricObs"></textarea><button id="saveMetricBtn">Registrar</button></div>`;
+        document.getElementById('saveMetricBtn').onclick = async()=>{ const aluno=document.getElementById('metricStudent').value; if(!aluno) return; await withProgress(db.ref('metrics').push({ aluno, type:document.getElementById('metricType').value, value:document.getElementById('metricValue').value, obs:document.getElementById('metricObs').value, createdAt:new Date().toISOString() }), "Metrica registrada"); askCreateOrHistory('metrics'); }; addBackArrow(()=>askCreateOrHistory('metrics'));}
+    async function renderHistoryMetrics(){ const snap=await db.ref('metrics').once('value'); let html=`<div class="flex-btns"><button id="newMetricBtn">Nova</button></div><div class="history-list">`; for(const [id,m] of Object.entries(snap.val()||{})) html+=`<div class="history-item" data-id="${id}" data-content='${JSON.stringify(m)}'>${m.aluno} - ${m.type}: ${m.value}</div>`; html+=`</div>`; document.getElementById('functionView').innerHTML=html; document.querySelectorAll('.history-item').forEach(el=>el.addEventListener('click',()=>showMetricDetail(el.dataset.id, JSON.parse(el.dataset.content)))); document.getElementById('newMetricBtn')?.addEventListener('click',()=>showCreateInterface('metrics')); addBackArrow(()=>askCreateOrHistory('metrics'));}
+    async function showMetricDetail(id,data){ document.getElementById('functionView').innerHTML=`<div><h3>${data.aluno}</h3><p><strong>${data.type}:</strong> ${data.value}</p><p><strong>Obs:</strong> ${data.obs}</p><div class="flex-btns"><button id="pdfMetricBtn">PDF</button><button id="delMetricBtn">Excluir</button></div></div>`;
+        document.getElementById('pdfMetricBtn').onclick = ()=> generateStyledPDF(`Metrica - ${data.aluno}`, `<p><strong>Tipo:</strong> ${data.type}</p><p><strong>Valor:</strong> ${data.value}</p><p><strong>Observacoes:</strong> ${data.obs}</p>`, `metrica_${data.aluno}`);
+        document.getElementById('delMetricBtn').onclick = async()=>{ await db.ref(`metrics/${id}`).remove(); toast("Excluido"); renderHistoryMetrics(); }; addBackArrow(()=>renderHistoryMetrics()); }
+
+    // ========== 10. RELATORIOS ==========
+    async function renderCreateReports() { const studentsSnap = await db.ref('students').once('value'); const totalStudents = Object.keys(studentsSnap.val()||{}).length;
+        const financeSnap = await db.ref('finances').once('value'); let receita=0, despesa=0; Object.values(financeSnap.val()||{}).forEach(f=>{ if(f.tipo==='Receita') receita+=parseFloat(f.valor)||0; else if(f.tipo==='Despesa') despesa+=parseFloat(f.valor)||0; });
+        document.getElementById('functionView').innerHTML = `<div><h3>Relatorios</h3><div class="dashboard-stats"><div class="stat-card"><strong>Alunos</strong><br>${totalStudents}</div><div class="stat-card"><strong>Receita</strong><br>R$ ${receita.toFixed(2)}</div><div class="stat-card"><strong>Despesas</strong><br>R$ ${despesa.toFixed(2)}</div><div class="stat-card"><strong>Saldo</strong><br>R$ ${(receita-despesa).toFixed(2)}</div></div><button id="fullReportPDF">Gerar Relatorio PDF</button></div>`;
+        document.getElementById('fullReportPDF').onclick = ()=> generateStyledPDF("Relatorio Gerencial", `<p><strong>Total de Alunos:</strong> ${totalStudents}</p><p><strong>Receita Total:</strong> R$ ${receita.toFixed(2)}</p><p><strong>Despesas Totais:</strong> R$ ${despesa.toFixed(2)}</p><p><strong>Saldo Geral:</strong> R$ ${(receita-despesa).toFixed(2)}</p><hr><p><em>Documento gerado em ${new Date().toLocaleString()}</em></p>`, `relatorio_geral`);
+        addBackArrow(()=>askCreateOrHistory('reports'));
+    }
+    async function renderHistoryReports(){ renderCreateReports(); }
+
+    // ========== 11. METAS FINANCEIRAS ==========
+    function renderCreateFinancialGoals(){ document.getElementById('functionView').innerHTML=`<div><h3>Metas Financeiras</h3><input id="goalName" placeholder="Nome da Meta"><input id="goalValue" placeholder="Valor Alvo R$"><input id="deadline" type="date"><textarea id="goalObs" placeholder="Obs"></textarea><button id="saveGoalBtn">Salvar Meta</button></div>`;
+        document.getElementById('saveGoalBtn').onclick = async()=>{ const name=document.getElementById('goalName').value; if(!name) return; await withProgress(db.ref('financialGoals').push({ name, value:document.getElementById('goalValue').value, deadline:document.getElementById('deadline').value, obs:document.getElementById('goalObs').value, createdAt:new Date().toISOString() }), "Meta salva"); askCreateOrHistory('financialGoals'); }; addBackArrow(()=>askCreateOrHistory('financialGoals'));}
+    async function renderHistoryFinancialGoals(){ const snap=await db.ref('financialGoals').once('value'); let html=`<div class="flex-btns"><button id="newGoalBtn">Nova Meta</button></div><div class="history-list">`; for(const [id,g] of Object.entries(snap.val()||{})) html+=`<div class="history-item" data-id="${id}" data-content='${JSON.stringify(g)}'>${g.name} - R$ ${g.value}</div>`; html+=`</div>`; document.getElementById('functionView').innerHTML=html; document.querySelectorAll('.history-item').forEach(el=>el.addEventListener('click',()=>showGoalDetail(el.dataset.id, JSON.parse(el.dataset.content)))); document.getElementById('newGoalBtn')?.addEventListener('click',()=>showCreateInterface('financialGoals')); addBackArrow(()=>askCreateOrHistory('financialGoals'));}
+    async function showGoalDetail(id,data){ document.getElementById('functionView').innerHTML=`<div><h3>${data.name}</h3><p><strong>Valor:</strong> R$ ${data.value}</p><p><strong>Prazo:</strong> ${data.deadline||'-'}</p><p>${data.obs}</p><div class="flex-btns"><button id="pdfGoalBtn">PDF</button><button id="delGoalBtn">Excluir</button></div></div>`;
+        document.getElementById('pdfGoalBtn').onclick = ()=> generateStyledPDF(`Meta: ${data.name}`, `<p><strong>Valor Alvo:</strong> R$ ${data.value}</p><p><strong>Prazo:</strong> ${data.deadline||'Indeterminado'}</p><p><strong>Observacoes:</strong> ${data.obs}</p>`, `meta_${data.name}`);
+        document.getElementById('delGoalBtn').onclick = async()=>{ await db.ref(`financialGoals/${id}`).remove(); toast("Excluida"); renderHistoryFinancialGoals(); }; addBackArrow(()=>renderHistoryFinancialGoals()); }
+
+    renderTopMenu();
+    document.getElementById('functionView').innerHTML = `<div style="text-align:center;padding:3rem"><h2>Personal Trainer Studio</h2><p>CREF: 010068 | Flaviana | Joao Camara - RN</p><p>Selecione uma ferramenta no menu superior.</p></div>`;
+    document.getElementById('sidebarMenu').classList.add('hidden');
+</script>
+</body>
+</html>
