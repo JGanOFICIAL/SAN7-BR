@@ -1,11 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" 
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DomusFit - Copa 2026</title>
+    <title>DomusFit | Apostas Copa 2026</title>
     <style>
         * {
             margin: 0;
@@ -15,345 +14,273 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #ffffff;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
             color: #1a1a1a;
-            line-height: 1.5;
+            min-height: 100vh;
         }
 
-        .header-wrapper {
-            position: relative;
-            background: white;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 0 0 rgba(34, 85, 51, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(34, 85, 51, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 85, 51, 0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e5e7eb;
+            border-top-color: #225533;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 2rem auto;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
         }
 
         .header {
-            background: white;
-            padding: 1rem 2rem;
-            position: relative;
-            z-index: 2;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(12px);
+            padding: 1.25rem 2rem;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .header-content {
-            max-width: 1280px;
+            max-width: 1400px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .logo-img {
-            height: 40px;
-            width: auto;
-        }
-
-        .logo-text {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #1a5e2a;
-            letter-spacing: -0.3px;
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        .wave-top {
-            position: relative;
-            top: -2px;
-            z-index: 1;
-        }
-
-        .wave-bottom {
-            position: relative;
-            bottom: -2px;
-            z-index: 1;
-            transform: rotate(180deg);
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #1a4d2a 0%, #225533 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .btn {
             font-family: inherit;
-            padding: 0.5rem 1.25rem;
-            border: 1.5px solid #2d6a4f;
+            padding: 0.625rem 1.5rem;
+            border: none;
             background: white;
-            color: #2d6a4f;
+            color: #225533;
             cursor: pointer;
             font-size: 0.875rem;
             font-weight: 500;
-            transition: all 0.2s ease;
-            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 14px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .btn:hover {
-            background: #2d6a4f;
-            color: white;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(45,106,79,0.2);
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(34, 85, 51, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .btn:hover::before {
+            width: 200px;
+            height: 200px;
         }
 
         .btn-primary {
-            background: #2d6a4f;
+            background: linear-gradient(135deg, #225533 0%, #1a4d2a 100%);
             color: white;
+            box-shadow: 0 4px 14px rgba(34, 85, 51, 0.3);
         }
 
         .btn-primary:hover {
-            background: #1b4d3a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(34, 85, 51, 0.4);
+        }
+
+        .btn-outline {
+            border: 1.5px solid #225533;
+            background: transparent;
+            color: #225533;
+        }
+
+        .btn-outline:hover {
+            background: #225533;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #225533 0%, #1a4d2a 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            color: white;
         }
 
         .btn-sm {
             padding: 0.375rem 1rem;
-            font-size: 0.813rem;
-        }
-
-        .btn-danger {
-            border-color: #dc2626;
-            color: #dc2626;
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
-            color: white;
+            font-size: 0.75rem;
         }
 
         .container {
-            max-width: 1280px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
-            min-height: 60vh;
         }
 
-        .games-grid {
+        .admin-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.25rem;
-            margin-top: 1.5rem;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2rem;
+            animation: fadeIn 0.5s ease-out;
         }
 
-        .game-card {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 1.25rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
+        .card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 28px;
+            padding: 1.75rem;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .game-card.available {
-            border-left: 4px solid #10b981;
-            background: #f0fdf4;
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.15);
         }
 
-        .game-card.waiting {
-            border-left: 4px solid #f59e0b;
-            background: #fffbeb;
-        }
-
-        .game-card.closed {
-            border-left: 4px solid #ef4444;
-            background: #fef2f2;
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        .game-card.available:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-        }
-
-        .game-date {
-            font-size: 0.75rem;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.5rem;
-        }
-
-        .game-teams {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .flag-icon {
-            width: 28px;
-            height: 20px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-
-        .game-result {
-            margin-top: 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 0.5rem;
-            border-radius: 8px;
-            background: #f3f4f6;
-        }
-
-        .game-status {
-            margin-top: 0.75rem;
-            font-size: 0.7rem;
-            font-weight: 500;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            display: inline-block;
-        }
-
-        .status-available {
-            background: #10b981;
-            color: white;
-        }
-
-        .status-waiting {
-            background: #f59e0b;
-            color: white;
-        }
-
-        .status-closed {
-            background: #ef4444;
-            color: white;
-        }
-
-        .bet-section, .consult-section {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-top: 1rem;
-            border: 1px solid #e5e7eb;
-        }
-
-        .bet-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .teams-display {
-            text-align: center;
-            font-size: 1.5rem;
+        .card h2 {
+            font-size: 1.25rem;
             font-weight: 600;
             margin-bottom: 1.5rem;
-            padding: 1rem;
-            background: #f9fafb;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .bet-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .bet-option {
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 1rem;
-        }
-
-        .bet-option h3 {
-            margin-bottom: 0.75rem;
             color: #1f2937;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .score-input {
-            display: flex;
-            gap: 0.75rem;
-            margin: 0.75rem 0;
-            align-items: center;
-        }
-
-        .score-input input {
-            flex: 1;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 0.875rem;
-        }
-
-        .score-input input:focus {
-            outline: none;
-            border-color: #2d6a4f;
+            letter-spacing: -0.01em;
         }
 
         .form-group {
-            margin-bottom: 0.75rem;
+            margin-bottom: 1.25rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 0.375rem;
+            margin-bottom: 0.5rem;
             font-size: 0.75rem;
-            font-weight: 500;
-            color: #374151;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .form-group input, .form-group select {
             width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 18px;
             font-family: inherit;
             font-size: 0.875rem;
+            transition: all 0.3s ease;
+            background: white;
         }
 
         .form-group input:focus, .form-group select:focus {
             outline: none;
-            border-color: #2d6a4f;
+            border-color: #225533;
+            box-shadow: 0 0 0 3px rgba(34, 85, 51, 0.1);
+            transform: scale(1.01);
         }
 
-        .voucher {
-            background: #f0fdf4;
-            border: 1px solid #2d6a4f;
-            border-radius: 12px;
-            padding: 1rem;
-            margin-top: 1rem;
-        }
-
-        .back-btn {
+        .game-card {
+            background: white;
+            border-radius: 22px;
+            padding: 1.25rem;
             margin-bottom: 1rem;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
         }
 
-        .prize-info {
-            background: #fef3c7;
-            border-left: 4px solid #f59e0b;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
+        .game-card:hover {
+            box-shadow: 0 8px 25px -8px rgba(0,0,0,0.1);
+            transform: translateX(4px);
+            border-color: #22553320;
         }
 
-        .prize-info h4 {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #92400e;
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #e8f0e8;
+        }
+
+        .game-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #1f2937;
+        }
+
+        .game-info {
+            font-size: 0.75rem;
+            color: #6b7280;
             margin-bottom: 0.5rem;
         }
 
-        .prize-info p {
-            font-size: 0.75rem;
-            color: #78350f;
-            line-height: 1.4;
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
         }
 
         .modal-overlay {
@@ -362,76 +289,197 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000;
+            animation: fadeIn 0.3s ease;
         }
 
         .modal-content {
             background: white;
-            border-radius: 16px;
-            max-width: 500px;
+            border-radius: 32px;
+            max-width: 550px;
             width: 90%;
-            max-height: 80vh;
+            max-height: 85vh;
             overflow-y: auto;
-            padding: 1.5rem;
+            padding: 2rem;
             position: relative;
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
         }
 
         .modal-close {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
+            top: 1.25rem;
+            right: 1.25rem;
+            background: #f3f4f6;
             border: none;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             cursor: pointer;
             color: #6b7280;
-            width: 30px;
-            height: 30px;
+            width: 34px;
+            height: 34px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
+            transition: all 0.2s;
         }
 
         .modal-close:hover {
-            background: #f3f4f6;
+            background: #e5e7eb;
+            transform: rotate(90deg);
         }
 
-        .terms-checkbox {
-            margin: 1rem 0;
+        .score-input-group {
             display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
         }
 
-        .terms-checkbox input {
-            width: auto;
+        .score-input-group input {
+            width: 120px;
+            text-align: center;
+            padding: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            border-radius: 18px;
         }
 
-        .terms-checkbox label {
-            font-size: 0.75rem;
-            margin: 0;
+        .bets-list {
+            max-height: 400px;
+            overflow-y: auto;
         }
 
-        .terms-link {
-            color: #2d6a4f;
-            cursor: pointer;
-            text-decoration: underline;
+        .bet-item {
+            background: #f9fafb;
+            border-radius: 18px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
         }
 
-        footer {
-            background: #0f172a;
+        .bet-item:hover {
+            background: #f3f4f6;
+            transform: translateX(4px);
+        }
+
+        .winner-card {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 22px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            animation: glow 2s infinite;
+            border: 1px solid #22553330;
+        }
+
+        .confetti-particle {
+            position: fixed;
+            width: 8px;
+            height: 12px;
+            background: #225533;
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 2001;
+            animation: spin 3s ease-out forwards;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+
+        .badge {
+            background: #225533;
             color: white;
-            position: relative;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #225533;
         }
     </style>
 </head>
 <body>
-    <div id="app"></div>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">DomusFit | Apostas Copa 2026</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="admin-grid">
+            <div>
+                <div class="card">
+                    <h2>Cadastrar Jogo</h2>
+                    <div class="form-group">
+                        <label>Data do Jogo</label>
+                        <input type="date" id="gameDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Horario</label>
+                        <input type="time" id="gameTime">
+                    </div>
+                    <div class="form-group">
+                        <label>Adversario</label>
+                        <input type="text" id="opponent" placeholder="Ex: Argentina">
+                    </div>
+                    <button class="btn btn-primary" onclick="createGame()">Cadastrar Jogo</button>
+                </div>
+
+                <div class="card" style="margin-top: 1.5rem;">
+                    <h2>Registrar Aposta</h2>
+                    <div class="form-group">
+                        <label>Selecione o Jogo</label>
+                        <select id="selectedGame">
+                            <option value="">-- Selecione um jogo --</option>
+                        </select>
+                    </div>
+                    <div id="betForm" style="display: none;">
+                        <div class="form-group">
+                            <label>Nome Completo</label>
+                            <input type="text" id="betName" placeholder="Nome do apostador">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefone</label>
+                            <input type="text" id="betPhone" placeholder="(11) 99999-9999" oninput="formatPhone(this)">
+                        </div>
+                        <div class="form-group">
+                            <label>Placar Apostado</label>
+                            <div class="score-input-group">
+                                <input type="number" id="betBrasil" placeholder="Brasil" min="0">
+                                <span style="font-weight: 700;">x</span>
+                                <input type="number" id="betOpponent" placeholder="Adversario" min="0">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="registerBet()">Registrar Aposta</button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <h2>Jogos Cadastrados</h2>
+                    <div id="gamesList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -446,536 +494,552 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        let currentView = 'home';
-        let selectedGame = null;
-        let bets = [];
         let games = [];
 
-        function getGameStatus(gameDate, gameTime) {
-            const now = new Date();
-            const gameDateTime = new Date(`${gameDate}T${gameTime}`);
-            const fiveDaysBefore = new Date(gameDateTime);
-            fiveDaysBefore.setDate(fiveDaysBefore.getDate() - 5);
-            const tenMinutesBefore = new Date(gameDateTime);
-            tenMinutesBefore.setMinutes(tenMinutesBefore.getMinutes() - 10);
-            
-            if (now > gameDateTime) return 'closed';
-            if (now >= tenMinutesBefore && now <= gameDateTime) return 'waiting';
-            if (now >= fiveDaysBefore && now < tenMinutesBefore) return 'available';
-            if (now < fiveDaysBefore) return 'waiting';
-            return 'closed';
+        function showLoading() {
+            let loader = document.getElementById('globalLoader');
+            if (!loader) {
+                loader = document.createElement('div');
+                loader.id = 'globalLoader';
+                loader.className = 'loading-overlay';
+                loader.innerHTML = '<div class="spinner"></div>';
+                document.body.appendChild(loader);
+            }
         }
 
-        function generateBetId() {
-            return '#' + Math.random().toString(36).substring(2, 10) + '-' + 
-                   Math.random().toString(36).substring(2, 6) + '-' + 
-                   Math.random().toString(36).substring(2, 6);
+        function hideLoading() {
+            const loader = document.getElementById('globalLoader');
+            if (loader) loader.remove();
         }
 
-        function formatDate(dateStr) {
-            const date = new Date(dateStr);
-            return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        function createConfetti() {
+            for (let i = 0; i < 60; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'confetti-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = '-10px';
+                particle.style.animationDelay = Math.random() * 0.5 + 's';
+                particle.style.backgroundColor = `hsl(${Math.random() * 60 + 80}, 70%, 45%)`;
+                particle.style.width = Math.random() * 8 + 4 + 'px';
+                particle.style.height = Math.random() * 12 + 6 + 'px';
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 3000);
+            }
+        }
+
+        function formatPhone(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value.length > 11) value = value.slice(0, 11);
+            if (value.length >= 2) {
+                value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+            }
+            if (value.length > 10) {
+                value = value.slice(0, 10) + '-' + value.slice(10);
+            }
+            input.value = value;
         }
 
         async function loadGames() {
+            showLoading();
             const snapshot = await database.ref('games').once('value');
             games = [];
             snapshot.forEach(child => {
                 games.push({ id: child.key, ...child.val() });
             });
-            render();
+            renderGamesList();
+            renderGameSelect();
+            hideLoading();
         }
 
-        async function saveBet(betData) {
-            const betRef = database.ref('bets').push();
-            await betRef.set(betData);
-            await loadBets();
-        }
-
-        async function loadBets() {
-            const snapshot = await database.ref('bets').once('value');
-            bets = [];
-            snapshot.forEach(child => {
-                bets.push({ id: child.key, ...child.val() });
-            });
-        }
-
-        function render() {
-            const app = document.getElementById('app');
-            if (window.location.pathname.includes('admin.html')) {
-                renderAdmin(app);
-            } else {
-                renderHome(app);
+        function renderGamesList() {
+            const container = document.getElementById('gamesList');
+            if (!games.length) {
+                container.innerHTML = '<div class="empty-state">Nenhum jogo cadastrado</div>';
+                return;
             }
-        }
 
-        function renderHome(container) {
-            if (currentView === 'home') {
-                container.innerHTML = `
-                    <div class="header-wrapper">
-                        <div class="header">
-                            <div class="header-content">
-                                <div class="logo-area">
-                                    <img id="siteLogo" class="logo-img" src="" alt="Logo" style="display: none;">
-                                    <span class="logo-text" id="logoText">DomusFit • 2026</span>
-                                </div>
-                                <div class="nav-buttons">
-                                    <button class="btn" onclick="changeView('consult')">Consultar Aposta</button>
-                                </div>
-                            </div>
+            container.innerHTML = games.map(game => {
+                const bets = game.bets ? Object.values(game.bets) : [];
+                const winners = bets.filter(b => b.won === true);
+                const hasResult = game.result;
+                const drawDone = game.drawExecuted;
+                
+                return `
+                    <div class="game-card">
+                        <div class="game-header">
+                            <span class="game-title">Brasil vs ${game.opponent}</span>
+                            <span class="badge">${game.date} ${game.time}</span>
                         </div>
-                        <svg class="wave-top" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120">
-                            <path fill="#2d6a4f" fill-opacity="0.15" d="M0,64L80,74.7C160,85,320,107,480,106.7C640,107,800,85,960,80C1120,75,1280,85,1360,90.7L1440,96L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z"></path>
-                            <path fill="#2d6a4f" fill-opacity="0.3" d="M0,96L80,90.7C160,85,320,75,480,80C640,85,800,107,960,112C1120,117,1280,107,1360,101.3L1440,96L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z"></path>
-                        </svg>
+                        <div class="game-info">
+                            ${hasResult ? `Resultado: ${game.result.brasil} x ${game.result.opponent}` : 'Aguardando resultado'}
+                        </div>
+                        <div class="game-info">
+                            Apostas: ${bets.length} | Acertos: ${winners.length}
+                        </div>
+                        <div class="action-buttons">
+                            ${!hasResult ? `
+                                <button class="btn btn-outline btn-sm" onclick="openBetModal('${game.id}')">Ver Apostas</button>
+                                <button class="btn btn-success btn-sm" onclick="openResultModal('${game.id}')">Definir Resultado</button>
+                            ` : `
+                                <button class="btn btn-outline btn-sm" onclick="viewWinners('${game.id}')">Ver Vencedores</button>
+                                ${!drawDone ? `<button class="btn btn-warning btn-sm" onclick="executeDraw('${game.id}')">Realizar Sorteio</button>` : '<span class="badge">Sorteio Realizado</span>'}
+                                <button class="btn btn-danger btn-sm" onclick="deleteGame('${game.id}')">Excluir</button>
+                            `}
+                        </div>
                     </div>
-                    <div class="container">
-                        <h2 style="font-size: 1.25rem; font-weight: 600;">Próximos Jogos</h2>
-                        ${games.length === 0 ? '<p style="text-align: center; padding: 3rem; color: #6b7280;">Nenhum jogo cadastrado. Aguarde a divulgação da tabela.</p>' : '<div class="games-grid" id="gamesGrid"></div>'}
-                        <div class="prize-info">
-                            <h4>Premiação Oficial</h4>
-                            <p>O apostador com o maior número de acertos ao final da Copa receberá o prêmio total. Em caso de empate no número de acertos, haverá sorteio entre os vencedores para definir o ganhador. Participe! Quanto mais acertos, maiores suas chances.</p>
-                        </div>
-                    </div>
-                    <footer>
-                        <svg class="wave-bottom" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120">
-                            <path fill="#2d6a4f" fill-opacity="0.15" d="M0,64L80,74.7C160,85,320,107,480,106.7C640,107,800,85,960,80C1120,75,1280,85,1360,90.7L1440,96L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
-                            <path fill="#2d6a4f" fill-opacity="0.3" d="M0,96L80,90.7C160,85,320,75,480,80C640,85,800,107,960,112C1120,117,1280,107,1360,101.3L1440,96L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
-                        </svg>
-                        <div style="padding: 1rem; text-align: center; font-size: 0.625rem; color: #94a3b8; background: #0f172a;">
-                            <p>As apostas estão disponíveis 5 dias antes de cada jogo até 10 minutos antes do início da partida. Cada telefone pode realizar apenas uma aposta por jogo. Os resultados oficiais serão validados após o término de cada partida.</p>
-                            <p style="margin-top: 0.5rem;">© 2026 DomusFit - Todos os direitos reservados.</p>
-                        </div>
-                    </footer>
                 `;
-                
-                database.ref('settings/logoUrl').once('value', (snapshot) => {
-                    const logoUrl = snapshot.val();
-                    if (logoUrl) {
-                        const logoImg = document.getElementById('siteLogo');
-                        const logoText = document.getElementById('logoText');
-                        if (logoImg && logoText) {
-                            logoImg.src = logoUrl;
-                            logoImg.style.display = 'block';
-                            logoText.style.display = 'none';
-                        }
-                    }
-                });
-                
-                if (games.length > 0) {
-                    const gamesGrid = document.getElementById('gamesGrid');
-                    gamesGrid.innerHTML = games.map(game => {
-                        const status = getGameStatus(game.date, game.time);
-                        let statusText = '', statusClass = '';
-                        if (status === 'available') {
-                            statusText = 'Apostas disponíveis';
-                            statusClass = 'status-available';
-                        } else if (status === 'waiting') {
-                            statusText = 'Aguardando início';
-                            statusClass = 'status-waiting';
-                        } else {
-                            statusText = 'Apostas encerradas';
-                            statusClass = 'status-closed';
-                        }
-                        
-                        const resultHtml = game.result ? `
-                            <div class="game-result">
-                                Resultado oficial: ${game.result.brasil} x ${game.result.opponent}
-                            </div>
-                        ` : '';
-                        
-                        return `
-                            <div class="game-card ${status}" 
-                                 onclick="${status === 'available' ? `selectGame('${game.id}')` : ''}">
-                                <div class="game-date">${formatDate(game.date)} • ${game.time}</div>
-                                <div class="game-teams">
-                                    <img src="${game.brasilFlag || 'https://flagcdn.com/w320/br.png'}" class="flag-icon" alt="Brasil">
-                                    <span>Brasil vs ${game.opponent}</span>
-                                    <img src="${game.opponentFlag || 'https://flagcdn.com/w320/ma.png'}" class="flag-icon" alt="${game.opponent}">
-                                </div>
-                                ${resultHtml}
-                                <div class="game-status ${statusClass}">${statusText}</div>
-                            </div>
-                        `;
-                    }).join('');
-                }
-            } else if (currentView === 'bet' && selectedGame) {
-                renderBetForm(container);
-            } else if (currentView === 'consult') {
-                renderConsultForm(container);
-            }
+            }).join('');
         }
 
-        function renderBetForm(container) {
-            const game = games.find(g => g.id === selectedGame);
-            container.innerHTML = `
-                <div class="header-wrapper">
-                    <div class="header">
-                        <div class="header-content">
-                            <div class="logo-area">
-                                <img id="siteLogo" class="logo-img" src="" alt="Logo" style="display: none;">
-                                <span class="logo-text" id="logoText">DomusFit • Copa 2026</span>
-                            </div>
-                        </div>
-                    </div>
-                    <svg class="wave-top" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120">
-                        <path fill="#2d6a4f" fill-opacity="0.15" d="M0,64L80,74.7C160,85,320,107,480,106.7C640,107,800,85,960,80C1120,75,1280,85,1360,90.7L1440,96L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z"></path>
-                    </svg>
-                </div>
-                <div class="container">
-                    <button class="btn btn-sm back-btn" onclick="goBack()">← Voltar</button>
-                    <div class="bet-section">
-                        <div class="bet-header">
-                            <h2 style="font-size: 1.125rem; font-weight: 600;">Fazer Aposta</h2>
-                        </div>
-                        <div class="teams-display">
-                            <img src="${game.brasilFlag || 'https://flagcdn.com/w320/br.png'}" class="flag-icon" alt="Brasil">
-                            <span>Brasil</span>
-                            <span style="font-weight: 300;">vs</span>
-                            <span>${game.opponent}</span>
-                            <img src="${game.opponentFlag || 'https://flagcdn.com/w320/ma.png'}" class="flag-icon" alt="${game.opponent}">
-                        </div>
-                        
-                        <div class="bet-options">
-                            <div class="bet-option">
-                                <h3>Empate</h3>
-                                <div class="score-input">
-                                    <input type="number" id="drawBrasil" placeholder="Brasil" min="0">
-                                    <span>x</span>
-                                    <input type="number" id="drawOpponent" placeholder="${game.opponent}" min="0">
-                                </div>
-                                <button class="btn btn-sm" onclick="selectBetType('draw')">Selecionar Empate</button>
-                            </div>
-                            
-                            <div class="bet-option">
-                                <h3>Brasil Vence</h3>
-                                <div class="score-input">
-                                    <input type="number" id="winBrasil" placeholder="Brasil" min="0">
-                                    <span>x</span>
-                                    <input type="number" id="winOpponent" placeholder="${game.opponent}" min="0">
-                                </div>
-                                <button class="btn btn-sm" onclick="selectBetType('brasilWin')">Brasil Vence</button>
-                            </div>
-                            
-                            <div class="bet-option">
-                                <h3>${game.opponent} Vence</h3>
-                                <div class="score-input">
-                                    <input type="number" id="opponentWinBrasil" placeholder="Brasil" min="0">
-                                    <span>x</span>
-                                    <input type="number" id="opponentWinOpponent" placeholder="${game.opponent}" min="0">
-                                </div>
-                                <button class="btn btn-sm" onclick="selectBetType('opponentWin')">${game.opponent} Vence</button>
-                            </div>
-                        </div>
-                        
-                        <div id="betFormContainer"></div>
-                    </div>
-                </div>
-                <footer>
-                    <svg class="wave-bottom" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120">
-                        <path fill="#2d6a4f" fill-opacity="0.15" d="M0,64L80,74.7C160,85,320,107,480,106.7C640,107,800,85,960,80C1120,75,1280,85,1360,90.7L1440,96L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
-                    </svg>
-                    <div style="padding: 1rem; text-align: center; font-size: 0.625rem; color: #94a3b8; background: #0f172a;">
-                        <p>© 2026 Apostas Brasil - Todos os direitos reservados.</p>
-                    </div>
-                </footer>
-            `;
+        function renderGameSelect() {
+            const select = document.getElementById('selectedGame');
+            select.innerHTML = '<option value="">-- Selecione um jogo --</option>' + 
+                games.filter(g => !g.result).map(game => `<option value="${game.id}">Brasil vs ${game.opponent} (${game.date})</option>`).join('');
             
-            database.ref('settings/logoUrl').once('value', (snapshot) => {
-                const logoUrl = snapshot.val();
-                if (logoUrl) {
-                    const logoImg = document.getElementById('siteLogo');
-                    const logoText = document.getElementById('logoText');
-                    if (logoImg && logoText) {
-                        logoImg.src = logoUrl;
-                        logoImg.style.display = 'block';
-                        logoText.style.display = 'none';
-                    }
+            select.onchange = () => {
+                const betForm = document.getElementById('betForm');
+                if (select.value) {
+                    betForm.style.display = 'block';
+                    const game = games.find(g => g.id === select.value);
+                    if (game) document.getElementById('betOpponent').placeholder = game.opponent;
+                } else {
+                    betForm.style.display = 'none';
                 }
+            };
+        }
+
+        async function createGame() {
+            const date = document.getElementById('gameDate').value;
+            const time = document.getElementById('gameTime').value;
+            const opponent = document.getElementById('opponent').value.trim();
+
+            if (!date || !time || !opponent) {
+                alert('Preencha todos os campos');
+                return;
+            }
+
+            showLoading();
+            await database.ref('games').push({
+                date, time, opponent,
+                createdAt: new Date().toISOString()
             });
+            await loadGames();
+            document.getElementById('gameDate').value = '';
+            document.getElementById('gameTime').value = '';
+            document.getElementById('opponent').value = '';
+            hideLoading();
+            alert('Jogo cadastrado com sucesso');
         }
 
-        window.selectBetType = (type) => {
-            const game = games.find(g => g.id === selectedGame);
-            let brasilScore, opponentScore;
-            
-            if (type === 'draw') {
-                brasilScore = parseInt(document.getElementById('drawBrasil').value) || 0;
-                opponentScore = parseInt(document.getElementById('drawOpponent').value) || 0;
-                if (brasilScore !== opponentScore) {
-                    alert('Para empate, os placares devem ser iguais!');
-                    return;
-                }
-            } else if (type === 'brasilWin') {
-                brasilScore = parseInt(document.getElementById('winBrasil').value) || 0;
-                opponentScore = parseInt(document.getElementById('winOpponent').value) || 0;
-                if (brasilScore <= opponentScore) {
-                    alert('Brasil precisa marcar mais gols que o adversário!');
-                    return;
-                }
-            } else {
-                brasilScore = parseInt(document.getElementById('opponentWinBrasil').value) || 0;
-                opponentScore = parseInt(document.getElementById('opponentWinOpponent').value) || 0;
-                if (opponentScore <= brasilScore) {
-                    alert(`${game.opponent} precisa marcar mais gols que o Brasil!`);
-                    return;
-                }
+        async function registerBet() {
+            const gameId = document.getElementById('selectedGame').value;
+            if (!gameId) {
+                alert('Selecione um jogo primeiro');
+                return;
             }
-            
-            const formHtml = `
-                <div class="form-group">
-                    <label>Nome Completo</label>
-                    <input type="text" id="fullName" placeholder="Digite seu nome completo" required>
-                </div>
-                <div class="form-group">
-                    <label>Gênero</label>
-                    <select id="gender">
-                        <option value="masculino">Masculino</option>
-                        <option value="feminino">Feminino</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Telefone (com DDD)</label>
-                    <input type="tel" id="phone" placeholder="(11) 99999-9999" required>
-                </div>
-                <div class="form-group">
-                    <label>Data de Nascimento</label>
-                    <input type="text" id="birthDate" placeholder="DD/MM/AAAA" required>
-                </div>
-                <div class="terms-checkbox">
-                    <input type="checkbox" id="acceptTerms">
-                    <label>Li e aceito os <span class="terms-link" onclick="showTerms()">termos e condições</span> das apostas</label>
-                </div>
-                <button class="btn btn-primary btn-sm" onclick="submitBet('${type}', ${brasilScore}, ${opponentScore})">Confirmar Aposta</button>
-            `;
-            
-            document.getElementById('betFormContainer').innerHTML = formHtml;
-        };
 
-        window.showTerms = () => {
+            const name = document.getElementById('betName').value.trim();
+            const phone = document.getElementById('betPhone').value.trim();
+            const brasilScore = parseInt(document.getElementById('betBrasil').value);
+            const opponentScore = parseInt(document.getElementById('betOpponent').value);
+
+            if (!name || !phone || isNaN(brasilScore) || isNaN(opponentScore)) {
+                alert('Preencha todos os campos corretamente');
+                return;
+            }
+
+            if (brasilScore < 0 || opponentScore < 0) {
+                alert('Os placares nao podem ser negativos');
+                return;
+            }
+
+            showLoading();
+            const gameRef = database.ref(`games/${gameId}`);
+            const gameSnapshot = await gameRef.once('value');
+            const game = gameSnapshot.val();
+
+            if (!game) {
+                alert('Jogo nao encontrado');
+                hideLoading();
+                return;
+            }
+
+            if (game.result) {
+                alert('Este jogo ja possui resultado definido');
+                hideLoading();
+                return;
+            }
+
+            const bets = game.bets || {};
+            const existingBet = Object.values(bets).find(b => b.phone === phone);
+            if (existingBet) {
+                alert('Este telefone ja possui uma aposta para este jogo');
+                hideLoading();
+                return;
+            }
+
+            const betId = 'bet_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+            bets[betId] = {
+                name, phone, brasilScore, opponentScore,
+                createdAt: new Date().toISOString()
+            };
+
+            await gameRef.update({ bets });
+            await loadGames();
+            document.getElementById('betName').value = '';
+            document.getElementById('betPhone').value = '';
+            document.getElementById('betBrasil').value = '';
+            document.getElementById('betOpponent').value = '';
+            hideLoading();
+            createConfetti();
+            alert('Aposta registrada com sucesso');
+        }
+
+        async function openBetModal(gameId) {
+            const game = games.find(g => g.id === gameId);
+            if (!game) return;
+
+            const bets = game.bets ? Object.values(game.bets) : [];
+            
             const modalHtml = `
-                <div class="modal-overlay" id="termsModal">
+                <div class="modal-overlay" id="betsModal">
                     <div class="modal-content">
                         <button class="modal-close" onclick="closeModal()">×</button>
-                        <h3 style="margin-bottom: 1rem;">Termos e Condições</h3>
-                        <p style="font-size: 0.875rem; line-height: 1.5;">1. As apostas estão disponíveis 5 dias antes de cada jogo até 10 minutos antes do início da partida.<br><br>
-                        2. Cada telefone pode realizar apenas uma aposta por jogo.<br><br>
-                        3. O apostador com o maior número de acertos ao final da Copa receberá o prêmio total.<br><br>
-                        4. Em caso de empate no número de acertos, haverá sorteio entre os vencedores.<br><br>
-                        5. Apostas canceladas não serão reembolsadas.<br><br>
-                        6. Os resultados oficiais serão validados após o término de cada partida.<br><br>
-                        7. Ao apostar, você concorda com todos os termos aqui descritos.</p>
-                        <button class="btn btn-sm" onclick="closeModal()" style="margin-top: 1rem;">Fechar</button>
+                        <h3 style="margin-bottom: 1rem;">Apostas - Brasil vs ${game.opponent}</h3>
+                        <div class="bets-list">
+                            ${bets.length === 0 ? '<div class="empty-state">Nenhuma aposta registrada</div>' : bets.map(bet => `
+                                <div class="bet-item">
+                                    <div>
+                                        <div style="font-weight: 600;">${bet.name}</div>
+                                        <div style="font-size: 0.7rem; color: #6b7280;">${bet.phone}</div>
+                                    </div>
+                                    <div style="font-weight: 700; color: #225533;">${bet.brasilScore} x ${bet.opponentScore}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="action-buttons" style="margin-top: 1rem;">
+                            <button class="btn btn-primary btn-sm" onclick="downloadPDF('${gameId}')">Download PDF</button>
+                            <button class="btn btn-outline btn-sm" onclick="closeModal()">Fechar</button>
+                        </div>
                     </div>
                 </div>
             `;
             document.body.insertAdjacentHTML('beforeend', modalHtml);
-        };
+        }
 
-        window.closeModal = () => {
-            const modal = document.getElementById('termsModal');
-            if (modal) modal.remove();
-        };
-
-        window.submitBet = async (type, brasilScore, opponentScore) => {
-            const acceptTerms = document.getElementById('acceptTerms').checked;
-            if (!acceptTerms) {
-                alert('Você precisa aceitar os termos e condições para prosseguir!');
-                return;
-            }
+        async function downloadPDF(gameId) {
+            const game = games.find(g => g.id === gameId);
+            if (!game) return;
             
-            const fullName = document.getElementById('fullName').value;
-            const gender = document.getElementById('gender').value;
-            const phone = document.getElementById('phone').value;
-            const birthDate = document.getElementById('birthDate').value;
-            const game = games.find(g => g.id === selectedGame);
-            
-            if (!fullName || !phone || !birthDate) {
-                alert('Preencha todos os campos!');
-                return;
-            }
-            
-            const existingBet = bets.find(b => b.phone === phone && b.gameId === selectedGame);
-            if (existingBet) {
-                alert('Este telefone já possui uma aposta para este jogo!');
-                return;
-            }
-            
-            const betId = generateBetId();
-            const betData = {
-                betId,
-                gameId: selectedGame,
-                gameDate: game.date,
-                gameTime: game.time,
-                opponent: game.opponent,
-                fullName,
-                gender,
-                phone,
-                birthDate,
-                betType: type,
-                brasilScore,
-                opponentScore,
-                createdAt: new Date().toISOString(),
-                status: 'pendente'
-            };
-            
-            await saveBet(betData);
-            
-            const voucherHtml = `
-                <div class="voucher">
-                    <h3 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem;">Comprovante de Aposta</h3>
-                    <p style="font-size: 0.75rem;"><strong>ID:</strong> ${betId}</p>
-                    <p style="font-size: 0.75rem;"><strong>Data:</strong> ${new Date().toLocaleString()}</p>
-                    <p style="font-size: 0.75rem;"><strong>Jogo:</strong> Brasil vs ${game.opponent} - ${formatDate(game.date)} às ${game.time}</p>
-                    <p style="font-size: 0.75rem;"><strong>Aposta:</strong> ${brasilScore} x ${opponentScore}</p>
-                    <p style="font-size: 0.75rem;"><strong>Apostador:</strong> ${fullName}</p>
-                    <p style="font-size: 0.75rem;"><strong>Telefone:</strong> ${phone}</p>
-                    <button class="btn btn-sm" onclick="goBack()" style="margin-top: 0.75rem;">Voltar ao Início</button>
-                </div>
+            const bets = game.bets ? Object.values(game.bets) : [];
+            let htmlContent = `
+                <html>
+                <head>
+                    <style>
+                        body { font-family: 'Inter', sans-serif; padding: 40px; }
+                        h1 { color: #225533; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+                        th { background: #225533; color: white; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Lista de Apostas</h1>
+                    <p><strong>Jogo:</strong> Brasil vs ${game.opponent}</p>
+                    <p><strong>Data:</strong> ${game.date} as ${game.time}</p>
+                    <p><strong>Total de Apostas:</strong> ${bets.length}</p>
+                    <table>
+                        <thead><tr><th>Nome</th><th>Telefone</th><th>Placar</th></tr></thead>
+                        <tbody>
+                            ${bets.map(bet => `<tr><td>${bet.name}</td><td>${bet.phone}</td><td>${bet.brasilScore} x ${bet.opponentScore}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </body>
+                </html>
             `;
             
-            document.getElementById('betFormContainer').innerHTML = voucherHtml;
-            await loadBets();
-        };
+            const blob = new Blob([htmlContent], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `apostas_${game.opponent}.pdf`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
 
-        function renderConsultForm(container) {
-            container.innerHTML = `
-                <div class="header-wrapper">
-                    <div class="header">
-                        <div class="header-content">
-                            <div class="logo-area">
-                                <img id="siteLogo" class="logo-img" src="" alt="Logo" style="display: none;">
-                                <span class="logo-text" id="logoText">Apostas Brasil Copa 2026</span>
+        async function openResultModal(gameId) {
+            const game = games.find(g => g.id === gameId);
+            if (!game) return;
+
+            const modalHtml = `
+                <div class="modal-overlay" id="resultModal">
+                    <div class="modal-content">
+                        <button class="modal-close" onclick="closeModal()">×</button>
+                        <h3 style="margin-bottom: 1rem;">Definir Resultado</h3>
+                        <p style="margin-bottom: 1rem;">Brasil vs ${game.opponent}</p>
+                        <div class="score-input-group">
+                            <input type="number" id="resultBrasil" placeholder="Brasil" min="0">
+                            <span style="font-weight: 700;">x</span>
+                            <input type="number" id="resultOpponent" placeholder="${game.opponent}" min="0">
+                        </div>
+                        <button class="btn btn-primary" onclick="setGameResult('${gameId}')">Salvar Resultado</button>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+        async function setGameResult(gameId) {
+            const brasil = parseInt(document.getElementById('resultBrasil').value);
+            const opponent = parseInt(document.getElementById('resultOpponent').value);
+
+            if (isNaN(brasil) || isNaN(opponent)) {
+                alert('Preencha o placar corretamente');
+                return;
+            }
+
+            showLoading();
+            const gameRef = database.ref(`games/${gameId}`);
+            await gameRef.update({ result: { brasil, opponent } });
+            
+            const gameSnapshot = await gameRef.once('value');
+            const game = gameSnapshot.val();
+            const bets = game.bets || {};
+            
+            for (const [betId, bet] of Object.entries(bets)) {
+                const won = (bet.brasilScore === brasil && bet.opponentScore === opponent);
+                await gameRef.child(`bets/${betId}/won`).set(won);
+            }
+            
+            closeModal();
+            await loadGames();
+            hideLoading();
+            createConfetti();
+            alert('Resultado definido com sucesso');
+        }
+
+        async function viewWinners(gameId) {
+            const game = games.find(g => g.id === gameId);
+            if (!game || !game.result) return;
+
+            const bets = game.bets ? Object.values(game.bets) : [];
+            const winners = bets.filter(b => b.won === true);
+            
+            const modalHtml = `
+                <div class="modal-overlay" id="winnersModal">
+                    <div class="modal-content">
+                        <button class="modal-close" onclick="closeModal()">×</button>
+                        <h3 style="margin-bottom: 1rem;">Vencedores</h3>
+                        <p><strong>Resultado:</strong> ${game.result.brasil} x ${game.result.opponent}</p>
+                        <p><strong>Total de acertos:</strong> ${winners.length}</p>
+                        <div style="margin-top: 1.5rem;">
+                            ${winners.length === 0 ? '<div class="empty-state">Nenhum vencedor</div>' : winners.map(winner => `
+                                <div class="winner-card">
+                                    <div style="font-weight: 700; font-size: 1rem;">${winner.name}</div>
+                                    <div style="font-size: 0.75rem; color: #1a5e2a;">${winner.phone}</div>
+                                    <div style="margin-top: 0.5rem;">Aposta: ${winner.brasilScore} x ${winner.opponentScore}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary btn-sm" onclick="downloadWinnersPDF('${gameId}')">Download PDF</button>
+                            <button class="btn btn-outline btn-sm" onclick="closeModal()">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+        async function downloadWinnersPDF(gameId) {
+            const game = games.find(g => g.id === gameId);
+            if (!game || !game.result) return;
+            
+            const bets = game.bets ? Object.values(game.bets) : [];
+            const winners = bets.filter(b => b.won === true);
+            
+            let htmlContent = `
+                <html>
+                <head>
+                    <style>
+                        body { font-family: 'Inter', sans-serif; padding: 40px; }
+                        h1 { color: #225533; }
+                        .winner { background: #e8f5e9; padding: 15px; margin: 10px 0; border-radius: 12px; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Lista de Vencedores</h1>
+                    <p><strong>Jogo:</strong> Brasil vs ${game.opponent}</p>
+                    <p><strong>Resultado:</strong> ${game.result.brasil} x ${game.result.opponent}</p>
+                    <p><strong>Total de Vencedores:</strong> ${winners.length}</p>
+                    <hr>
+                    ${winners.map(winner => `
+                        <div class="winner">
+                            <strong>${winner.name}</strong><br>
+                            Telefone: ${winner.phone}<br>
+                            Aposta: ${winner.brasilScore} x ${winner.opponentScore}
+                        </div>
+                    `).join('')}
+                </body>
+                </html>
+            `;
+            
+            const blob = new Blob([htmlContent], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `vencedores_${game.opponent}.pdf`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        async function executeDraw(gameId) {
+            const game = games.find(g => g.id === gameId);
+            if (!game || !game.result) {
+                alert('Defina o resultado do jogo primeiro');
+                return;
+            }
+            
+            if (game.drawExecuted) {
+                alert('Sorteio ja foi realizado para este jogo');
+                return;
+            }
+            
+            const bets = game.bets ? Object.values(game.bets) : [];
+            const winners = bets.filter(b => b.won === true);
+            
+            if (winners.length === 0) {
+                alert('Nao ha vencedores para realizar o sorteio');
+                return;
+            }
+            
+            if (winners.length === 1) {
+                createConfetti();
+                const modalHtml = `
+                    <div class="modal-overlay" id="drawModal">
+                        <div class="modal-content">
+                            <button class="modal-close" onclick="closeModal()">×</button>
+                            <h3 style="margin-bottom: 1rem;">Resultado do Sorteio</h3>
+                            <div class="winner-card" style="text-align: center;">
+                                <div style="font-size: 1.25rem; font-weight: 700;">Apenas um vencedor</div>
+                                <div style="font-size: 1rem; margin-top: 1rem;">${winners[0].name}</div>
+                                <div style="font-size: 0.875rem;">${winners[0].phone}</div>
+                                <div style="margin-top: 0.5rem;">Aposta: ${winners[0].brasilScore} x ${winners[0].opponentScore}</div>
+                            </div>
+                            <div class="action-buttons" style="margin-top: 1rem;">
+                                <button class="btn btn-primary btn-sm" onclick="closeModal(); downloadDrawPDF('${gameId}', ['${winners[0].name}'], ['${winners[0].phone}'])">Download PDF</button>
+                                <button class="btn btn-outline btn-sm" onclick="closeModal()">Fechar</button>
                             </div>
                         </div>
                     </div>
-                    <svg class="wave-top" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120">
-                        <path fill="#2d6a4f" fill-opacity="0.15" d="M0,64L80,74.7C160,85,320,107,480,106.7C640,107,800,85,960,80C1120,75,1280,85,1360,90.7L1440,96L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z"></path>
-                    </svg>
-                </div>
-                <div class="container">
-                    <button class="btn btn-sm back-btn" onclick="goBack()">← Voltar</button>
-                    <div class="consult-section">
-                        <h2 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem;">Consultar Aposta</h2>
-                        <div class="form-group">
-                            <label>Telefone (com DDD)</label>
-                            <input type="tel" id="consultPhone" placeholder="(11) 99999-9999">
-                        </div>
-                        <button class="btn btn-primary btn-sm" onclick="consultBet()">Consultar</button>
-                        <div id="consultResult" style="margin-top: 1rem;"></div>
-                    </div>
-                </div>
-                <footer>
-                    <svg class="wave-bottom" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120">
-                        <path fill="#2d6a4f" fill-opacity="0.15" d="M0,64L80,74.7C160,85,320,107,480,106.7C640,107,800,85,960,80C1120,75,1280,85,1360,90.7L1440,96L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
-                    </svg>
-                    <div style="padding: 1rem; text-align: center; font-size: 0.625rem; color: #94a3b8; background: #0f172a;">
-                        <p>© 2026 Apostas Brasil - Todos os direitos reservados.</p>
-                    </div>
-                </footer>
-            `;
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+                await database.ref(`games/${gameId}/drawExecuted`).set(true);
+                await database.ref(`games/${gameId}/drawResult`).set([{ name: winners[0].name, phone: winners[0].phone }]);
+                await loadGames();
+                return;
+            }
             
-            database.ref('settings/logoUrl').once('value', (snapshot) => {
-                const logoUrl = snapshot.val();
-                if (logoUrl) {
-                    const logoImg = document.getElementById('siteLogo');
-                    const logoText = document.getElementById('logoText');
-                    if (logoImg && logoText) {
-                        logoImg.src = logoUrl;
-                        logoImg.style.display = 'block';
-                        logoText.style.display = 'none';
-                    }
-                }
-            });
+            const shuffled = [...winners];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            
+            const drawn = shuffled.slice(0, 2);
+            createConfetti();
+            
+            const modalHtml = `
+                <div class="modal-overlay" id="drawModal">
+                    <div class="modal-content">
+                        <button class="modal-close" onclick="closeModal()">×</button>
+                        <h3 style="margin-bottom: 1rem;">Resultado do Sorteio</h3>
+                        <p style="margin-bottom: 1rem;">Jogo: Brasil vs ${game.opponent}</p>
+                        <div class="winner-card" style="margin-bottom: 1rem;">
+                            <div style="font-weight: 700;">Primeiro Sorteado</div>
+                            <div style="font-size: 1rem; margin-top: 0.5rem;">${drawn[0].name}</div>
+                            <div style="font-size: 0.875rem;">${drawn[0].phone}</div>
+                        </div>
+                        <div class="winner-card">
+                            <div style="font-weight: 700;">Segundo Sorteado</div>
+                            <div style="font-size: 1rem; margin-top: 0.5rem;">${drawn[1].name}</div>
+                            <div style="font-size: 0.875rem;">${drawn[1].phone}</div>
+                        </div>
+                        <div class="action-buttons" style="margin-top: 1rem;">
+                            <button class="btn btn-primary btn-sm" onclick="closeModal(); downloadDrawPDF('${gameId}', ['${drawn[0].name}', '${drawn[1].name}'], ['${drawn[0].phone}', '${drawn[1].phone}'])">Download PDF</button>
+                            <button class="btn btn-outline btn-sm" onclick="closeModal()">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            
+            await database.ref(`games/${gameId}/drawExecuted`).set(true);
+            await database.ref(`games/${gameId}/drawResult`).set(drawn.map(d => ({ name: d.name, phone: d.phone })));
+            await loadGames();
         }
 
-        window.consultBet = async () => {
-            const phone = document.getElementById('consultPhone').value;
-            if (!phone) {
-                alert('Digite o telefone para consulta!');
-                return;
-            }
-            
-            const userBets = bets.filter(b => b.phone === phone);
-            if (userBets.length === 0) {
-                document.getElementById('consultResult').innerHTML = '<p style="font-size: 0.875rem;">Nenhuma aposta encontrada para este telefone.</p>';
-                return;
-            }
-            
-            let resultHtml = '<h3 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem;">Suas Apostas</h3>';
-            for (const bet of userBets) {
-                const game = games.find(g => g.id === bet.gameId);
-                const gameDate = new Date(`${bet.gameDate}T${bet.gameTime}`);
-                const now = new Date();
-                let resultStatus = '';
-                let winStatus = '';
-                
-                if (game && game.result && now > gameDate) {
-                    const userWon = (bet.brasilScore === game.result.brasil && bet.opponentScore === game.result.opponent);
-                    if (userWon) {
-                        winStatus = '<span style="color: #10b981; font-weight: bold;">✓ Você acertou o resultado!</span>';
-                        await database.ref(`bets/${bet.id}/status`).set('acertou');
-                    } else {
-                        winStatus = '<span style="color: #ef4444;">✗ Você não acertou o resultado</span>';
-                        await database.ref(`bets/${bet.id}/status`).set('errou');
-                    }
-                    resultStatus = `<span style="font-size: 0.75rem; color: #f59e0b;">Resultado oficial: ${game.result.brasil} x ${game.result.opponent}</span><br>${winStatus}`;
-                } else if (now > gameDate && !game?.result) {
-                    resultStatus = '<span style="font-size: 0.75rem; color: #6b7280;">Aguardando resultado oficial</span>';
-                } else {
-                    resultStatus = '<span style="font-size: 0.75rem; color: #6b7280;">Jogo ainda não realizado</span>';
-                }
-                
-                resultHtml += `
-                    <div class="voucher" style="margin-bottom: 0.75rem;">
-                        <p style="font-size: 0.75rem;"><strong>ID:</strong> ${bet.betId}</p>
-                        <p style="font-size: 0.75rem;"><strong>Jogo:</strong> Brasil vs ${bet.opponent}</p>
-                        <p style="font-size: 0.75rem;"><strong>Data do Jogo:</strong> ${formatDate(bet.gameDate)} às ${bet.gameTime}</p>
-                        <p style="font-size: 0.75rem;"><strong>Data da Aposta:</strong> ${new Date(bet.createdAt).toLocaleString()}</p>
-                        <p style="font-size: 0.75rem;"><strong>Sua aposta:</strong> ${bet.brasilScore} x ${bet.opponentScore}</p>
-                        <p style="font-size: 0.75rem;"><strong>Status:</strong> ${resultStatus}</p>
-                        <button class="btn btn-sm" onclick="cancelBet('${bet.id}')" style="margin-top: 0.5rem;">Cancelar Aposta</button>
-                    </div>
-                `;
-            }
-            
-            document.getElementById('consultResult').innerHTML = resultHtml;
-            await loadBets();
-        };
-
-        window.cancelBet = async (betId) => {
-            if (confirm('Tem certeza que deseja cancelar esta aposta?')) {
-                await database.ref(`bets/${betId}`).remove();
-                await loadBets();
-                alert('Aposta cancelada com sucesso!');
-                window.consultBet();
-            }
-        };
-
-        window.selectGame = (gameId) => {
+        async function downloadDrawPDF(gameId, names, phones) {
             const game = games.find(g => g.id === gameId);
-            const status = getGameStatus(game.date, game.time);
-            if (status === 'available') {
-                selectedGame = gameId;
-                currentView = 'bet';
-                render();
+            if (!game) return;
+            
+            let htmlContent = `
+                <html>
+                <head>
+                    <style>
+                        body { font-family: 'Inter', sans-serif; padding: 40px; }
+                        h1 { color: #225533; }
+                        .draw-box { background: #e8f5e9; padding: 25px; margin: 20px 0; border-radius: 16px; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Resultado do Sorteio</h1>
+                    <p><strong>Jogo:</strong> Brasil vs ${game.opponent}</p>
+                    <p><strong>Data do Jogo:</strong> ${game.date} as ${game.time}</p>
+                    <p><strong>Resultado Oficial:</strong> ${game.result.brasil} x ${game.result.opponent}</p>
+                    <div class="draw-box">
+                        <h2>Pessoas Sorteadas:</h2>
+            `;
+            
+            if (names.length === 1) {
+                htmlContent += `<p><strong>Vencedor Unico:</strong> ${names[0]} - ${phones[0]}</p>`;
+            } else {
+                htmlContent += `<p><strong>1º Sorteado:</strong> ${names[0]} - ${phones[0]}</p>`;
+                htmlContent += `<p><strong>2º Sorteado:</strong> ${names[1]} - ${phones[1]}</p>`;
             }
-        };
+            
+            htmlContent += `
+                    </div>
+                    <p>Data do Sorteio: ${new Date().toLocaleString()}</p>
+                </body>
+                </html>
+            `;
+            
+            const blob = new Blob([htmlContent], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `sorteio_${game.opponent}.pdf`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
 
-        window.changeView = (view) => {
-            currentView = view;
-            selectedGame = null;
-            render();
-        };
+        async function deleteGame(gameId) {
+            if (confirm('Excluir este jogo e todas as apostas relacionadas?')) {
+                showLoading();
+                await database.ref(`games/${gameId}`).remove();
+                await loadGames();
+                hideLoading();
+                alert('Jogo excluido com sucesso');
+            }
+        }
 
-        window.goBack = () => {
-            currentView = 'home';
-            selectedGame = null;
-            render();
-        };
+        function closeModal() {
+            const modals = document.querySelectorAll('.modal-overlay');
+            modals.forEach(modal => modal.remove());
+        }
 
         loadGames();
-        loadBets();
     </script>
 </body>
 </html>
