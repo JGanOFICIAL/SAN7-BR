@@ -200,15 +200,6 @@
             border-bottom: 2px solid #e8f0e8;
         }
 
-        .section-title {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 1rem;
-        }
-
         .form-group {
             margin-bottom: 1.25rem;
         }
@@ -430,10 +421,14 @@
             margin-top: 0.25rem;
         }
 
-        hr {
-            margin: 1rem 0;
-            border: none;
-            border-top: 1px solid #e5e7eb;
+        .confetti-particle {
+            position: fixed;
+            width: 8px;
+            height: 12px;
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 2001;
+            animation: spin 3s ease-out forwards;
         }
     </style>
 </head>
@@ -535,19 +530,15 @@
         }
 
         function createConfetti() {
-            for (let i = 0; i < 80; i++) {
+            for (let i = 0; i < 60; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'confetti-particle';
-                particle.style.position = 'fixed';
-                particle.style.width = Math.random() * 8 + 4 + 'px';
-                particle.style.height = Math.random() * 12 + 6 + 'px';
                 particle.style.backgroundColor = `hsl(${Math.random() * 60 + 80}, 70%, 45%)`;
                 particle.style.left = Math.random() * 100 + '%';
                 particle.style.top = '-10px';
-                particle.style.borderRadius = '2px';
-                particle.style.pointerEvents = 'none';
-                particle.style.zIndex = '2001';
-                particle.style.animation = 'spin 3s ease-out forwards';
+                particle.style.animationDelay = Math.random() * 0.5 + 's';
+                particle.style.width = Math.random() * 8 + 4 + 'px';
+                particle.style.height = Math.random() * 12 + 6 + 'px';
                 document.body.appendChild(particle);
                 setTimeout(() => particle.remove(), 3000);
             }
@@ -715,6 +706,7 @@
 
             const betId = 'bet_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
             bets[betId] = {
+                id: betId,
                 name, phone, brasilScore, opponentScore,
                 createdAt: new Date().toISOString()
             };
@@ -750,7 +742,7 @@
                                     </div>
                                     <div style="display: flex; gap: 0.5rem; align-items: center;">
                                         <div style="font-weight: 700; color: #1a5e2a;">${bet.brasilScore} x ${bet.opponentScore}</div>
-                                        <button class="btn btn-danger btn-sm" onclick="deleteBet('${gameId}', '${bet.id}')">Excluir</button>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteBetFromGame('${gameId}', '${bet.id}')">Excluir</button>
                                     </div>
                                 </div>
                             `).join('')}
@@ -765,15 +757,21 @@
             document.body.insertAdjacentHTML('beforeend', modalHtml);
         }
 
-        window.deleteBet = async (gameId, betId) => {
+        window.deleteBetFromGame = async (gameId, betId) => {
             if (confirm('Excluir esta aposta permanentemente?')) {
                 showLoading();
-                const gameRef = database.ref(`games/${gameId}/bets/${betId}`);
-                await gameRef.remove();
-                await loadGames();
-                hideLoading();
-                closeModal();
-                alert('Aposta excluida com sucesso');
+                try {
+                    const gameRef = database.ref(`games/${gameId}/bets/${betId}`);
+                    await gameRef.remove();
+                    await loadGames();
+                    hideLoading();
+                    closeModal();
+                    alert('Aposta excluida com sucesso');
+                } catch (error) {
+                    console.error('Erro ao excluir:', error);
+                    hideLoading();
+                    alert('Erro ao excluir aposta');
+                }
             }
         };
 
@@ -1077,10 +1075,16 @@
         async function deleteGame(gameId) {
             if (confirm('Excluir este jogo e todas as apostas relacionadas? Esta acao e irreversivel.')) {
                 showLoading();
-                await database.ref(`games/${gameId}`).remove();
-                await loadGames();
-                hideLoading();
-                alert('Jogo excluido com sucesso');
+                try {
+                    await database.ref(`games/${gameId}`).remove();
+                    await loadGames();
+                    hideLoading();
+                    alert('Jogo excluido com sucesso');
+                } catch (error) {
+                    console.error('Erro ao excluir:', error);
+                    hideLoading();
+                    alert('Erro ao excluir jogo');
+                }
             }
         }
 
