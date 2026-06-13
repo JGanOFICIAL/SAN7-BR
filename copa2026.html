@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" 
     <title>DomusFit | Apostas Copa 2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -14,9 +14,36 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #f0f4f0 0%, #ffffff 100%);
-            color: #1a1a1a;
+            background: #f5f7fa;
             min-height: 100vh;
+        }
+
+        /* FUNDO CONFIGURÁVEL - ALTERE A URL ABAIXO */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://img.cdndsgni.com/preview/10637609-m.jpg'); /* TROQUE A URL AQUI */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.12;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.96) 0%, rgba(248,250,252,0.98) 100%);
+            z-index: 0;
+            pointer-events: none;
         }
 
         @keyframes spin {
@@ -31,11 +58,6 @@
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(30px) scale(0.95); }
             to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.02); opacity: 0.9; }
         }
 
         .spinner {
@@ -63,12 +85,13 @@
 
         .header {
             background: rgba(255,255,255,0.98);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(10px);
             padding: 1rem 2rem;
-            border-bottom: 1px solid rgba(0,0,0,0.06);
+            border-bottom: 1px solid rgba(0,0,0,0.08);
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
 
         .header-content {
@@ -81,12 +104,47 @@
 
         .logo {
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #1a4d2a 0%, #2d6a4f 100%);
+            background: linear-gradient(135deg, #1a5e2a 0%, #2d6a4f 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: white;
+            padding: 0.5rem 2rem;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 70px;
+            z-index: 99;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-btn {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+            transition: all 0.2s;
+            border-radius: 12px;
+        }
+
+        .tab-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .tab-btn.active {
+            background: #1a5e2a;
+            color: white;
         }
 
         .btn {
@@ -95,7 +153,7 @@
             border: none;
             cursor: pointer;
             font-size: 0.875rem;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 14px;
             position: relative;
@@ -110,7 +168,7 @@
             width: 0;
             height: 0;
             border-radius: 50%;
-            background: rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.05);
             transform: translate(-50%, -50%);
             transition: width 0.5s, height 0.5s;
         }
@@ -123,12 +181,12 @@
         .btn-primary {
             background: linear-gradient(135deg, #1a5e2a 0%, #2d6a4f 100%);
             color: white;
-            box-shadow: 0 4px 14px rgba(26, 94, 42, 0.25);
+            box-shadow: 0 4px 14px rgba(26, 94, 42, 0.2);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(26, 94, 42, 0.35);
+            box-shadow: 0 8px 20px rgba(26, 94, 42, 0.3);
         }
 
         .btn-outline {
@@ -154,7 +212,7 @@
         }
 
         .btn-warning {
-            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             color: white;
         }
 
@@ -167,32 +225,37 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
+            position: relative;
+            z-index: 1;
         }
 
-        .admin-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.6fr;
-            gap: 2rem;
-            animation: fadeIn 0.5s ease-out;
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         .card {
             background: white;
             border-radius: 28px;
             padding: 1.75rem;
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             transition: all 0.4s ease;
-            border: 1px solid rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
         }
 
         .card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.12);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
         }
 
         .card h2 {
             font-size: 1.25rem;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 1.5rem;
             color: #1f2937;
             letter-spacing: -0.01em;
@@ -209,7 +272,9 @@
             margin-bottom: 0.5rem;
             font-size: 0.75rem;
             font-weight: 600;
-            color: #4b5563;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .form-group input, .form-group select {
@@ -221,6 +286,7 @@
             font-size: 0.875rem;
             transition: all 0.3s ease;
             background: #fafbfc;
+            color: #1f2937;
         }
 
         .form-group input:focus, .form-group select:focus {
@@ -230,20 +296,24 @@
             box-shadow: 0 0 0 3px rgba(26, 94, 42, 0.1);
         }
 
+        .games-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
         .game-card {
-            background: #fafbfc;
+            background: #f9fafb;
             border-radius: 22px;
             padding: 1.25rem;
-            margin-bottom: 1rem;
             border: 1px solid #e5e7eb;
             transition: all 0.3s ease;
         }
 
         .game-card:hover {
             background: white;
-            box-shadow: 0 8px 25px -8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             transform: translateX(4px);
-            border-color: #1a5e2a30;
+            border-color: #1a5e2a20;
         }
 
         .game-header {
@@ -267,21 +337,34 @@
             padding: 0.25rem 0.75rem;
             border-radius: 20px;
             font-size: 0.7rem;
-            font-weight: 500;
+            font-weight: 600;
         }
 
-        .badge-warning {
-            background: #d97706;
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 0.75rem 0;
         }
 
-        .badge-success {
-            background: #1a5e2a;
+        .stat-card {
+            background: white;
+            border-radius: 18px;
+            padding: 0.75rem;
+            text-align: center;
+            border: 1px solid #e5e7eb;
         }
 
-        .game-info {
-            font-size: 0.75rem;
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a5e2a;
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
             color: #6b7280;
-            margin-bottom: 0.5rem;
+            margin-top: 0.25rem;
         }
 
         .action-buttons {
@@ -297,7 +380,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.5);
             backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
@@ -309,7 +392,7 @@
         .modal-content {
             background: white;
             border-radius: 32px;
-            max-width: 580px;
+            max-width: 700px;
             width: 90%;
             max-height: 85vh;
             overflow-y: auto;
@@ -342,110 +425,208 @@
             transform: rotate(90deg);
         }
 
-        .score-input-group {
+        .wheel-container {
+            position: relative;
+            width: 380px;
+            height: 380px;
+            margin: 20px auto;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2), 0 0 0 8px white, 0 0 0 12px #1a5e2a;
+            transition: transform 15s cubic-bezier(0.2, 0.96, 0.1, 1.05);
+            background: #fff;
+        }
+
+        .wheel-segment {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: 100% 100%;
             display: flex;
-            gap: 1rem;
-            margin: 1rem 0;
             align-items: center;
             justify-content: center;
-        }
-
-        .score-input-group input {
-            width: 120px;
+            font-size: 10px;
+            font-weight: 700;
             text-align: center;
-            padding: 0.875rem;
-            font-size: 1.25rem;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 38px solid #dc2626;
+            z-index: 10;
+            filter: drop-shadow(0 3px 5px rgba(0,0,0,0.2));
+        }
+
+        .wheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             font-weight: 600;
+            color: #1a5e2a;
+            font-size: 9px;
+            text-align: center;
+            border: 2px solid #1a5e2a;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
             border-radius: 20px;
+            background: #f3f4f6;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+            color: #374151;
         }
 
-        .bets-list {
-            max-height: 400px;
-            overflow-y: auto;
+        .filter-btn.active {
+            background: #1a5e2a;
+            color: white;
         }
 
-        .bet-item {
+        .winner-item {
             background: #f9fafb;
-            border-radius: 18px;
-            padding: 1rem;
-            margin-bottom: 0.75rem;
+            border-radius: 14px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.2s;
-        }
-
-        .bet-item:hover {
-            background: #f3f4f6;
-        }
-
-        .winner-card {
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            border-radius: 22px;
-            padding: 1.25rem;
-            margin-bottom: 1rem;
-            border: 1px solid #1a5e2a30;
-            animation: pulse 2s infinite;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: #9ca3af;
-            font-size: 0.875rem;
-        }
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .stat-card {
-            background: #f9fafb;
-            border-radius: 18px;
-            padding: 1rem;
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #1a5e2a;
-        }
-
-        .stat-label {
-            font-size: 0.7rem;
-            color: #6b7280;
-            margin-top: 0.25rem;
         }
 
         .confetti-particle {
             position: fixed;
-            width: 8px;
-            height: 12px;
-            border-radius: 2px;
+            width: 10px;
+            height: 15px;
+            border-radius: 3px;
             pointer-events: none;
             z-index: 2001;
-            animation: spin 3s ease-out forwards;
+            animation: spin 4s ease-out forwards;
+        }
+
+        .footer-credit {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            font-size: 0.7rem;
+            color: #9ca3af;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        i {
+            margin-right: 0.5rem;
+        }
+
+        .fullscreen-wheel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(20px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .fullscreen-wheel .wheel-container {
+            width: 500px;
+            height: 500px;
+        }
+
+        .fullscreen-wheel .wheel-center {
+            width: 90px;
+            height: 90px;
+            font-size: 12px;
+        }
+
+        .fullscreen-wheel .wheel-pointer {
+            top: -35px;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 45px solid #dc2626;
+        }
+
+        .fullscreen-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .fullscreen-close:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(90deg);
         }
     </style>
 </head>
 <body>
+    <div class="bg-overlay"></div>
+    
     <div class="header">
         <div class="header-content">
-            <div class="logo">DomusFit | Apostas Copa 2026</div>
+            <div class="logo"><i class="fas fa-futbol"></i> DomusFit | Apostas Copa 2026</div>
         </div>
     </div>
 
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="showTab('games')"><i class="fas fa-trophy"></i> Jogos</button>
+        <button class="tab-btn" onclick="showTab('register')"><i class="fas fa-plus-circle"></i> Registrar Aposta</button>
+        <button class="tab-btn" onclick="showTab('analytics')"><i class="fas fa-chart-line"></i> Analytics</button>
+    </div>
+
     <div class="container">
-        <div class="admin-grid">
-            <div>
-                <div class="card">
-                    <h2>Cadastrar Jogo</h2>
+        <!-- Aba Jogos -->
+        <div id="gamesTab" class="tab-content active">
+            <div class="card">
+                <h2><i class="fas fa-calendar-plus"></i> Cadastrar Novo Jogo</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 1rem; align-items: end;">
                     <div class="form-group">
-                        <label>Data do Jogo</label>
+                        <label>Data</label>
                         <input type="date" id="gameDate">
                     </div>
                     <div class="form-group">
@@ -456,45 +637,80 @@
                         <label>Adversario</label>
                         <input type="text" id="opponent" placeholder="Ex: Argentina">
                     </div>
-                    <button class="btn btn-primary" onclick="createGame()">Cadastrar Jogo</button>
+                    <button class="btn btn-primary" onclick="createGame()"><i class="fas fa-save"></i> Cadastrar</button>
                 </div>
+            </div>
 
-                <div class="card" style="margin-top: 1.5rem;">
-                    <h2>Registrar Aposta</h2>
+            <div class="card">
+                <h2><i class="fas fa-list"></i> Jogos Cadastrados</h2>
+                <div id="gamesList" class="games-grid"></div>
+            </div>
+        </div>
+
+        <!-- Aba Registrar Aposta -->
+        <div id="registerTab" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-ticket-alt"></i> Registrar Nova Aposta</h2>
+                <div class="form-group">
+                    <label>Selecione o Jogo</label>
+                    <select id="selectedGame">
+                        <option value="">-- Selecione um jogo --</option>
+                    </select>
+                </div>
+                <div id="betForm" style="display: none;">
                     <div class="form-group">
-                        <label>Selecione o Jogo</label>
-                        <select id="selectedGame">
-                            <option value="">-- Selecione um jogo --</option>
-                        </select>
+                        <label>Nome Completo</label>
+                        <input type="text" id="betName" placeholder="Nome do apostador">
                     </div>
-                    <div id="betForm" style="display: none;">
-                        <div class="form-group">
-                            <label>Nome Completo</label>
-                            <input type="text" id="betName" placeholder="Nome do apostador">
-                        </div>
-                        <div class="form-group">
-                            <label>Telefone</label>
-                            <input type="text" id="betPhone" placeholder="(11) 99999-9999" oninput="formatPhone(this)">
-                        </div>
-                        <div class="form-group">
-                            <label>Placar Apostado</label>
-                            <div class="score-input-group">
-                                <input type="number" id="betBrasil" placeholder="Brasil" min="0">
-                                <span style="font-weight: 700;">x</span>
-                                <input type="number" id="betOpponent" placeholder="Adversario" min="0">
-                            </div>
-                        </div>
-                        <button class="btn btn-primary" onclick="registerBet()">Registrar Aposta</button>
+                    <div class="form-group">
+                        <label>Telefone</label>
+                        <input type="text" id="betPhone" placeholder="(11) 99999-9999" oninput="formatPhone(this)">
                     </div>
+                    <div class="form-group">
+                        <label>Placar Apostado</label>
+                        <div style="display: flex; gap: 1rem; margin: 1rem 0; align-items: center; justify-content: center;">
+                            <input type="number" id="betBrasil" placeholder="Brasil" min="0" style="width: 120px; text-align: center; padding: 0.875rem; font-size: 1.25rem; font-weight: 600; border-radius: 20px;">
+                            <span style="font-weight: 700;">x</span>
+                            <input type="number" id="betOpponent" placeholder="Adversario" min="0" style="width: 120px; text-align: center; padding: 0.875rem; font-size: 1.25rem; font-weight: 600; border-radius: 20px;">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="registerBet()"><i class="fas fa-check-circle"></i> Registrar Aposta</button>
                 </div>
             </div>
+        </div>
 
-            <div>
-                <div class="card">
-                    <h2>Jogos Cadastrados</h2>
-                    <div id="gamesList"></div>
+        <!-- Aba Analytics -->
+        <div id="analyticsTab" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-chart-pie"></i> Estatísticas Gerais</h2>
+                <div id="analyticsStats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalGames">0</div>
+                        <div class="stat-label">Total de Jogos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalBets">0</div>
+                        <div class="stat-label">Total de Apostas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalWinners">0</div>
+                        <div class="stat-label">Total de Acertos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalDraws">0</div>
+                        <div class="stat-label">Sorteios Realizados</div>
+                    </div>
                 </div>
             </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-chart-bar"></i> Apostas por Jogo</h2>
+                <div id="betsByGame"></div>
+            </div>
+        </div>
+
+        <div class="footer-credit">
+            <i class="fas fa-code"></i> Desenvolvido por SAN7DOC Tecnologia
         </div>
     </div>
 
@@ -512,6 +728,7 @@
         const database = firebase.database();
 
         let games = [];
+        let currentFilter = 'all';
 
         function showLoading() {
             let loader = document.getElementById('globalLoader');
@@ -530,17 +747,18 @@
         }
 
         function createConfetti() {
-            for (let i = 0; i < 60; i++) {
+            for (let i = 0; i < 150; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'confetti-particle';
-                particle.style.backgroundColor = `hsl(${Math.random() * 60 + 80}, 70%, 45%)`;
+                const colors = ['#1a5e2a', '#2d6a4f', '#40916c', '#ffd700', '#f59e0b', '#dc2626'];
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                 particle.style.left = Math.random() * 100 + '%';
                 particle.style.top = '-10px';
                 particle.style.animationDelay = Math.random() * 0.5 + 's';
-                particle.style.width = Math.random() * 8 + 4 + 'px';
-                particle.style.height = Math.random() * 12 + 6 + 'px';
+                particle.style.width = Math.random() * 10 + 5 + 'px';
+                particle.style.height = Math.random() * 15 + 8 + 'px';
                 document.body.appendChild(particle);
-                setTimeout(() => particle.remove(), 3000);
+                setTimeout(() => particle.remove(), 4000);
             }
         }
 
@@ -565,7 +783,43 @@
             });
             renderGamesList();
             renderGameSelect();
+            updateAnalytics();
             hideLoading();
+        }
+
+        function updateAnalytics() {
+            const totalGames = games.length;
+            let totalBets = 0;
+            let totalWinners = 0;
+            let totalDraws = 0;
+
+            games.forEach(game => {
+                const bets = game.bets ? Object.values(game.bets) : [];
+                totalBets += bets.length;
+                totalWinners += bets.filter(b => b.won === true).length;
+                if (game.drawExecuted) totalDraws++;
+            });
+
+            document.getElementById('totalGames').innerText = totalGames;
+            document.getElementById('totalBets').innerText = totalBets;
+            document.getElementById('totalWinners').innerText = totalWinners;
+            document.getElementById('totalDraws').innerText = totalDraws;
+
+            const betsByGameHtml = games.map(game => {
+                const bets = game.bets ? Object.values(game.bets) : [];
+                return `
+                    <div class="game-card" style="margin-bottom: 0.5rem;">
+                        <div class="game-header">
+                            <span>Brasil vs ${game.opponent}</span>
+                            <span class="badge">${bets.length} apostas</span>
+                        </div>
+                        <div class="game-info">Data: ${game.date} ${game.time}</div>
+                        <div class="game-info">Acertos: ${bets.filter(b => b.won === true).length}</div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('betsByGame').innerHTML = betsByGameHtml || '<div class="empty-state">Nenhum dado disponivel</div>';
         }
 
         function renderGamesList() {
@@ -584,10 +838,10 @@
                 return `
                     <div class="game-card">
                         <div class="game-header">
-                            <span class="game-title">Brasil vs ${game.opponent}</span>
-                            <span class="badge">${game.date} ${game.time}</span>
+                            <span class="game-title"><i class="fas fa-flag-checkered"></i> Brasil vs ${game.opponent}</span>
+                            <span class="badge"><i class="far fa-calendar-alt"></i> ${game.date} ${game.time}</span>
                         </div>
-                        <div class="stat-grid" style="margin: 0.75rem 0;">
+                        <div class="stat-grid">
                             <div class="stat-card">
                                 <div class="stat-number">${bets.length}</div>
                                 <div class="stat-label">Apostas</div>
@@ -596,19 +850,20 @@
                                 <div class="stat-number">${winners.length}</div>
                                 <div class="stat-label">Acertos</div>
                             </div>
-                        </div>
-                        <div class="game-info">
-                            ${hasResult ? `Resultado: ${game.result.brasil} x ${game.result.opponent}` : 'Aguardando resultado'}
+                            <div class="stat-card">
+                                <div class="stat-number">${hasResult ? game.result.brasil + 'x' + game.result.opponent : '-'}</div>
+                                <div class="stat-label">Resultado</div>
+                            </div>
                         </div>
                         <div class="action-buttons">
                             ${!hasResult ? `
-                                <button class="btn btn-outline btn-sm" onclick="openBetModal('${game.id}')">Ver Apostas</button>
-                                <button class="btn btn-success btn-sm" onclick="openResultModal('${game.id}')">Definir Resultado</button>
-                                <button class="btn btn-danger btn-sm" onclick="deleteGame('${game.id}')">Excluir Jogo</button>
+                                <button class="btn btn-outline btn-sm" onclick="openBetModal('${game.id}')"><i class="fas fa-list"></i> Ver Apostas</button>
+                                <button class="btn btn-success btn-sm" onclick="openResultModal('${game.id}')"><i class="fas fa-check-double"></i> Definir Resultado</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteGame('${game.id}')"><i class="fas fa-trash"></i> Excluir</button>
                             ` : `
-                                <button class="btn btn-outline btn-sm" onclick="viewWinners('${game.id}')">Ver Vencedores</button>
-                                ${!drawDone ? `<button class="btn btn-warning btn-sm" onclick="executeDraw('${game.id}')">Realizar Sorteio</button>` : '<span class="badge badge-success">Sorteio Realizado</span>'}
-                                <button class="btn btn-danger btn-sm" onclick="deleteGame('${game.id}')">Excluir Jogo</button>
+                                <button class="btn btn-outline btn-sm" onclick="viewWinners('${game.id}')"><i class="fas fa-trophy"></i> Ver Vencedores</button>
+                                ${!drawDone ? `<button class="btn btn-warning btn-sm" onclick="openFullscreenWheel('${game.id}')"><i class="fas fa-random"></i> Sorteio Roleta</button>` : '<span class="badge" style="background:#1a5e2a;"><i class="fas fa-check-circle"></i> Sorteio Realizado</span>'}
+                                <button class="btn btn-danger btn-sm" onclick="deleteGame('${game.id}')"><i class="fas fa-trash"></i> Excluir</button>
                             `}
                         </div>
                     </div>
@@ -619,7 +874,7 @@
         function renderGameSelect() {
             const select = document.getElementById('selectedGame');
             select.innerHTML = '<option value="">-- Selecione um jogo --</option>' + 
-                games.filter(g => !g.result).map(game => `<option value="${game.id}">Brasil vs ${game.opponent} (${game.date})</option>`).join('');
+                games.filter(g => !g.result).map(game => `<option value="${game.id}"><i class="fas fa-futbol"></i> Brasil vs ${game.opponent} (${game.date})</option>`).join('');
             
             select.onchange = () => {
                 const betForm = document.getElementById('betForm');
@@ -732,24 +987,24 @@
                 <div class="modal-overlay" id="betsModal">
                     <div class="modal-content">
                         <button class="modal-close" onclick="closeModal()">×</button>
-                        <h3 style="margin-bottom: 1rem;">Apostas - Brasil vs ${game.opponent}</h3>
-                        <div class="bets-list">
+                        <h3 style="margin-bottom: 1rem;"><i class="fas fa-list"></i> Apostas - Brasil vs ${game.opponent}</h3>
+                        <div style="max-height: 400px; overflow-y: auto;">
                             ${bets.length === 0 ? '<div class="empty-state">Nenhuma aposta registrada</div>' : bets.map(bet => `
-                                <div class="bet-item">
+                                <div style="background: #f9fafb; border-radius: 18px; padding: 1rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
                                     <div>
                                         <div style="font-weight: 600;">${bet.name}</div>
                                         <div style="font-size: 0.7rem; color: #6b7280;">${bet.phone}</div>
                                     </div>
                                     <div style="display: flex; gap: 0.5rem; align-items: center;">
                                         <div style="font-weight: 700; color: #1a5e2a;">${bet.brasilScore} x ${bet.opponentScore}</div>
-                                        <button class="btn btn-danger btn-sm" onclick="deleteBetFromGame('${gameId}', '${bet.id}')">Excluir</button>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteBetFromGame('${gameId}', '${bet.id}')"><i class="fas fa-trash"></i></button>
                                     </div>
                                 </div>
                             `).join('')}
                         </div>
                         <div class="action-buttons" style="margin-top: 1rem;">
-                            <button class="btn btn-primary btn-sm" onclick="downloadPDF('${gameId}')">Download PDF</button>
-                            <button class="btn btn-outline btn-sm" onclick="closeModal()">Fechar</button>
+                            <button class="btn btn-primary btn-sm" onclick="downloadPDF('${gameId}')"><i class="fas fa-download"></i> Download PDF</button>
+                            <button class="btn btn-outline btn-sm" onclick="closeModal()"><i class="fas fa-times"></i> Fechar</button>
                         </div>
                     </div>
                 </div>
@@ -760,18 +1015,11 @@
         window.deleteBetFromGame = async (gameId, betId) => {
             if (confirm('Excluir esta aposta permanentemente?')) {
                 showLoading();
-                try {
-                    const gameRef = database.ref(`games/${gameId}/bets/${betId}`);
-                    await gameRef.remove();
-                    await loadGames();
-                    hideLoading();
-                    closeModal();
-                    alert('Aposta excluida com sucesso');
-                } catch (error) {
-                    console.error('Erro ao excluir:', error);
-                    hideLoading();
-                    alert('Erro ao excluir aposta');
-                }
+                await database.ref(`games/${gameId}/bets/${betId}`).remove();
+                await loadGames();
+                hideLoading();
+                closeModal();
+                alert('Aposta excluida com sucesso');
             }
         };
 
@@ -792,16 +1040,17 @@
                     </style>
                 </head>
                 <body>
-                    <h1>Lista de Apostas - DomusFit</h1>
+                    <h1><i class="fas fa-futbol"></i> Lista de Apostas - DomusFit</h1>
                     <p><strong>Jogo:</strong> Brasil vs ${game.opponent}</p>
                     <p><strong>Data:</strong> ${game.date} as ${game.time}</p>
                     <p><strong>Total de Apostas:</strong> ${bets.length}</p>
                     <table>
-                        <thead><tr><th>Nome</th><th>Telefone</th><th>Placar</th></tr></thead>
+                        <thead><tr><th>Nome</th><th>Telefone</th><th>Placar</th><tr></thead>
                         <tbody>
                             ${bets.map(bet => `<tr><td>${bet.name}</td><td>${bet.phone}</td><td>${bet.brasilScore} x ${bet.opponentScore}</td></tr>`).join('')}
                         </tbody>
                     </table>
+                    <p style="margin-top: 30px;">Desenvolvido por SAN7DOC Tecnologia</p>
                 </body>
                 </html>
             `;
@@ -823,14 +1072,14 @@
                 <div class="modal-overlay" id="resultModal">
                     <div class="modal-content">
                         <button class="modal-close" onclick="closeModal()">×</button>
-                        <h3 style="margin-bottom: 1rem;">Definir Resultado</h3>
+                        <h3 style="margin-bottom: 1rem;"><i class="fas fa-check-double"></i> Definir Resultado</h3>
                         <p style="margin-bottom: 1rem;">Brasil vs ${game.opponent}</p>
-                        <div class="score-input-group">
-                            <input type="number" id="resultBrasil" placeholder="Brasil" min="0">
+                        <div style="display: flex; gap: 1rem; margin: 1rem 0; align-items: center; justify-content: center;">
+                            <input type="number" id="resultBrasil" placeholder="Brasil" min="0" style="width: 120px; text-align: center; padding: 0.875rem; font-size: 1.25rem; font-weight: 600; border-radius: 20px;">
                             <span style="font-weight: 700;">x</span>
-                            <input type="number" id="resultOpponent" placeholder="${game.opponent}" min="0">
+                            <input type="number" id="resultOpponent" placeholder="${game.opponent}" min="0" style="width: 120px; text-align: center; padding: 0.875rem; font-size: 1.25rem; font-weight: 600; border-radius: 20px;">
                         </div>
-                        <button class="btn btn-primary" onclick="setGameResult('${gameId}')">Salvar Resultado</button>
+                        <button class="btn btn-primary" onclick="setGameResult('${gameId}')"><i class="fas fa-save"></i> Salvar Resultado</button>
                     </div>
                 </div>
             `;
@@ -872,32 +1121,67 @@
 
             const bets = game.bets ? Object.values(game.bets) : [];
             const winners = bets.filter(b => b.won === true);
+            const losers = bets.filter(b => b.won === false);
             
             const modalHtml = `
                 <div class="modal-overlay" id="winnersModal">
                     <div class="modal-content">
                         <button class="modal-close" onclick="closeModal()">×</button>
-                        <h3 style="margin-bottom: 1rem;">Vencedores</h3>
+                        <h3 style="margin-bottom: 1rem;"><i class="fas fa-trophy"></i> Vencedores - Brasil vs ${game.opponent}</h3>
                         <p><strong>Resultado:</strong> ${game.result.brasil} x ${game.result.opponent}</p>
-                        <p><strong>Total de acertos:</strong> ${winners.length}</p>
-                        <div style="margin-top: 1.5rem;">
-                            ${winners.length === 0 ? '<div class="empty-state">Nenhum vencedor</div>' : winners.map(winner => `
-                                <div class="winner-card">
-                                    <div style="font-weight: 700; font-size: 1rem;">${winner.name}</div>
-                                    <div style="font-size: 0.75rem; color: #1a5e2a;">${winner.phone}</div>
-                                    <div style="margin-top: 0.5rem;">Aposta: ${winner.brasilScore} x ${winner.opponentScore}</div>
-                                </div>
-                            `).join('')}
+                        <div class="filter-buttons">
+                            <div class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" onclick="setWinnerFilter('all', '${gameId}')">Todos (${bets.length})</div>
+                            <div class="filter-btn ${currentFilter === 'winners' ? 'active' : ''}" onclick="setWinnerFilter('winners', '${gameId}')">Acertaram (${winners.length})</div>
+                            <div class="filter-btn ${currentFilter === 'losers' ? 'active' : ''}" onclick="setWinnerFilter('losers', '${gameId}')">Erraram (${losers.length})</div>
                         </div>
-                        <div class="action-buttons">
-                            <button class="btn btn-primary btn-sm" onclick="downloadWinnersPDF('${gameId}')">Download PDF</button>
-                            <button class="btn btn-outline btn-sm" onclick="closeModal()">Fechar</button>
+                        <div id="winnersListContainer">
+                            ${renderWinnersList(game, currentFilter)}
+                        </div>
+                        <div class="action-buttons" style="margin-top: 1rem;">
+                            <button class="btn btn-primary btn-sm" onclick="downloadWinnersPDF('${gameId}')"><i class="fas fa-download"></i> Download PDF</button>
+                            <button class="btn btn-outline btn-sm" onclick="closeModal()"><i class="fas fa-times"></i> Fechar</button>
                         </div>
                     </div>
                 </div>
             `;
             document.body.insertAdjacentHTML('beforeend', modalHtml);
         }
+
+        function renderWinnersList(game, filter) {
+            const bets = game.bets ? Object.values(game.bets) : [];
+            let filteredBets = bets;
+            if (filter === 'winners') filteredBets = bets.filter(b => b.won === true);
+            if (filter === 'losers') filteredBets = bets.filter(b => b.won === false);
+            
+            if (filteredBets.length === 0) {
+                return '<div class="empty-state">Nenhum apostador nesta categoria</div>';
+            }
+            
+            return `
+                <div style="max-height: 300px; overflow-y: auto;">
+                    ${filteredBets.map(bet => `
+                        <div class="winner-item">
+                            <div>
+                                <div style="font-weight: 600;">${bet.name}</div>
+                                <div style="font-size: 0.7rem; color: #6b7280;">${bet.phone}</div>
+                            </div>
+                            <div style="font-weight: 700; color: ${bet.won ? '#1a5e2a' : '#dc2626'};">${bet.brasilScore} x ${bet.opponentScore}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        window.setWinnerFilter = (filter, gameId) => {
+            currentFilter = filter;
+            const game = games.find(g => g.id === gameId);
+            const container = document.getElementById('winnersListContainer');
+            if (container) {
+                container.innerHTML = renderWinnersList(game, filter);
+            }
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        };
 
         async function downloadWinnersPDF(gameId) {
             const game = games.find(g => g.id === gameId);
@@ -912,11 +1196,11 @@
                     <style>
                         body { font-family: 'Inter', sans-serif; padding: 40px; }
                         h1 { color: #1a5e2a; }
-                        .winner { background: #e8f5e9; padding: 15px; margin: 10px 0; border-radius: 12px; }
+                        .winner { background: #e8f5e9; padding: 15px; margin: 10px 0; border-radius: 12px; border-left: 4px solid #1a5e2a; }
                     </style>
                 </head>
                 <body>
-                    <h1>Lista de Vencedores - DomusFit</h1>
+                    <h1><i class="fas fa-trophy"></i> Lista de Vencedores - DomusFit</h1>
                     <p><strong>Jogo:</strong> Brasil vs ${game.opponent}</p>
                     <p><strong>Resultado:</strong> ${game.result.brasil} x ${game.result.opponent}</p>
                     <p><strong>Total de Vencedores:</strong> ${winners.length}</p>
@@ -928,6 +1212,7 @@
                             Aposta: ${winner.brasilScore} x ${winner.opponentScore}
                         </div>
                     `).join('')}
+                    <p style="margin-top: 30px;">Desenvolvido por SAN7DOC Tecnologia</p>
                 </body>
                 </html>
             `;
@@ -941,7 +1226,7 @@
             URL.revokeObjectURL(url);
         }
 
-        async function executeDraw(gameId) {
+        async function openFullscreenWheel(gameId) {
             const game = games.find(g => g.id === gameId);
             if (!game || !game.result) {
                 alert('Defina o resultado do jogo primeiro');
@@ -961,136 +1246,131 @@
                 return;
             }
             
-            if (winners.length === 1) {
-                createConfetti();
-                const modalHtml = `
-                    <div class="modal-overlay" id="drawModal">
-                        <div class="modal-content">
-                            <button class="modal-close" onclick="closeModal()">×</button>
-                            <h3 style="margin-bottom: 1rem;">Resultado do Sorteio</h3>
-                            <div class="winner-card" style="text-align: center;">
-                                <div style="font-size: 1.25rem; font-weight: 700;">Apenas um vencedor</div>
-                                <div style="font-size: 1rem; margin-top: 1rem;">${winners[0].name}</div>
-                                <div style="font-size: 0.875rem;">${winners[0].phone}</div>
-                                <div style="margin-top: 0.5rem;">Aposta: ${winners[0].brasilScore} x ${winners[0].opponentScore}</div>
-                            </div>
-                            <div class="action-buttons" style="margin-top: 1rem;">
-                                <button class="btn btn-primary btn-sm" onclick="closeModal(); downloadDrawPDF('${gameId}', ['${winners[0].name}'], ['${winners[0].phone}'])">Download PDF</button>
-                                <button class="btn btn-outline btn-sm" onclick="closeModal()">Fechar</button>
-                            </div>
+            const colors = ['#1a5e2a', '#2d6a4f', '#40916c', '#0d3b6b', '#1a5276', '#ffd700', '#f59e0b', '#dc2626', '#0891b2', '#7c3aed'];
+            const segmentAngle = 360 / winners.length;
+            
+            let wheelHtml = `
+                <div class="fullscreen-wheel" id="fullscreenWheel">
+                    <button class="fullscreen-close" onclick="closeFullscreenWheel()">×</button>
+                    <h3 style="color: white; margin-bottom: 20px;"><i class="fas fa-random"></i> Sorteio - Brasil vs ${game.opponent}</h3>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">Total de vencedores: ${winners.length}</p>
+                    <div class="wheel-container">
+                        <div class="wheel-pointer"></div>
+                        <div class="wheel" id="fullscreenWheelElem">
+                            ${winners.map((winner, index) => {
+                                const rotation = index * segmentAngle;
+                                const color = colors[index % colors.length];
+                                return `
+                                    <div class="wheel-segment" style="
+                                        transform: rotate(${rotation}deg);
+                                        background: ${color};
+                                        clip-path: polygon(0% 0%, 100% 0%, 50% 100%, 0% 100%);
+                                    ">
+                                        <span style="transform: rotate(90deg); white-space: nowrap; font-size: 10px; font-weight: bold;">${winner.name.substring(0, 14)}</span>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                        <div class="wheel-center">
+                            <i class="fas fa-futbol" style="font-size: 22px;"></i>
+                            <span style="font-size: 8px;">SAN7DOC</span>
                         </div>
                     </div>
-                `;
-                document.body.insertAdjacentHTML('beforeend', modalHtml);
-                await database.ref(`games/${gameId}/drawExecuted`).set(true);
-                await database.ref(`games/${gameId}/drawResult`).set([{ name: winners[0].name, phone: winners[0].phone }]);
-                await loadGames();
-                return;
-            }
-            
-            const shuffled = [...winners];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            
-            const drawn = shuffled.slice(0, 2);
-            createConfetti();
-            
-            const modalHtml = `
-                <div class="modal-overlay" id="drawModal">
-                    <div class="modal-content">
-                        <button class="modal-close" onclick="closeModal()">×</button>
-                        <h3 style="margin-bottom: 1rem;">Resultado do Sorteio</h3>
-                        <p style="margin-bottom: 1rem;">Jogo: Brasil vs ${game.opponent}</p>
-                        <div class="winner-card" style="margin-bottom: 1rem;">
-                            <div style="font-weight: 700;">Primeiro Sorteado</div>
-                            <div style="font-size: 1rem; margin-top: 0.5rem;">${drawn[0].name}</div>
-                            <div style="font-size: 0.875rem;">${drawn[0].phone}</div>
-                        </div>
-                        <div class="winner-card">
-                            <div style="font-weight: 700;">Segundo Sorteado</div>
-                            <div style="font-size: 1rem; margin-top: 0.5rem;">${drawn[1].name}</div>
-                            <div style="font-size: 0.875rem;">${drawn[1].phone}</div>
-                        </div>
-                        <div class="action-buttons" style="margin-top: 1rem;">
-                            <button class="btn btn-primary btn-sm" onclick="closeModal(); downloadDrawPDF('${gameId}', ['${drawn[0].name}', '${drawn[1].name}'], ['${drawn[0].phone}', '${drawn[1].phone}'])">Download PDF</button>
-                            <button class="btn btn-outline btn-sm" onclick="closeModal()">Fechar</button>
-                        </div>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn btn-primary" id="fullscreenSpinBtn"><i class="fas fa-play"></i> Girar Roleta</button>
                     </div>
+                    <div id="fullscreenWheelResult" style="text-align: center; margin-top: 20px; font-weight: 600; color: white;"></div>
                 </div>
             `;
-            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            document.body.insertAdjacentHTML('beforeend', wheelHtml);
             
-            await database.ref(`games/${gameId}/drawExecuted`).set(true);
-            await database.ref(`games/${gameId}/drawResult`).set(drawn.map(d => ({ name: d.name, phone: d.phone })));
-            await loadGames();
+            let spinning = false;
+            const spinBtn = document.getElementById('fullscreenSpinBtn');
+            const wheel = document.getElementById('fullscreenWheelElem');
+            const resultDiv = document.getElementById('fullscreenWheelResult');
+            
+            spinBtn.onclick = () => {
+                if (spinning) return;
+                spinning = true;
+                spinBtn.disabled = true;
+                resultDiv.innerHTML = '';
+                
+                const minSpins = 1800;
+                const maxSpins = 5400;
+                const spins = Math.floor(Math.random() * (maxSpins - minSpins + 1) + minSpins);
+                
+                const randomIndex = Math.floor(window.crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295 * winners.length);
+                const targetRotation = (randomIndex * segmentAngle);
+                const finalRotation = spins + (360 - targetRotation % 360);
+                
+                wheel.style.transition = 'transform 15s cubic-bezier(0.2, 0.96, 0.1, 1.05)';
+                wheel.style.transform = `rotate(${finalRotation}deg)`;
+                
+                setTimeout(() => {
+                    const selectedWinner = winners[randomIndex];
+                    resultDiv.innerHTML = `
+                        <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); border-radius: 20px; padding: 1rem; margin-top: 1rem; border: 2px solid #1a5e2a; color: #1a5e2a; max-width: 400px; margin: 20px auto;">
+                            <div style="font-weight: 700; margin-bottom: 0.5rem;"><i class="fas fa-crown"></i> Sorteado:</div>
+                            <div style="font-size: 1.1rem; font-weight: 600;">${selectedWinner.name}</div>
+                            <div style="font-size: 0.875rem;">${selectedWinner.phone}</div>
+                            <div style="margin-top: 0.5rem;">Aposta: ${selectedWinner.brasilScore} x ${selectedWinner.opponentScore}</div>
+                        </div>
+                        <div class="action-buttons" style="margin-top: 1rem; justify-content: center;">
+                            <button class="btn btn-primary btn-sm" onclick="finalizeDrawAndClose('${gameId}', '${selectedWinner.name}', '${selectedWinner.phone}')"><i class="fas fa-check-circle"></i> Confirmar Sorteio</button>
+                            <button class="btn btn-outline btn-sm" onclick="closeFullscreenWheel()"><i class="fas fa-times"></i> Cancelar</button>
+                        </div>
+                    `;
+                    spinBtn.disabled = false;
+                    spinning = false;
+                    createConfetti();
+                }, 15200);
+            };
         }
 
-        async function downloadDrawPDF(gameId, names, phones) {
-            const game = games.find(g => g.id === gameId);
-            if (!game) return;
-            
-            let htmlContent = `
-                <html>
-                <head>
-                    <style>
-                        body { font-family: 'Inter', sans-serif; padding: 40px; }
-                        h1 { color: #1a5e2a; }
-                        .draw-box { background: #e8f5e9; padding: 25px; margin: 20px 0; border-radius: 16px; }
-                    </style>
-                </head>
-                <body>
-                    <h1>Resultado do Sorteio - DomusFit</h1>
-                    <p><strong>Jogo:</strong> Brasil vs ${game.opponent}</p>
-                    <p><strong>Data do Jogo:</strong> ${game.date} as ${game.time}</p>
-                    <p><strong>Resultado Oficial:</strong> ${game.result.brasil} x ${game.result.opponent}</p>
-                    <div class="draw-box">
-                        <h2>Pessoas Sorteadas:</h2>
-            `;
-            
-            if (names.length === 1) {
-                htmlContent += `<p><strong>Vencedor Unico:</strong> ${names[0]} - ${phones[0]}</p>`;
-            } else {
-                htmlContent += `<p><strong>1º Sorteado:</strong> ${names[0]} - ${phones[0]}</p>`;
-                htmlContent += `<p><strong>2º Sorteado:</strong> ${names[1]} - ${phones[1]}</p>`;
-            }
-            
-            htmlContent += `
-                    </div>
-                    <p>Data do Sorteio: ${new Date().toLocaleString()}</p>
-                </body>
-                </html>
-            `;
-            
-            const blob = new Blob([htmlContent], { type: 'application/pdf' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `sorteio_${game.opponent}.pdf`;
-            a.click();
-            URL.revokeObjectURL(url);
+        window.finalizeDrawAndClose = async (gameId, winnerName, winnerPhone) => {
+            showLoading();
+            await database.ref(`games/${gameId}/drawExecuted`).set(true);
+            await database.ref(`games/${gameId}/drawResult`).set([{ name: winnerName, phone: winnerPhone }]);
+            await loadGames();
+            hideLoading();
+            closeFullscreenWheel();
+            createConfetti();
+            alert(`Sorteio finalizado! Vencedor: ${winnerName}`);
+        };
+
+        function closeFullscreenWheel() {
+            const wheel = document.getElementById('fullscreenWheel');
+            if (wheel) wheel.remove();
         }
 
         async function deleteGame(gameId) {
             if (confirm('Excluir este jogo e todas as apostas relacionadas? Esta acao e irreversivel.')) {
                 showLoading();
-                try {
-                    await database.ref(`games/${gameId}`).remove();
-                    await loadGames();
-                    hideLoading();
-                    alert('Jogo excluido com sucesso');
-                } catch (error) {
-                    console.error('Erro ao excluir:', error);
-                    hideLoading();
-                    alert('Erro ao excluir jogo');
-                }
+                await database.ref(`games/${gameId}`).remove();
+                await loadGames();
+                hideLoading();
+                alert('Jogo excluido com sucesso');
             }
         }
 
         function closeModal() {
             const modals = document.querySelectorAll('.modal-overlay');
             modals.forEach(modal => modal.remove());
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            if (tabName === 'games') {
+                document.getElementById('gamesTab').classList.add('active');
+            } else if (tabName === 'register') {
+                document.getElementById('registerTab').classList.add('active');
+            } else if (tabName === 'analytics') {
+                document.getElementById('analyticsTab').classList.add('active');
+            }
+            
+            event.target.classList.add('active');
         }
 
         loadGames();
