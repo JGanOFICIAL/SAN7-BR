@@ -78,198 +78,806 @@ h2{font-size:24px; font-weight:800; color:#111; letter-spacing:-0.5px; margin-bo
   <button onclick="window.location.href='index.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">Voltar</button>
 </header>
 
-<div class="area-videos">
-  <div class="topo">
-    <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000029-c1f42c1f44/4F63109C-E6C7-4687-B7DA-EEA76E69692D.webp" class="icone-topo">
-    <h2>MÁQUINAS DA DOMUS</h2>
-  </div>
 
-  <div class="search-container">
-    <input type="text" id="searchInput" class="search-bar" placeholder="Pesquisar exercício ou músculo...">
-    <span class="search-icon" style="position: absolute; left: 20px; top: 18px;">🔍</span>
-  </div>
-
-  <div class="grupos">
-    <button class="grupo" data-grupo="inferiores">INFERIORES</button>
-    <button class="grupo" data-grupo="costas">COSTAS</button>
-    <button class="grupo" data-grupo="peito">PEITO</button>
-    <button class="grupo" data-grupo="bracos">BRAÇOS</button>
-    <button class="grupo" data-grupo="ombros">OMBROS</button>
-    <button class="grupo" data-grupo="todos">VER TODOS</button>
-  </div>
-
-  <div id="no-results">Nenhum resultado encontrado.</div>
-
-  <div class="conteudos">
-    <div class="conteudo" id="inferiores">
-      <div class="item">
-          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
-          <div class="item-info"><h3>ADUÇÃO-ABDUÇÃO</h3><p>Exercício que fortalece a parte interna e externa das coxas.</p></div>
-      </div>
-      <div class="item">
-          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
-          <div class="item-info"><h3>GLÚTEO VERTICAL</h3><p>Focado no fortalecimento e tonificação dos glúteos.</p></div>
-      </div>
-      <div class="item">
-          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
-          <div class="item-info"><h3>LEG 45</h3><p>Trabalha quadríceps e glúteos com carga controlada.</p></div>
-      </div>
-      <div class="item">
-          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
-          <div class="item-info"><h3>AGACHAMENTO GUIADO</h3><p>Aumenta a segurança do movimento e melhora a técnica.</p></div>
-      </div>
-      <div class="item">
-          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
-          <div class="item-info"><h3>PANTURRILHA SENTADA</h3><p>Definição e resistência da panturrilha.</p></div>
-      </div>
-    </div>
-
-    <div class="conteudo" id="costas">
-      <div class="item">
-          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
-          <div class="item-info"><h3>PUXADA / REMADA BAIXA</h3><p>Essencial para fortalecer a região dorsal.</p></div>
-      </div>
-      <div class="item">
-          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
-          <div class="item-info"><h3>REMADA CAVALINHO</h3><p>Desenvolve espessura nas costas e força nos dorsais.</p></div>
-      </div>
-      <div class="item">
-          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
-          <div class="item-info"><h3>CROSS GRANDES</h3><p>Trabalha toda a cadeia posterior.</p></div>
-      </div>
-    </div>
-
-    <div class="conteudo" id="peito">
-      <div class="item">
-          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
-          <div class="item-info"><h3>PECK DECK</h3><p>Isola os músculos peitorais para definição.</p></div>
-      </div>
-      <div class="item">
-          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
-          <div class="item-info"><h3>SUPINO RETO</h3><p>Exercício clássico para peitoral médio e força.</p></div>
-      </div>
-      <div class="item">
-          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
-          <div class="item-info"><h3>SUP INCLINADO MAQ</h3><p>Foco no peitoral superior com segurança.</p></div>
-      </div>
-      <div class="item">
-          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
-          <div class="item-info"><h3>BANCO RETO FIXO</h3><p>Base para diversos exercícios de peito.</p></div>
-      </div>
-    </div>
-
-    <div class="conteudo" id="bracos">
-      <div class="item">
-          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
-          <div class="item-info"><h3>ROSCA SCOT MÁQUINA</h3><p>Isolamento total do bíceps.</p></div>
-      </div>
-      <div class="item">
-          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
-          <div class="item-info"><h3>ROSCA SCOT LIVRE</h3><p>Estimula força e resistência natural.</p></div>
-      </div>
-    </div>
-
-    <div class="conteudo" id="ombros">
-      <div class="item">
-          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
-          <div class="item-info"><h3>DESENV OMBRO LIVRE</h3><p>Trabalha os deltoides de forma completa.</p></div>
-      </div>
-      <div class="item">
-          <div class="video-container" data-url="https://www.youtube.com/embed/dQw4w9WgXcQ"></div>
-          <div class="item-info"><h3>BANCO SENTADO LIVRE</h3><p>Suporte e postura correta para treinos de ombro.</p></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-const searchInput = document.getElementById('searchInput');
-const botoes = document.querySelectorAll('.grupo');
-const conteudos = document.querySelectorAll('.conteudo');
-const noResults = document.getElementById('no-results');
-
-// Função para injetar o Iframe apenas quando necessário (Velocidade 100%)
-function activateVideos(container) {
-    const videos = container.querySelectorAll('.video-container');
-    videos.forEach(v => {
-        if (!v.querySelector('iframe')) {
-            const url = v.getAttribute('data-url');
-            v.innerHTML = `<iframe src="${url}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-        }
-    });
-}
-
-// Filtro por Botões
-botoes.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const grupo = btn.dataset.grupo;
-        searchInput.value = "";
-        noResults.style.display = "none";
-        
-        botoes.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        conteudos.forEach(c => {
-            if (grupo === 'todos' || c.id === grupo) {
-                c.style.display = 'grid';
-                c.querySelectorAll('.item').forEach(i => i.style.display = 'flex');
-                activateVideos(c);
-            } else {
-                c.style.display = 'none';
-            }
-        });
-    });
-});
-
-// Pesquisa em Tempo Real
-searchInput.addEventListener('input', (e) => {
-    const term = e.target.value.toLowerCase();
-    let found = false;
+<!-- CÓDIGO PARA INCORPORAR NO SITE - COLE ONDE DESEJAR -->
+<div id="san7-widget">
+  <style>
+    #san7-widget {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      max-width: 100%;
+      margin: 0 auto;
+      background: transparent;
+      color: #1a1a2e;
+      padding: 4px;
+    }
+    #san7-widget * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     
-    botoes.forEach(b => b.classList.remove('active'));
+    #san7-widget .sw-search-box {
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 20px;
+      margin-bottom: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    #san7-widget .sw-search-box:focus-within {
+      border-color: rgba(41, 121, 255, 0.3);
+      box-shadow: 0 8px 50px rgba(41, 121, 255, 0.06);
+      transform: translateY(-2px);
+    }
+    
+    #san7-widget .sw-search-box input {
+      width: 100%;
+      padding: 16px 24px;
+      border: none;
+      border-radius: 14px;
+      background: #ffffff;
+      color: #1a1a2e;
+      font-size: 17px;
+      outline: none;
+      transition: all 0.3s;
+      font-weight: 400;
+      letter-spacing: 0.2px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    }
+    
+    #san7-widget .sw-search-box input::placeholder {
+      color: #9a9ab0;
+      font-weight: 300;
+    }
+    
+    #san7-widget .sw-search-box input:focus {
+      background: #ffffff;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    }
+    
+    #san7-widget .sw-muscle-group {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 20px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    }
+    
+    #san7-widget .sw-muscle-group:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.1);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    
+    #san7-widget .sw-group-header {
+      padding: 20px 28px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.02);
+      transition: all 0.3s;
+      user-select: none;
+      position: relative;
+    }
+    
+    #san7-widget .sw-group-header::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 15%;
+      height: 70%;
+      width: 4px;
+      border-radius: 0 6px 6px 0;
+      opacity: 0.9;
+      transition: all 0.3s;
+    }
+    
+    #san7-widget .sw-muscle-group:hover .sw-group-header::before {
+      height: 80%;
+      top: 10%;
+    }
+    
+    #san7-widget .sw-group-header:hover {
+      background: rgba(0, 0, 0, 0.04);
+    }
+    
+    #san7-widget .sw-group-header h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1a1a2e;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    #san7-widget .sw-group-header .sw-arrow {
+      font-size: 16px;
+      color: rgba(26, 26, 46, 0.3);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.04);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+    
+    #san7-widget .sw-group-header .sw-arrow.open {
+      transform: rotate(180deg);
+      background: rgba(41, 121, 255, 0.08);
+      color: #2979ff;
+      border-color: rgba(41, 121, 255, 0.15);
+    }
+    
+    #san7-widget .sw-exercises {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    #san7-widget .sw-exercises.open {
+      max-height: 3000px;
+    }
+    
+    #san7-widget .sw-exercise-item {
+      padding: 18px 28px;
+      border-top: 1px solid rgba(0, 0, 0, 0.06);
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      transition: all 0.3s;
+    }
+    
+    #san7-widget .sw-exercise-item:hover {
+      background: rgba(0, 0, 0, 0.02);
+    }
+    
+    #san7-widget .sw-exercise-info {
+      flex: 1;
+      min-width: 180px;
+      padding-top: 4px;
+    }
+    
+    #san7-widget .sw-exercise-info h4 {
+      font-size: 17px;
+      font-weight: 500;
+      color: #1a1a2e;
+      margin-bottom: 4px;
+      letter-spacing: 0.2px;
+    }
+    
+    #san7-widget .sw-exercise-info p {
+      font-size: 14px;
+      color: rgba(26, 26, 46, 0.5);
+      margin-top: 4px;
+      line-height: 1.6;
+    }
+    
+    #san7-widget .sw-video-wrapper {
+      flex: 0 0 280px;
+      max-width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f0f0f5;
+      position: relative;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      min-height: 158px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    
+    #san7-widget .sw-video-wrapper:hover {
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+    }
+    
+    #san7-widget .sw-video-wrapper .sw-banner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(41, 121, 255, 0.08), rgba(79, 195, 255, 0.04));
+      z-index: 2;
+      transition: all 0.4s;
+    }
+    
+    #san7-widget .sw-video-wrapper .sw-banner.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    #san7-widget .sw-video-wrapper .sw-banner .sw-play-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2979ff;
+      font-size: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-bottom: 8px;
+    }
+    
+    #san7-widget .sw-video-wrapper:hover .sw-banner .sw-play-icon {
+      background: #ffffff;
+      transform: scale(1.1);
+      border-color: rgba(41, 121, 255, 0.3);
+      box-shadow: 0 8px 32px rgba(41, 121, 255, 0.15);
+    }
+    
+    #san7-widget .sw-video-wrapper .sw-banner .sw-banner-text {
+      color: rgba(26, 26, 46, 0.5);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    
+    #san7-widget .sw-video-wrapper .sw-thumbnail {
+      width: 100%;
+      height: 100%;
+      min-height: 158px;
+      object-fit: cover;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      background: #e8e8f0;
+    }
+    
+    #san7-widget .sw-video-wrapper .sw-thumbnail.hidden {
+      display: none;
+    }
+    
+    #san7-widget .sw-video-wrapper iframe {
+      width: 100%;
+      height: 158px;
+      border: none;
+      display: none;
+      position: relative;
+      z-index: 3;
+    }
+    
+    #san7-widget .sw-video-wrapper iframe.active {
+      display: block;
+    }
+    
+    #san7-widget .sw-video-wrapper .sw-video-placeholder {
+      color: rgba(26, 26, 46, 0.2);
+      font-size: 13px;
+      text-align: center;
+      padding: 20px;
+      letter-spacing: 0.5px;
+    }
+    
+    #san7-widget .sw-no-results {
+      text-align: center;
+      padding: 70px 20px;
+      color: rgba(26, 26, 46, 0.3);
+      font-size: 17px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 20px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    #san7-widget .sw-loading {
+      text-align: center;
+      padding: 50px;
+      color: rgba(26, 26, 46, 0.2);
+      font-size: 16px;
+      letter-spacing: 0.5px;
+    }
+    
+    #san7-widget .sw-loading::after {
+      content: '...';
+      animation: dots 1.5s steps(4, end) infinite;
+    }
+    
+    @keyframes dots {
+      0%, 20% { content: ''; }
+      40% { content: '.'; }
+      60% { content: '..'; }
+      80%, 100% { content: '...'; }
+    }
+    
+    #san7-widget .sw-badge {
+      display: inline-flex;
+      padding: 2px 10px;
+      background: rgba(0, 0, 0, 0.06);
+      border-radius: 30px;
+      font-size: 11px;
+      color: rgba(26, 26, 46, 0.4);
+      margin-left: 10px;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+    }
+    
+    #san7-widget .sw-color-0 .sw-group-header::before { background: linear-gradient(180deg, #FF6B6B, #FF4757); }
+    #san7-widget .sw-color-1 .sw-group-header::before { background: linear-gradient(180deg, #4ECDC4, #36B5A8); }
+    #san7-widget .sw-color-2 .sw-group-header::before { background: linear-gradient(180deg, #45B7D1, #2E86DE); }
+    #san7-widget .sw-color-3 .sw-group-header::before { background: linear-gradient(180deg, #96CEB4, #6C9E7A); }
+    #san7-widget .sw-color-4 .sw-group-header::before { background: linear-gradient(180deg, #FDCB6E, #F39C12); }
+    #san7-widget .sw-color-5 .sw-group-header::before { background: linear-gradient(180deg, #DDA0DD, #BB8FBB); }
+    #san7-widget .sw-color-6 .sw-group-header::before { background: linear-gradient(180deg, #FF9FF3, #F368E0); }
+    #san7-widget .sw-color-7 .sw-group-header::before { background: linear-gradient(180deg, #54A0FF, #2E86DE); }
+    #san7-widget .sw-color-8 .sw-group-header::before { background: linear-gradient(180deg, #5F27CD, #341F97); }
+    #san7-widget .sw-color-9 .sw-group-header::before { background: linear-gradient(180deg, #FF6348, #EE5A24); }
+    
+    #san7-widget .sw-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    #san7-widget .sw-modal-overlay.active {
+      display: flex;
+    }
+    
+    #san7-widget .sw-modal-content {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    
+    #san7-widget .sw-modal-content .sw-modal-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 28px;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.3s;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      font-weight: 300;
+    }
+    
+    #san7-widget .sw-modal-content .sw-modal-close:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.05);
+    }
+    
+    #san7-widget .sw-modal-content iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      display: block;
+    }
+    
+    @media (max-width: 768px) {
+      #san7-widget .sw-exercise-item {
+        flex-direction: column;
+        padding: 16px 20px;
+        gap: 16px;
+      }
+      
+      #san7-widget .sw-video-wrapper {
+        flex: 1 1 auto;
+        width: 100%;
+        min-height: 180px;
+      }
+      
+      #san7-widget .sw-video-wrapper iframe {
+        height: 180px;
+      }
+      
+      #san7-widget .sw-video-wrapper .sw-thumbnail {
+        min-height: 180px;
+      }
+      
+      #san7-widget .sw-group-header {
+        padding: 16px 20px;
+      }
+      
+      #san7-widget .sw-group-header h3 {
+        font-size: 17px;
+      }
+      
+      #san7-widget .sw-search-box {
+        padding: 12px 16px;
+      }
+      
+      #san7-widget .sw-search-box input {
+        font-size: 15px;
+        padding: 13px 18px;
+      }
+      
+      #san7-widget .sw-video-wrapper .sw-banner .sw-play-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+      }
+      
+      #san7-widget .sw-modal-content iframe {
+        height: 300px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      #san7-widget .sw-video-wrapper iframe {
+        height: 160px;
+      }
+      
+      #san7-widget .sw-video-wrapper .sw-thumbnail {
+        min-height: 160px;
+      }
+      
+      #san7-widget .sw-exercise-info h4 {
+        font-size: 15px;
+      }
+      
+      #san7-widget .sw-modal-content iframe {
+        height: 220px;
+      }
+    }
+  </style>
 
-    conteudos.forEach(c => {
-        let hasVisibleItem = false;
-        const items = c.querySelectorAll('.item');
-        
-        items.forEach(item => {
-            const text = item.innerText.toLowerCase();
-            if (text.includes(term)) {
-                item.style.display = 'flex';
-                hasVisibleItem = true;
-                found = true;
-                activateVideos(item); // Ativa vídeo do item pesquisado
-            } else {
-                item.style.display = 'none';
-            }
-        });
+  <div class="sw-search-box">
+    <input type="text" id="sw-search-input" placeholder="Buscar exercicios..." autocomplete="off">
+  </div>
 
-        c.style.display = hasVisibleItem ? 'grid' : 'none';
-    });
-
-    noResults.style.display = found ? 'none' : 'block';
-});
-
-// Inicialização
-document.querySelector('[data-grupo="inferiores"]').click();
-</script>
-
-<div id="overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: .3s; z-index: 9999;">
-    <div style="background: #fff; padding: 20px; width: 320px; border-radius: 12px; text-align: center;">
-        <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000125-91ee591ee7/8550164B-CAAD-49E3-BDCB-211C72300F49.webp?ph=c2a6771173" style="width: 100%; border-radius: 10px; margin-bottom: 15px;">
-        <div style="display: flex; gap: 10px;">
-            <button onclick="window.location.href='https://domusfit.site/cursos.html'" style="flex:1; padding: 10px; background: #28a745; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Ver cursos</button>
-            <button onclick="document.getElementById('overlay').style.opacity='0'; setTimeout(()=>document.getElementById('overlay').style.visibility='hidden',300)" style="flex:1; padding: 10px; background: #dc3545; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Fechar</button>
-        </div>
+  <div id="sw-content">
+    <div class="sw-loading">Carregando treinos</div>
+  </div>
+  
+  <div class="sw-modal-overlay" id="sw-modal">
+    <div class="sw-modal-content">
+      <div class="sw-modal-close" onclick="window.closeModal()">×</div>
+      <iframe id="sw-modal-iframe" src="" allowfullscreen allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
     </div>
+  </div>
 </div>
 
 <script>
-    window.onload = () => { 
-        const ov = document.getElementById('overlay');
-        ov.style.visibility = 'visible'; ov.style.opacity = '1';
+  (function() {
+    const firebaseConfig = {
+      apiKey: "AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI",
+      databaseURL: "https://san7-brasil-default-rtdb.firebaseio.com",
+      projectId: "san7-brasil",
+      authDomain: "san7-brasil.firebaseapp.com"
     };
-</script>
 
-</body>
-</html>
+    function loadFirebase() {
+      return new Promise(function(resolve, reject) {
+        if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
+          resolve(firebase);
+          return;
+        }
+        var script = document.createElement('script');
+        script.src = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js';
+        script.onload = function() {
+          var dbScript = document.createElement('script');
+          dbScript.src = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js';
+          dbScript.onload = function() {
+            if (typeof firebase !== 'undefined') {
+              try {
+                if (!firebase.apps.length) {
+                  firebase.initializeApp(firebaseConfig);
+                }
+                resolve(firebase);
+              } catch(e) {
+                reject(e);
+              }
+            } else {
+              reject(new Error('Firebase nao carregou'));
+            }
+          };
+          dbScript.onerror = function() { reject(new Error('Erro ao carregar Firebase Database')); };
+          document.head.appendChild(dbScript);
+        };
+        script.onerror = function() { reject(new Error('Erro ao carregar Firebase App')); };
+        document.head.appendChild(script);
+      });
+    }
+
+    let allData = [];
+    let currentFilter = '';
+
+    function getYoutubeEmbedUrl(url) {
+      if (!url) return '';
+      url = url.trim();
+      var patterns = [
+        /(?:youtube\.com\/shorts\/)([^\/?]+)/,
+        /(?:youtube\.com\/watch\?v=)([^&]+)/,
+        /(?:youtu\.be\/)([^?]+)/,
+        /(?:youtube\.com\/embed\/)([^?]+)/
+      ];
+      var videoId = null;
+      for (var i = 0; i < patterns.length; i++) {
+        var match = url.match(patterns[i]);
+        if (match) {
+          videoId = match[1];
+          break;
+        }
+      }
+      if (!videoId) {
+        var idMatch = url.match(/([a-zA-Z0-9_-]{11})/);
+        if (idMatch) videoId = idMatch[1];
+      }
+      if (videoId) {
+        return 'https://www.youtube.com/embed/' + videoId + '?rel=0&modestbranding=1&autoplay=1&showinfo=0';
+      }
+      return url;
+    }
+
+    function getYoutubeThumbnail(url) {
+      if (!url) return '';
+      url = url.trim();
+      var patterns = [
+        /(?:youtube\.com\/shorts\/)([^\/?]+)/,
+        /(?:youtube\.com\/watch\?v=)([^&]+)/,
+        /(?:youtu\.be\/)([^?]+)/
+      ];
+      var videoId = null;
+      for (var i = 0; i < patterns.length; i++) {
+        var match = url.match(patterns[i]);
+        if (match) {
+          videoId = match[1];
+          break;
+        }
+      }
+      if (!videoId) {
+        var idMatch = url.match(/([a-zA-Z0-9_-]{11})/);
+        if (idMatch) videoId = idMatch[1];
+      }
+      if (videoId) {
+        return 'https://img.youtube.com/vi/' + videoId + '/mqdefault.jpg';
+      }
+      return '';
+    }
+
+    function renderWidget(data) {
+      var container = document.getElementById('sw-content');
+      if (!container) return;
+
+      var searchTerm = currentFilter.toLowerCase().trim();
+      var filteredGroups = data;
+
+      if (searchTerm) {
+        filteredGroups = data.filter(function(group) {
+          var groupMatch = group.name.toLowerCase().includes(searchTerm);
+          var exercisesMatch = group.exercises.some(function(ex) {
+            return ex.title.toLowerCase().includes(searchTerm) || 
+              (ex.description && ex.description.toLowerCase().includes(searchTerm));
+          });
+          return groupMatch || exercisesMatch;
+        }).map(function(group) {
+          return {
+            name: group.name,
+            exercises: group.exercises.filter(function(ex) {
+              return ex.title.toLowerCase().includes(searchTerm) || 
+                (ex.description && ex.description.toLowerCase().includes(searchTerm));
+            })
+          };
+        }).filter(function(g) {
+          return g.exercises.length > 0;
+        });
+      }
+
+      if (!filteredGroups || filteredGroups.length === 0) {
+        container.innerHTML = '<div class="sw-no-results">' + 
+          (searchTerm ? 'Nenhum resultado para "' + searchTerm + '"' : 'Nenhum treino cadastrado') + 
+          '</div>';
+        return;
+      }
+
+      var html = '';
+      filteredGroups.forEach(function(group, idx) {
+        var groupId = 'sw-group-' + idx + '-' + Date.now();
+        var exCount = group.exercises.length;
+        var colorIndex = idx % 10;
+        
+        html += '<div class="sw-muscle-group sw-color-' + colorIndex + '">';
+        html += '<div class="sw-group-header" onclick="window.toggleGroup(\'' + groupId + '\')">';
+        html += '<h3>' + escapeHtml(group.name) + '<span class="sw-badge">' + exCount + '</span></h3>';
+        html += '<span class="sw-arrow" id="' + groupId + '-arrow">▼</span>';
+        html += '</div>';
+        html += '<div class="sw-exercises" id="' + groupId + '">';
+        
+        group.exercises.forEach(function(ex, exIdx) {
+          var embedUrl = getYoutubeEmbedUrl(ex.videoUrl);
+          var thumbnailUrl = getYoutubeThumbnail(ex.videoUrl);
+          var exId = 'sw-ex-' + groupId + '-' + exIdx;
+          
+          html += '<div class="sw-exercise-item">';
+          html += '<div class="sw-exercise-info">';
+          html += '<h4>' + escapeHtml(ex.title) + '</h4>';
+          if (ex.description) {
+            html += '<p>' + escapeHtml(ex.description) + '</p>';
+          }
+          html += '</div>';
+          
+          if (embedUrl) {
+            html += '<div class="sw-video-wrapper" id="' + exId + '-wrapper" onclick="window.openModal(\'' + embedUrl.replace(/'/g, "\\'") + '\', \'' + escapeHtml(ex.title).replace(/'/g, "\\'") + '\')">';
+            if (thumbnailUrl) {
+              html += '<img class="sw-thumbnail" id="' + exId + '-thumb" src="' + thumbnailUrl + '" alt="' + escapeHtml(ex.title) + '">';
+            }
+            html += '<div class="sw-banner" id="' + exId + '-banner">';
+            html += '<div class="sw-play-icon">▶</div>';
+            html += '<div class="sw-banner-text">Assistir</div>';
+            html += '</div>';
+            html += '<iframe id="' + exId + '" src="' + embedUrl + '" allowfullscreen loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>';
+            html += '</div>';
+          } else {
+            html += '<div class="sw-video-wrapper"><div class="sw-video-placeholder">Video indisponivel</div></div>';
+          }
+          
+          html += '</div>';
+        });
+        
+        html += '</div></div>';
+      });
+
+      container.innerHTML = html;
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      var div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    window.toggleGroup = function(id) {
+      var el = document.getElementById(id);
+      var arrow = document.getElementById(id + '-arrow');
+      if (el) {
+        el.classList.toggle('open');
+        if (arrow) arrow.classList.toggle('open');
+      }
+    };
+
+    window.openModal = function(videoUrl, title) {
+      var modal = document.getElementById('sw-modal');
+      var iframe = document.getElementById('sw-modal-iframe');
+      if (modal && iframe) {
+        iframe.src = videoUrl;
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    };
+
+    window.closeModal = function() {
+      var modal = document.getElementById('sw-modal');
+      var iframe = document.getElementById('sw-modal-iframe');
+      if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+        if (iframe) {
+          iframe.src = '';
+        }
+      }
+    };
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        window.closeModal();
+      }
+    });
+
+    document.getElementById('sw-modal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        window.closeModal();
+      }
+    });
+
+    function loadData() {
+      var container = document.getElementById('sw-content');
+      if (container) {
+        container.innerHTML = '<div class="sw-loading">Carregando treinos</div>';
+      }
+
+      loadFirebase()
+        .then(function(fb) {
+          var db = fb.database();
+          var ref = db.ref('muscleGroups');
+          ref.on('value', function(snapshot) {
+            var data = snapshot.val();
+            if (data) {
+              allData = Object.keys(data).map(function(key) {
+                var exercises = data[key].exercises ? 
+                  Object.keys(data[key].exercises).map(function(exKey) {
+                    return {
+                      id: exKey,
+                      title: data[key].exercises[exKey].title || 'Sem titulo',
+                      description: data[key].exercises[exKey].description || '',
+                      videoUrl: data[key].exercises[exKey].videoUrl || ''
+                    };
+                  }) : [];
+                return {
+                  id: key,
+                  name: data[key].name || 'Sem nome',
+                  exercises: exercises
+                };
+              });
+              renderWidget(allData);
+            } else {
+              allData = [];
+              container.innerHTML = '<div class="sw-no-results">Nenhum grupo muscular cadastrado</div>';
+            }
+          }, function(error) {
+            console.error('Erro Firebase:', error);
+            container.innerHTML = '<div class="sw-no-results">Erro ao carregar dados</div>';
+          });
+        })
+        .catch(function(err) {
+          console.error('Erro ao inicializar Firebase:', err);
+          container.innerHTML = '<div class="sw-no-results">Erro de conexao com o servidor</div>';
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var searchInput = document.getElementById('sw-search-input');
+      if (searchInput) {
+        searchInput.addEventListener('input', function() {
+          currentFilter = this.value;
+          if (allData.length) {
+            renderWidget(allData);
+          }
+        });
+        
+        searchInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+            this.value = '';
+            currentFilter = '';
+            if (allData.length) renderWidget(allData);
+          }
+        });
+      }
+      loadData();
+    });
+
+  })();
+</script>
