@@ -120,6 +120,7 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
   display:flex;
   gap:12px;
   margin:20px 0 12px;
+  flex-wrap:wrap;
 }
 .filtro-mes input{
   flex:1;
@@ -127,6 +128,7 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
   border:1px solid #cbd5e1;
   border-radius:20px;
   font-size:15px;
+  min-width:120px;
 }
 .filtro-mes button{
   background:#2c6e2c;
@@ -135,6 +137,7 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
   border-radius:32px;
   font-weight:600;
   color:white;
+  cursor:pointer;
 }
 .total-horas-card{
   background:#f0f9f0;
@@ -156,6 +159,15 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
   text-align:center;
 }
 .tabela-ponto th{color:#2c6e2c;}
+.tabela-ponto .btn-ver-mapa{
+  background:#2c6e2c;
+  color:white;
+  border:none;
+  padding:4px 12px;
+  border-radius:16px;
+  cursor:pointer;
+  font-size:12px;
+}
 
 /* modal camera - QUADRADO SEM BORDAS ARREDONDADAS */
 .modal-camera{
@@ -187,6 +199,7 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
   display:flex;
   align-items:center;
   justify-content:center;
+  position:relative;
 }
 .camera-video-container video{
   width:100%;
@@ -234,7 +247,170 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
   border-radius:40px;
   z-index:999;
   font-size:14px;
+  max-width:90%;
 }
+
+/* Notificacao fixa para ponto aberto > 5h30 */
+.notificacao-ponto-aberto{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#b91c1c;
+  color:white;
+  padding:14px 24px;
+  border-radius:16px;
+  z-index:150;
+  font-weight:600;
+  font-size:14px;
+  box-shadow:0 4px 20px rgba(185,28,28,0.3);
+  cursor:pointer;
+  max-width:90%;
+  text-align:center;
+  display:none;
+}
+.notificacao-ponto-aberto:hover{opacity:0.9;}
+
+/* modal de seguranca (calculo + localizacao) */
+.modal-seguranca{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:800;
+  visibility:hidden;
+  opacity:0;
+  transition:0.2s;
+}
+.modal-seguranca.aberto{visibility:visible;opacity:1;}
+.modal-seguranca-content{
+  background:#fff;
+  border-radius:32px;
+  padding:32px 24px;
+  max-width:400px;
+  width:90%;
+  max-height:90vh;
+  overflow-y:auto;
+}
+.modal-seguranca-content h3{font-size:20px;margin-bottom:8px;color:#0f3b2c;}
+.modal-seguranca-content .subtitulo{color:#4b5563;font-size:14px;margin-bottom:20px;}
+.modal-seguranca-content .label{font-weight:600;font-size:14px;color:#1e293b;margin-bottom:6px;}
+.modal-seguranca-content .campo-calculo{
+  background:#f1f5f9;
+  padding:16px;
+  border-radius:16px;
+  text-align:center;
+  font-size:28px;
+  font-weight:700;
+  margin:12px 0;
+  font-family:monospace;
+}
+.modal-seguranca-content input[type="number"]{
+  width:100%;
+  padding:14px;
+  border:2px solid #cbd5e1;
+  border-radius:16px;
+  font-size:18px;
+  text-align:center;
+  margin:8px 0 16px;
+  font-weight:600;
+}
+.modal-seguranca-content .btn-localizacao{
+  width:100%;
+  padding:14px;
+  border-radius:16px;
+  border:2px solid #2c6e2c;
+  background:transparent;
+  font-weight:600;
+  color:#2c6e2c;
+  cursor:pointer;
+  margin:8px 0 12px;
+}
+.modal-seguranca-content .btn-localizacao.ativo{
+  background:#2c6e2c;
+  color:white;
+}
+.modal-seguranca-content .status-localizacao{
+  font-size:13px;
+  color:#4b5563;
+  padding:8px 0;
+}
+.modal-seguranca-content .botoes-modal{
+  display:flex;
+  gap:12px;
+  margin-top:20px;
+}
+.modal-seguranca-content .botoes-modal button{
+  flex:1;
+  padding:14px;
+  border-radius:60px;
+  font-weight:600;
+  border:none;
+  cursor:pointer;
+}
+.modal-seguranca-content .btn-cancelar-seg{background:#eef2ff;color:#1e293b;}
+.modal-seguranca-content .btn-confirmar-seg{background:#2c6e2c;color:white;}
+.modal-seguranca-content .btn-confirmar-seg:disabled{opacity:0.5;cursor:not-allowed;}
+
+/* Modal mapa sobreposto */
+.modal-mapa-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.7);
+  z-index:500;
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+.modal-mapa-overlay.aberto{display:flex;}
+.modal-mapa-content{
+  background:#fff;
+  border-radius:24px;
+  width:95%;
+  max-width:600px;
+  max-height:90vh;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);
+}
+.modal-mapa-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 20px;
+  border-bottom:1px solid #e2e8f0;
+}
+.modal-mapa-header h4{font-size:16px;color:#0f3b2c;}
+.modal-mapa-fechar{
+  background:transparent;
+  border:none;
+  font-size:24px;
+  cursor:pointer;
+  color:#4b5563;
+  padding:0 8px;
+}
+.modal-mapa-body{
+  flex:1;
+  padding:16px 20px 20px;
+  overflow-y:auto;
+}
+.modal-mapa-body .mapa-frame{
+  width:100%;
+  height:300px;
+  border-radius:16px;
+  border:1px solid #e2e8f0;
+  background:#e2e8f0;
+}
+.modal-mapa-body .info-local{
+  margin-top:12px;
+  font-size:14px;
+  color:#4b5563;
+  line-height:1.6;
+}
+.modal-mapa-body .info-local strong{color:#1e293b;}
 </style>
 </head>
 <body>
@@ -250,11 +426,48 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
 
 <div class="main-dynamic" id="mainDynamic"></div>
 
+<!-- Notificacao fixa para ponto aberto > 5h30 -->
+<div class="notificacao-ponto-aberto" id="notificacaoPontoAberto">
+  Ponto aberto ha mais de 5h30 - Clique para abrir chamado
+</div>
+
+<!-- Modal de seguranca (calculo + localizacao) -->
+<div class="modal-seguranca" id="modalSeguranca">
+  <div class="modal-seguranca-content">
+    <h3 id="segTitulo">Verificacao de Seguranca</h3>
+    <div class="subtitulo" id="segSubtitulo">Resolva o calculo e permita a localizacao</div>
+    
+    <div class="label">Calcule o resultado:</div>
+    <div class="campo-calculo" id="campoCalculo">10 + 10 = ?</div>
+    <input type="number" id="inputResultado" placeholder="Digite o resultado" inputmode="numeric">
+    
+    <div class="label" style="margin-top:12px;">Localizacao</div>
+    <button class="btn-localizacao" id="btnPermitirLocalizacao">Permitir Localizacao</button>
+    <div class="status-localizacao" id="statusLocalizacao">Aguardando permissao...</div>
+    
+    <div class="botoes-modal">
+      <button class="btn-cancelar-seg" id="btnCancelarSeg">Cancelar</button>
+      <button class="btn-confirmar-seg" id="btnConfirmarSeg" disabled>Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Mapa sobreposto -->
+<div class="modal-mapa-overlay" id="modalMapa">
+  <div class="modal-mapa-content">
+    <div class="modal-mapa-header">
+      <h4 id="mapaTitulo">Localizacao do Ponto</h4>
+      <button class="modal-mapa-fechar" id="fecharMapaBtn">✕</button>
+    </div>
+    <div class="modal-mapa-body">
+      <div class="mapa-frame" id="mapaFrame"></div>
+      <div class="info-local" id="mapaInfo"></div>
+    </div>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
 
 <script>
 // FIREBASE
@@ -274,18 +487,28 @@ let pontoStart = null;
 let cronInterval = null;
 let currentViewStack = [];
 
+// Variaveis para seguranca
+let segCallback = null;
+let segResultadoCorreto = 0;
+let segLocalizacaoPermitida = false;
+let segCoordenadas = null;
+let segOperacaoRealizada = '';
+
 const mainEl = document.getElementById("mainDynamic");
 const headerEl = document.getElementById("appHeader");
 const backBtn = document.getElementById("backBtn");
 const headerTitleSpan = document.getElementById("headerTitle");
 const avatarMini = document.getElementById("avatarMini");
+const notifPontoAberto = document.getElementById("notificacaoPontoAberto");
+const modalMapa = document.getElementById("modalMapa");
 
+// ----- FUNCOES AUXILIARES -----
 function showMessage(msg){
   let t = document.createElement("div");
   t.className = "notif-toast";
   t.innerText = msg;
   document.body.appendChild(t);
-  setTimeout(()=>t.remove(),1800);
+  setTimeout(()=>t.remove(),2000);
 }
 function formatDuration(ms){
   let h = Math.floor(ms/3600000);
@@ -310,37 +533,35 @@ function startCronometroLocal(){
     let sheetCrono = document.getElementById("sheetCronometro");
     if(sheetCrono && pontoAtivo && pontoStart) sheetCrono.innerText = formatDuration(Date.now() - pontoStart);
     else if(sheetCrono && !pontoAtivo) sheetCrono.innerText = "00:00:00";
+    verificarNotificacaoPontoAberto();
   }, 1000);
 }
 function getDataChave(){
   let d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
-db.ref("usuarios/"+currentUser).on("value", snap=>{ if(snap.exists()) userData = snap.val(); updateAvatarMini(); });
-function updateAvatarMini(){
-  if(userData.foto) avatarMini.src = userData.foto;
-  else avatarMini.src = `https://ui-avatars.com/api/?background=2c6e2c&color=fff&name=${encodeURIComponent(userData.nome||'')}`;
-  avatarMini.style.display = (currentViewStack.length>0 && currentViewStack[currentViewStack.length-1]!=='login') ? "block" : "none";
-}
 
-db.ref("pontos/"+currentUser+"/ativo/inicio").on("value", snap=>{
-  let inicio = snap.val();
-  if(inicio){
-    pontoAtivo = true;
-    pontoStart = inicio;
-    startCronometroLocal();
-    if(document.getElementById("cronodisplay")) atualizaCronometroDisplay();
-    if(currentViewStack[currentViewStack.length-1] === 'tripode'){
-      showPontoAbertoSheet();
+// ----- VERIFICACAO NOTIFICACAO PONTO ABERTO (> 5h30) -----
+function verificarNotificacaoPontoAberto(){
+  if(pontoAtivo && pontoStart){
+    let diff = Date.now() - pontoStart;
+    let limite = 5.5 * 3600000;
+    if(diff > limite){
+      notifPontoAberto.style.display = "block";
+      let horas = Math.floor(diff/3600000);
+      let minutos = Math.floor((diff%3600000)/60000);
+      notifPontoAberto.innerHTML = `Ponto aberto ha ${horas}h${minutos}m - Clique para abrir chamado`;
+    } else {
+      notifPontoAberto.style.display = "none";
     }
   } else {
-    pontoAtivo = false;
-    pontoStart = null;
-    if(cronInterval) clearInterval(cronInterval);
-    if(document.getElementById("cronodisplay")) document.getElementById("cronodisplay").innerText = "00:00:00";
+    notifPontoAberto.style.display = "none";
   }
-});
+}
+notifPontoAberto.onclick = function(){
+  renderScreen('chamado', true);
+};
 
-// bottom sheet generico
+// ----- BOTTOM SHEET -----
 let activeSheetCallback = null;
 let activeSheetCloseOnConfirm = true;
 function showBottomSheet(title, message, confirmText, onConfirm, closeOnConfirm=true, showCronometro=false){
@@ -386,6 +607,66 @@ function showPontoAbertoSheet(){
   showBottomSheet("Ponto em Andamento", `Ola, ${nomeFunc}! Voce ja possui um ponto aberto. Tempo atual:`, "Acessar Ponto", ()=>{ renderScreen('ponto', true); }, true, true);
 }
 
+// ----- MAPA SOBREPOSTO (OPENSTREETMAP) -----
+function abrirMapaOverlay(lat, lng, titulo, infoAdicional){
+  const modal = document.getElementById("modalMapa");
+  const frame = document.getElementById("mapaFrame");
+  const info = document.getElementById("mapaInfo");
+  const tituloEl = document.getElementById("mapaTitulo");
+  
+  tituloEl.textContent = titulo || 'Localizacao do Ponto';
+  
+  if(lat && lng){
+    const url = `https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.005}%2C${lat-0.005}%2C${lng+0.005}%2C${lat+0.005}&layer=mapnik&marker=${lat}%2C${lng}`;
+    frame.innerHTML = `<iframe width="100%" height="300" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="${url}" style="border-radius:16px;width:100%;height:300px;"></iframe>`;
+    info.innerHTML = `
+      <strong>Coordenadas:</strong> ${lat.toFixed(6)}, ${lng.toFixed(6)}<br>
+      <strong>Link:</strong> <a href="https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}&zoom=15" target="_blank" style="color:#2c6e2c;">Abrir no OpenStreetMap</a>
+      ${infoAdicional ? `<br><br>${infoAdicional}` : ''}
+    `;
+  } else {
+    frame.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:300px;color:#6c757d;background:#f1f5f9;border-radius:16px;">Localizacao nao disponivel</div>';
+    info.innerHTML = 'Nenhuma coordenada registrada para este ponto.';
+  }
+  
+  modal.classList.add("aberto");
+}
+
+function fecharMapaOverlay(){
+  document.getElementById("modalMapa").classList.remove("aberto");
+}
+document.getElementById("fecharMapaBtn").onclick = fecharMapaOverlay;
+document.getElementById("modalMapa").addEventListener("click", function(e){
+  if(e.target === this) fecharMapaOverlay();
+});
+
+// ----- NAVEGACAO -----
+db.ref("usuarios/"+currentUser).on("value", snap=>{ if(snap.exists()) userData = snap.val(); updateAvatarMini(); });
+function updateAvatarMini(){
+  if(userData.foto) avatarMini.src = userData.foto;
+  else avatarMini.src = `https://ui-avatars.com/api/?background=2c6e2c&color=fff&name=${encodeURIComponent(userData.nome||'')}`;
+  avatarMini.style.display = (currentViewStack.length>0 && currentViewStack[currentViewStack.length-1]!=='login') ? "block" : "none";
+}
+
+db.ref("pontos/"+currentUser+"/ativo/inicio").on("value", snap=>{
+  let inicio = snap.val();
+  if(inicio){
+    pontoAtivo = true;
+    pontoStart = inicio;
+    startCronometroLocal();
+    if(document.getElementById("cronodisplay")) atualizaCronometroDisplay();
+    if(currentViewStack[currentViewStack.length-1] === 'tripode'){
+      showPontoAbertoSheet();
+    }
+  } else {
+    pontoAtivo = false;
+    pontoStart = null;
+    if(cronInterval) clearInterval(cronInterval);
+    if(document.getElementById("cronodisplay")) document.getElementById("cronodisplay").innerText = "00:00:00";
+    notifPontoAberto.style.display = "none";
+  }
+});
+
 function renderScreen(screenId, pushToStack=true){
   if(pushToStack) currentViewStack.push(screenId);
   headerEl.style.display = (screenId === 'login') ? 'none' : 'flex';
@@ -407,7 +688,7 @@ function goBack(){
 }
 backBtn.onclick = goBack;
 
-// TELA LOGIN
+// ----- TELA LOGIN -----
 function telaLogin(){
   mainEl.innerHTML = `<div class="login-screen"><img class="avatar-circle" id="loginAvatar" src="${userData.foto||''}" onerror="this.src='https://ui-avatars.com/api/?background=2c6e2c&color=fff&name=${encodeURIComponent(userData.nome||'User')}'"><div class="nome-bemvindo" id="loginNome">${userData.nome||'Carregando...'}</div><button class="acessar-btn" id="acessarPrincipalBtn">Acessar</button></div>`;
   if(userData.nome) document.getElementById("loginNome").innerText = userData.nome;
@@ -415,6 +696,7 @@ function telaLogin(){
   document.getElementById("acessarPrincipalBtn").onclick = ()=> renderScreen('tripode', true);
 }
 
+// ----- TELA TRIPODE -----
 function telaTripode(){
   mainEl.innerHTML = `<div class="three-buttons-vertical"><button id="btnPonto">Batida de Ponto</button><button id="btnCarga">Carga Horaria</button><button id="btnChamado">Abrir Chamado</button></div><div class="content-pane"><div style="text-align:center;margin-top:40px;color:#6c757d;">Selecione uma opcao</div></div>`;
   document.getElementById("btnPonto").onclick = ()=> renderScreen('ponto', true);
@@ -425,7 +707,7 @@ function telaTripode(){
   }
 }
 
-// TELA PONTO
+// ----- TELA PONTO -----
 function telaPonto(){
   mainEl.innerHTML = `<div style="padding:24px 16px;"><div class="cronometro-grande" id="cronodisplay">00:00:00</div><div class="botoes-acao"><button class="btn-iniciar-ponto" id="iniciarPontoBtn">Iniciar Ponto</button><button class="btn-finalizar-ponto" id="finalizarPontoBtn">Finalizar Dia</button></div><div style="margin-top:30px;"><h4>Ultimos registros</h4><div id="miniResumo"></div></div></div>`;
   if(pontoAtivo) { document.getElementById("finalizarPontoBtn").style.display = "block"; document.getElementById("iniciarPontoBtn").style.display = "none"; atualizaCronometroDisplay(); }
@@ -434,100 +716,189 @@ function telaPonto(){
   carregarMiniHistorico();
   document.getElementById("iniciarPontoBtn").onclick = ()=>{
     if(pontoAtivo){ showMessage("Ponto ja iniciado"); return; }
-    showBottomSheet("Iniciar Ponto", "Realmente deseja iniciar o ponto?", "Sim, iniciar", ()=>{ abrirModalCamera(); });
+    abrirModalSeguranca('iniciar');
   };
   document.getElementById("finalizarPontoBtn").onclick = ()=>{
     if(!pontoAtivo){ showMessage("Nenhum ponto ativo"); return; }
-    showBottomSheet("Finalizar Expediente", "Finalizar o dia e encerrar o ponto?", "Sim, finalizar", ()=>{
-      let fim = Date.now();
-      db.ref("pontos/"+currentUser+"/ativo").remove();
-      db.ref("historico/"+currentUser+"/"+getDataChave()+"/fim").set(fim);
-      showMessage("Dia finalizado");
-      document.getElementById("finalizarPontoBtn").style.display = "none";
-      document.getElementById("iniciarPontoBtn").style.display = "block";
-      if(document.getElementById("cronodisplay")) document.getElementById("cronodisplay").innerText = "00:00:00";
-      carregarMiniHistorico();
-    });
+    abrirModalSeguranca('finalizar');
   };
 }
+
 async function carregarMiniHistorico(){
   let snap = await db.ref("historico/"+currentUser).once("value");
   let hist = snap.val()||{};
   let rows="";
-  Object.entries(hist).slice(-5).reverse().forEach(([data,val])=>{
+  let entradas = Object.entries(hist).slice(-7).reverse();
+  for(let [data, val] of entradas){
     let ini = val.inicio ? new Date(val.inicio).toLocaleTimeString().slice(0,5) : "--";
     let fim = val.fim ? new Date(val.fim).toLocaleTimeString().slice(0,5) : "--";
-    rows += `<tr><td>${data}</td><td>${ini}</td><td>${fim}</td></tr>`;
-  });
-  document.getElementById("miniResumo").innerHTML = `<table class="tabela-ponto"><tr><th>Data</th><th>Entrada</th><th>Saida</th></tr>${rows||'<tr><td colspan="3">Nenhum registro</td></tr>'}</table>`;
+    let loc = val.localizacao || val.localizacao_fim ? '📍' : '';
+    let lat = val.localizacao?.lat || val.localizacao_fim?.lat || null;
+    let lng = val.localizacao?.lng || val.localizacao_fim?.lng || null;
+    let btnMapa = (lat && lng) ? `<button class="btn-ver-mapa" onclick="abrirMapaMini('${data}','${lat}','${lng}')">Mapa</button>` : '';
+    rows += `<tr><td>${data}</td><td>${ini}</td><td>${fim}</td><td>${loc}</td><td>${btnMapa}</td></tr>`;
+  }
+  document.getElementById("miniResumo").innerHTML = `<table class="tabela-ponto"><tr><th>Data</th><th>Entrada</th><th>Saida</th><th>Loc</th><th>Mapa</th></tr>${rows||'<tr><td colspan="5">Nenhum registro</td></tr>'}</table>`;
 }
 
-// CÂMERA: QUADRADO DE CANTO A CANTO, 3 SEGUNDOS + BOLINHA 2 SEGUNDOS
-let cameraStreamActive = null;
-function abrirModalCamera(){
-  let modalHtml = `
-    <div id="modalCamera" class="modal-camera">
-      <div class="camera-quadrado">
-        <div class="camera-video-container">
-          <video id="videoCam" autoplay playsinline></video>
-        </div>
-        <button class="botao-cancelar-camera" id="cancelarCameraBtn">Cancelar</button>
-      </div>
-    </div>
-  `;
-  if(document.getElementById("modalCamera")) document.getElementById("modalCamera").remove();
-  document.body.insertAdjacentHTML('beforeend', modalHtml);
-  let modal = document.getElementById("modalCamera");
+function abrirMapaMini(data, lat, lng){
+  let titulo = `Localizacao - ${data}`;
+  let info = `Registro do dia ${data}`;
+  abrirMapaOverlay(parseFloat(lat), parseFloat(lng), titulo, info);
+}
+
+// ----- MODAL DE SEGURANCA (CALCULO + LOCALIZACAO) -----
+function abrirModalSeguranca(acao){
+  const modal = document.getElementById("modalSeguranca");
+  if(!modal) return;
+  
+  const operacoes = [
+    {a:10,b:10,op:'+',texto:'10 + 10'},
+    {a:2,b:2,op:'+',texto:'2 + 2'},
+    {a:4,b:4,op:'+',texto:'4 + 4'},
+    {a:40,b:40,op:'+',texto:'40 + 40'},
+    {a:5,b:3,op:'+',texto:'5 + 3'},
+    {a:8,b:2,op:'+',texto:'8 + 2'},
+    {a:15,b:5,op:'+',texto:'15 + 5'},
+    {a:20,b:10,op:'+',texto:'20 + 10'},
+    {a:6,b:6,op:'+',texto:'6 + 6'},
+    {a:25,b:25,op:'+',texto:'25 + 25'}
+  ];
+  const op = operacoes[Math.floor(Math.random() * operacoes.length)];
+  segResultadoCorreto = op.a + op.b;
+  segOperacaoRealizada = op.texto + ' = ' + segResultadoCorreto;
+  document.getElementById("campoCalculo").innerHTML = op.texto + ' = ?';
+  document.getElementById("inputResultado").value = '';
+  document.getElementById("inputResultado").focus();
+  
+  segLocalizacaoPermitida = false;
+  segCoordenadas = null;
+  document.getElementById("statusLocalizacao").innerHTML = 'Aguardando permissao...';
+  document.getElementById("btnPermitirLocalizacao").className = 'btn-localizacao';
+  document.getElementById("btnPermitirLocalizacao").innerHTML = 'Permitir Localizacao';
+  document.getElementById("btnConfirmarSeg").disabled = true;
+  
+  const titulo = acao === 'iniciar' ? 'Iniciar Ponto' : 'Finalizar Ponto';
+  document.getElementById("segTitulo").innerHTML = `Seguranca - ${titulo}`;
+  document.getElementById("segSubtitulo").innerHTML = `Resolva o calculo e permita a localizacao para ${acao === 'iniciar' ? 'iniciar' : 'finalizar'} o ponto`;
+  
+  segCallback = ()=>{
+    if(acao === 'iniciar'){
+      iniciarPontoComSeguranca();
+    } else {
+      finalizarPontoComSeguranca();
+    }
+  };
+  
   modal.classList.add("aberto");
-  const video = document.getElementById("videoCam");
-  navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}}).then(stream=>{
-    cameraStreamActive = stream;
-    video.srcObject = stream;
-    // 3 segundos de camera aberta
-    setTimeout(()=>{
-      if(cameraStreamActive) cameraStreamActive.getTracks().forEach(t=>t.stop());
-      cameraStreamActive = null;
-      video.srcObject = null;
-      // remove video e mostra bolinha transparente
-      let container = document.querySelector("#modalCamera .camera-video-container");
-      if(container){
-        container.innerHTML = '';
-        let spinnerDiv = document.createElement("div");
-        spinnerDiv.style.position = "absolute";
-        spinnerDiv.style.inset = "0";
-        spinnerDiv.style.display = "flex";
-        spinnerDiv.style.alignItems = "center";
-        spinnerDiv.style.justifyContent = "center";
-        spinnerDiv.style.backgroundColor = "rgba(0,0,0,0.8)";
-        let bola = document.createElement("div");
-        bola.className = "spinner-bola";
-        spinnerDiv.appendChild(bola);
-        container.appendChild(spinnerDiv);
-      }
-      // bolinha gira por 2 segundos
-      setTimeout(()=>{
-        fecharModalCamera();
-        let agora = Date.now();
-        db.ref("pontos/"+currentUser+"/ativo").set({inicio: agora});
-        db.ref("historico/"+currentUser+"/"+getDataChave()+"/inicio").set(agora);
-        showMessage("Ponto iniciado");
-        if(document.getElementById("cronodisplay")) atualizaCronometroDisplay();
-        carregarMiniHistorico();
-        if(document.getElementById("finalizarPontoBtn")) document.getElementById("finalizarPontoBtn").style.display = "block";
-        if(document.getElementById("iniciarPontoBtn")) document.getElementById("iniciarPontoBtn").style.display = "none";
-      }, 2000);
-    }, 3000);
-  }).catch(()=>{ fecharModalCamera(); showMessage("Permissao da camera negada"); });
-  document.getElementById("cancelarCameraBtn").onclick = ()=>{ fecharModalCamera(); };
-}
-function fecharModalCamera(){
-  let modal = document.getElementById("modalCamera");
-  if(modal) modal.classList.remove("aberto");
-  if(cameraStreamActive){ cameraStreamActive.getTracks().forEach(t=>t.stop()); cameraStreamActive=null; }
-  setTimeout(()=>{ if(modal) modal.remove(); }, 100);
+  
+  document.getElementById("inputResultado").oninput = function(){
+    validarSeguranca();
+  };
+  
+  document.getElementById("btnPermitirLocalizacao").onclick = function(){
+    obterLocalizacao();
+  };
+  
+  document.getElementById("btnConfirmarSeg").onclick = function(){
+    if(segCallback) segCallback();
+    fecharModalSeguranca();
+  };
+  
+  document.getElementById("btnCancelarSeg").onclick = function(){
+    fecharModalSeguranca();
+  };
 }
 
-// CARGA HORARIA
+function fecharModalSeguranca(){
+  const modal = document.getElementById("modalSeguranca");
+  if(modal) modal.classList.remove("aberto");
+  segCallback = null;
+}
+
+function validarSeguranca(){
+  const input = document.getElementById("inputResultado");
+  const valor = parseInt(input.value);
+  const btnConfirmar = document.getElementById("btnConfirmarSeg");
+  
+  if(valor === segResultadoCorreto && segLocalizacaoPermitida){
+    btnConfirmar.disabled = false;
+  } else {
+    btnConfirmar.disabled = true;
+  }
+}
+
+function obterLocalizacao(){
+  const statusEl = document.getElementById("statusLocalizacao");
+  const btnEl = document.getElementById("btnPermitirLocalizacao");
+  
+  if (!navigator.geolocation) {
+    statusEl.innerHTML = 'Geolocalizacao nao suportada pelo navegador';
+    return;
+  }
+  
+  statusEl.innerHTML = 'Obtendo localizacao...';
+  btnEl.innerHTML = 'Aguardando...';
+  
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      segLocalizacaoPermitida = true;
+      segCoordenadas = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      statusEl.innerHTML = `Localizacao permitida (${segCoordenadas.lat.toFixed(5)}, ${segCoordenadas.lng.toFixed(5)})`;
+      btnEl.className = 'btn-localizacao ativo';
+      btnEl.innerHTML = 'Localizacao Permitida';
+      validarSeguranca();
+    },
+    (error) => {
+      statusEl.innerHTML = `Erro: ${error.message}. Clique em "Permitir Localizacao" novamente.`;
+      btnEl.innerHTML = 'Tentar Novamente';
+      segLocalizacaoPermitida = false;
+      validarSeguranca();
+    },
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+  );
+}
+
+function iniciarPontoComSeguranca(){
+  let agora = Date.now();
+  let dataChave = getDataChave();
+  let historicoRef = db.ref("historico/"+currentUser+"/"+dataChave);
+  historicoRef.update({
+    inicio: agora,
+    localizacao: segCoordenadas || null,
+    calculo: segOperacaoRealizada,
+    timestamp_inicio: agora
+  });
+  db.ref("pontos/"+currentUser+"/ativo").set({inicio: agora});
+  showMessage("Ponto iniciado com seguranca");
+  if(document.getElementById("cronodisplay")) atualizaCronometroDisplay();
+  carregarMiniHistorico();
+  if(document.getElementById("finalizarPontoBtn")) document.getElementById("finalizarPontoBtn").style.display = "block";
+  if(document.getElementById("iniciarPontoBtn")) document.getElementById("iniciarPontoBtn").style.display = "none";
+}
+
+function finalizarPontoComSeguranca(){
+  let fim = Date.now();
+  let dataChave = getDataChave();
+  let historicoRef = db.ref("historico/"+currentUser+"/"+dataChave);
+  historicoRef.update({
+    fim: fim,
+    localizacao_fim: segCoordenadas || null,
+    calculo_fim: segOperacaoRealizada,
+    timestamp_fim: fim
+  });
+  db.ref("pontos/"+currentUser+"/ativo").remove();
+  showMessage("Dia finalizado com seguranca");
+  document.getElementById("finalizarPontoBtn").style.display = "none";
+  document.getElementById("iniciarPontoBtn").style.display = "block";
+  if(document.getElementById("cronodisplay")) document.getElementById("cronodisplay").innerText = "00:00:00";
+  carregarMiniHistorico();
+}
+
+// ----- TELA CARGA HORARIA (COM LOCALIZACAO E MAPA) -----
 function telaCarga(){
   mainEl.innerHTML = `<div style="padding:0 16px 20px;"><div class="filtro-mes"><input type="text" id="mesAnoInput" placeholder="MM/AAAA" maxlength="7"><button id="buscarCargaBtn">Buscar</button></div><div id="cargaResultado"></div></div>`;
   let input = document.getElementById("mesAnoInput");
@@ -546,24 +917,34 @@ function telaCarga(){
     let pontos = snap.val()||{};
     let totalMs=0, linhas="";
     let registros = Object.entries(pontos).filter(([data])=>{ let [y,m]=data.split("-").map(Number); return y===ano && m===mes; }).sort((a,b)=>b[0].localeCompare(a[0]));
-    registros.forEach(([data,val])=>{
+    for(let [data, val] of registros){
       let ini = val.inicio ? new Date(val.inicio).toLocaleTimeString().slice(0,5) : "--";
       let fim = val.fim ? new Date(val.fim).toLocaleTimeString().slice(0,5) : "--";
+      let loc = val.localizacao || val.localizacao_fim ? '📍' : '';
+      let lat = val.localizacao?.lat || val.localizacao_fim?.lat || null;
+      let lng = val.localizacao?.lng || val.localizacao_fim?.lng || null;
+      let btnMapa = (lat && lng) ? `<button class="btn-ver-mapa" onclick="abrirMapaMiniCarga('${data}',${lat},${lng})">Mapa</button>` : '';
       let dur = "--";
       if(val.inicio && val.fim){
         let diff = val.fim - val.inicio;
         totalMs += diff;
         dur = `${Math.floor(diff/3600000)}h ${Math.floor((diff%3600000)/60000)}m`;
       }
-      linhas += `<tr><td>${data}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td></tr>`;
-    });
+      linhas += `<tr><td>${data}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td><td>${loc}</td><td>${btnMapa}</td></tr>`;
+    }
     let totalH = Math.floor(totalMs/3600000);
     let totalM = Math.floor((totalMs%3600000)/60000);
-    document.getElementById("cargaResultado").innerHTML = `<div class="total-horas-card"><span>Total ${mm}/${yyyy}</span><strong>${totalH}h ${totalM}m</strong></div><table class="tabela-ponto"><thead><tr><th>Data</th><th>Entrada</th><th>Saida</th><th>Duracao</th></tr></thead><tbody>${linhas||'<tr><td colspan="4">Nenhum registro</td></tr>'}</tbody></table>`;
+    document.getElementById("cargaResultado").innerHTML = `<div class="total-horas-card"><span>Total ${mm}/${yyyy}</span><strong>${totalH}h ${totalM}m</strong></div><table class="tabela-ponto"><thead><tr><th>Data</th><th>Entrada</th><th>Saida</th><th>Duracao</th><th>Loc</th><th>Mapa</th></tr></thead><tbody>${linhas||'<tr><td colspan="6">Nenhum registro</td></tr>'}</tbody></table>`;
   };
 }
 
-// CHAMADO
+function abrirMapaMiniCarga(data, lat, lng){
+  let titulo = `Localizacao - ${data}`;
+  let info = `Registro do dia ${data}`;
+  abrirMapaOverlay(lat, lng, titulo, info);
+}
+
+// ----- TELA CHAMADO -----
 function telaChamado(){
   mainEl.innerHTML = `<div style="padding:20px 16px;"><div id="formChamadoArea"><h3 style="margin-bottom:20px;">Abrir Chamado</h3><div style="background:#f8fafc;padding:16px;border-radius:24px;margin-bottom:20px;"><p><strong>Nome:</strong> ${userData.nome || '--'}</p><p><strong>NA:</strong> ${currentUser}</p><p><strong>Telefone:</strong> ${userData.telefone || '--'}</p></div><label>Descreva o motivo do chamado (edicao de ponto, correcao):</label><textarea id="motivacaoTexto" rows="5" style="width:100%;margin:12px 0;padding:14px;border-radius:24px;border:1px solid #cbd5e1;font-family:inherit;"></textarea><button id="enviarChamadoFinalBtn" style="background:#2c6e2c;color:white;border:none;padding:14px;width:100%;border-radius:60px;font-weight:600;">Enviar para WhatsApp</button><div id="protocoloAviso" style="margin-top:16px;font-size:13px;color:#4b5563;"></div></div><button id="voltarDoChamadoBtn" style="margin-top:30px;background:#e2e8f0;border:none;padding:12px;border-radius:60px;width:100%;">Voltar</button></div>`;
   document.getElementById("enviarChamadoFinalBtn").onclick = async()=>{
@@ -581,6 +962,7 @@ function telaChamado(){
   document.getElementById("voltarDoChamadoBtn").onclick = ()=> renderScreen('tripode', true);
 }
 
+// Inicializa
 renderScreen('login', false);
 </script>
 </body>
