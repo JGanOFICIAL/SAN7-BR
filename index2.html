@@ -7,22 +7,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100vh;display:flex;flex-direction:column;}
+body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:100vh;display:flex;flex-direction:column;}
 .app-header{position:sticky;top:0;width:100%;background:#fff;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e9eef3;z-index:30;}
 .back-btn{background:transparent;border:2px solid #2c6e2c;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;color:#2c6e2c;}
 .header-left{display:flex;align-items:center;gap:12px;}
 .avatar-mini{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #2c6e2c;background:#f1f5f9;}
 .header-title{font-weight:600;font-size:18px;color:#0f3b2c;}
 .right-placeholder{width:40px;}
-.main-dynamic{flex:1;display:flex;flex-direction:column;background:#fff;}
+.main-dynamic{flex:1;display:flex;flex-direction:column;background:#f1f5f9;}
 
-/* tela login */
-.login-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:24px;}
+.login-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:24px;background:#fff;}
 .avatar-circle{width:140px;height:140px;border-radius:50%;object-fit:cover;border:3px solid #e2e8f0;background:#f8fafc;}
 .nome-bemvindo{font-size:26px;font-weight:600;color:#0f172a;}
 .acessar-btn{background:#2c6e2c;border:none;padding:14px 42px;border-radius:60px;font-weight:600;font-size:18px;color:white;margin-top:20px;cursor:pointer;}
 
-/* tres botoes empilhados */
 .three-buttons-vertical{
   display:flex;
   flex-direction:column;
@@ -43,7 +41,6 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
 }
 .content-pane{flex:1;padding:24px 16px;background:#fff;}
 
-/* bottom sheet */
 .bottom-sheet{
   position:fixed;
   bottom:0;
@@ -87,7 +84,6 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
 .btn-sheet-cancel{background:#eef2ff;color:#1e293b;}
 .btn-sheet-confirm{background:#2c6e2c;color:white;}
 
-/* cronometro principal */
 .cronometro-grande{
   font-size:52px;
   font-weight:700;
@@ -115,7 +111,6 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
 .btn-iniciar-ponto{background:#2c6e2c;color:white;}
 .btn-finalizar-ponto{background:#b91c1c;color:white;display:none;}
 
-/* filtro */
 .filtro-mes{
   display:flex;
   gap:12px;
@@ -159,17 +154,7 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
   text-align:center;
 }
 .tabela-ponto th{color:#2c6e2c;}
-.tabela-ponto .btn-ver-mapa{
-  background:#2c6e2c;
-  color:white;
-  border:none;
-  padding:4px 12px;
-  border-radius:16px;
-  cursor:pointer;
-  font-size:12px;
-}
 
-/* modal camera - QUADRADO SEM BORDAS ARREDONDADAS */
 .modal-camera{
   position:fixed;
   inset:0;
@@ -183,59 +168,101 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
   transition:0.1s;
 }
 .modal-camera.aberto{visibility:visible;opacity:1;}
-.camera-quadrado{
-  width:100%;
-  height:100%;
+.camera-oval{
+  width:320px;
+  height:380px;
   background:#000;
+  border-radius:50% / 40%;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-}
-.camera-video-container{
-  width:100%;
-  flex:1;
-  background:#000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
   position:relative;
+  overflow:hidden;
+  box-shadow:0 0 60px rgba(0,0,0,0.8);
 }
-.camera-video-container video{
+.camera-oval video{
   width:100%;
-  height:auto;
-  max-height:100%;
+  height:100%;
   object-fit:cover;
+  border-radius:50% / 40%;
 }
-.modal-camera .botao-cancelar-camera{
-  background:#e2e8f0;
-  border:none;
-  padding:16px;
-  width:90%;
-  margin:20px auto;
-  border-radius:60px;
-  font-weight:600;
-  font-size:16px;
-  cursor:pointer;
-}
-.spinner-overlay{
+.camera-oval .spinner-overlay{
   position:absolute;
   inset:0;
-  background:rgba(0,0,0,0.7);
+  background:rgba(0,0,0,0.6);
   display:flex;
   align-items:center;
   justify-content:center;
-  z-index:10;
+  border-radius:50% / 40%;
+  z-index:5;
 }
-.spinner-bola{
+.camera-oval .spinner-overlay .spinner-bola{
   width:60px;
   height:60px;
-  border:5px solid rgba(255,255,255,0.3);
-  border-top-color:#fff;
+  border:4px solid rgba(255,255,255,0.2);
+  border-top-color:#2c6e2c;
   border-radius:50%;
   animation:spin 0.8s linear infinite;
 }
 @keyframes spin{to{transform:rotate(360deg);}}
+.camera-oval .btn-cancelar-camera{
+  position:absolute;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(255,255,255,0.2);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.3);
+  padding:10px 28px;
+  border-radius:40px;
+  color:#fff;
+  font-weight:600;
+  font-size:14px;
+  cursor:pointer;
+  z-index:10;
+  transition:0.3s;
+}
+.camera-oval .btn-cancelar-camera:hover{background:rgba(255,255,255,0.3);}
+
+.modal-sem-camera{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:900;
+  visibility:hidden;
+  opacity:0;
+  transition:0.2s;
+}
+.modal-sem-camera.aberto{visibility:visible;opacity:1;}
+.modal-sem-camera-content{
+  background:#fff;
+  border-radius:24px;
+  padding:32px 24px;
+  max-width:380px;
+  width:90%;
+  text-align:center;
+}
+.modal-sem-camera-content h3{color:#0f3b2c;margin-bottom:12px;}
+.modal-sem-camera-content p{color:#4b5563;font-size:14px;margin-bottom:20px;line-height:1.6;}
+.modal-sem-camera-content .botoes{
+  display:flex;
+  gap:12px;
+}
+.modal-sem-camera-content .botoes button{
+  flex:1;
+  padding:12px;
+  border-radius:40px;
+  font-weight:600;
+  border:none;
+  cursor:pointer;
+}
+.modal-sem-camera-content .btn-cancelar-sem{background:#eef2ff;color:#1e293b;}
+.modal-sem-camera-content .btn-continuar-sem{background:#2c6e2c;color:white;}
+
 .notif-toast{
   position:fixed;
   bottom:80px;
@@ -250,7 +277,6 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
   max-width:90%;
 }
 
-/* Notificacao fixa para ponto aberto > 5h30 */
 .notificacao-ponto-aberto{
   position:fixed;
   bottom:20px;
@@ -271,7 +297,6 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
 }
 .notificacao-ponto-aberto:hover{opacity:0.9;}
 
-/* modal de seguranca (calculo + localizacao) */
 .modal-seguranca{
   position:fixed;
   inset:0;
@@ -317,26 +342,6 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
   margin:8px 0 16px;
   font-weight:600;
 }
-.modal-seguranca-content .btn-localizacao{
-  width:100%;
-  padding:14px;
-  border-radius:16px;
-  border:2px solid #2c6e2c;
-  background:transparent;
-  font-weight:600;
-  color:#2c6e2c;
-  cursor:pointer;
-  margin:8px 0 12px;
-}
-.modal-seguranca-content .btn-localizacao.ativo{
-  background:#2c6e2c;
-  color:white;
-}
-.modal-seguranca-content .status-localizacao{
-  font-size:13px;
-  color:#4b5563;
-  padding:8px 0;
-}
 .modal-seguranca-content .botoes-modal{
   display:flex;
   gap:12px;
@@ -354,63 +359,178 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
 .modal-seguranca-content .btn-confirmar-seg{background:#2c6e2c;color:white;}
 .modal-seguranca-content .btn-confirmar-seg:disabled{opacity:0.5;cursor:not-allowed;}
 
-/* Modal mapa sobreposto */
-.modal-mapa-overlay{
+/* Modal comprovante sobreposto */
+.modal-comprovante{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.7);
-  z-index:500;
-  display:none;
+  background:rgba(0,0,0,0.55);
+  backdrop-filter:blur(4px);
+  display:flex;
   align-items:center;
   justify-content:center;
+  z-index:700;
+  visibility:hidden;
+  opacity:0;
+  transition:0.25s;
 }
-.modal-mapa-overlay.aberto{display:flex;}
-.modal-mapa-content{
+.modal-comprovante.aberto{visibility:visible;opacity:1;}
+.modal-comprovante-content{
   background:#fff;
-  border-radius:24px;
-  width:95%;
-  max-width:600px;
-  max-height:90vh;
-  overflow:hidden;
+  border-radius:28px;
+  padding:36px 28px 28px;
+  max-width:420px;
+  width:92%;
+  text-align:center;
+  box-shadow:0 30px 80px rgba(0,0,0,0.25);
+  transform:scale(0.95);
+  transition:transform 0.3s;
+}
+.modal-comprovante.aberto .modal-comprovante-content{
+  transform:scale(1);
+}
+.modal-comprovante-content .icone-check{
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  background:#dcfce7;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 16px;
+  font-size:36px;
+  color:#22c55e;
+}
+.modal-comprovante-content h3{
+  color:#0f3b2c;
+  font-size:20px;
+  margin-bottom:4px;
+}
+.modal-comprovante-content .sub-texto{
+  color:#6c757d;
+  font-size:13px;
+  margin-bottom:16px;
+}
+.modal-comprovante-content .dados-ponto{
+  background:#f8fafc;
+  padding:16px 18px;
+  border-radius:14px;
+  text-align:left;
+  font-size:14px;
+  line-height:2;
+  margin:12px 0 20px;
+  border:1px solid #e9eef3;
+}
+.modal-comprovante-content .dados-ponto strong{
+  color:#0f3b2c;
+}
+.modal-comprovante-content .dados-ponto .label{
+  color:#6c757d;
+  font-weight:400;
+}
+.modal-comprovante-content .btn-ok-comprovante{
+  padding:14px 48px;
+  border-radius:40px;
+  border:none;
+  background:#2c6e2c;
+  color:white;
+  font-weight:600;
+  font-size:16px;
+  cursor:pointer;
+  transition:0.2s;
+}
+.modal-comprovante-content .btn-ok-comprovante:hover{
+  background:#1f4f1f;
+}
+
+/* TELA COMPROVANTE FINAL */
+.tela-comprovante{
+  flex:1;
   display:flex;
   flex-direction:column;
-  box-shadow:0 20px 60px rgba(0,0,0,0.3);
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:#f1f5f9;
 }
-.modal-mapa-header{
+.tela-comprovante .card-comprovante{
+  background:#fff;
+  border-radius:24px;
+  padding:40px 32px;
+  max-width:500px;
+  width:100%;
+  box-shadow:0 4px 20px rgba(0,0,0,0.06);
+  border:1px solid #e9eef3;
+}
+.tela-comprovante .card-comprovante .header-comp{
+  text-align:center;
+  padding-bottom:20px;
+  border-bottom:2px solid #2c6e2c;
+  margin-bottom:20px;
+}
+.tela-comprovante .card-comprovante .header-comp .logo-text{
+  font-size:22px;
+  font-weight:700;
+  color:#0f3b2c;
+}
+.tela-comprovante .card-comprovante .header-comp .sub-text{
+  font-size:13px;
+  color:#6c757d;
+  margin-top:4px;
+}
+.tela-comprovante .card-comprovante .icone-verificado{
+  text-align:center;
+  margin:12px 0 16px;
+}
+.tela-comprovante .card-comprovante .icone-verificado span{
+  display:inline-block;
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  background:#dcfce7;
+  line-height:64px;
+  font-size:32px;
+  color:#22c55e;
+}
+.tela-comprovante .card-comprovante .linha-dado{
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  padding:16px 20px;
-  border-bottom:1px solid #e2e8f0;
+  padding:10px 0;
+  border-bottom:1px solid #f1f5f9;
+  font-size:15px;
 }
-.modal-mapa-header h4{font-size:16px;color:#0f3b2c;}
-.modal-mapa-fechar{
-  background:transparent;
+.tela-comprovante .card-comprovante .linha-dado .rotulo{
+  color:#6c757d;
+}
+.tela-comprovante .card-comprovante .linha-dado .valor{
+  font-weight:600;
+  color:#0f3b2c;
+}
+.tela-comprovante .card-comprovante .linha-dado:last-child{
+  border-bottom:none;
+}
+.tela-comprovante .card-comprovante .rodape-comp{
+  margin-top:24px;
+  padding-top:16px;
+  border-top:2px solid #2c6e2c;
+  text-align:center;
+  font-size:11px;
+  color:#94a3b8;
+}
+.tela-comprovante .btn-voltar-inicio{
+  margin-top:20px;
+  padding:14px 48px;
+  border-radius:40px;
   border:none;
-  font-size:24px;
+  background:#2c6e2c;
+  color:white;
+  font-weight:600;
+  font-size:16px;
   cursor:pointer;
-  color:#4b5563;
-  padding:0 8px;
+  transition:0.2s;
 }
-.modal-mapa-body{
-  flex:1;
-  padding:16px 20px 20px;
-  overflow-y:auto;
+.tela-comprovante .btn-voltar-inicio:hover{
+  background:#1f4f1f;
 }
-.modal-mapa-body .mapa-frame{
-  width:100%;
-  height:300px;
-  border-radius:16px;
-  border:1px solid #e2e8f0;
-  background:#e2e8f0;
-}
-.modal-mapa-body .info-local{
-  margin-top:12px;
-  font-size:14px;
-  color:#4b5563;
-  line-height:1.6;
-}
-.modal-mapa-body .info-local strong{color:#1e293b;}
 </style>
 </head>
 <body>
@@ -426,25 +546,17 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
 
 <div class="main-dynamic" id="mainDynamic"></div>
 
-<!-- Notificacao fixa para ponto aberto > 5h30 -->
 <div class="notificacao-ponto-aberto" id="notificacaoPontoAberto">
   Ponto aberto ha mais de 5h30 - Clique para abrir chamado
 </div>
 
-<!-- Modal de seguranca (calculo + localizacao) -->
 <div class="modal-seguranca" id="modalSeguranca">
   <div class="modal-seguranca-content">
     <h3 id="segTitulo">Verificacao de Seguranca</h3>
-    <div class="subtitulo" id="segSubtitulo">Resolva o calculo e permita a localizacao</div>
-    
+    <div class="subtitulo" id="segSubtitulo">Resolva o calculo para continuar</div>
     <div class="label">Calcule o resultado:</div>
     <div class="campo-calculo" id="campoCalculo">10 + 10 = ?</div>
     <input type="number" id="inputResultado" placeholder="Digite o resultado" inputmode="numeric">
-    
-    <div class="label" style="margin-top:12px;">Localizacao</div>
-    <button class="btn-localizacao" id="btnPermitirLocalizacao">Permitir Localizacao</button>
-    <div class="status-localizacao" id="statusLocalizacao">Aguardando permissao...</div>
-    
     <div class="botoes-modal">
       <button class="btn-cancelar-seg" id="btnCancelarSeg">Cancelar</button>
       <button class="btn-confirmar-seg" id="btnConfirmarSeg" disabled>Confirmar</button>
@@ -452,17 +564,35 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
   </div>
 </div>
 
-<!-- Modal Mapa sobreposto -->
-<div class="modal-mapa-overlay" id="modalMapa">
-  <div class="modal-mapa-content">
-    <div class="modal-mapa-header">
-      <h4 id="mapaTitulo">Localizacao do Ponto</h4>
-      <button class="modal-mapa-fechar" id="fecharMapaBtn">✕</button>
+<div class="modal-camera" id="modalCamera">
+  <div class="camera-oval">
+    <video id="videoCam" autoplay playsinline></video>
+    <div class="spinner-overlay" id="spinnerOverlay" style="display:none;">
+      <div class="spinner-bola"></div>
     </div>
-    <div class="modal-mapa-body">
-      <div class="mapa-frame" id="mapaFrame"></div>
-      <div class="info-local" id="mapaInfo"></div>
+    <button class="btn-cancelar-camera" id="cancelarCameraBtn">Cancelar</button>
+  </div>
+</div>
+
+<div class="modal-sem-camera" id="modalSemCamera">
+  <div class="modal-sem-camera-content">
+    <h3>Problemas com a camera?</h3>
+    <p>Se voce nao esta conseguindo usar a camera, marque abaixo e prossiga sem reconhecimento facial.</p>
+    <div class="botoes">
+      <button class="btn-cancelar-sem" id="btnCancelarSem">Cancelar</button>
+      <button class="btn-continuar-sem" id="btnContinuarSem">Prosseguir sem camera</button>
     </div>
+  </div>
+</div>
+
+<!-- Modal Comprovante sobreposto -->
+<div class="modal-comprovante" id="modalComprovante">
+  <div class="modal-comprovante-content">
+    <div class="icone-check">✓</div>
+    <h3>Ponto Finalizado</h3>
+    <div class="sub-texto">Expediente encerrado com sucesso</div>
+    <div class="dados-ponto" id="dadosComprovante"></div>
+    <button class="btn-ok-comprovante" id="btnOkComprovante">Ver Comprovante</button>
   </div>
 </div>
 
@@ -470,7 +600,6 @@ body{background:#fff;font-family:'Inter',sans-serif;color:#1e293b;min-height:100
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
   authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
@@ -487,12 +616,11 @@ let pontoStart = null;
 let cronInterval = null;
 let currentViewStack = [];
 
-// Variaveis para seguranca
 let segCallback = null;
 let segResultadoCorreto = 0;
-let segLocalizacaoPermitida = false;
-let segCoordenadas = null;
 let segOperacaoRealizada = '';
+let cameraStreamActive = null;
+let dadosComprovante = null;
 
 const mainEl = document.getElementById("mainDynamic");
 const headerEl = document.getElementById("appHeader");
@@ -500,9 +628,51 @@ const backBtn = document.getElementById("backBtn");
 const headerTitleSpan = document.getElementById("headerTitle");
 const avatarMini = document.getElementById("avatarMini");
 const notifPontoAberto = document.getElementById("notificacaoPontoAberto");
-const modalMapa = document.getElementById("modalMapa");
 
-// ----- FUNCOES AUXILIARES -----
+// Audio para efeito de confirmação
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playNotificationSound(){
+  try {
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    oscillator.frequency.value = 880;
+    oscillator.type = "sine";
+    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+    oscillator.start(audioCtx.currentTime);
+    oscillator.stop(audioCtx.currentTime + 0.4);
+    
+    setTimeout(() => {
+      const osc2 = audioCtx.createOscillator();
+      const gain2 = audioCtx.createGain();
+      osc2.connect(gain2);
+      gain2.connect(audioCtx.destination);
+      osc2.frequency.value = 1100;
+      osc2.type = "sine";
+      gain2.gain.setValueAtTime(0.25, audioCtx.currentTime);
+      gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+      osc2.start(audioCtx.currentTime);
+      osc2.stop(audioCtx.currentTime + 0.3);
+    }, 150);
+    
+    setTimeout(() => {
+      const osc3 = audioCtx.createOscillator();
+      const gain3 = audioCtx.createGain();
+      osc3.connect(gain3);
+      gain3.connect(audioCtx.destination);
+      osc3.frequency.value = 1320;
+      osc3.type = "sine";
+      gain3.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain3.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+      osc3.start(audioCtx.currentTime);
+      osc3.stop(audioCtx.currentTime + 0.25);
+    }, 300);
+  } catch(e) { /* fallback silencioso */ }
+}
+
 function showMessage(msg){
   let t = document.createElement("div");
   t.className = "notif-toast";
@@ -540,7 +710,6 @@ function getDataChave(){
   let d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
-// ----- VERIFICACAO NOTIFICACAO PONTO ABERTO (> 5h30) -----
 function verificarNotificacaoPontoAberto(){
   if(pontoAtivo && pontoStart){
     let diff = Date.now() - pontoStart;
@@ -561,7 +730,6 @@ notifPontoAberto.onclick = function(){
   renderScreen('chamado', true);
 };
 
-// ----- BOTTOM SHEET -----
 let activeSheetCallback = null;
 let activeSheetCloseOnConfirm = true;
 function showBottomSheet(title, message, confirmText, onConfirm, closeOnConfirm=true, showCronometro=false){
@@ -607,40 +775,6 @@ function showPontoAbertoSheet(){
   showBottomSheet("Ponto em Andamento", `Ola, ${nomeFunc}! Voce ja possui um ponto aberto. Tempo atual:`, "Acessar Ponto", ()=>{ renderScreen('ponto', true); }, true, true);
 }
 
-// ----- MAPA SOBREPOSTO (OPENSTREETMAP) -----
-function abrirMapaOverlay(lat, lng, titulo, infoAdicional){
-  const modal = document.getElementById("modalMapa");
-  const frame = document.getElementById("mapaFrame");
-  const info = document.getElementById("mapaInfo");
-  const tituloEl = document.getElementById("mapaTitulo");
-  
-  tituloEl.textContent = titulo || 'Localizacao do Ponto';
-  
-  if(lat && lng){
-    const url = `https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.005}%2C${lat-0.005}%2C${lng+0.005}%2C${lat+0.005}&layer=mapnik&marker=${lat}%2C${lng}`;
-    frame.innerHTML = `<iframe width="100%" height="300" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="${url}" style="border-radius:16px;width:100%;height:300px;"></iframe>`;
-    info.innerHTML = `
-      <strong>Coordenadas:</strong> ${lat.toFixed(6)}, ${lng.toFixed(6)}<br>
-      <strong>Link:</strong> <a href="https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}&zoom=15" target="_blank" style="color:#2c6e2c;">Abrir no OpenStreetMap</a>
-      ${infoAdicional ? `<br><br>${infoAdicional}` : ''}
-    `;
-  } else {
-    frame.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:300px;color:#6c757d;background:#f1f5f9;border-radius:16px;">Localizacao nao disponivel</div>';
-    info.innerHTML = 'Nenhuma coordenada registrada para este ponto.';
-  }
-  
-  modal.classList.add("aberto");
-}
-
-function fecharMapaOverlay(){
-  document.getElementById("modalMapa").classList.remove("aberto");
-}
-document.getElementById("fecharMapaBtn").onclick = fecharMapaOverlay;
-document.getElementById("modalMapa").addEventListener("click", function(e){
-  if(e.target === this) fecharMapaOverlay();
-});
-
-// ----- NAVEGACAO -----
 db.ref("usuarios/"+currentUser).on("value", snap=>{ if(snap.exists()) userData = snap.val(); updateAvatarMini(); });
 function updateAvatarMini(){
   if(userData.foto) avatarMini.src = userData.foto;
@@ -676,19 +810,28 @@ function renderScreen(screenId, pushToStack=true){
   else if(screenId === 'ponto') headerTitleSpan.innerText = 'Batida de Ponto';
   else if(screenId === 'carga') headerTitleSpan.innerText = 'Carga Horaria';
   else if(screenId === 'chamado') headerTitleSpan.innerText = 'Central de Chamados';
+  else if(screenId === 'comprovante') headerTitleSpan.innerText = 'Comprovante';
   if(screenId === 'login') telaLogin();
   else if(screenId === 'tripode') telaTripode();
   else if(screenId === 'ponto') telaPonto();
   else if(screenId === 'carga') telaCarga();
   else if(screenId === 'chamado') telaChamado();
+  else if(screenId === 'comprovante') telaComprovante();
 }
 function goBack(){
   if(currentViewStack.length <=1){ renderScreen('login',false); currentViewStack=['login']; }
-  else { currentViewStack.pop(); renderScreen(currentViewStack[currentViewStack.length-1], false); }
+  else { 
+    const ultima = currentViewStack.pop();
+    if(ultima === 'comprovante' && currentViewStack.length > 0){
+      // Volta para a tela anterior (ponto)
+      renderScreen(currentViewStack[currentViewStack.length-1], false);
+    } else {
+      renderScreen(currentViewStack[currentViewStack.length-1] || 'tripode', false);
+    }
+  }
 }
 backBtn.onclick = goBack;
 
-// ----- TELA LOGIN -----
 function telaLogin(){
   mainEl.innerHTML = `<div class="login-screen"><img class="avatar-circle" id="loginAvatar" src="${userData.foto||''}" onerror="this.src='https://ui-avatars.com/api/?background=2c6e2c&color=fff&name=${encodeURIComponent(userData.nome||'User')}'"><div class="nome-bemvindo" id="loginNome">${userData.nome||'Carregando...'}</div><button class="acessar-btn" id="acessarPrincipalBtn">Acessar</button></div>`;
   if(userData.nome) document.getElementById("loginNome").innerText = userData.nome;
@@ -696,7 +839,6 @@ function telaLogin(){
   document.getElementById("acessarPrincipalBtn").onclick = ()=> renderScreen('tripode', true);
 }
 
-// ----- TELA TRIPODE -----
 function telaTripode(){
   mainEl.innerHTML = `<div class="three-buttons-vertical"><button id="btnPonto">Batida de Ponto</button><button id="btnCarga">Carga Horaria</button><button id="btnChamado">Abrir Chamado</button></div><div class="content-pane"><div style="text-align:center;margin-top:40px;color:#6c757d;">Selecione uma opcao</div></div>`;
   document.getElementById("btnPonto").onclick = ()=> renderScreen('ponto', true);
@@ -707,9 +849,8 @@ function telaTripode(){
   }
 }
 
-// ----- TELA PONTO -----
 function telaPonto(){
-  mainEl.innerHTML = `<div style="padding:24px 16px;"><div class="cronometro-grande" id="cronodisplay">00:00:00</div><div class="botoes-acao"><button class="btn-iniciar-ponto" id="iniciarPontoBtn">Iniciar Ponto</button><button class="btn-finalizar-ponto" id="finalizarPontoBtn">Finalizar Dia</button></div><div style="margin-top:30px;"><h4>Ultimos registros</h4><div id="miniResumo"></div></div></div>`;
+  mainEl.innerHTML = `<div style="padding:24px 16px;background:#fff;min-height:calc(100vh - 64px);"><div class="cronometro-grande" id="cronodisplay">00:00:00</div><div class="botoes-acao"><button class="btn-iniciar-ponto" id="iniciarPontoBtn">Iniciar Ponto</button><button class="btn-finalizar-ponto" id="finalizarPontoBtn">Finalizar Dia</button></div><div style="margin-top:30px;"><h4>Ultimos registros</h4><div id="miniResumo"></div></div></div>`;
   if(pontoAtivo) { document.getElementById("finalizarPontoBtn").style.display = "block"; document.getElementById("iniciarPontoBtn").style.display = "none"; atualizaCronometroDisplay(); }
   else { document.getElementById("finalizarPontoBtn").style.display = "none"; document.getElementById("iniciarPontoBtn").style.display = "block"; }
   startCronometroLocal();
@@ -732,22 +873,11 @@ async function carregarMiniHistorico(){
   for(let [data, val] of entradas){
     let ini = val.inicio ? new Date(val.inicio).toLocaleTimeString().slice(0,5) : "--";
     let fim = val.fim ? new Date(val.fim).toLocaleTimeString().slice(0,5) : "--";
-    let loc = val.localizacao || val.localizacao_fim ? '📍' : '';
-    let lat = val.localizacao?.lat || val.localizacao_fim?.lat || null;
-    let lng = val.localizacao?.lng || val.localizacao_fim?.lng || null;
-    let btnMapa = (lat && lng) ? `<button class="btn-ver-mapa" onclick="abrirMapaMini('${data}','${lat}','${lng}')">Mapa</button>` : '';
-    rows += `<tr><td>${data}</td><td>${ini}</td><td>${fim}</td><td>${loc}</td><td>${btnMapa}</td></tr>`;
+    rows += `<tr><td>${data}</td><td>${ini}</td><td>${fim}</td></tr>`;
   }
-  document.getElementById("miniResumo").innerHTML = `<table class="tabela-ponto"><tr><th>Data</th><th>Entrada</th><th>Saida</th><th>Loc</th><th>Mapa</th></tr>${rows||'<tr><td colspan="5">Nenhum registro</td></tr>'}</table>`;
+  document.getElementById("miniResumo").innerHTML = `<table class="tabela-ponto"><tr><th>Data</th><th>Entrada</th><th>Saida</th></tr>${rows||'<tr><td colspan="3">Nenhum registro</td></tr>'}</table>`;
 }
 
-function abrirMapaMini(data, lat, lng){
-  let titulo = `Localizacao - ${data}`;
-  let info = `Registro do dia ${data}`;
-  abrirMapaOverlay(parseFloat(lat), parseFloat(lng), titulo, info);
-}
-
-// ----- MODAL DE SEGURANCA (CALCULO + LOCALIZACAO) -----
 function abrirModalSeguranca(acao){
   const modal = document.getElementById("modalSeguranca");
   if(!modal) return;
@@ -770,21 +900,15 @@ function abrirModalSeguranca(acao){
   document.getElementById("campoCalculo").innerHTML = op.texto + ' = ?';
   document.getElementById("inputResultado").value = '';
   document.getElementById("inputResultado").focus();
-  
-  segLocalizacaoPermitida = false;
-  segCoordenadas = null;
-  document.getElementById("statusLocalizacao").innerHTML = 'Aguardando permissao...';
-  document.getElementById("btnPermitirLocalizacao").className = 'btn-localizacao';
-  document.getElementById("btnPermitirLocalizacao").innerHTML = 'Permitir Localizacao';
   document.getElementById("btnConfirmarSeg").disabled = true;
   
   const titulo = acao === 'iniciar' ? 'Iniciar Ponto' : 'Finalizar Ponto';
   document.getElementById("segTitulo").innerHTML = `Seguranca - ${titulo}`;
-  document.getElementById("segSubtitulo").innerHTML = `Resolva o calculo e permita a localizacao para ${acao === 'iniciar' ? 'iniciar' : 'finalizar'} o ponto`;
+  document.getElementById("segSubtitulo").innerHTML = `Resolva o calculo para ${acao === 'iniciar' ? 'iniciar' : 'finalizar'} o ponto`;
   
   segCallback = ()=>{
     if(acao === 'iniciar'){
-      iniciarPontoComSeguranca();
+      abrirModalCamera();
     } else {
       finalizarPontoComSeguranca();
     }
@@ -793,11 +917,8 @@ function abrirModalSeguranca(acao){
   modal.classList.add("aberto");
   
   document.getElementById("inputResultado").oninput = function(){
-    validarSeguranca();
-  };
-  
-  document.getElementById("btnPermitirLocalizacao").onclick = function(){
-    obterLocalizacao();
+    const valor = parseInt(this.value);
+    document.getElementById("btnConfirmarSeg").disabled = (valor !== segResultadoCorreto);
   };
   
   document.getElementById("btnConfirmarSeg").onclick = function(){
@@ -816,51 +937,158 @@ function fecharModalSeguranca(){
   segCallback = null;
 }
 
-function validarSeguranca(){
-  const input = document.getElementById("inputResultado");
-  const valor = parseInt(input.value);
-  const btnConfirmar = document.getElementById("btnConfirmarSeg");
+function finalizarPontoComSeguranca(){
+  let fim = Date.now();
+  let dataChave = getDataChave();
+  let historicoRef = db.ref("historico/"+currentUser+"/"+dataChave);
+  historicoRef.update({
+    fim: fim,
+    calculo_fim: segOperacaoRealizada,
+    timestamp_fim: fim
+  });
+  db.ref("pontos/"+currentUser+"/ativo").remove();
   
-  if(valor === segResultadoCorreto && segLocalizacaoPermitida){
-    btnConfirmar.disabled = false;
-  } else {
-    btnConfirmar.disabled = true;
-  }
+  // Toca o som de confirmacao
+  playNotificationSound();
+  
+  // Prepara dados do comprovante
+  let dataAtual = new Date().toLocaleDateString('pt-BR');
+  let horaAtual = new Date().toLocaleTimeString('pt-BR');
+  let nome = userData.nome || 'Nao informado';
+  let na = currentUser || 'Nao informado';
+  let tempoDecorrido = pontoStart ? formatDuration(Date.now() - pontoStart) : '00:00:00';
+  
+  dadosComprovante = {
+    nome: nome,
+    na: na,
+    data: dataAtual,
+    hora: horaAtual,
+    tempo: tempoDecorrido,
+    calculo: segOperacaoRealizada
+  };
+  
+  // Mostra modal sobreposto
+  mostrarModalComprovante();
 }
 
-function obterLocalizacao(){
-  const statusEl = document.getElementById("statusLocalizacao");
-  const btnEl = document.getElementById("btnPermitirLocalizacao");
+function mostrarModalComprovante(){
+  const modal = document.getElementById("modalComprovante");
+  const dadosDiv = document.getElementById("dadosComprovante");
   
-  if (!navigator.geolocation) {
-    statusEl.innerHTML = 'Geolocalizacao nao suportada pelo navegador';
-    return;
-  }
+  dadosDiv.innerHTML = `
+    <div><span class="label">Funcionario</span> <strong>${dadosComprovante.nome}</strong></div>
+    <div><span class="label">NA</span> <strong>${dadosComprovante.na}</strong></div>
+    <div><span class="label">Data</span> <strong>${dadosComprovante.data}</strong></div>
+    <div><span class="label">Hora finalizacao</span> <strong>${dadosComprovante.hora}</strong></div>
+    <div><span class="label">Tempo total</span> <strong>${dadosComprovante.tempo}</strong></div>
+    <div><span class="label">Calculo</span> <strong>${dadosComprovante.calculo}</strong></div>
+  `;
   
-  statusEl.innerHTML = 'Obtendo localizacao...';
-  btnEl.innerHTML = 'Aguardando...';
+  modal.classList.add("aberto");
   
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      segLocalizacaoPermitida = true;
-      segCoordenadas = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
-      statusEl.innerHTML = `Localizacao permitida (${segCoordenadas.lat.toFixed(5)}, ${segCoordenadas.lng.toFixed(5)})`;
-      btnEl.className = 'btn-localizacao ativo';
-      btnEl.innerHTML = 'Localizacao Permitida';
-      validarSeguranca();
-    },
-    (error) => {
-      statusEl.innerHTML = `Erro: ${error.message}. Clique em "Permitir Localizacao" novamente.`;
-      btnEl.innerHTML = 'Tentar Novamente';
-      segLocalizacaoPermitida = false;
-      validarSeguranca();
-    },
-    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-  );
+  document.getElementById("btnOkComprovante").onclick = function(){
+    modal.classList.remove("aberto");
+    // Navega para tela de comprovante
+    renderScreen('comprovante', true);
+  };
 }
+
+function telaComprovante(){
+  mainEl.innerHTML = `
+    <div class="tela-comprovante">
+      <div class="card-comprovante">
+        <div class="header-comp">
+          <div class="logo-text">DomusFit</div>
+          <div class="sub-text">Comprovante de Ponto - Documento Homologado</div>
+        </div>
+        <div class="icone-verificado"><span>✓</span></div>
+        <div class="linha-dado"><span class="rotulo">Funcionario</span><span class="valor">${dadosComprovante.nome}</span></div>
+        <div class="linha-dado"><span class="rotulo">NA</span><span class="valor">${dadosComprovante.na}</span></div>
+        <div class="linha-dado"><span class="rotulo">Data</span><span class="valor">${dadosComprovante.data}</span></div>
+        <div class="linha-dado"><span class="rotulo">Hora finalizacao</span><span class="valor">${dadosComprovante.hora}</span></div>
+        <div class="linha-dado"><span class="rotulo">Tempo total</span><span class="valor">${dadosComprovante.tempo}</span></div>
+        <div class="linha-dado"><span class="rotulo">Calculo</span><span class="valor">${dadosComprovante.calculo}</span></div>
+        <div class="linha-dado"><span class="rotulo">Status</span><span class="valor" style="color:#22c55e;">Finalizado</span></div>
+        <div class="rodape-comp">
+          Documento gerado automaticamente pelo sistema DomusFit<br>
+          ID: ${Math.random().toString(36).substring(2,10).toUpperCase() + Date.now().toString(36).toUpperCase()}
+        </div>
+      </div>
+      <button class="btn-voltar-inicio" onclick="voltarInicio()">Voltar para Inicio</button>
+    </div>
+  `;
+}
+
+function voltarInicio(){
+  // Reseta o estado do ponto
+  document.getElementById("finalizarPontoBtn").style.display = "none";
+  document.getElementById("iniciarPontoBtn").style.display = "block";
+  if(document.getElementById("cronodisplay")) document.getElementById("cronodisplay").innerText = "00:00:00";
+  carregarMiniHistorico();
+  renderScreen('tripode', true);
+}
+
+function abrirModalCamera(){
+  const modal = document.getElementById("modalCamera");
+  const video = document.getElementById("videoCam");
+  const spinner = document.getElementById("spinnerOverlay");
+  
+  modal.classList.add("aberto");
+  spinner.style.display = "none";
+  
+  navigator.mediaDevices.getUserMedia({video:{facingMode:"user", width:{ideal:320}, height:{ideal:380}}})
+    .then(stream => {
+      cameraStreamActive = stream;
+      video.srcObject = stream;
+      
+      setTimeout(() => {
+        if(cameraStreamActive){
+          spinner.style.display = "flex";
+          setTimeout(() => {
+            if(cameraStreamActive){
+              cameraStreamActive.getTracks().forEach(t=>t.stop());
+              cameraStreamActive = null;
+              video.srcObject = null;
+            }
+            fecharModalCamera();
+            iniciarPontoComSeguranca();
+          }, 2000);
+        }
+      }, 2000);
+    })
+    .catch(() => {
+      fecharModalCamera();
+      document.getElementById("modalSemCamera").classList.add("aberto");
+    });
+  
+  document.getElementById("cancelarCameraBtn").onclick = function(){
+    if(cameraStreamActive){
+      cameraStreamActive.getTracks().forEach(t=>t.stop());
+      cameraStreamActive = null;
+      video.srcObject = null;
+    }
+    fecharModalCamera();
+  };
+}
+
+function fecharModalCamera(){
+  const modal = document.getElementById("modalCamera");
+  modal.classList.remove("aberto");
+  if(cameraStreamActive){
+    cameraStreamActive.getTracks().forEach(t=>t.stop());
+    cameraStreamActive = null;
+  }
+  document.getElementById("videoCam").srcObject = null;
+}
+
+document.getElementById("btnCancelarSem").onclick = function(){
+  document.getElementById("modalSemCamera").classList.remove("aberto");
+};
+
+document.getElementById("btnContinuarSem").onclick = function(){
+  document.getElementById("modalSemCamera").classList.remove("aberto");
+  iniciarPontoComSeguranca();
+};
 
 function iniciarPontoComSeguranca(){
   let agora = Date.now();
@@ -868,39 +1096,19 @@ function iniciarPontoComSeguranca(){
   let historicoRef = db.ref("historico/"+currentUser+"/"+dataChave);
   historicoRef.update({
     inicio: agora,
-    localizacao: segCoordenadas || null,
     calculo: segOperacaoRealizada,
     timestamp_inicio: agora
   });
   db.ref("pontos/"+currentUser+"/ativo").set({inicio: agora});
-  showMessage("Ponto iniciado com seguranca");
+  showMessage("Ponto iniciado");
   if(document.getElementById("cronodisplay")) atualizaCronometroDisplay();
   carregarMiniHistorico();
   if(document.getElementById("finalizarPontoBtn")) document.getElementById("finalizarPontoBtn").style.display = "block";
   if(document.getElementById("iniciarPontoBtn")) document.getElementById("iniciarPontoBtn").style.display = "none";
 }
 
-function finalizarPontoComSeguranca(){
-  let fim = Date.now();
-  let dataChave = getDataChave();
-  let historicoRef = db.ref("historico/"+currentUser+"/"+dataChave);
-  historicoRef.update({
-    fim: fim,
-    localizacao_fim: segCoordenadas || null,
-    calculo_fim: segOperacaoRealizada,
-    timestamp_fim: fim
-  });
-  db.ref("pontos/"+currentUser+"/ativo").remove();
-  showMessage("Dia finalizado com seguranca");
-  document.getElementById("finalizarPontoBtn").style.display = "none";
-  document.getElementById("iniciarPontoBtn").style.display = "block";
-  if(document.getElementById("cronodisplay")) document.getElementById("cronodisplay").innerText = "00:00:00";
-  carregarMiniHistorico();
-}
-
-// ----- TELA CARGA HORARIA (COM LOCALIZACAO E MAPA) -----
 function telaCarga(){
-  mainEl.innerHTML = `<div style="padding:0 16px 20px;"><div class="filtro-mes"><input type="text" id="mesAnoInput" placeholder="MM/AAAA" maxlength="7"><button id="buscarCargaBtn">Buscar</button></div><div id="cargaResultado"></div></div>`;
+  mainEl.innerHTML = `<div style="padding:0 16px 20px;background:#fff;min-height:calc(100vh - 64px);"><div class="filtro-mes"><input type="text" id="mesAnoInput" placeholder="MM/AAAA" maxlength="7"><button id="buscarCargaBtn">Buscar</button></div><div id="cargaResultado"></div></div>`;
   let input = document.getElementById("mesAnoInput");
   input.addEventListener("input", function(e){
     let val = e.target.value.replace(/\D/g,'');
@@ -920,33 +1128,22 @@ function telaCarga(){
     for(let [data, val] of registros){
       let ini = val.inicio ? new Date(val.inicio).toLocaleTimeString().slice(0,5) : "--";
       let fim = val.fim ? new Date(val.fim).toLocaleTimeString().slice(0,5) : "--";
-      let loc = val.localizacao || val.localizacao_fim ? '📍' : '';
-      let lat = val.localizacao?.lat || val.localizacao_fim?.lat || null;
-      let lng = val.localizacao?.lng || val.localizacao_fim?.lng || null;
-      let btnMapa = (lat && lng) ? `<button class="btn-ver-mapa" onclick="abrirMapaMiniCarga('${data}',${lat},${lng})">Mapa</button>` : '';
       let dur = "--";
       if(val.inicio && val.fim){
         let diff = val.fim - val.inicio;
         totalMs += diff;
         dur = `${Math.floor(diff/3600000)}h ${Math.floor((diff%3600000)/60000)}m`;
       }
-      linhas += `<tr><td>${data}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td><td>${loc}</td><td>${btnMapa}</td></tr>`;
+      linhas += `<tr><td>${data}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td></tr>`;
     }
     let totalH = Math.floor(totalMs/3600000);
     let totalM = Math.floor((totalMs%3600000)/60000);
-    document.getElementById("cargaResultado").innerHTML = `<div class="total-horas-card"><span>Total ${mm}/${yyyy}</span><strong>${totalH}h ${totalM}m</strong></div><table class="tabela-ponto"><thead><tr><th>Data</th><th>Entrada</th><th>Saida</th><th>Duracao</th><th>Loc</th><th>Mapa</th></tr></thead><tbody>${linhas||'<tr><td colspan="6">Nenhum registro</td></tr>'}</tbody></table>`;
+    document.getElementById("cargaResultado").innerHTML = `<div class="total-horas-card"><span>Total ${mm}/${yyyy}</span><strong>${totalH}h ${totalM}m</strong></div><table class="tabela-ponto"><thead><tr><th>Data</th><th>Entrada</th><th>Saida</th><th>Duracao</th></tr></thead><tbody>${linhas||'<tr><td colspan="4">Nenhum registro</td></tr>'}</tbody></table>`;
   };
 }
 
-function abrirMapaMiniCarga(data, lat, lng){
-  let titulo = `Localizacao - ${data}`;
-  let info = `Registro do dia ${data}`;
-  abrirMapaOverlay(lat, lng, titulo, info);
-}
-
-// ----- TELA CHAMADO -----
 function telaChamado(){
-  mainEl.innerHTML = `<div style="padding:20px 16px;"><div id="formChamadoArea"><h3 style="margin-bottom:20px;">Abrir Chamado</h3><div style="background:#f8fafc;padding:16px;border-radius:24px;margin-bottom:20px;"><p><strong>Nome:</strong> ${userData.nome || '--'}</p><p><strong>NA:</strong> ${currentUser}</p><p><strong>Telefone:</strong> ${userData.telefone || '--'}</p></div><label>Descreva o motivo do chamado (edicao de ponto, correcao):</label><textarea id="motivacaoTexto" rows="5" style="width:100%;margin:12px 0;padding:14px;border-radius:24px;border:1px solid #cbd5e1;font-family:inherit;"></textarea><button id="enviarChamadoFinalBtn" style="background:#2c6e2c;color:white;border:none;padding:14px;width:100%;border-radius:60px;font-weight:600;">Enviar para WhatsApp</button><div id="protocoloAviso" style="margin-top:16px;font-size:13px;color:#4b5563;"></div></div><button id="voltarDoChamadoBtn" style="margin-top:30px;background:#e2e8f0;border:none;padding:12px;border-radius:60px;width:100%;">Voltar</button></div>`;
+  mainEl.innerHTML = `<div style="padding:20px 16px;background:#fff;min-height:calc(100vh - 64px);"><div id="formChamadoArea"><h3 style="margin-bottom:20px;">Abrir Chamado</h3><div style="background:#f8fafc;padding:16px;border-radius:24px;margin-bottom:20px;"><p><strong>Nome:</strong> ${userData.nome || '--'}</p><p><strong>NA:</strong> ${currentUser}</p><p><strong>Telefone:</strong> ${userData.telefone || '--'}</p></div><label>Descreva o motivo do chamado (edicao de ponto, correcao):</label><textarea id="motivacaoTexto" rows="5" style="width:100%;margin:12px 0;padding:14px;border-radius:24px;border:1px solid #cbd5e1;font-family:inherit;"></textarea><button id="enviarChamadoFinalBtn" style="background:#2c6e2c;color:white;border:none;padding:14px;width:100%;border-radius:60px;font-weight:600;">Enviar para WhatsApp</button><div id="protocoloAviso" style="margin-top:16px;font-size:13px;color:#4b5563;"></div></div><button id="voltarDoChamadoBtn" style="margin-top:30px;background:#e2e8f0;border:none;padding:12px;border-radius:60px;width:100%;">Voltar</button></div>`;
   document.getElementById("enviarChamadoFinalBtn").onclick = async()=>{
     let motiv = document.getElementById("motivacaoTexto").value.trim();
     if(motiv.length < 5){ showMessage("Descreva o motivo com pelo menos 5 caracteres"); return; }
@@ -962,7 +1159,6 @@ function telaChamado(){
   document.getElementById("voltarDoChamadoBtn").onclick = ()=> renderScreen('tripode', true);
 }
 
-// Inicializa
 renderScreen('login', false);
 </script>
 </body>
