@@ -1,1128 +1,349 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Home - DomusFit</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>DomusFit - Inicio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
 <style>
-/* VARIÁVEIS E RESET */
-:root{
-  --bg:#fff;
-  --dark:#000;
-  --card:#f8f8f8;
-  --green:#32CD32; /* Cor principal, mantida */
-  --primary-dark: #222;
-  --shadow-light: 0 1px 4px rgba(0,0,0,0.08); /* Sombra mais sutil */
-  --shadow-medium: 0 4px 12px rgba(0,0,0,0.1);
-  --shadow-bold: 0 6px 15px rgba(0,0,0,0.2);
-}
-/* Estilo para bordas quadradas em inputs/buttons/containers */
-input, button, .aluno-container, .nova-funcao-container, .opcao, .menu-scroll, .footer-image {
-    border-radius: 0 !important; /* Força borda quadrada */
-}
-.social-float a img {
-    border-radius: 0 !important; /* Borda quadrada para ícones flutuantes */
-}
-*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
-body{
-  background:var(--bg) url('https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000021-60d3860d3b/700/0503E1B1-999A-473A-9097-49C8721F8C2C.webp') no-repeat center center/cover;
-  color:var(--dark);
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  padding-top:64px; /* Ajuste para o header fixo */
-}
-/* HEADER E MENU */
-header{
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  height:64px;
-  background:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 20px;
-  border-bottom:1px solid #eee;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.05);
-  z-index:10;
-}
-.logo-canto-esquerdo{height:38px;width:auto}
-#menuBtn{
-  cursor:pointer;
-  width:30px;
-  height:22px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
-#menuBtn div{
-  height:3px;
-  background:var(--primary-dark);
-  border-radius:2px;
-  transition:all .3s;
-}
-#menuBox{
-  position:fixed;
-  top:64px; /* Fixa abaixo do header */
-  right:-260px;
-  width:250px;
-  /* Altura ajustada para 100% menos a altura do header */
-  height:calc(100vh - 64px); 
-  background:#fff;
-  padding:20px;
-  box-shadow:-4px 0 12px rgba(0,0,0,0.15);
-  transition:right .4s ease-in-out;
-  z-index:100;
-  overflow-y:auto;
-}
-#closeBtn{
-  /* Mudamos a posição do botão de fechar para o topo do menuBox aberto */
-  position: sticky; /* Sticky para se manter visível ao scrollar o menu */
-  top: -20px; /* Puxa para cima para ficar na margem superior do padding */
-  right: -5px; /* Ajuste para centralizar visualmente */
-  cursor:pointer;
-  font-size:30px;
-  color:#666;
-  font-weight:100;
-  align-self: flex-end; /* Alinha o botão à direita */
-  margin-bottom: 20px;
-}
-.modern-menu-link {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-  cursor: pointer;
-  padding: 10px 0;
-  transition: background 0.2s;
-}
-.modern-menu-link:hover {
-  background: #f0f0f0;
-}
-.modern-menu-link img {
-  width: 35px;
-  height: 35px;
-  border-radius: 0; /* Borda quadrada */
-  margin-right: 12px;
-  object-fit: contain;
-  box-shadow: none; /* Remove sombra leve */
-  padding: 5px;
-  background: #fff;
-}
-.modern-menu-link span, .modern-menu-link a {
-  font-size: 15px;
-  color: var(--primary-dark);
-  text-decoration: none;
-  font-weight: 500;
-}
-.menu-list-item {
-  border-bottom: 1px solid #eee;
-  padding: 12px 0;
-  cursor: pointer;
-  font-size: 16px;
-  color: var(--primary-dark);
-  transition: color 0.2s;
-}
-.menu-list-item:hover {
-  color: var(--green);
-}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:#f8fafc;font-family:'Inter',sans-serif;color:#1e293b;min-height:100vh;display:flex;flex-direction:column;padding-top:64px;}
 
-/* OPÇÕES DE TREINO */
-.opcoes-treino {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 20px;
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-  justify-items: center;
-  max-width: 1000px;
-}
-.opcao {
-  background: #fff;
-  border-radius: 0; /* Borda quadrada */
-  text-align: center;
-  padding: 18px;
-  box-shadow: var(--shadow-light);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 100%;
-  max-width: 220px;
-  border: 1px solid #f0f0f0;
-}
-.opcao:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-medium);
-}
-.opcao img {
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 0; /* Borda quadrada */
-  transition: opacity 0.3s ease;
-}
-.opcao:hover img {opacity: 0.9;}
-.opcao span {
-  display: block;
-  margin-top: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--primary-dark);
-  letter-spacing: 0.3px;
-}
-/* LOADER (MANTIDO) */
-.loader {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 45px;
-  height: 45px;
-  border: 5px solid #e0e0e0;
-  border-top: 5px solid var(--green);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
-}
-@keyframes spin {to { transform: translate(-50%, -50%) rotate(360deg); }}
-/* MOBILE RESPONSIVE (MANTIDO) */
-@media (max-width: 600px) {
-  .opcao img {height: 100px;}
-  .opcao span {font-size: 14px;}
-  .opcoes-treino {padding: 10px;}
-}
-/* FLOAT SOCIAL */
-.social-float {
-  position: fixed;
-  bottom: 25px;
-  right: 25px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  z-index: 9999;
-}
-.social-float a img {
-  width: 55px;
-  height: 55px;
-  border-radius: 0; /* Borda quadrada */
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  backdrop-filter: blur(8px);
-}
-.social-float a img:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
-}
-/* LOADING SCREEN (MANTIDO) */
-#loadingScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.8);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;z-index:9999;opacity:1;transition:opacity .5s ease}
-#loadingBox{width:100px;height:100px;background:#fff;border-radius:0; /* Borda quadrada */display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(0,0,0,0.1)}
-.spinner{width:40px;height:40px;border:4px solid #ccc;border-top:4px solid var(--green);border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+/* HEADER */
+.app-header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #e9eef3;z-index:30;}
+.logo{height:38px;width:auto;}
+.menu-btn{width:30px;height:22px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;background:transparent;border:none;}
+.menu-btn div{height:3px;background:#1e293b;border-radius:2px;transition:all .3s;}
+
+/* MENU LATERAL */
+.menu-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:40;display:none;}
+.menu-overlay.aberto{display:block;}
+.menu-box{position:fixed;top:0;right:-280px;width:270px;height:100%;background:#fff;padding:24px 20px;box-shadow:-4px 0 20px rgba(0,0,0,0.12);transition:right .35s ease;z-index:50;overflow-y:auto;}
+.menu-box.aberto{right:0;}
+.menu-close{font-size:28px;cursor:pointer;color:#4b5563;text-align:right;margin-bottom:8px;background:transparent;border:none;width:100%;}
+.menu-box h3{font-size:18px;color:#0f3b2c;border-bottom:2px solid #2c6e2c;padding-bottom:12px;margin-bottom:20px;}
+.menu-link{display:flex;align-items:center;padding:12px 0;cursor:pointer;border-bottom:1px solid #f1f5f9;gap:14px;text-decoration:none;color:#1e293b;}
+.menu-link:hover{background:#f8fafc;padding-left:6px;transition:0.2s;}
+.menu-link img{width:28px;height:28px;object-fit:contain;}
+
+/* CONTEUDO PRINCIPAL */
+.main-content{flex:1;padding:16px;max-width:480px;width:100%;margin:0 auto;}
+
+/* ALUNO CONTAINER */
+.aluno-container{background:#fff;border-radius:0;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.06);margin-bottom:20px;border:1px solid #e9eef3;}
+.aluno-header{display:flex;align-items:center;gap:16px;margin-bottom:12px;}
+.foto-perfil{width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid #2c6e2c;cursor:pointer;background:#f1f5f9;}
+.aluno-header h2{font-size:18px;color:#0f3b2c;}
+.aluno-info p{font-size:14px;color:#4b5563;padding:4px 0;border-bottom:1px solid #f1f5f9;}
+.aluno-info p:last-child{border-bottom:none;}
+.aluno-info strong{color:#1e293b;}
+
+/* OPCOES GRID */
+.opcoes-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;}
+.opcao-card{background:#fff;border:1px solid #e9eef3;padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.04);text-decoration:none;color:#1e293b;}
+.opcao-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.08);border-color:#2c6e2c;}
+.opcao-card img{width:44px;height:44px;object-fit:contain;margin-bottom:8px;}
+.opcao-card span{display:block;font-size:13px;font-weight:600;}
 
 /* CARROSSEL */
-.carrossel-container {
-  /* Não precisa de margin-top, pois o padding-top do body já foi definido e a div começa onde o padding termina */
-  width: 100%;
-  max-width: 800px;
-  overflow: hidden;
-  position: relative;
-  background: #111;
-  margin: 0; 
-  padding: 0;
-}
-.carrossel {
-  display: flex;
-  transition: transform .7s ease-in-out;
-}
-.item {
-  min-width: 100%;
-  height: 400px;
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  overflow: hidden;
-}
-.item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(0.75);
-  transition: transform .8s ease;
-}
-.item:hover img {
-  transform: scale(1.05);
-}
-.texto-slide {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 30px 20px;
-  background: linear-gradient(0deg, rgba(0,0,0,0.8), transparent);
-  color: #fff;
-  text-align: center;
-}
-.texto-slide h2 {
-  font-size: 1.6rem;
-  margin-bottom: 8px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-.texto-slide p {
-  font-size: 1rem;
-  line-height: 1.5;
-  max-width: 90%;
-  margin: 0 auto;
-}
-@media(max-width:600px){
-  .item{height:300px;}
-  .texto-slide h2{font-size:1.2rem;}
-  .texto-slide p{font-size:0.9rem;}
-}
+.carrossel-container{width:100%;overflow:hidden;position:relative;background:#0f172a;margin-bottom:16px;}
+.carrossel{display:flex;transition:transform .7s ease-in-out;}
+.slide-item{min-width:100%;height:280px;position:relative;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;}
+.slide-item img{width:100%;height:100%;object-fit:cover;filter:brightness(0.7);}
+.slide-texto{position:absolute;bottom:0;width:100%;padding:24px 20px;background:linear-gradient(0deg,rgba(0,0,0,0.8),transparent);color:#fff;text-align:center;}
+.slide-texto h2{font-size:1.3rem;margin-bottom:4px;}
+.slide-texto p{font-size:0.85rem;opacity:0.9;}
 
-/* ALUNO CONTAINER - MODERNO */
-.aluno-container {
-  background: #fff;
-  padding: 25px;
-  max-width: 450px;
-  width: 90%;
-  margin: 25px auto;
-  border-radius: 0;
-  box-shadow: var(--shadow-medium);
-  border: 1px solid #f0f0f0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-}
-.aluno-header {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 10px;
-    border-bottom: 2px solid var(--green);
-    padding-bottom: 15px;
-}
-.aluno-header h2 {
-    color: var(--primary-dark);
-    font-size: 22px;
-    margin: 0;
-    margin-left: 20px;
-}
-.aluno-info {
-    width: 100%;
-    text-align: left;
-}
-.aluno-container p {
-  margin: 8px 0;
-  color: #444;
-  font-size: 15px;
-  line-height: 1.4;
-  padding-left: 5px;
-}
-.aluno-container hr {
-  border: 0;
-  height: 1px;
-  background: #ddd;
-  margin: 15px 0;
-  width: 100%;
-}
-.aluno-container .nota {
-  font-size: 13px; 
-  font-style: italic; 
-  color: #777;
-  text-align: center;
-}
-/* FOTO DE PERFIL */
-#fotoPerfil {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    cursor: pointer;
-    border: 4px solid var(--green);
-    box-shadow: var(--shadow-medium);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-#fotoPerfil:hover {
-    transform: scale(1.05);
-    box-shadow: var(--shadow-bold);
-}
+/* BOTOES SOCIAIS FLUTUANTES */
+.social-float{position:fixed;bottom:24px;right:20px;display:flex;flex-direction:column;gap:10px;z-index:20;}
+.social-float a img{width:50px;height:50px;object-fit:contain;box-shadow:0 2px 12px rgba(0,0,0,0.15);transition:transform 0.2s;}
+.social-float a img:hover{transform:scale(1.08);}
 
-/* MODAL DE SELEÇÃO DE FOTO */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    backdrop-filter: blur(5px);
-}
-.modal-content {
-    background: #fff;
-    padding: 20px;
-    width: 90%;
-    max-width: 600px;
-    border-radius: 0;
-    box-shadow: var(--shadow-bold);
-    max-height: 80vh;
-    overflow-y: auto;
-}
-.modal-content h3 {
-    text-align: center;
-    color: var(--primary-dark);
-    margin-bottom: 20px;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 10px;
-}
-.imagens-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 10px;
-}
-.imagem-opcao {
-    width: 100%;
-    height: 100px;
-    object-fit: cover;
-    cursor: pointer;
-    border: 3px solid transparent;
-    transition: border 0.2s, transform 0.2s;
-}
-.imagem-opcao:hover {
-    border-color: var(--green);
-    transform: scale(1.05);
-}
+/* NOTIFICACAO TOAST */
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 24px;border-radius:40px;font-size:14px;z-index:60;display:none;max-width:90%;}
 
+/* MODAL FOTO */
+.modal-foto{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:70;backdrop-filter:blur(4px);}
+.modal-foto.aberto{display:flex;}
+.modal-foto-content{background:#fff;padding:24px;width:92%;max-width:520px;max-height:80vh;overflow-y:auto;}
+.modal-foto-content h3{font-size:18px;color:#0f3b2c;margin-bottom:16px;border-bottom:2px solid #e9eef3;padding-bottom:10px;}
+.modal-fechar{float:right;font-size:28px;cursor:pointer;color:#4b5563;background:transparent;border:none;}
+.grid-fotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:10px;}
+.grid-fotos img{width:100%;height:80px;object-fit:cover;cursor:pointer;border:3px solid transparent;transition:border 0.2s;}
+.grid-fotos img:hover{border-color:#2c6e2c;}
 
-/* NOVA FUNÇÃO CONTAINER */
-.nova-funcao-container {
-  background: #e8f5e9;
-  padding: 25px;
-  max-width: 450px;
-  width: 90%;
-  margin: 20px auto;
-  text-align: center;
-  border-radius: 0; /* Borda quadrada */
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  border: 1px solid var(--green);
-}
-.nova-funcao-container h2 {
-  margin-bottom: 15px;
-  color: var(--green);
-  text-transform: uppercase;
-}
-.nova-funcao-container p {
-  margin: 10px 0;
-  color: #444;
-  font-size: 15px;
-}
-.nova-funcao-container ul {
-  text-align: left;
-  margin: 15px 0 20px 0;
-  padding-left: 20px;
-  color: #444;
-  list-style-type: '→ ';
-}
-.nova-funcao-container li {
-    padding-left: 5px;
-    margin-bottom: 5px;
-    font-size: 15px;
-}
-.nova-funcao-container button {
-  background-color: var(--green);
-  color: #fff;
-  border: none;
-  padding: 12px 25px;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: bold;
-  border-radius: 0; /* Borda quadrada */
-  transition: background-color 0.3s, transform 0.1s;
-}
-.nova-funcao-container button:hover {
-  background-color: #4CAF50;
-  transform: translateY(-1px);
-}
+/* RODAPE */
+.footer-img{width:100%;max-width:400px;margin:20px auto;display:block;}
 
-/* TÍTULO CENTRO (MANTIDO) */
-.titulo-centro{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  background:transparent;
-  padding:20px;
-}
-.titulo-centro h2{
-  font-size:24px;
-  font-weight:700;
-  color:var(--primary-dark);
-  margin:0 0 8px 0;
-}
-.titulo-centro p{
-  font-size:16px;
-  color:#555;
-  max-width:500px;
-  line-height:1.4;
-  margin:0;
-}
-
-/* TÓPICOS CONTAINER (MANTIDO) */
-.topicos-container{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:25px;
-  background:transparent;
-  padding:20px;
-  max-width: 900px;
-  margin: 0 auto;
-}
-.topico{
-  width:160px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  text-align:center;
-  padding: 10px;
-}
-.topico img{
-  width:50px;
-  height:50px;
-  object-fit: contain;
-  margin-bottom:12px;
-}
-.topico p{
-  font-size:15px;
-  color: #333;
-  line-height:1.4;
-  margin:0;
-}
-@media(max-width:768px){
-  .topico{width:45%;}
-}
-
-/* MENU SCROLL */
-.menu-scroll{
-  position:relative;
-  width:95%;
-  max-width: 900px;
-  margin:20px auto;
-  overflow:hidden;
-  background:#fff;
-  box-shadow:0 4px 12px rgba(0,0,0,.1);
-  border-radius: 0; /* Borda quadrada */
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:15px;
-}
-.menu-container{
-  display:flex;
-  gap:15px;
-  overflow-x:auto;
-  scroll-behavior:smooth;
-  width:100%;
-  padding:10px 0;
-  scroll-snap-type:x mandatory;
-  -ms-overflow-style:none;
-  scrollbar-width:none
-}
-.menu-container::-webkit-scrollbar{display:none}
-.menu-item{
-  position:relative;
-  min-width:300px;
-  height:160px;
-  flex:0 0 auto;
-  border-radius: 0; /* Borda quadrada */
-  box-shadow:inset 0 -50px 80px rgba(0,0,0,.6);
-  display:flex;
-  align-items:flex-end;
-  justify-content:flex-start;
-  background-size:cover;
-  background-position:center;
-  scroll-snap-align:center;
-  overflow: hidden;
-}
-.menu-item span{
-  position:absolute;
-  bottom:10px;
-  left:10px;
-  color:#fff;
-  background:rgba(0,0,0,.5);
-  padding:6px 10px;
-  font-size:14px;
-  font-weight:bold;
-  border-radius: 0; /* Borda quadrada */
-}
-.menu-dots{display:flex;justify-content:center;gap:5px;margin-top:10px}
-.menu-dots div{width:8px;height:8px;background:var(--green);border-radius:50%;}
-@media(max-width:768px){.menu-item{min-width:240px;height:140px}} 
-
-/* RODAPÉ E IMAGEM FINAL */
-.footer-image-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 30px;
-    padding-bottom: 50px;
-}
-.footer-image {
-    width: 90%;
-    max-width: 500px;
-    height: auto;
-    border-radius: 0; /* Borda quadrada */
-    box-shadow: var(--shadow-light);
+/* RESPONSIVO */
+@media(max-width:480px){
+  .opcoes-grid{gap:8px;}
+  .opcao-card{padding:12px 8px;}
+  .opcao-card img{width:36px;height:36px;}
+  .slide-item{height:200px;}
 }
 </style>
 </head>
 <body>
-<header>
-  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-canto-esquerdo">
-  
-  <div id="menuBtn">
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
+
+<header class="app-header">
+  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo" alt="DomusFit">
+  <button class="menu-btn" id="menuBtn" aria-label="Menu">
+    <div></div><div></div><div></div>
+  </button>
 </header>
 
-<div id="menuBox">
-  <span id="closeBtn">&times;</span>
-  <h3 style="margin-top:0;margin-bottom:20px;font-size:18px;border-bottom:2px solid var(--green);padding-bottom:10px;color:var(--primary-dark);">DomusFit Menu</h3>
-  
-  <div class="modern-menu-link" onclick="location.href='login.html'">
-    <img src="https://www.iconpacks.net/icons/1/free-user-logout-icon-304-thumb.png" alt="Sair">
+<div class="menu-overlay" id="menuOverlay"></div>
+<div class="menu-box" id="menuBox">
+  <button class="menu-close" id="menuClose">✕</button>
+  <h3>DomusFit Menu</h3>
+  <a class="menu-link" href="login.html">
+    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Sair">
     <span>Sair da conta</span>
-  </div>
-
-  <div class="modern-menu-link" onclick="location.href='treino.html'">
-    <img src="https://images.vexels.com/media/users/3/138774/isolated/preview/827000c564e21e1ab79e0870ae44a134-silhueta-de-mulher-fitness-correndo.png" alt="Meus Treinos">
+  </a>
+  <a class="menu-link" href="treino.html">
+    <img src="https://cdn-icons-png.flaticon.com/512/2964/2964514.png" alt="Treinos">
     <span>Meus treinos</span>
-
-  </div>
-
-  <div style="margin-top: 15px;">
-    <div class="menu-list-item" onclick="location.href='corrida.html'">Corrida e caminhada</div>
-    <div class="menu-list-item" onclick="location.href='dashboard.html'">Mensalidade / Meu Plano</div>
-    <div class="menu-list-item" onclick="location.href='chat.html'">Chat Zap</div>
-  </div>
+  </a>
+  <a class="menu-link" href="corrida.html">
+    <img src="https://cdn-icons-png.flaticon.com/512/2972/2972246.png" alt="Corrida">
+    <span>Corrida e caminhada</span>
+  </a>
+  <a class="menu-link" href="dashboard.html">
+    <img src="https://cdn-icons-png.flaticon.com/512/3144/3144464.png" alt="Plano">
+    <span>Mensalidade / Meu Plano</span>
+  </a>
+  <a class="menu-link" href="chat.html">
+    <img src="https://cdn-icons-png.flaticon.com/512/724/724664.png" alt="Chat">
+    <span>Chat Zap</span>
+  </a>
 </div>
 
-<script>
-const menuBtn = document.getElementById('menuBtn');
-const menuBox = document.getElementById('menuBox');
-const closeBtn = document.getElementById('closeBtn');
+<div class="main-content">
 
-menuBtn.onclick = () => menuBox.style.right = '0';
-closeBtn.onclick = () => menuBox.style.right = '-260px'; 
-// Ação para fechar o menu ao clicar fora dele (mantida)
-window.onclick = e => {
-  if (menuBox.style.right === '0px' && e.target !== menuBox && !menuBox.contains(e.target) && e.target !== menuBtn && !menuBtn.contains(e.target)) {
-    menuBox.style.right = '-260px';
-  }
-};
-</script>
-
-<div class="carrossel-container">
-  <div class="carrossel">
-    <div class="item">
-      <img src="https://www.polar.com/img/cms/ace4fffbd0d795347afa99983af8a72d780153b7-3489x1841-2880.webp" alt="Cardio">
-      <div class="texto-slide">
-        <h2>Cardio</h2>
-        <p>Qualquer atividade física que aumenta a frequência cardíaca e respiratória, fortalecendo o coração e os pulmões.</p>
-      </div>
-    </div>
-    <div class="item">
-      <img src="https://s2-ge.glbimg.com/1poTdSoDJL7BQu_ZqPQF9z_-wYY=/0x0:1253x836/600x0/smart/filters:gifv():strip_icc()/i.s3.glbimg.com/v1/AUTH_bc8228b6673f488aa253bbcb03c80ec5/internal_photos/bs/2021/a/l/Lx0f1GQHak9pFJj2uCxw/exercicios-em-casa.jpg" alt="Preparação">
-      <div class="texto-slide">
-        <h2>Preparação</h2>
-        <p>Antes de iniciar os exercícios, prepare o corpo com alongamentos e movimentos leves para evitar lesões.</p>
-      </div>
-    </div>
-    <div class="item">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQiCW9edkIFEoRj1brXl4X83sOTRUGfGhmoiu8u8AR42-pCsO6ZihZj58&s=10" alt="Creatina">
-      <div class="texto-slide">
-        <h2>Creatina</h2>
-        <p>A creatina é essencial para o desempenho muscular, auxiliando na reciclagem de energia nas fibras e no cérebro.</p>
-      </div>
-    </div>
-    <div class="item">
-      <img src="https://assets.entrepreneur.com/content/3x2/2000/20190620131326-Example-of-Personal-Trainer-Business-Ideas-Bigstock-4000pxW-X-2670pxH-copy.jpeg" alt="Personal Trainer">
-      <div class="texto-slide">
-        <h2>Personal Trainer</h2>
-        <p>Profissional de Educação Física que cria programas personalizados e acompanha os treinos para atingir seus objetivos.</p>
-      </div>
-    </div>
-    <div class="item">
-      <img src="https://media.istockphoto.com/id/1441694626/pt/foto/hand-of-athlete-woman-holding-dumbbell-from-the-rack-in-the-gym-muscular-fitness-female.jpg?s=612x612&w=0&k=20&c=keUz19Hez2bL8unh6rbVKqQOZ2Ypub0d9seVKT1o9Ak=" alt="Organização">
-      <div class="texto-slide">
-        <h2>Organização</h2>
-        <p>Reserve um tempo no fim do dia ou da semana para se organizar. Pequenas rotinas mantêm o equilíbrio diário.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-let atual = 0;
-const carrossel = document.querySelector('.carrossel');
-const total = document.querySelectorAll('.item').length;
-function mudarSlide(){
-  atual = (atual + 1) % total;
-  carrossel.style.transform = `translateX(-${atual * 100}%)`;
-}
-let intervalo = setInterval(mudarSlide, 5000);
-carrossel.addEventListener('mouseenter', ()=>clearInterval(intervalo));
-carrossel.addEventListener('mouseleave', ()=>intervalo=setInterval(mudarSlide, 5000));
-</script>
-
-
-<br>
-
-<div class="aluno-container">
+  <div class="aluno-container">
     <div class="aluno-header">
-        <img id="fotoPerfil" src="" alt="Foto de Perfil">
-        <h2>Meus Dados</h2>
-adcione sua foto de perfil em IA.
+      <img class="foto-perfil" id="fotoPerfil" src="" alt="Foto">
+      <h2>Meus Dados</h2>
     </div>
     <div class="aluno-info">
-        <p id="nomeAluno">Nome: Carregando...</p>
-        <p id="naAluno">NA: Carregando...</p>
+      <p><strong>Nome:</strong> <span id="nomeAluno">Carregando...</span></p>
+      <p><strong>NA:</strong> <span id="naAluno">Carregando...</span></p>
+      <p style="font-size:12px;color:#6c757d;margin-top:8px;">Nao compartilhe seu NA com terceiros.</p>
     </div>
-    <hr>
-    <p class="nota">Não compartilhe essas informações com terceiros. Seu NA é uma ferramenta de login e comprovante de inscrição, exclusivo a você.</p>
+  </div>
+
+  <div class="carrossel-container">
+    <div class="carrossel" id="carrossel">
+      <div class="slide-item"><img src="https://www.polar.com/img/cms/ace4fffbd0d795347afa99983af8a72d780153b7-3489x1841-2880.webp" alt="Cardio"><div class="slide-texto"><h2>Cardio</h2><p>Fortalece coracao e pulmoes</p></div></div>
+      <div class="slide-item"><img src="https://s2-ge.glbimg.com/1poTdSoDJL7BQu_ZqPQF9z_-wYY=/0x0:1253x836/600x0/smart/filters:gifv():strip_icc()/i.s3.glbimg.com/v1/AUTH_bc8228b6673f488aa253bbcb03c80ec5/internal_photos/bs/2021/a/l/Lx0f1GQHak9pFJj2uCxw/exercicios-em-casa.jpg" alt="Preparacao"><div class="slide-texto"><h2>Preparacao</h2><p>Alongamentos e aquecimento</p></div></div>
+      <div class="slide-item"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQiCW9edkIFEoRj1brXl4X83sOTRUGfGhmoiu8u8AR42-pCsO6ZihZj58&s=10" alt="Creatina"><div class="slide-texto"><h2>Creatina</h2><p>Energia e desempenho muscular</p></div></div>
+      <div class="slide-item"><img src="https://assets.entrepreneur.com/content/3x2/2000/20190620131326-Example-of-Personal-Trainer-Business-Ideas-Bigstock-4000pxW-X-2670pxH-copy.jpeg" alt="Personal"><div class="slide-texto"><h2>Personal Trainer</h2><p>Programas personalizados</p></div></div>
+      <div class="slide-item"><img src="https://media.istockphoto.com/id/1441694626/pt/foto/hand-of-athlete-woman-holding-dumbbell-from-the-rack-in-the-gym-muscular-fitness-female.jpg?s=612x612&w=0&k=20&c=keUz19Hez2bL8unh6rbVKqQOZ2Ypub0d9seVKT1o9Ak=" alt="Organizacao"><div class="slide-texto"><h2>Organizacao</h2><p>Rotinas para equilibrio diario</p></div></div>
+    </div>
+  </div>
+
+  <div class="opcoes-grid">
+    <a class="opcao-card" href="videos.html">
+      <img src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" alt="Videos">
+      <span>Videos e resumos</span>
+    </a>
+    <a class="opcao-card" href="calendario.html">
+      <img src="https://cdn-icons-png.flaticon.com/512/929/929452.png" alt="Calendario">
+      <span>Calendario de treinos</span>
+    </a>
+    <a class="opcao-card" href="dashboard.html">
+      <img src="https://cdn-icons-png.flaticon.com/512/2910/2910783.png" alt="Plano">
+      <span>Meu Plano</span>
+    </a>
+    <a class="opcao-card" href="treino.html">
+      <img src="https://cdn-icons-png.flaticon.com/512/2964/2964514.png" alt="Treino">
+      <span>Tempo de treino</span>
+    </a>
+    <a class="opcao-card" href="re.html">
+      <img src="https://cdn-icons-png.flaticon.com/512/3145/3145131.png" alt="Feedback">
+      <span>Feedback</span>
+    </a>
+    <a class="opcao-card" href="corrida.html">
+      <img src="https://cdn-icons-png.flaticon.com/512/2972/2972246.png" alt="Corrida">
+      <span>Corrida e caminhada</span>
+    </a>
+    <a class="opcao-card" href="avaliar.html">
+      <img src="https://cdn-icons-png.flaticon.com/512/3176/3176366.png" alt="Perguntas">
+      <span>Perguntas e respostas</span>
+    </a>
+    <a class="opcao-card" href="na.html">
+      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="NA">
+      <span>Sobre o NA</span>
+    </a>
+  </div>
+
+  <img class="footer-img" src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000045-3172131723/700/6DB5AA35-5D1A-4000-8C13-247494510087.webp" alt="DomusFit">
+
 </div>
 
-<div class="modal-overlay" id="modalFoto">
-    <div class="modal-content">
-        <span style="float: right; font-size: 25px; cursor: pointer;" onclick="document.getElementById('modalFoto').style.display='none'">&times;</span>
-        <h3>Selecione sua Foto de Perfil</h3>
-        <div class="imagens-grid" id="imagensGrid">
-            </div>
-    </div>
+<div class="social-float">
+  <a href="https://www.instagram.com/domusfit__/" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/600px-Instagram_icon.png" alt="Instagram"></a>
+  <a href="https://wa.me/5584991078696" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/512px-WhatsApp.svg.png" alt="WhatsApp"></a>
 </div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-foto" id="modalFoto">
+  <div class="modal-foto-content">
+    <button class="modal-fechar" onclick="fecharModalFoto()">✕</button>
+    <h3>Selecione sua foto de perfil</h3>
+    <div class="grid-fotos" id="gridFotos"></div>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-// --- LOCAIS PARA AS IMAGENS DO PERFIL ---
-// 1. URL da imagem padrão (quando o usuário não escolheu uma)
-const DEFAULT_PROFILE_IMAGE_URL = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZLeQkjYJrfLadQMV47rVTFDt-UGb3SCcd-_4GEl2IDQ&s=10'; // Exemplo de perfil padrão
-
-// 2. Array com as URLs das 20 opções de imagem
-const IMAGE_OPTIONS = [
-    'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691505.jpg?semt=ais_incoming&w=740&q=80',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJN1lHhM68w8n8VIGmiUGzO59Y_BiHfJXt86m94_wH-Q&s=10',
-    'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691491.jpg?semt=ais_hybrid&w=740&q=80',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTecuIAp5S0xUeEEw1aVvfdERFYmkOzSrHNnmt5HCCl-g&s=10',
-    'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666670.jpg?semt=ais_hybrid&w=740&q=80',
-    'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666661.jpg?semt=ais_hybrid&w=740&q=80',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRe9uWfgvRM-afv5rw3X2aWR-1njImjPVPmKYnjmG7nTg&s=10',
-    'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666664.jpg?t=st=1763843635~exp=1763847235~hmac=32ec32fa8d825b0b9c5992e9cdcd4f60468eefb1005590302ee28ac00c3946e1',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQME5j8LTjIK3djuBJAoThzmjxPSaQm4xKZmuJkkL2Zg&s=10',
-    'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666658.jpg?t=st=1761732403~exp=1761736003~hmac=e8ab36448a5a3186a9a27dc21c4a13f7fde69a235dbde1ffd224365c7bec6dd8',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWyLuxokYGHoes2CTsZY35kxr0AoBtklklSash7qE9qQ&s=10',
-    'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691385.jpg',
-    'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691377.jpg?semt=ais_hybrid&w=740&q=80',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMFLuN0I_uPtGRR2Mb7zkf_eKpmSSknQrI_sxSt_shrw&s=10',
-    'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691457.jpg?semt=ais_hybrid&w=740&q=80',
-    'https://64.media.tumblr.com/badc82a2f1ade24ed34d3de251e21f7f/582f7acddc2418d8-f6/s540x810/f92ee2a43e1f4dcfc989886e91ce6ff934173465.jpg',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyOlFEluzKTe_KXdzF7oCg3kbh63G9EkmRsKGJ5xc-Eg&s=10',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpKi_6slFAGAV0DBmXWcD2BluGhgmEdZsNppI_GLFc1Q&s=10',
-    'https://img.freepik.com/free-photo/portrait-anime-character-doing-fitness-exercising_23-2151666659.jpg',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTApOa8fmlisFHwqVYpdE3MN1eBEyYOHOZXRffwWRqWbg&s=10',
-];
-// --- FIM LOCAIS PARA AS IMAGENS DO PERFIL ---
-
-
-const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomain:"prefeitura-de-joao-camara.firebaseapp.com",projectId:"prefeitura-de-joao-camara",storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",messagingSenderId:"269299041577",appId:"1:269299041577:web:fd41b2939240e9eb476338",measurementId:"G-YT7NHR342J"};
+// FIREBASE
+const firebaseConfig = {
+  apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+  authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
+  projectId: "prefeitura-de-joao-camara",
+  storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
+};
 firebase.initializeApp(firebaseConfig);
-const db=firebase.database();
+const db = firebase.database();
 
-const nomeEl=document.getElementById('nomeAluno');
-const naEl=document.getElementById('naAluno');
-const fotoPerfilEl=document.getElementById('fotoPerfil');
-const modalFotoEl=document.getElementById('modalFoto');
-const imagensGridEl=document.getElementById('imagensGrid');
+const loggedUser = localStorage.getItem('loggedUser');
+const userRef = loggedUser ? db.ref('users/' + loggedUser) : null;
 
-let loggedUser = localStorage.getItem('loggedUser');
-let userRef = loggedUser ? db.ref('users/' + loggedUser) : null;
+const DEFAULT_AVATAR = 'https://ui-avatars.com/api/?background=2c6e2c&color=fff&name=User';
 
-// Função de Redirecionamento
-function redirectToLogin() {
-  localStorage.removeItem('loggedUser'); 
+const IMAGE_OPTIONS = [
+  'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691505.jpg',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJN1lHhM68w8n8VIGmiUGzO59Y_BiHfJXt86m94_wH-Q&s=10',
+  'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691491.jpg',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTecuIAp5S0xUeEEw1aVvfdERFYmkOzSrHNnmt5HCCl-g&s=10',
+  'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666670.jpg',
+  'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666661.jpg',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRe9uWfgvRM-afv5rw3X2aWR-1njImjPVPmKYnjmG7nTg&s=10',
+  'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666664.jpg',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQME5j8LTjIK3djuBJAoThzmjxPSaQm4xKZmuJkkL2Zg&s=10',
+  'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666658.jpg',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWyLuxokYGHoes2CTsZY35kxr0AoBtklklSash7qE9qQ&s=10',
+  'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691385.jpg',
+  'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691377.jpg',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMFLuN0I_uPtGRR2Mb7zkf_eKpmSSknQrI_sxSt_shrw&s=10',
+  'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691457.jpg',
+  'https://64.media.tumblr.com/badc82a2f1ade24ed34d3de251e21f7f/582f7acddc2418d8-f6/s540x810/f92ee2a43e1f4dcfc989886e91ce6ff934173465.jpg',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyOlFEluzKTe_KXdzF7oCg3kbh63G9EkmRsKGJ5xc-Eg&s=10',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpKi_6slFAGAV0DBmXWcD2BluGhgmEdZsNppI_GLFc1Q&s=10',
+  'https://img.freepik.com/free-photo/portrait-anime-character-doing-fitness-exercising_23-2151666659.jpg',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTApOa8fmlisFHwqVYpdE3MN1eBEyYOHOZXRffwWRqWbg&s=10'
+];
+
+// Elementos
+const nomeEl = document.getElementById('nomeAluno');
+const naEl = document.getElementById('naAluno');
+const fotoPerfilEl = document.getElementById('fotoPerfil');
+const modalFoto = document.getElementById('modalFoto');
+const gridFotos = document.getElementById('gridFotos');
+const toast = document.getElementById('toast');
+
+// MENU
+const menuBtn = document.getElementById('menuBtn');
+const menuBox = document.getElementById('menuBox');
+const menuOverlay = document.getElementById('menuOverlay');
+const menuClose = document.getElementById('menuClose');
+
+function toggleMenu(abrir){
+  menuBox.classList.toggle('aberto', abrir);
+  menuOverlay.classList.toggle('aberto', abrir);
+}
+menuBtn.onclick = () => toggleMenu(true);
+menuClose.onclick = () => toggleMenu(false);
+menuOverlay.onclick = () => toggleMenu(false);
+
+// REDIRECIONAMENTO
+function redirectToLogin(){
+  localStorage.removeItem('loggedUser');
   window.location.href = 'login.html';
 }
 
-// Função para atualizar a foto de perfil
-function updateProfileImage(url) {
-    fotoPerfilEl.src = url || DEFAULT_PROFILE_IMAGE_URL;
+// TOAST
+function showToast(msg){
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  setTimeout(() => { toast.style.display = 'none'; }, 3000);
 }
 
-// 1. OBTÉM O NA SALVO E CARREGA DADOS/FOTO
-if(!loggedUser){
-  redirectToLogin();
-} else {
-  // 2. VERIFICA SE É UM NA VÁLIDO NO FIREBASE
-  userRef.get().then(snapshot=>{
-    if(snapshot.exists()){
-      const user=snapshot.val();
-      nomeEl.textContent = 'Nome: ' + (user.name || 'Não informado');
-      naEl.textContent = 'NA: ' + loggedUser;
+// FOTO PERFIL
+function updateFoto(url){
+  fotoPerfilEl.src = url || DEFAULT_AVATAR;
+}
+
+function carregarDados(){
+  if(!loggedUser){ redirectToLogin(); return; }
+  
+  userRef.get().then(snap => {
+    if(snap.exists()){
+      const user = snap.val();
+      nomeEl.textContent = user.name || 'Nao informado';
+      naEl.textContent = loggedUser;
+      updateFoto(user.profileImageUrl);
       
-      // Carrega a foto de perfil salva no Firebase, ou a padrão
-      updateProfileImage(user.profileImageUrl);
-
-      // Ouve mudanças na foto de perfil em tempo real (opcional, mas bom)
-      userRef.on('value', (snap) => {
-          const updatedUser = snap.val();
-          if (updatedUser) {
-              updateProfileImage(updatedUser.profileImageUrl);
-          }
+      userRef.on('value', s => {
+        const u = s.val();
+        if(u) updateFoto(u.profileImageUrl);
       });
-
     } else {
-      console.log('NA encontrado no localStorage, mas não é válido no Firebase. Redirecionando.');
-      nomeEl.textContent = 'Nome: Não encontrado';
-      naEl.textContent = 'NA: Não encontrado';
-      updateProfileImage(DEFAULT_PROFILE_IMAGE_URL); // Exibe a foto padrão
-      redirectToLogin(); 
+      redirectToLogin();
     }
-  }).catch(err=>{
-    console.error('Erro ao buscar dados no Firebase, redirecionando:', err);
-    nomeEl.textContent = 'Erro ao carregar';
-    naEl.textContent = 'Erro ao carregar';
-    updateProfileImage(DEFAULT_PROFILE_IMAGE_URL); // Exibe a foto padrão
-    redirectToLogin();
+  }).catch(() => redirectToLogin());
+}
+
+// MODAL FOTO
+function abrirModalFoto(){
+  if(!loggedUser) return;
+  gridFotos.innerHTML = '';
+  IMAGE_OPTIONS.forEach(url => {
+    const img = document.createElement('img');
+    img.src = url;
+    img.onclick = () => selecionarFoto(url);
+    gridFotos.appendChild(img);
   });
+  modalFoto.classList.add('aberto');
 }
 
-// 3. Lógica do Modal de Fotos
-
-// Preenche o modal com as opções de imagem
-function fillImageGrid() {
-    imagensGridEl.innerHTML = ''; // Limpa antes de preencher
-    IMAGE_OPTIONS.forEach(url => {
-        const img = document.createElement('img');
-        img.src = url;
-        img.alt = 'Opção de Perfil';
-        img.classList.add('imagem-opcao');
-        img.onclick = () => selectProfileImage(url); // Define a ação de clique
-        imagensGridEl.appendChild(img);
-    });
+function fecharModalFoto(){
+  modalFoto.classList.remove('aberto');
 }
 
-// Abre o modal
-fotoPerfilEl.onclick = () => {
-    if (loggedUser) { // Só abre se o usuário estiver logado
-        fillImageGrid();
-        modalFotoEl.style.display = 'flex';
-    }
-};
-
-// Seleciona e salva a imagem no Firebase
-function selectProfileImage(url) {
-    if (!loggedUser) return; // Segurança básica
-    
-    // 1. Salva a URL no Firebase
-    userRef.update({ profileImageUrl: url })
-        .then(() => {
-            console.log('Foto de perfil salva com sucesso no Firebase!');
-            // A função `updateProfileImage` será chamada pelo listener do on('value'), mas forçamos aqui também para feedback imediato
-            updateProfileImage(url); 
-            // 2. Fecha o modal
-            modalFotoEl.style.display = 'none';
-        })
-        .catch(error => {
-            console.error('Erro ao salvar foto de perfil no Firebase:', error);
-            alert('Erro ao salvar a foto. Tente novamente.');
-        });
+function selecionarFoto(url){
+  if(!loggedUser) return;
+  userRef.update({ profileImageUrl: url })
+    .then(() => {
+      updateFoto(url);
+      fecharModalFoto();
+      showToast('Foto atualizada com sucesso');
+    })
+    .catch(() => showToast('Erro ao salvar foto'));
 }
 
-// Configura a foto inicial caso o script do Firebase demore
-updateProfileImage(''); // Chama com string vazia para forçar o uso da DEFAULT_PROFILE_IMAGE_URL
+fotoPerfilEl.onclick = abrirModalFoto;
+modalFoto.addEventListener('click', e => { if(e.target === modalFoto) fecharModalFoto(); });
+
+// CARROSSEL
+let slideAtual = 0;
+const carrossel = document.getElementById('carrossel');
+const totalSlides = document.querySelectorAll('.slide-item').length;
+
+function mudarSlide(){
+  slideAtual = (slideAtual + 1) % totalSlides;
+  carrossel.style.transform = `translateX(-${slideAtual * 100}%)`;
+}
+let intervalo = setInterval(mudarSlide, 5000);
+carrossel.addEventListener('mouseenter', () => clearInterval(intervalo));
+carrossel.addEventListener('mouseleave', () => { intervalo = setInterval(mudarSlide, 5000); });
+
+// INICIALIZA
+carregarDados();
 </script>
-<br>
-  
-  
-  
-
-
-
-
-<div class="opcoes-treino">
-  <div class="opcao" data-link="videos.html"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzvunfVwFyBroGU9N1Ng-WlYghzF2HXUiqrP9BGY0IUQ&s=10" alt="Videos e Resumos"><span>Videos e resumos de treinos</span></div>
-  
-  <div class="opcao" data-link="calendario.html"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzK6LxVaqqdxjOuNp1CLUoOHxCHH_bv-dRfwJyX7hIsg&s=10" alt="Calendário"><span>Calendário de treinos</span></div>
-  <div class="opcao" data-link="dashboard.html"><img src="https://pontodidatica.com.br/wp-content/uploads/2020/07/planejamento-anual.jpg" alt="Meu Plano"><span>Meu Plano / Mensalidade</span></div>
-  <div class="opcao" data-link="treino.html"><img src="https://horadotreino.com.br/wp-content/uploads/2024/03/tempo-de-duracao-do-treino.png" alt="Tempo de Treino"><span>Tempo de treino</span></div>
-
-
-<div class="opcao" data-link="re.html"><img src="https://improvefy.com/wp-content/uploads/2021/12/capa-feedback.jpg" alt="Feedback"><span>Feedback</span></div>
-
-
-<div class="opcao" data-link="corrida.html"><img src="https://sportlife.com.br/wp-content/uploads/2016/12/4-1-1.jpg" alt="Corrida e Caminhada"><span>Corrida e caminhada</span></div>
-
-
-<div class="opcao" data-link="avaliar.html"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRan_aoXAfgYYHxy3LnbvVLdj-V9t3oWKI97AV2TDwIEA&s=10" alt="Perguntas e Respostas"><span>Perguntas e respostas sobre o mundo fitness</span></div>
-
-
-</div>
-
-<div id="loader" class="loader"></div>
-
-<div class="social-float">
-  <a href="https://www.instagram.com/domusfit__/" target="_blank"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQ8lvQPDQap4DKzja4cuE31IvasKBPOhiXVogsr-d-bQ&s=10" alt="Instagram"></a>
-  <a href="https://wa.me/5584991078696" target="_blank"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcTFWb9z5hCYiLmqd3rMKjMumrbW8pcXUshmd_1l2Uvw&s=10" alt="WhatsApp"></a>
-</div>
-
-<div id="loadingScreen"><div id="loadingBox"><div class="spinner"></div></div></div>
-
-<script>
-const opcoes=document.querySelectorAll('.opcao');
-const loader=document.getElementById('loader');
-opcoes.forEach(opcao=>{
-  opcao.addEventListener('click',()=>{
-    loader.style.display='block';
-    setTimeout(()=>{window.location.href=opcao.dataset.link;},1000);
-  });
-});
-setTimeout(()=>{
-  const loading=document.getElementById('loadingScreen');
-  loading.style.opacity='0';
-  setTimeout(()=>{loading.style.display='none'},500); 
-},1500);
-</script>
-
-
-<br>
-
-<div class="titulo-centro">
-  <h2>NA: Número do Aluno</h2>
-  <p>O formato de funcionamento do NA é fundamental em uma comunidade onde a segurança é o fator principal. Saiba mais em domus.fit/na.html</p>
-</div>
-
-<div class="topicos-container">
-  <div class="topico">
-    <img src="https://cdn-icons-png.flaticon.com/512/102/102649.png" alt="Segurança">
-    <p>O NA é mais seguro por usar identificador exclusivo em vez de CPF.</p>
-  </div>
-  <div class="topico">
-    <img src="https://cdn-icons-png.flaticon.com/512/281/281743.png" alt="Recuperação">
-    <p>Suas informações podem ser recuperadas mais facilmente.</p>
-  </div>
-  <div class="topico">
-    <img src="https://cdn-icons-png.flaticon.com/512/70/70289.png" alt="Download">
-    <p>Download mais simples de dados, já que não armazena informações pessoais em grande escala.</p>
-  </div>
-  <div class="topico">
-    <img src="https://cdn-icons-png.flaticon.com/512/81/81043.png" alt="Acesso">
-    <p>Acesso mais fácil em todos os modelos de computadores e dispositivos móveis.</p>
-  </div>
-  <div class="topico">
-    <img src="https://cdn-icons-png.flaticon.com/512/7118/7118029.png" alt="Simples">
-    <p>Muito mais simples e acessível para todos, pois contem apenas 5 dígitos.</p>
-  </div>
-
-<div class="topico">
-    <img src="https://www.gov.br/mcti/pt-br/acesso-a-informacao/governanca/arquivos/LGPD.png" alt="LGPD">
-    <p>Solicitar o acesso, a correção ou a exclusão de suas informações (LGPD).</p>
-  </div>
-</div>
-
-<div class="menu-scroll"> 
-  <div class="menu-container" id="menuContainer"> 
-    <div class="menu-item" style="background-image:url('https://blog.agenciaamp.com/wp-content/uploads/2024/04/LGPD.jpg');"><span>A LGPD vale para qualquer tratamento de dados pessoais, físicos ou digitais.</span> </div> 
-    <div class="menu-item" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtr-gUCLPBV87Jn6xBCb6up6BCBkAujcg2D8edeGthmQ&s=10');"><span>Guarde seu NA em sigilo e não o compartilhe com ninguém.</span></div> 
-    <div class="menu-item" style="background-image:url('https://www.politicaetc.com.br/wp-content/uploads/2025/01/00-2.jpg');"><span>O seu NA só pode ser compartilhado com a equipe técnica ou personal trainer.</span></div> 
-  </div> 
-  <div class="menu-dots"><div></div><div></div><div></div></div> 
-</div> 
-<script> 
-const menuContainer=document.getElementById('menuContainer');menuContainer.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.preventDefault();menuContainer.scrollLeft+=e.deltaY}}); 
-</script>
-
-
-<div class="footer-image-container">
-  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000045-3172131723/700/6DB5AA35-5D1A-4000-8C13-247494510087.webp" class="footer-image">
-</div>
-
 </body>
 </html>
-
-
-<script src="san7doc.acesso-seguro.js" defer></script>
-
-
-
-
-
-<div style="display:flex;justify-content:center;align-items:center;width:100%;">
-<form id="fb" style="width:100%;max-width:420px;background:#fff;padding:22px;box-sizing:border-box;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto;">
-<div id="campos">
-<input id="nome" placeholder="Nome" required style="width:100%;padding:14px;margin-bottom:14px;background:#fff;border:1px solid #d0d0d0;outline:none;box-sizing:border-box;font-size:15px;">
-<div style="display:flex;gap:18px;margin-bottom:14px;font-size:14px;color:#333;">
-<label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
-<input type="checkbox" name="gen" value="Masculino">
-Masculino
-</label>
-<label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
-<input type="checkbox" name="gen" value="Feminino">
-Feminino
-</label>
-<label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
-<input type="checkbox" name="gen" value="Outro">
-Outro
-</label>
-</div>
-<textarea id="desc" placeholder="Descreva seu feedback" required style="width:100%;height:110px;padding:14px;background:#fff;border:1px solid #d0d0d0;outline:none;resize:none;box-sizing:border-box;margin-bottom:16px;font-size:15px;"></textarea>
-<button type="submit" style="width:100%;padding:15px;background:#111;color:#fff;border:none;cursor:pointer;font-size:15px;">Enviar</button>
-</div>
-<div id="load" style="display:none;justify-content:center;align-items:center;flex-direction:column;height:220px;">
-<div class="loader"></div>
-<div style="margin-top:16px;font-size:14px;color:#444;">Aguarde...</div>
-</div>
-</form>
-</div>
-<style>
-input:focus,textarea:focus{border-color:#000}
-.loader{width:46px;height:46px;border-radius:50%;border:3px solid #e5e5e5;border-top:3px solid #000;animation:spin 0.8s linear infinite}
-@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-</style>
-<script>
-document.getElementById("fb").onsubmit=e=>{
-e.preventDefault();
-let gens=[...document.querySelectorAll("input[name=gen]:checked")].map(g=>g.value).join(", ");
-document.getElementById("campos").style.display="none";
-document.getElementById("load").style.display="flex";
-setTimeout(()=>{
-let n=document.getElementById("nome").value;
-let d=document.getElementById("desc").value;
-let txt=encodeURIComponent("Feedback\nNome: "+n+"\nGênero: "+gens+"\nMensagem: "+d);
-window.location.href="https://wa.me/5584991778690?text="+txt;
-},4000);
-};
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<style>
-#san7-eval-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 99999; font-family: sans-serif; opacity: 0; visibility: hidden; transition: all 0.4s ease-in-out; }
-#san7-eval-overlay.active { opacity: 1; visibility: visible; }
-.san7-box { background: #007bff; color: white; padding: 30px; width: 90%; max-width: 380px; text-align: center; border-radius: 0; position: relative; transform: translateY(50px); transition: transform 0.5s ease; border: none; overflow: hidden; }
-#san7-eval-overlay.active .san7-box { transform: translateY(0); }
-.san7-box h1 { margin: 0 0 10px 0; font-size: 1.5rem; text-transform: uppercase; }
-.san7-box p { margin: 0 0 20px 0; font-size: 0.9rem; line-height: 1.4; opacity: 0.9; }
-.san7-btns { display: flex; justify-content: center; gap: 10px; }
-.san7-btn { padding: 12px; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; transition: 0.3s; flex: 1; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; }
-.btn-gostando { background: white; color: #007bff; }
-.btn-naogostando { background: #dc3545; color: white; }
-#san7-feedback-form { display: none; margin-top: 15px; text-align: left; animation: slideUp 0.4s ease; }
-@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-.san7-textarea { width: 100%; height: 80px; border: none; padding: 10px; margin-bottom: 10px; border-radius: 0; font-family: sans-serif; resize: none; box-sizing: border-box; }
-.san7-form-btns { display: flex; gap: 10px; }
-.btn-send { background: #28a745; color: white; border-radius: 30px; }
-.btn-skip { background: rgba(255,255,255,0.2); color: white; border-radius: 30px; }
-.san7-loader { border: 2px solid rgba(0,0,0,0.1); border-top: 2px solid #007bff; border-radius: 50%; width: 16px; height: 16px; animation: san7spin 0.8s linear infinite; }
-.btn-naogostando .san7-loader, .btn-send .san7-loader { border-top-color: white; }
-@keyframes san7spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-.san7-notif-top { position: fixed; top: -100px; right: 20px; background: white; color: #333; padding: 15px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.5s ease; z-index: 100000; border-radius: 0; font-weight: bold; font-size: 0.9rem; }
-.san7-notif-top.show { top: 20px; }
-.san7-brand { margin-top: 25px; font-size: 10px; opacity: 0.6; letter-spacing: 2px; }
-</style>
-
-<div id="san7-eval-overlay">
-    <div class="san7-box">
-        <h1>AVALIE</h1>
-        <p id="san7-main-text">O que acha do sistema de treino SAN7DOC para a Domusfit?</p>
-        <div class="san7-btns" id="san7-main-btns">
-            <button class="san7-btn btn-gostando" onclick="sendEval('Estou gostando', this)">Estou gostando</button>
-            <button class="san7-btn btn-naogostando" onclick="handleNotLiking(this)">Não estou gostando</button>
-        </div>
-        <div id="san7-feedback-form">
-            <textarea class="san7-textarea" id="feedback-text" placeholder="Qual o motivo?"></textarea>
-            <div class="san7-form-btns">
-                <button class="san7-btn btn-send" onclick="sendEval('Não estou gostando', this, true)">Enviar</button>
-                <button class="san7-btn btn-skip" onclick="sendEval('Não estou gostando (Sem descrição)', this)">Pular</button>
-            </div>
-        </div>
-        <div class="san7-brand">SAN7DOC</div>
-    </div>
-</div>
-
-<div class="san7-notif-top" id="san7Toast">Avaliação enviada! Obrigado.</div>
-
-<script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
-<script>
-const firebaseConfig = {
-    apiKey: "AIzaSyCVdKIP6jl-mLaqHNMW-IwK3pVkvhuSvSI",
-    databaseURL: "https://san7-brasil-default-rtdb.firebaseio.com",
-    projectId: "san7-brasil",
-    authDomain: "san7-brasil.firebaseapp.com"
-};
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
-const overlay = document.getElementById('san7-eval-overlay');
-const toast = document.getElementById('san7Toast');
-
-window.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => { overlay.classList.add('active'); }, 500);
-});
-
-function handleNotLiking(btn) {
-    const originalText = btn.innerText;
-    btn.innerHTML = '<div class="san7-loader"></div>';
-    setTimeout(() => {
-        document.getElementById('san7-main-btns').style.display = 'none';
-        document.getElementById('san7-main-text').innerText = 'Conte-nos o motivo:';
-        document.getElementById('san7-feedback-form').style.display = 'block';
-    }, 1000);
-}
-
-function sendEval(status, btn, isFeedback = false) {
-    const originalContent = btn.innerHTML;
-    btn.innerHTML = '<div class="san7-loader"></div>';
-    btn.disabled = true;
-
-    const feedback = isFeedback ? document.getElementById('feedback-text').value : "";
-
-    const evalData = {
-        evaluation: status,
-        description: feedback,
-        date: new Date().toLocaleDateString('pt-BR'),
-        time: new Date().toLocaleTimeString('pt-BR'),
-        timestamp: firebase.database.ServerValue.TIMESTAMP
-    };
-
-    database.ref('evaluations').push(evalData).then(() => {
-        overlay.classList.remove('active');
-        toast.classList.add('show');
-        setTimeout(() => {
-            toast.classList.remove('show');
-            location.reload();
-        }, 2500);
-    });
-}
-</script>
