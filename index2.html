@@ -49,7 +49,7 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
 
 .documents-section{
   background:#fff;
-  padding:12px 20px 24px;
+  padding:12px 20px 16px;
   border-top:1px solid #e8edf0;
 }
 .documents-section .doc-header-section{
@@ -58,10 +58,7 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
   gap:10px;
   margin-bottom:12px;
 }
-.documents-section .doc-header-section i{
-  color:#1a6b3c;
-  font-size:16px;
-}
+.documents-section .doc-header-section i{color:#1a6b3c;font-size:16px;}
 .documents-section .doc-title{
   font-size:13px;
   font-weight:600;
@@ -82,40 +79,65 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
   align-items:center;
   gap:12px;
 }
-.doc-item .doc-info i{
-  font-size:18px;
-  color:#b91c1c;
-  width:20px;
-  text-align:center;
+.doc-item .doc-info i{font-size:18px;color:#b91c1c;width:20px;text-align:center;}
+.doc-item .doc-name{font-size:14px;color:#1a2332;font-weight:500;}
+.doc-item .doc-actions{display:flex;gap:16px;}
+.doc-item .doc-actions span{font-size:13px;cursor:pointer;transition:0.2s;font-weight:500;}
+.doc-item .doc-actions .ver{color:#1a6b3c;}
+.doc-item .doc-actions .ver:hover{color:#0f4a2a;text-decoration:underline;}
+.doc-item .doc-actions .baixar{color:#2563eb;}
+.doc-item .doc-actions .baixar:hover{color:#1d4ed8;text-decoration:underline;}
+
+/* FERRAMENTAS */
+.ferramentas-section{
+  background:#fff;
+  padding:8px 20px 20px;
+  border-top:1px solid #e8edf0;
 }
-.doc-item .doc-name{
-  font-size:14px;
+.ferramentas-section .ferramentas-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:12px;
+}
+.ferramentas-section .ferramentas-header i{color:#1a6b3c;font-size:16px;}
+.ferramentas-section .ferramentas-title{
+  font-size:13px;
+  font-weight:600;
+  color:#64748b;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
+}
+.ferramentas-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.ferramenta-item{
+  background:#f8fafc;
+  border:1px solid #e8edf0;
+  border-radius:12px;
+  padding:14px 12px;
+  text-align:center;
+  cursor:pointer;
+  transition:all 0.25s;
+}
+.ferramenta-item:hover{
+  background:#f0f7f3;
+  border-color:#1a6b3c;
+  transform:translateY(-2px);
+}
+.ferramenta-item i{
+  font-size:22px;
+  color:#1a6b3c;
+  margin-bottom:6px;
+  display:block;
+}
+.ferramenta-item span{
+  font-size:12px;
   color:#1a2332;
   font-weight:500;
-}
-.doc-item .doc-actions{
-  display:flex;
-  gap:16px;
-}
-.doc-item .doc-actions span{
-  font-size:13px;
-  cursor:pointer;
-  transition:0.2s;
-  font-weight:500;
-}
-.doc-item .doc-actions .ver{
-  color:#1a6b3c;
-}
-.doc-item .doc-actions .ver:hover{
-  color:#0f4a2a;
-  text-decoration:underline;
-}
-.doc-item .doc-actions .baixar{
-  color:#2563eb;
-}
-.doc-item .doc-actions .baixar:hover{
-  color:#1d4ed8;
-  text-decoration:underline;
+  display:block;
 }
 
 .content-pane{flex:1;padding:24px 16px;background:#fff;}
@@ -769,10 +791,7 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
   align-items:center;
   gap:10px;
 }
-.modal-documento-content .doc-header h3 i{
-  color:#b91c1c;
-  font-size:20px;
-}
+.modal-documento-content .doc-header h3 i{color:#b91c1c;font-size:20px;}
 .modal-documento-content .doc-header .fechar-doc{
   font-size:22px;
   cursor:pointer;
@@ -794,7 +813,7 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
   margin-bottom:8px;
   color:#1a6b3c;
 }
-.modal-documento-content .doc-corpo p{margin-bottom:8px;}
+.modal-documento-content .doc-corpo p{margin-bottom:8px;color:#1a2332;}
 .modal-documento-content .btn-baixar-doc{
   margin-top:16px;
   padding:12px 28px;
@@ -812,6 +831,90 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
 }
 .modal-documento-content .btn-baixar-doc:hover{background:#0f4a2a;}
 .modal-documento-content .btn-baixar-doc i{font-size:16px;}
+
+/* TELA FERRAMENTA */
+.tela-ferramenta{
+  flex:1;
+  padding:24px 20px;
+  background:#fff;
+}
+.tela-ferramenta .ferramenta-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+  padding-bottom:12px;
+  border-bottom:2px solid #1a6b3c;
+}
+.tela-ferramenta .ferramenta-header h2{
+  font-size:20px;
+  color:#1a2332;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.tela-ferramenta .ferramenta-header h2 i{color:#1a6b3c;}
+.tela-ferramenta .ferramenta-header .fechar-ferramenta{
+  font-size:24px;
+  cursor:pointer;
+  color:#64748b;
+  background:transparent;
+  border:none;
+  transition:0.2s;
+}
+.tela-ferramenta .ferramenta-header .fechar-ferramenta:hover{color:#1a2332;}
+.tela-ferramenta .ferramenta-corpo{
+  font-size:15px;
+  line-height:1.9;
+  color:#1a2332;
+}
+.tela-ferramenta .ferramenta-corpo .destaque{
+  font-weight:600;
+  color:#1a6b3c;
+}
+.tela-ferramenta .ferramenta-corpo ul{
+  padding-left:20px;
+  margin:10px 0;
+}
+.tela-ferramenta .ferramenta-corpo ul li{
+  margin-bottom:6px;
+}
+.tela-ferramenta .ferramenta-corpo .passo{
+  background:#f5f8f6;
+  padding:12px 16px;
+  border-radius:12px;
+  margin:8px 0;
+  border-left:3px solid #1a6b3c;
+}
+
+/* RODAPE */
+.footer{
+  background:#e8edf0;
+  padding:16px 20px;
+  text-align:center;
+  border-top:1px solid #dce8e2;
+  font-size:12px;
+  color:#64748b;
+}
+.footer .footer-links{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  flex-wrap:wrap;
+  margin-bottom:6px;
+}
+.footer .footer-links span{
+  cursor:pointer;
+  color:#1a6b3c;
+  font-weight:500;
+  transition:0.2s;
+}
+.footer .footer-links span:hover{text-decoration:underline;color:#0f4a2a;}
+.footer .footer-dev{
+  font-size:11px;
+  color:#94a3b8;
+}
+.footer .footer-dev strong{color:#1a6b3c;}
 </style>
 </head>
 <body>
@@ -949,7 +1052,7 @@ const loaderTexto = document.getElementById("loaderTexto");
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-// DOCUMENTOS - 4 documentos
+// DOCUMENTOS
 const documentos = {
   privacidade: {
     titulo: 'Politica de Privacidade',
@@ -1057,6 +1160,146 @@ COMO UTILIZAR O SISTEMA:
    - Verifique seu nome, NA e telefone cadastrados
 
 DUVIDAS: Entre em contato com o suporte atraves do WhatsApp.`
+  }
+};
+
+// FERRAMENTAS
+const ferramentas = {
+  chamado: {
+    titulo: 'Como Abrir Chamado',
+    icone: 'fas fa-headset',
+    conteudo: `Para abrir um chamado no sistema DomusFit, siga os passos abaixo:
+
+<div class="passo"><strong>Passo 1:</strong> Acesse o menu principal e clique em "Abrir Chamado".</div>
+
+<div class="passo"><strong>Passo 2:</strong> Preencha o formulario com a descricao detalhada do problema ou solicitacao.</div>
+
+<div class="passo"><strong>Passo 3:</strong> Leia e aceite os termos de uso e autorizacao de dados.</div>
+
+<div class="passo"><strong>Passo 4:</strong> Clique em "Enviar para WhatsApp" para ser redirecionado ao suporte.</div>
+
+<div class="passo"><strong>Passo 5:</strong> Aguarde o protocolo de atendimento e o retorno da equipe.</div>
+
+<strong>O que pode ser solicitado:</strong>
+<ul>
+  <li>Correcao de horario de entrada ou saida</li>
+  <li>Problemas com o reconhecimento facial</li>
+  <li>Duvidas sobre o sistema</li>
+  <li>Relato de falhas tecnicas</li>
+</ul>`
+  },
+  naobate: {
+    titulo: 'Nao Consigo Bater o Ponto',
+    icone: 'fas fa-exclamation-triangle',
+    conteudo: `Se voce esta tendo problemas para bater o ponto, siga estas orientacoes:
+
+<div class="passo"><strong>1. Verifique sua conexao:</strong> Certifique-se de que esta conectado a internet.</div>
+
+<div class="passo"><strong>2. Atualize a pagina:</strong> Recarregue o sistema e tente novamente.</div>
+
+<div class="passo"><strong>3. Limpe o cache:</strong> Limpe o cache do navegador para evitar conflitos.</div>
+
+<div class="passo"><strong>4. Permita a camera:</strong> O sistema precisa de acesso a camera para o reconhecimento facial.</div>
+
+<div class="passo"><strong>5. Tente outro navegador:</strong> Use Chrome, Firefox ou Edge atualizados.</div>
+
+<div class="passo"><strong>6. Aguarde alguns minutos:</strong> Pode haver instabilidade momentanea no servidor.</div>
+
+<strong>Se o problema persistir, abra um chamado imediatamente.</strong>`
+  },
+  carga: {
+    titulo: 'Visualizar Carga Horaria',
+    icone: 'fas fa-chart-bar',
+    conteudo: `Para visualizar sua carga horaria no sistema:
+
+<div class="passo"><strong>Passo 1:</strong> No menu principal, clique em "Carga Horaria".</div>
+
+<div class="passo"><strong>Passo 2:</strong> Digite o mes e ano desejado no formato MM/AAAA (ex: 03/2025).</div>
+
+<div class="passo"><strong>Passo 3:</strong> Clique no botao "Buscar" para carregar os registros.</div>
+
+<div class="passo"><strong>Passo 4:</strong> Visualize todos os registros do periodo com entrada, saida e duracao.</div>
+
+<div class="passo"><strong>Passo 5:</strong> O total de horas do mes sera exibido no topo da lista.</div>
+
+<strong>Dica:</strong> Utilize o filtro para consultar qualquer mes desde o inicio do seu cadastro.`
+  },
+  seguranca: {
+    titulo: 'Dicas de Seguranca',
+    icone: 'fas fa-lock',
+    conteudo: `Mantenha sua conta segura com estas dicas:
+
+<div class="passo"><strong>1. NA e Senha:</strong> Nunca compartilhe seu NA e senha com ninguem.</div>
+
+<div class="passo"><strong>2. Dispositivos:</strong> Use apenas dispositivos confiaveis e evite computadores publicos.</div>
+
+<div class="passo"><strong>3. Sessao:</strong> Sempre finalize sua sessao ao terminar o expediente.</div>
+
+<div class="passo"><strong>4. Fotos:</strong> As fotos do reconhecimento facial sao usadas apenas para confirmacao.</div>
+
+<div class="passo"><strong>5. Denuncias:</strong> Suspeitas de uso indevido devem ser comunicadas ao suporte.</div>
+
+<div class="passo"><strong>6. Atualizacoes:</strong> Mantenha navegador e sistema operacional atualizados.</div>
+
+<strong>Lembre-se:</strong> Sua seguranca e responsabilidade de todos.`
+  },
+  lgpd: {
+    titulo: 'Lei LGPD - Protecao de Dados',
+    icone: 'fas fa-gavel',
+    conteudo: `A LGPD (Lei Geral de Protecao de Dados) garante seus direitos:
+
+<strong>O que e a LGPD?</strong>
+A Lei 13.709/2018 protege seus dados pessoais, garantindo transparencia e seguranca no tratamento das informacoes.
+
+<strong>Seus direitos:</strong>
+<ul>
+  <li><strong>Acesso:</strong> Voce pode solicitar acesso a todos os dados que a DomusFit possui sobre voce.</li>
+  <li><strong>Correcao:</strong> Pode corrigir dados incompletos, inexatos ou desatualizados.</li>
+  <li><strong>Exclusao:</strong> Pode solicitar a eliminacao dos dados tratados com seu consentimento.</li>
+  <li><strong>Portabilidade:</strong> Pode solicitar a transferencia de seus dados para outro fornecedor.</li>
+</ul>
+
+<strong>Na DomusFit:</strong>
+<ul>
+  <li>Seus dados sao usados apenas para controle de ponto</li>
+  <li>Nao compartilhamos com terceiros sem autorizacao</li>
+  <li>Utilizamos criptografia para protecao</li>
+  <li>O sistema gera relatorios homologados para auditoria</li>
+</ul>
+
+<strong>Contato LGPD:</strong> Duvidas sobre seus dados devem ser enviadas ao suporte da DomusFit.`
+  },
+  protocolo: {
+    titulo: 'Protocolo de Seguranca',
+    icone: 'fas fa-shield-alt',
+    conteudo: `Protocolo de Seguranca do Sistema de Batimento de Ponto:
+
+<strong>1. Autenticacao:</strong>
+- Acesso exclusivo com NA e senha individual
+- Sessao expira automaticamente apos inatividade
+- Verificacao em dois fatores (calculos matematicos)
+
+<strong>2. Reconhecimento Facial:</strong>
+- Captura de imagem no momento do registro
+- Imagem utilizada apenas para confirmacao de identidade
+- Nao armazenamos imagens no banco de dados
+
+<strong>3. Registros:</strong>
+- Todos os registros sao homologados com ID unico
+- Historico completo disponivel para consulta
+- Relatorios em PDF com validade documental
+
+<strong>4. Backup e Auditoria:</strong>
+- Dados armazenados em servidores seguros (Firebase)
+- Backup automatico diario
+- Auditoria interna periodica
+
+<strong>5. Canal de Seguranca:</strong>
+- Suporte via WhatsApp para emergencias
+- Protocolo de atendimento com registro
+- Tempo de resposta de ate 24h
+
+<strong>Em caso de suspeita de invasao, contate imediatamente o suporte.</strong>`
   }
 };
 
@@ -1265,19 +1508,24 @@ function renderScreen(screenId, pushToStack=true){
   else if(screenId === 'carga') headerTitleSpan.innerText = 'Carga Horaria';
   else if(screenId === 'chamado') headerTitleSpan.innerText = 'Central de Chamados';
   else if(screenId === 'comprovante') headerTitleSpan.innerText = 'Comprovante';
+  else if(screenId === 'ferramenta') headerTitleSpan.innerText = 'Ferramenta';
   if(screenId === 'login') telaLogin();
   else if(screenId === 'tripode') telaTripode();
   else if(screenId === 'ponto') telaPonto();
   else if(screenId === 'carga') telaCarga();
   else if(screenId === 'chamado') telaChamado();
   else if(screenId === 'comprovante') telaComprovante();
+  else if(screenId === 'ferramenta') telaFerramenta();
   atualizarPerfil();
 }
+
 function goBack(){
   if(currentViewStack.length <=1){ renderScreen('login',false); currentViewStack=['login']; }
   else { 
     const ultima = currentViewStack.pop();
     if(ultima === 'comprovante' && currentViewStack.length > 0){
+      renderScreen(currentViewStack[currentViewStack.length-1], false);
+    } else if(ultima === 'ferramenta' && currentViewStack.length > 0){
       renderScreen(currentViewStack[currentViewStack.length-1], false);
     } else {
       renderScreen(currentViewStack[currentViewStack.length-1] || 'tripode', false);
@@ -1306,47 +1554,55 @@ function telaTripode(){
         <span class="doc-title">Documentos</span>
       </div>
       <div class="doc-item">
-        <div class="doc-info">
-          <i class="fas fa-file-pdf"></i>
-          <span class="doc-name">Politica de Privacidade</span>
-        </div>
-        <div class="doc-actions">
-          <span class="ver" onclick="verDocumento('privacidade')">Ver</span>
-          <span class="baixar" onclick="baixarDocumentoEspecifico('privacidade')">Baixar</span>
-        </div>
+        <div class="doc-info"><i class="fas fa-file-pdf"></i><span class="doc-name">Politica de Privacidade</span></div>
+        <div class="doc-actions"><span class="ver" onclick="verDocumento('privacidade')">Ver</span><span class="baixar" onclick="baixarDocumentoEspecifico('privacidade')">Baixar</span></div>
       </div>
       <div class="doc-item">
-        <div class="doc-info">
-          <i class="fas fa-file-pdf"></i>
-          <span class="doc-name">Dicas de Seguranca</span>
-        </div>
-        <div class="doc-actions">
-          <span class="ver" onclick="verDocumento('seguranca')">Ver</span>
-          <span class="baixar" onclick="baixarDocumentoEspecifico('seguranca')">Baixar</span>
-        </div>
+        <div class="doc-info"><i class="fas fa-file-pdf"></i><span class="doc-name">Dicas de Seguranca</span></div>
+        <div class="doc-actions"><span class="ver" onclick="verDocumento('seguranca')">Ver</span><span class="baixar" onclick="baixarDocumentoEspecifico('seguranca')">Baixar</span></div>
       </div>
       <div class="doc-item">
-        <div class="doc-info">
-          <i class="fas fa-file-pdf"></i>
-          <span class="doc-name">Termos de Uso</span>
-        </div>
-        <div class="doc-actions">
-          <span class="ver" onclick="verDocumento('termos')">Ver</span>
-          <span class="baixar" onclick="baixarDocumentoEspecifico('termos')">Baixar</span>
-        </div>
+        <div class="doc-info"><i class="fas fa-file-pdf"></i><span class="doc-name">Termos de Uso</span></div>
+        <div class="doc-actions"><span class="ver" onclick="verDocumento('termos')">Ver</span><span class="baixar" onclick="baixarDocumentoEspecifico('termos')">Baixar</span></div>
       </div>
       <div class="doc-item">
-        <div class="doc-info">
-          <i class="fas fa-file-pdf"></i>
-          <span class="doc-name">Manual do Usuario</span>
+        <div class="doc-info"><i class="fas fa-file-pdf"></i><span class="doc-name">Manual do Usuario</span></div>
+        <div class="doc-actions"><span class="ver" onclick="verDocumento('manual')">Ver</span><span class="baixar" onclick="baixarDocumentoEspecifico('manual')">Baixar</span></div>
+      </div>
+    </div>
+    <div class="ferramentas-section">
+      <div class="ferramentas-header">
+        <i class="fas fa-tools"></i>
+        <span class="ferramentas-title">Ferramentas</span>
+      </div>
+      <div class="ferramentas-grid">
+        <div class="ferramenta-item" onclick="abrirFerramenta('chamado')">
+          <i class="fas fa-headset"></i>
+          <span>Como Abrir Chamado</span>
         </div>
-        <div class="doc-actions">
-          <span class="ver" onclick="verDocumento('manual')">Ver</span>
-          <span class="baixar" onclick="baixarDocumentoEspecifico('manual')">Baixar</span>
+        <div class="ferramenta-item" onclick="abrirFerramenta('naobate')">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>Nao Consigo Bater Ponto</span>
+        </div>
+        <div class="ferramenta-item" onclick="abrirFerramenta('carga')">
+          <i class="fas fa-chart-bar"></i>
+          <span>Visualizar Carga Horaria</span>
+        </div>
+        <div class="ferramenta-item" onclick="abrirFerramenta('seguranca')">
+          <i class="fas fa-lock"></i>
+          <span>Dicas de Seguranca</span>
+        </div>
+        <div class="ferramenta-item" onclick="abrirFerramenta('lgpd')">
+          <i class="fas fa-gavel"></i>
+          <span>Lei LGPD</span>
+        </div>
+        <div class="ferramenta-item" onclick="abrirFerramenta('protocolo')">
+          <i class="fas fa-shield-alt"></i>
+          <span>Protocolo de Seguranca</span>
         </div>
       </div>
     </div>
-    <div class="content-pane"><div style="text-align:center;margin-top:20px;color:#94a3b8;font-size:14px;">Selecione uma opcao acima</div></div>
+    <div class="content-pane"><div style="text-align:center;margin-top:10px;color:#94a3b8;font-size:14px;">Selecione uma opcao acima</div></div>
   `;
   document.getElementById("btnPonto").onclick = ()=> renderScreen('ponto', true);
   document.getElementById("btnCarga").onclick = ()=> renderScreen('carga', true);
@@ -1354,6 +1610,30 @@ function telaTripode(){
   if(pontoAtivo){
     setTimeout(() => { showPontoAbertoSheet(); }, 200);
   }
+  atualizarPerfil();
+}
+
+function abrirFerramenta(chave){
+  const ferramenta = ferramentas[chave];
+  if(!ferramenta) return;
+  // Armazena para a tela
+  window.ferramentaAtual = ferramenta;
+  renderScreen('ferramenta', true);
+}
+
+function telaFerramenta(){
+  const ferramenta = window.ferramentaAtual || ferramentas.chamado;
+  mainEl.innerHTML = `
+    <div class="tela-ferramenta">
+      <div class="ferramenta-header">
+        <h2><i class="${ferramenta.icone}"></i> ${ferramenta.titulo}</h2>
+        <button class="fechar-ferramenta" onclick="goBack()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="ferramenta-corpo">
+        ${ferramenta.conteudo}
+      </div>
+    </div>
+  `;
   atualizarPerfil();
 }
 
@@ -1804,6 +2084,28 @@ function telaChamado(){
   document.getElementById("voltarDoChamadoBtn").onclick = ()=> renderScreen('tripode', true);
   atualizarPerfil();
 }
+
+// RODAPE com politicas
+function criarFooter(){
+  const footer = document.createElement("div");
+  footer.className = "footer";
+  footer.innerHTML = `
+    <div class="footer-links">
+      <span onclick="verDocumento('privacidade')">Politica de Privacidade</span>
+      <span onclick="verDocumento('termos')">Termos de Uso</span>
+      <span onclick="verDocumento('seguranca')">Dicas de Seguranca</span>
+      <span onclick="abrirFerramenta('lgpd')">LGPD</span>
+    </div>
+    <div class="footer-dev">
+      Desenvolvido por <strong>SAN7DOC TECNOLOGIA</strong>
+    </div>
+  `;
+  return footer;
+}
+
+// Adiciona o footer apos o mainDynamic
+const footerElement = criarFooter();
+document.body.appendChild(footerElement);
 
 renderScreen('login', false);
 </script>
