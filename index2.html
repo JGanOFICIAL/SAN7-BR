@@ -12,9 +12,14 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 .back-btn{background:transparent;border:1px solid #334155;width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;color:#94a3b8;transition:0.2s;}
 .back-btn:hover{background:#1e293b;color:#fff;}
 .header-left{display:flex;align-items:center;gap:12px;}
-.avatar-mini{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #334155;background:#1e293b;}
+.avatar-mini{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #334155;background:#1e293b;cursor:pointer;transition:0.2s;}
+.avatar-mini:hover{border-color:#22c55e;}
 .header-title{font-weight:600;font-size:16px;color:#f1f5f9;letter-spacing:0.5px;}
-.right-placeholder{width:40px;}
+.header-right{display:flex;align-items:center;gap:12px;}
+.status-indicator{display:flex;align-items:center;gap:6px;font-size:12px;color:#94a3b8;}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+.status-dot.verde{background:#22c55e;}
+.status-dot.vermelho{background:#b91c1c;}
 .main-dynamic{flex:1;display:flex;flex-direction:column;background:#f1f5f9;}
 
 .login-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:24px;background:#f1f5f9;}
@@ -162,7 +167,6 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 }
 .tabela-ponto th{color:#0f172a;font-weight:600;}
 
-/* LOADER BANCARIO - TELA CHEIA COM CABECALHO */
 .loader-overlay{
   position:fixed;
   top:64px;
@@ -405,7 +409,6 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 .modal-seguranca-content .btn-confirmar-seg{background:#0f172a;color:white;}
 .modal-seguranca-content .btn-confirmar-seg:disabled{opacity:0.4;cursor:not-allowed;}
 
-/* MODAL COMPROVANTE */
 .modal-comprovante{
   position:fixed;
   inset:0;
@@ -468,7 +471,6 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 }
 .modal-comprovante-content .btn-ok-comprovante:hover{background:#1e293b;}
 
-/* TELA COMPROVANTE */
 .tela-comprovante{
   flex:1;
   display:flex;
@@ -549,7 +551,6 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 }
 .tela-comprovante .btn-voltar-inicio:hover{background:#1e293b;}
 
-/* CHAMADO - TERMOS */
 .termos-container{
   background:#f8fafc;
   padding:16px;
@@ -576,6 +577,64 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
   accent-color:#0f172a;
 }
 .termos-container .termo-check label{font-size:13px;color:#1e293b;cursor:pointer;}
+
+/* MODAL PERFIL */
+.modal-perfil{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(4px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:600;
+  visibility:hidden;
+  opacity:0;
+  transition:0.2s;
+}
+.modal-perfil.aberto{visibility:visible;opacity:1;}
+.modal-perfil-content{
+  background:#fff;
+  border-radius:16px;
+  padding:32px 28px 28px;
+  max-width:420px;
+  width:92%;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,0.2);
+}
+.modal-perfil-content .foto-grande{
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid #22c55e;
+  margin:0 auto 12px;
+}
+.modal-perfil-content h3{color:#0f172a;font-size:18px;margin-bottom:4px;}
+.modal-perfil-content .sub-info{color:#64748b;font-size:14px;margin-bottom:16px;}
+.modal-perfil-content .linha-info{
+  display:flex;
+  justify-content:space-between;
+  padding:10px 0;
+  border-bottom:1px solid #f1f5f9;
+  font-size:14px;
+  text-align:left;
+}
+.modal-perfil-content .linha-info .rotulo{color:#64748b;}
+.modal-perfil-content .linha-info .valor{font-weight:500;color:#0f172a;}
+.modal-perfil-content .btn-fechar-perfil{
+  margin-top:16px;
+  padding:12px 32px;
+  border-radius:8px;
+  border:none;
+  background:#f1f5f9;
+  color:#1e293b;
+  font-weight:500;
+  font-size:14px;
+  cursor:pointer;
+  transition:0.2s;
+}
+.modal-perfil-content .btn-fechar-perfil:hover{background:#e2e8f0;}
 </style>
 </head>
 <body>
@@ -583,13 +642,17 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 <header class="app-header" id="appHeader" style="display:none;">
   <div class="header-left">
     <div class="back-btn" id="backBtn">‹</div>
-    <img class="avatar-mini" id="avatarMini" src="" alt="avatar" style="display:none;">
+    <div class="header-title" id="headerTitle">Ponto Mais</div>
   </div>
-  <div class="header-title" id="headerTitle">Ponto Mais</div>
-  <div class="right-placeholder"></div>
+  <div class="header-right">
+    <div class="status-indicator">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusTexto">Offline</span>
+    </div>
+    <img class="avatar-mini" id="avatarMini" src="" alt="perfil" onclick="abrirPerfil()">
+  </div>
 </header>
 
-<!-- LOADER BANCARIO -->
 <div class="loader-overlay" id="loaderOverlay">
   <div id="loaderIcone" class="loader-icone"></div>
   <div class="loader-spinner" id="loaderSpinner"></div>
@@ -647,6 +710,19 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
   </div>
 </div>
 
+<div class="modal-perfil" id="modalPerfil">
+  <div class="modal-perfil-content">
+    <img class="foto-grande" id="fotoPerfilGrande" src="" alt="perfil">
+    <h3 id="perfilNome">Carregando...</h3>
+    <div class="sub-info" id="perfilNa">NA: Carregando...</div>
+    <div class="linha-info"><span class="rotulo">Nome</span><span class="valor" id="perfilNomeValor">--</span></div>
+    <div class="linha-info"><span class="rotulo">NA</span><span class="valor" id="perfilNaValor">--</span></div>
+    <div class="linha-info"><span class="rotulo">Telefone</span><span class="valor" id="perfilTelefone">--</span></div>
+    <div class="linha-info"><span class="rotulo">Status</span><span class="valor" id="perfilStatus">--</span></div>
+    <button class="btn-fechar-perfil" onclick="fecharPerfil()">Fechar</button>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -683,6 +759,8 @@ const loader = document.getElementById("loaderOverlay");
 const loaderSpinner = document.getElementById("loaderSpinner");
 const loaderIcone = document.getElementById("loaderIcone");
 const loaderTexto = document.getElementById("loaderTexto");
+const statusDot = document.getElementById("statusDot");
+const statusTexto = document.getElementById("statusTexto");
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -760,10 +838,21 @@ function startCronometroLocal(){
     if(sheetCrono && pontoAtivo && pontoStart) sheetCrono.innerText = formatDuration(Date.now() - pontoStart);
     else if(sheetCrono && !pontoAtivo) sheetCrono.innerText = "00:00:00";
     verificarNotificacaoPontoAberto();
+    atualizarStatus();
   }, 1000);
 }
 function getDataChave(){
   let d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function atualizarStatus(){
+  if(pontoAtivo){
+    statusDot.className = 'status-dot verde';
+    statusTexto.textContent = 'Online';
+  } else {
+    statusDot.className = 'status-dot vermelho';
+    statusTexto.textContent = 'Offline';
+  }
 }
 
 function verificarNotificacaoPontoAberto(){
@@ -831,12 +920,35 @@ function showPontoAbertoSheet(){
   showBottomSheet("Ponto em Andamento", `Ola, ${nomeFunc}! Voce ja possui um ponto aberto. Tempo atual:`, "Acessar Ponto", ()=>{ renderScreen('ponto', true); }, true, true);
 }
 
-db.ref("usuarios/"+currentUser).on("value", snap=>{ if(snap.exists()) userData = snap.val(); updateAvatarMini(); });
+db.ref("usuarios/"+currentUser).on("value", snap=>{ if(snap.exists()){ userData = snap.val(); updateAvatarMini(); atualizarPerfil(); } });
 function updateAvatarMini(){
   if(userData.foto) avatarMini.src = userData.foto;
   else avatarMini.src = `https://ui-avatars.com/api/?background=1e293b&color=fff&name=${encodeURIComponent(userData.nome||'')}`;
   avatarMini.style.display = (currentViewStack.length>0 && currentViewStack[currentViewStack.length-1]!=='login') ? "block" : "none";
 }
+
+function atualizarPerfil(){
+  document.getElementById("perfilNome").textContent = userData.nome || 'Nao informado';
+  document.getElementById("perfilNa").textContent = 'NA: ' + currentUser;
+  document.getElementById("perfilNomeValor").textContent = userData.nome || '--';
+  document.getElementById("perfilNaValor").textContent = currentUser || '--';
+  document.getElementById("perfilTelefone").textContent = userData.telefone || '--';
+  document.getElementById("perfilStatus").textContent = pontoAtivo ? 'Online' : 'Offline';
+  document.getElementById("fotoPerfilGrande").src = userData.foto || `https://ui-avatars.com/api/?background=1e293b&color=fff&name=${encodeURIComponent(userData.nome||'')}`;
+}
+
+function abrirPerfil(){
+  if(currentViewStack.length === 0) return;
+  atualizarPerfil();
+  document.getElementById("modalPerfil").classList.add("aberto");
+}
+
+function fecharPerfil(){
+  document.getElementById("modalPerfil").classList.remove("aberto");
+}
+document.getElementById("modalPerfil").addEventListener("click", function(e){
+  if(e.target === this) fecharPerfil();
+});
 
 db.ref("pontos/"+currentUser+"/ativo/inicio").on("value", snap=>{
   let inicio = snap.val();
@@ -848,12 +960,16 @@ db.ref("pontos/"+currentUser+"/ativo/inicio").on("value", snap=>{
     if(currentViewStack[currentViewStack.length-1] === 'tripode'){
       showPontoAbertoSheet();
     }
+    atualizarStatus();
+    atualizarPerfil();
   } else {
     pontoAtivo = false;
     pontoStart = null;
     if(cronInterval) clearInterval(cronInterval);
     if(document.getElementById("cronodisplay")) document.getElementById("cronodisplay").innerText = "00:00:00";
     notifPontoAberto.style.display = "none";
+    atualizarStatus();
+    atualizarPerfil();
   }
 });
 
@@ -873,6 +989,7 @@ function renderScreen(screenId, pushToStack=true){
   else if(screenId === 'carga') telaCarga();
   else if(screenId === 'chamado') telaChamado();
   else if(screenId === 'comprovante') telaComprovante();
+  atualizarPerfil();
 }
 function goBack(){
   if(currentViewStack.length <=1){ renderScreen('login',false); currentViewStack=['login']; }
@@ -902,6 +1019,7 @@ function telaTripode(){
   if(pontoAtivo){
     setTimeout(() => { showPontoAbertoSheet(); }, 200);
   }
+  atualizarPerfil();
 }
 
 function telaPonto(){
@@ -918,6 +1036,7 @@ function telaPonto(){
     if(!pontoAtivo){ showMessage("Nenhum ponto ativo"); return; }
     abrirModalSeguranca('finalizar');
   };
+  atualizarPerfil();
 }
 
 async function carregarMiniHistorico(){
@@ -1025,6 +1144,7 @@ function finalizarPontoComSeguranca(){
     
     hideLoader();
     mostrarModalComprovante();
+    atualizarPerfil();
   }, 1200);
 }
 
@@ -1073,6 +1193,7 @@ function telaComprovante(){
       <button class="btn-voltar-inicio" onclick="voltarInicio()">Voltar para Inicio</button>
     </div>
   `;
+  atualizarPerfil();
 }
 
 function voltarInicio(){
@@ -1167,6 +1288,7 @@ function iniciarPontoComSeguranca(){
     carregarMiniHistorico();
     if(document.getElementById("finalizarPontoBtn")) document.getElementById("finalizarPontoBtn").style.display = "block";
     if(document.getElementById("iniciarPontoBtn")) document.getElementById("iniciarPontoBtn").style.display = "none";
+    atualizarPerfil();
   }, 1200);
 }
 
@@ -1209,6 +1331,7 @@ function telaCarga(){
       document.getElementById("cargaResultado").innerHTML = `<div class="total-horas-card"><span>Total ${mm}/${yyyy}</span><strong>${totalH}h ${totalM}m</strong></div><table class="tabela-ponto"><thead><tr><th>Data</th><th>Entrada</th><th>Saida</th><th>Duracao</th></tr></thead><tbody>${linhas||'<tr><td colspan="4" style="color:#94a3b8;padding:20px;">Nenhum registro</td></tr>'}</tbody></table>`;
     }, 800);
   };
+  atualizarPerfil();
 }
 
 function telaChamado(){
@@ -1275,6 +1398,7 @@ function telaChamado(){
   };
   
   document.getElementById("voltarDoChamadoBtn").onclick = ()=> renderScreen('tripode', true);
+  atualizarPerfil();
 }
 
 renderScreen('login', false);
