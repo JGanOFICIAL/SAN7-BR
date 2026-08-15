@@ -8,37 +8,41 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:100vh;display:flex;flex-direction:column;}
-.app-header{position:sticky;top:0;width:100%;background:#fff;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e9eef3;z-index:30;}
-.back-btn{background:transparent;border:2px solid #2c6e2c;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;color:#2c6e2c;}
+.app-header{position:sticky;top:0;width:100%;background:#0f172a;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1e293b;z-index:30;}
+.back-btn{background:transparent;border:1px solid #334155;width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;color:#94a3b8;transition:0.2s;}
+.back-btn:hover{background:#1e293b;color:#fff;}
 .header-left{display:flex;align-items:center;gap:12px;}
-.avatar-mini{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #2c6e2c;background:#f1f5f9;}
-.header-title{font-weight:600;font-size:18px;color:#0f3b2c;}
+.avatar-mini{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #334155;background:#1e293b;}
+.header-title{font-weight:600;font-size:16px;color:#f1f5f9;letter-spacing:0.5px;}
 .right-placeholder{width:40px;}
 .main-dynamic{flex:1;display:flex;flex-direction:column;background:#f1f5f9;}
 
-.login-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:24px;background:#fff;}
+.login-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:24px;background:#f1f5f9;}
 .avatar-circle{width:140px;height:140px;border-radius:50%;object-fit:cover;border:3px solid #e2e8f0;background:#f8fafc;}
 .nome-bemvindo{font-size:26px;font-weight:600;color:#0f172a;}
-.acessar-btn{background:#2c6e2c;border:none;padding:14px 42px;border-radius:60px;font-weight:600;font-size:18px;color:white;margin-top:20px;cursor:pointer;}
+.acessar-btn{background:#0f172a;border:none;padding:14px 42px;border-radius:8px;font-weight:600;font-size:18px;color:white;margin-top:20px;cursor:pointer;transition:0.2s;}
+.acessar-btn:hover{background:#1e293b;}
 
 .three-buttons-vertical{
   display:flex;
   flex-direction:column;
-  gap:16px;
+  gap:12px;
   padding:32px 20px;
   background:#fff;
 }
 .three-buttons-vertical button{
   background:transparent;
-  border:2px solid #2c6e2c;
-  border-radius:60px;
+  border:1px solid #e2e8f0;
+  border-radius:8px;
   padding:16px 20px;
-  font-weight:600;
-  font-size:16px;
+  font-weight:500;
+  font-size:15px;
   color:#1e293b;
   cursor:pointer;
   text-align:center;
+  transition:0.2s;
 }
+.three-buttons-vertical button:hover{background:#f8fafc;border-color:#94a3b8;}
 .content-pane{flex:1;padding:24px 16px;background:#fff;}
 
 .bottom-sheet{
@@ -47,10 +51,10 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
   left:0;
   right:0;
   background:#fff;
-  border-radius:28px 28px 0 0;
-  box-shadow:0 -8px 30px rgba(0,0,0,0.15);
+  border-radius:16px 16px 0 0;
+  box-shadow:0 -8px 30px rgba(0,0,0,0.12);
   transform:translateY(100%);
-  transition:transform 0.25s ease-out;
+  transition:transform 0.3s ease-out;
   z-index:200;
   padding:24px 20px 32px;
   max-width:500px;
@@ -67,49 +71,52 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
   transition:0.2s;
 }
 .sheet-overlay.open{visibility:visible;opacity:1;}
-.sheet-title{font-weight:700;font-size:20px;margin-bottom:16px;}
+.sheet-title{font-weight:600;font-size:18px;margin-bottom:12px;color:#0f172a;}
 .sheet-cronometro-mini{
   background:#fef2f2;
   padding:12px;
-  border-radius:20px;
+  border-radius:8px;
   text-align:center;
   margin:12px 0;
-  font-weight:700;
-  font-size:24px;
+  font-weight:600;
+  font-size:22px;
   font-family:monospace;
   color:#b91c1c;
 }
-.sheet-buttons{display:flex;gap:16px;margin-top:24px;}
-.sheet-buttons button{flex:1;padding:14px;border-radius:60px;font-weight:600;border:none;}
-.btn-sheet-cancel{background:#eef2ff;color:#1e293b;}
-.btn-sheet-confirm{background:#2c6e2c;color:white;}
+.sheet-buttons{display:flex;gap:12px;margin-top:20px;}
+.sheet-buttons button{flex:1;padding:14px;border-radius:8px;font-weight:600;border:none;cursor:pointer;}
+.btn-sheet-cancel{background:#f1f5f9;color:#1e293b;}
+.btn-sheet-confirm{background:#0f172a;color:white;}
 
 .cronometro-grande{
-  font-size:52px;
-  font-weight:700;
+  font-size:48px;
+  font-weight:600;
   text-align:center;
   font-feature-settings:"tnum";
   letter-spacing:2px;
   margin:20px 0;
-  color:#0f3b2c;
+  color:#0f172a;
 }
 .botoes-acao{
   display:flex;
-  gap:16px;
+  gap:12px;
   justify-content:center;
   margin:20px 0 32px;
 }
 .botoes-acao button{
   flex:1;
   padding:14px 0;
-  border-radius:44px;
-  font-weight:700;
+  border-radius:8px;
+  font-weight:600;
   border:none;
-  font-size:16px;
+  font-size:15px;
   cursor:pointer;
+  transition:0.2s;
 }
-.btn-iniciar-ponto{background:#2c6e2c;color:white;}
+.btn-iniciar-ponto{background:#0f172a;color:white;}
+.btn-iniciar-ponto:hover{background:#1e293b;}
 .btn-finalizar-ponto{background:#b91c1c;color:white;display:none;}
+.btn-finalizar-ponto:hover{background:#991b1b;}
 
 .filtro-mes{
   display:flex;
@@ -120,24 +127,24 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 .filtro-mes input{
   flex:1;
   padding:12px;
-  border:1px solid #cbd5e1;
-  border-radius:20px;
-  font-size:15px;
+  border:1px solid #e2e8f0;
+  border-radius:8px;
+  font-size:14px;
   min-width:120px;
 }
 .filtro-mes button{
-  background:#2c6e2c;
+  background:#0f172a;
   border:none;
   padding:0 20px;
-  border-radius:32px;
-  font-weight:600;
+  border-radius:8px;
+  font-weight:500;
   color:white;
   cursor:pointer;
 }
 .total-horas-card{
   background:#f0f9f0;
   padding:12px 16px;
-  border-radius:24px;
+  border-radius:8px;
   margin:8px 0 16px;
   display:flex;
   justify-content:space-between;
@@ -146,26 +153,65 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 .tabela-ponto{
   width:100%;
   border-collapse:collapse;
-  font-size:14px;
+  font-size:13px;
 }
 .tabela-ponto th, .tabela-ponto td{
-  padding:12px 4px;
+  padding:10px 4px;
   border-bottom:1px solid #e2e8f0;
   text-align:center;
 }
-.tabela-ponto th{color:#2c6e2c;}
+.tabela-ponto th{color:#0f172a;font-weight:600;}
+
+/* LOADER BANCARIO - TELA CHEIA COM CABECALHO */
+.loader-overlay{
+  position:fixed;
+  top:64px;
+  left:0;
+  right:0;
+  bottom:0;
+  background:#f1f5f9;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  z-index:50;
+}
+.loader-overlay.ativo{display:flex;}
+.loader-spinner{
+  width:48px;
+  height:48px;
+  border:3px solid #e2e8f0;
+  border-top-color:#0f172a;
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+.loader-texto{
+  margin-top:16px;
+  font-size:14px;
+  color:#64748b;
+  font-weight:500;
+  letter-spacing:0.5px;
+}
+.loader-icone{
+  font-size:48px;
+  margin-bottom:12px;
+  line-height:1;
+}
+.loader-icone.verde{color:#22c55e;}
+.loader-icone.vermelho{color:#b91c1c;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
 .modal-camera{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.85);
+  background:rgba(0,0,0,0.9);
   display:flex;
   align-items:center;
   justify-content:center;
   z-index:1000;
   visibility:hidden;
   opacity:0;
-  transition:0.1s;
+  transition:0.15s;
 }
 .modal-camera.aberto{visibility:visible;opacity:1;}
 .camera-oval{
@@ -179,7 +225,7 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
   justify-content:center;
   position:relative;
   overflow:hidden;
-  box-shadow:0 0 60px rgba(0,0,0,0.8);
+  box-shadow:0 0 80px rgba(0,0,0,0.6);
 }
 .camera-oval video{
   width:100%;
@@ -200,30 +246,29 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 .camera-oval .spinner-overlay .spinner-bola{
   width:60px;
   height:60px;
-  border:4px solid rgba(255,255,255,0.2);
-  border-top-color:#2c6e2c;
+  border:4px solid rgba(255,255,255,0.15);
+  border-top-color:#22c55e;
   border-radius:50%;
   animation:spin 0.8s linear infinite;
 }
-@keyframes spin{to{transform:rotate(360deg);}}
 .camera-oval .btn-cancelar-camera{
   position:absolute;
   bottom:20px;
   left:50%;
   transform:translateX(-50%);
-  background:rgba(255,255,255,0.2);
-  backdrop-filter:blur(10px);
-  border:1px solid rgba(255,255,255,0.3);
+  background:rgba(255,255,255,0.1);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.15);
   padding:10px 28px;
-  border-radius:40px;
+  border-radius:8px;
   color:#fff;
-  font-weight:600;
+  font-weight:500;
   font-size:14px;
   cursor:pointer;
   z-index:10;
   transition:0.3s;
 }
-.camera-oval .btn-cancelar-camera:hover{background:rgba(255,255,255,0.3);}
+.camera-oval .btn-cancelar-camera:hover{background:rgba(255,255,255,0.2);}
 
 .modal-sem-camera{
   position:fixed;
@@ -240,14 +285,14 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 .modal-sem-camera.aberto{visibility:visible;opacity:1;}
 .modal-sem-camera-content{
   background:#fff;
-  border-radius:24px;
+  border-radius:12px;
   padding:32px 24px;
   max-width:380px;
   width:90%;
   text-align:center;
 }
-.modal-sem-camera-content h3{color:#0f3b2c;margin-bottom:12px;}
-.modal-sem-camera-content p{color:#4b5563;font-size:14px;margin-bottom:20px;line-height:1.6;}
+.modal-sem-camera-content h3{color:#0f172a;margin-bottom:12px;}
+.modal-sem-camera-content p{color:#64748b;font-size:14px;margin-bottom:20px;line-height:1.6;}
 .modal-sem-camera-content .botoes{
   display:flex;
   gap:12px;
@@ -255,23 +300,23 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 .modal-sem-camera-content .botoes button{
   flex:1;
   padding:12px;
-  border-radius:40px;
-  font-weight:600;
+  border-radius:8px;
+  font-weight:500;
   border:none;
   cursor:pointer;
 }
-.modal-sem-camera-content .btn-cancelar-sem{background:#eef2ff;color:#1e293b;}
-.modal-sem-camera-content .btn-continuar-sem{background:#2c6e2c;color:white;}
+.modal-sem-camera-content .btn-cancelar-sem{background:#f1f5f9;color:#1e293b;}
+.modal-sem-camera-content .btn-continuar-sem{background:#0f172a;color:white;}
 
 .notif-toast{
   position:fixed;
   bottom:80px;
   left:50%;
   transform:translateX(-50%);
-  background:#1e293b;
+  background:#0f172a;
   color:white;
-  padding:8px 20px;
-  border-radius:40px;
+  padding:10px 24px;
+  border-radius:8px;
   z-index:999;
   font-size:14px;
   max-width:90%;
@@ -284,12 +329,12 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
   transform:translateX(-50%);
   background:#b91c1c;
   color:white;
-  padding:14px 24px;
-  border-radius:16px;
+  padding:12px 24px;
+  border-radius:8px;
   z-index:150;
-  font-weight:600;
-  font-size:14px;
-  box-shadow:0 4px 20px rgba(185,28,28,0.3);
+  font-weight:500;
+  font-size:13px;
+  box-shadow:0 4px 20px rgba(185,28,28,0.25);
   cursor:pointer;
   max-width:90%;
   text-align:center;
@@ -300,7 +345,7 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 .modal-seguranca{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.6);
+  background:rgba(0,0,0,0.5);
   display:flex;
   align-items:center;
   justify-content:center;
@@ -312,58 +357,59 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 .modal-seguranca.aberto{visibility:visible;opacity:1;}
 .modal-seguranca-content{
   background:#fff;
-  border-radius:32px;
+  border-radius:16px;
   padding:32px 24px;
   max-width:400px;
   width:90%;
   max-height:90vh;
   overflow-y:auto;
 }
-.modal-seguranca-content h3{font-size:20px;margin-bottom:8px;color:#0f3b2c;}
-.modal-seguranca-content .subtitulo{color:#4b5563;font-size:14px;margin-bottom:20px;}
-.modal-seguranca-content .label{font-weight:600;font-size:14px;color:#1e293b;margin-bottom:6px;}
+.modal-seguranca-content h3{font-size:18px;margin-bottom:6px;color:#0f172a;}
+.modal-seguranca-content .subtitulo{color:#64748b;font-size:14px;margin-bottom:16px;}
+.modal-seguranca-content .label{font-weight:500;font-size:14px;color:#1e293b;margin-bottom:4px;}
 .modal-seguranca-content .campo-calculo{
-  background:#f1f5f9;
+  background:#f8fafc;
   padding:16px;
-  border-radius:16px;
+  border-radius:8px;
   text-align:center;
   font-size:28px;
-  font-weight:700;
+  font-weight:600;
   margin:12px 0;
   font-family:monospace;
+  border:1px solid #e2e8f0;
 }
 .modal-seguranca-content input[type="number"]{
   width:100%;
   padding:14px;
-  border:2px solid #cbd5e1;
-  border-radius:16px;
+  border:1px solid #e2e8f0;
+  border-radius:8px;
   font-size:18px;
   text-align:center;
   margin:8px 0 16px;
-  font-weight:600;
+  font-weight:500;
 }
 .modal-seguranca-content .botoes-modal{
   display:flex;
   gap:12px;
-  margin-top:20px;
+  margin-top:16px;
 }
 .modal-seguranca-content .botoes-modal button{
   flex:1;
   padding:14px;
-  border-radius:60px;
-  font-weight:600;
+  border-radius:8px;
+  font-weight:500;
   border:none;
   cursor:pointer;
 }
-.modal-seguranca-content .btn-cancelar-seg{background:#eef2ff;color:#1e293b;}
-.modal-seguranca-content .btn-confirmar-seg{background:#2c6e2c;color:white;}
-.modal-seguranca-content .btn-confirmar-seg:disabled{opacity:0.5;cursor:not-allowed;}
+.modal-seguranca-content .btn-cancelar-seg{background:#f1f5f9;color:#1e293b;}
+.modal-seguranca-content .btn-confirmar-seg{background:#0f172a;color:white;}
+.modal-seguranca-content .btn-confirmar-seg:disabled{opacity:0.4;cursor:not-allowed;}
 
-/* Modal comprovante sobreposto */
+/* MODAL COMPROVANTE */
 .modal-comprovante{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.55);
+  background:rgba(0,0,0,0.5);
   backdrop-filter:blur(4px);
   display:flex;
   align-items:center;
@@ -371,78 +417,58 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
   z-index:700;
   visibility:hidden;
   opacity:0;
-  transition:0.25s;
+  transition:0.2s;
 }
 .modal-comprovante.aberto{visibility:visible;opacity:1;}
 .modal-comprovante-content{
   background:#fff;
-  border-radius:28px;
-  padding:36px 28px 28px;
+  border-radius:16px;
+  padding:32px 28px 28px;
   max-width:420px;
   width:92%;
   text-align:center;
-  box-shadow:0 30px 80px rgba(0,0,0,0.25);
-  transform:scale(0.95);
-  transition:transform 0.3s;
-}
-.modal-comprovante.aberto .modal-comprovante-content{
-  transform:scale(1);
+  box-shadow:0 20px 60px rgba(0,0,0,0.2);
 }
 .modal-comprovante-content .icone-check{
-  width:72px;
-  height:72px;
+  width:64px;
+  height:64px;
   border-radius:50%;
   background:#dcfce7;
   display:flex;
   align-items:center;
   justify-content:center;
-  margin:0 auto 16px;
-  font-size:36px;
+  margin:0 auto 12px;
+  font-size:32px;
   color:#22c55e;
 }
-.modal-comprovante-content h3{
-  color:#0f3b2c;
-  font-size:20px;
-  margin-bottom:4px;
-}
-.modal-comprovante-content .sub-texto{
-  color:#6c757d;
-  font-size:13px;
-  margin-bottom:16px;
-}
+.modal-comprovante-content h3{color:#0f172a;font-size:18px;margin-bottom:4px;}
+.modal-comprovante-content .sub-texto{color:#64748b;font-size:13px;margin-bottom:12px;}
 .modal-comprovante-content .dados-ponto{
   background:#f8fafc;
-  padding:16px 18px;
-  border-radius:14px;
+  padding:14px 16px;
+  border-radius:8px;
   text-align:left;
-  font-size:14px;
+  font-size:13px;
   line-height:2;
-  margin:12px 0 20px;
-  border:1px solid #e9eef3;
+  margin:12px 0 16px;
+  border:1px solid #e2e8f0;
 }
-.modal-comprovante-content .dados-ponto strong{
-  color:#0f3b2c;
-}
-.modal-comprovante-content .dados-ponto .label{
-  color:#6c757d;
-  font-weight:400;
-}
+.modal-comprovante-content .dados-ponto strong{color:#0f172a;}
+.modal-comprovante-content .dados-ponto .label{color:#64748b;}
 .modal-comprovante-content .btn-ok-comprovante{
-  padding:14px 48px;
-  border-radius:40px;
+  padding:14px 40px;
+  border-radius:8px;
   border:none;
-  background:#2c6e2c;
+  background:#0f172a;
   color:white;
-  font-weight:600;
-  font-size:16px;
+  font-weight:500;
+  font-size:15px;
   cursor:pointer;
   transition:0.2s;
 }
-.modal-comprovante-content .btn-ok-comprovante:hover{
-  background:#1f4f1f;
-}
+.modal-comprovante-content .btn-ok-comprovante:hover{background:#1e293b;}
 
-/* TELA COMPROVANTE FINAL */
+/* TELA COMPROVANTE */
 .tela-comprovante{
   flex:1;
   display:flex;
@@ -454,95 +480,121 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 }
 .tela-comprovante .card-comprovante{
   background:#fff;
-  border-radius:24px;
-  padding:40px 32px;
-  max-width:500px;
+  border-radius:12px;
+  padding:32px 28px;
+  max-width:480px;
   width:100%;
-  box-shadow:0 4px 20px rgba(0,0,0,0.06);
-  border:1px solid #e9eef3;
+  box-shadow:0 2px 12px rgba(0,0,0,0.04);
+  border:1px solid #e2e8f0;
 }
 .tela-comprovante .card-comprovante .header-comp{
   text-align:center;
-  padding-bottom:20px;
-  border-bottom:2px solid #2c6e2c;
-  margin-bottom:20px;
+  padding-bottom:16px;
+  border-bottom:2px solid #0f172a;
+  margin-bottom:16px;
 }
 .tela-comprovante .card-comprovante .header-comp .logo-text{
-  font-size:22px;
+  font-size:20px;
   font-weight:700;
-  color:#0f3b2c;
+  color:#0f172a;
 }
 .tela-comprovante .card-comprovante .header-comp .sub-text{
-  font-size:13px;
-  color:#6c757d;
+  font-size:12px;
+  color:#64748b;
   margin-top:4px;
 }
 .tela-comprovante .card-comprovante .icone-verificado{
   text-align:center;
-  margin:12px 0 16px;
+  margin:8px 0 12px;
 }
 .tela-comprovante .card-comprovante .icone-verificado span{
   display:inline-block;
-  width:64px;
-  height:64px;
+  width:56px;
+  height:56px;
   border-radius:50%;
   background:#dcfce7;
-  line-height:64px;
-  font-size:32px;
+  line-height:56px;
+  font-size:28px;
   color:#22c55e;
 }
 .tela-comprovante .card-comprovante .linha-dado{
   display:flex;
   justify-content:space-between;
-  padding:10px 0;
+  padding:8px 0;
   border-bottom:1px solid #f1f5f9;
-  font-size:15px;
+  font-size:14px;
 }
-.tela-comprovante .card-comprovante .linha-dado .rotulo{
-  color:#6c757d;
-}
-.tela-comprovante .card-comprovante .linha-dado .valor{
-  font-weight:600;
-  color:#0f3b2c;
-}
-.tela-comprovante .card-comprovante .linha-dado:last-child{
-  border-bottom:none;
-}
+.tela-comprovante .card-comprovante .linha-dado .rotulo{color:#64748b;}
+.tela-comprovante .card-comprovante .linha-dado .valor{font-weight:600;color:#0f172a;}
 .tela-comprovante .card-comprovante .rodape-comp{
-  margin-top:24px;
-  padding-top:16px;
-  border-top:2px solid #2c6e2c;
+  margin-top:16px;
+  padding-top:12px;
+  border-top:2px solid #0f172a;
   text-align:center;
-  font-size:11px;
+  font-size:10px;
   color:#94a3b8;
+  line-height:1.6;
 }
 .tela-comprovante .btn-voltar-inicio{
-  margin-top:20px;
-  padding:14px 48px;
-  border-radius:40px;
+  margin-top:16px;
+  padding:14px 40px;
+  border-radius:8px;
   border:none;
-  background:#2c6e2c;
+  background:#0f172a;
   color:white;
-  font-weight:600;
-  font-size:16px;
+  font-weight:500;
+  font-size:15px;
   cursor:pointer;
   transition:0.2s;
 }
-.tela-comprovante .btn-voltar-inicio:hover{
-  background:#1f4f1f;
+.tela-comprovante .btn-voltar-inicio:hover{background:#1e293b;}
+
+/* CHAMADO - TERMOS */
+.termos-container{
+  background:#f8fafc;
+  padding:16px;
+  border-radius:8px;
+  border:1px solid #e2e8f0;
+  margin:12px 0;
+  font-size:13px;
+  line-height:1.6;
+  color:#475569;
+  text-align:justify;
 }
+.termos-container .termo-check{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid #e2e8f0;
+}
+.termos-container .termo-check input[type="checkbox"]{
+  width:18px;
+  height:18px;
+  margin-top:2px;
+  accent-color:#0f172a;
+}
+.termos-container .termo-check label{font-size:13px;color:#1e293b;cursor:pointer;}
 </style>
 </head>
 <body>
 
 <header class="app-header" id="appHeader" style="display:none;">
   <div class="header-left">
-    <div class="back-btn" id="backBtn">←</div>
+    <div class="back-btn" id="backBtn">‹</div>
     <img class="avatar-mini" id="avatarMini" src="" alt="avatar" style="display:none;">
   </div>
   <div class="header-title" id="headerTitle">Ponto Mais</div>
   <div class="right-placeholder"></div>
 </header>
+
+<!-- LOADER BANCARIO -->
+<div class="loader-overlay" id="loaderOverlay">
+  <div id="loaderIcone" class="loader-icone"></div>
+  <div class="loader-spinner" id="loaderSpinner"></div>
+  <div class="loader-texto" id="loaderTexto">Carregando...</div>
+</div>
 
 <div class="main-dynamic" id="mainDynamic"></div>
 
@@ -585,7 +637,6 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
   </div>
 </div>
 
-<!-- Modal Comprovante sobreposto -->
 <div class="modal-comprovante" id="modalComprovante">
   <div class="modal-comprovante-content">
     <div class="icone-check">✓</div>
@@ -628,23 +679,25 @@ const backBtn = document.getElementById("backBtn");
 const headerTitleSpan = document.getElementById("headerTitle");
 const avatarMini = document.getElementById("avatarMini");
 const notifPontoAberto = document.getElementById("notificacaoPontoAberto");
+const loader = document.getElementById("loaderOverlay");
+const loaderSpinner = document.getElementById("loaderSpinner");
+const loaderIcone = document.getElementById("loaderIcone");
+const loaderTexto = document.getElementById("loaderTexto");
 
-// Audio para efeito de confirmação
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function playNotificationSound(){
   try {
-    const oscillator = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    oscillator.frequency.value = 880;
-    oscillator.type = "sine";
-    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-    oscillator.start(audioCtx.currentTime);
-    oscillator.stop(audioCtx.currentTime + 0.4);
-    
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.frequency.value = 880;
+    osc.type = "sine";
+    gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+    osc.start(audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime + 0.35);
     setTimeout(() => {
       const osc2 = audioCtx.createOscillator();
       const gain2 = audioCtx.createGain();
@@ -652,25 +705,27 @@ function playNotificationSound(){
       gain2.connect(audioCtx.destination);
       osc2.frequency.value = 1100;
       osc2.type = "sine";
-      gain2.gain.setValueAtTime(0.25, audioCtx.currentTime);
-      gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+      gain2.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
       osc2.start(audioCtx.currentTime);
-      osc2.stop(audioCtx.currentTime + 0.3);
+      osc2.stop(audioCtx.currentTime + 0.25);
     }, 150);
-    
-    setTimeout(() => {
-      const osc3 = audioCtx.createOscillator();
-      const gain3 = audioCtx.createGain();
-      osc3.connect(gain3);
-      gain3.connect(audioCtx.destination);
-      osc3.frequency.value = 1320;
-      osc3.type = "sine";
-      gain3.gain.setValueAtTime(0.2, audioCtx.currentTime);
-      gain3.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
-      osc3.start(audioCtx.currentTime);
-      osc3.stop(audioCtx.currentTime + 0.25);
-    }, 300);
-  } catch(e) { /* fallback silencioso */ }
+  } catch(e) {}
+}
+
+function showLoader(mensagem, icone, cor){
+  loaderSpinner.style.display = icone ? 'none' : 'block';
+  loaderIcone.textContent = icone || '';
+  loaderIcone.className = 'loader-icone ' + (cor || '');
+  loaderTexto.textContent = mensagem || 'Carregando...';
+  loader.classList.add('ativo');
+}
+
+function hideLoader(){
+  loader.classList.remove('ativo');
+  loaderSpinner.style.display = 'block';
+  loaderIcone.textContent = '';
+  loaderIcone.className = 'loader-icone';
 }
 
 function showMessage(msg){
@@ -678,8 +733,9 @@ function showMessage(msg){
   t.className = "notif-toast";
   t.innerText = msg;
   document.body.appendChild(t);
-  setTimeout(()=>t.remove(),2000);
+  setTimeout(()=>t.remove(),2500);
 }
+
 function formatDuration(ms){
   let h = Math.floor(ms/3600000);
   let m = Math.floor((ms%3600000)/60000);
@@ -778,7 +834,7 @@ function showPontoAbertoSheet(){
 db.ref("usuarios/"+currentUser).on("value", snap=>{ if(snap.exists()) userData = snap.val(); updateAvatarMini(); });
 function updateAvatarMini(){
   if(userData.foto) avatarMini.src = userData.foto;
-  else avatarMini.src = `https://ui-avatars.com/api/?background=2c6e2c&color=fff&name=${encodeURIComponent(userData.nome||'')}`;
+  else avatarMini.src = `https://ui-avatars.com/api/?background=1e293b&color=fff&name=${encodeURIComponent(userData.nome||'')}`;
   avatarMini.style.display = (currentViewStack.length>0 && currentViewStack[currentViewStack.length-1]!=='login') ? "block" : "none";
 }
 
@@ -823,7 +879,6 @@ function goBack(){
   else { 
     const ultima = currentViewStack.pop();
     if(ultima === 'comprovante' && currentViewStack.length > 0){
-      // Volta para a tela anterior (ponto)
       renderScreen(currentViewStack[currentViewStack.length-1], false);
     } else {
       renderScreen(currentViewStack[currentViewStack.length-1] || 'tripode', false);
@@ -833,14 +888,14 @@ function goBack(){
 backBtn.onclick = goBack;
 
 function telaLogin(){
-  mainEl.innerHTML = `<div class="login-screen"><img class="avatar-circle" id="loginAvatar" src="${userData.foto||''}" onerror="this.src='https://ui-avatars.com/api/?background=2c6e2c&color=fff&name=${encodeURIComponent(userData.nome||'User')}'"><div class="nome-bemvindo" id="loginNome">${userData.nome||'Carregando...'}</div><button class="acessar-btn" id="acessarPrincipalBtn">Acessar</button></div>`;
+  mainEl.innerHTML = `<div class="login-screen"><img class="avatar-circle" id="loginAvatar" src="${userData.foto||''}" onerror="this.src='https://ui-avatars.com/api/?background=0f172a&color=fff&name=${encodeURIComponent(userData.nome||'User')}'"><div class="nome-bemvindo" id="loginNome">${userData.nome||'Carregando...'}</div><button class="acessar-btn" id="acessarPrincipalBtn">Acessar</button></div>`;
   if(userData.nome) document.getElementById("loginNome").innerText = userData.nome;
-  db.ref("usuarios/"+currentUser).once("value").then(s=>{ if(s.exists()){ let d=s.val(); document.getElementById("loginAvatar").src = d.foto || `https://ui-avatars.com/api/?background=2c6e2c&color=fff&name=${encodeURIComponent(d.nome||'')}`; document.getElementById("loginNome").innerText = d.nome; } });
+  db.ref("usuarios/"+currentUser).once("value").then(s=>{ if(s.exists()){ let d=s.val(); document.getElementById("loginAvatar").src = d.foto || `https://ui-avatars.com/api/?background=0f172a&color=fff&name=${encodeURIComponent(d.nome||'')}`; document.getElementById("loginNome").innerText = d.nome; } });
   document.getElementById("acessarPrincipalBtn").onclick = ()=> renderScreen('tripode', true);
 }
 
 function telaTripode(){
-  mainEl.innerHTML = `<div class="three-buttons-vertical"><button id="btnPonto">Batida de Ponto</button><button id="btnCarga">Carga Horaria</button><button id="btnChamado">Abrir Chamado</button></div><div class="content-pane"><div style="text-align:center;margin-top:40px;color:#6c757d;">Selecione uma opcao</div></div>`;
+  mainEl.innerHTML = `<div class="three-buttons-vertical"><button id="btnPonto">Batida de Ponto</button><button id="btnCarga">Carga Horaria</button><button id="btnChamado">Abrir Chamado</button></div><div class="content-pane"><div style="text-align:center;margin-top:40px;color:#94a3b8;font-size:14px;">Selecione uma opcao</div></div>`;
   document.getElementById("btnPonto").onclick = ()=> renderScreen('ponto', true);
   document.getElementById("btnCarga").onclick = ()=> renderScreen('carga', true);
   document.getElementById("btnChamado").onclick = ()=> renderScreen('chamado', true);
@@ -850,7 +905,7 @@ function telaTripode(){
 }
 
 function telaPonto(){
-  mainEl.innerHTML = `<div style="padding:24px 16px;background:#fff;min-height:calc(100vh - 64px);"><div class="cronometro-grande" id="cronodisplay">00:00:00</div><div class="botoes-acao"><button class="btn-iniciar-ponto" id="iniciarPontoBtn">Iniciar Ponto</button><button class="btn-finalizar-ponto" id="finalizarPontoBtn">Finalizar Dia</button></div><div style="margin-top:30px;"><h4>Ultimos registros</h4><div id="miniResumo"></div></div></div>`;
+  mainEl.innerHTML = `<div style="padding:24px 16px;background:#fff;min-height:calc(100vh - 64px);"><div class="cronometro-grande" id="cronodisplay">00:00:00</div><div class="botoes-acao"><button class="btn-iniciar-ponto" id="iniciarPontoBtn">Iniciar Ponto</button><button class="btn-finalizar-ponto" id="finalizarPontoBtn">Finalizar Dia</button></div><div style="margin-top:30px;"><h4 style="font-size:15px;color:#64748b;font-weight:500;">Ultimos registros</h4><div id="miniResumo"></div></div></div>`;
   if(pontoAtivo) { document.getElementById("finalizarPontoBtn").style.display = "block"; document.getElementById("iniciarPontoBtn").style.display = "none"; atualizaCronometroDisplay(); }
   else { document.getElementById("finalizarPontoBtn").style.display = "none"; document.getElementById("iniciarPontoBtn").style.display = "block"; }
   startCronometroLocal();
@@ -875,7 +930,7 @@ async function carregarMiniHistorico(){
     let fim = val.fim ? new Date(val.fim).toLocaleTimeString().slice(0,5) : "--";
     rows += `<tr><td>${data}</td><td>${ini}</td><td>${fim}</td></tr>`;
   }
-  document.getElementById("miniResumo").innerHTML = `<table class="tabela-ponto"><tr><th>Data</th><th>Entrada</th><th>Saida</th></tr>${rows||'<tr><td colspan="3">Nenhum registro</td></tr>'}</table>`;
+  document.getElementById("miniResumo").innerHTML = `<table class="tabela-ponto"><tr><th>Data</th><th>Entrada</th><th>Saida</th></tr>${rows||'<tr><td colspan="3" style="color:#94a3b8;padding:20px;">Nenhum registro</td></tr>'}</table>`;
 }
 
 function abrirModalSeguranca(acao){
@@ -938,37 +993,39 @@ function fecharModalSeguranca(){
 }
 
 function finalizarPontoComSeguranca(){
-  let fim = Date.now();
-  let dataChave = getDataChave();
-  let historicoRef = db.ref("historico/"+currentUser+"/"+dataChave);
-  historicoRef.update({
-    fim: fim,
-    calculo_fim: segOperacaoRealizada,
-    timestamp_fim: fim
-  });
-  db.ref("pontos/"+currentUser+"/ativo").remove();
+  showLoader('Finalizando ponto...', '', '');
   
-  // Toca o som de confirmacao
-  playNotificationSound();
-  
-  // Prepara dados do comprovante
-  let dataAtual = new Date().toLocaleDateString('pt-BR');
-  let horaAtual = new Date().toLocaleTimeString('pt-BR');
-  let nome = userData.nome || 'Nao informado';
-  let na = currentUser || 'Nao informado';
-  let tempoDecorrido = pontoStart ? formatDuration(Date.now() - pontoStart) : '00:00:00';
-  
-  dadosComprovante = {
-    nome: nome,
-    na: na,
-    data: dataAtual,
-    hora: horaAtual,
-    tempo: tempoDecorrido,
-    calculo: segOperacaoRealizada
-  };
-  
-  // Mostra modal sobreposto
-  mostrarModalComprovante();
+  setTimeout(() => {
+    let fim = Date.now();
+    let dataChave = getDataChave();
+    let historicoRef = db.ref("historico/"+currentUser+"/"+dataChave);
+    historicoRef.update({
+      fim: fim,
+      calculo_fim: segOperacaoRealizada,
+      timestamp_fim: fim
+    });
+    db.ref("pontos/"+currentUser+"/ativo").remove();
+    
+    playNotificationSound();
+    
+    let dataAtual = new Date().toLocaleDateString('pt-BR');
+    let horaAtual = new Date().toLocaleTimeString('pt-BR');
+    let nome = userData.nome || 'Nao informado';
+    let na = currentUser || 'Nao informado';
+    let tempoDecorrido = pontoStart ? formatDuration(Date.now() - pontoStart) : '00:00:00';
+    
+    dadosComprovante = {
+      nome: nome,
+      na: na,
+      data: dataAtual,
+      hora: horaAtual,
+      tempo: tempoDecorrido,
+      calculo: segOperacaoRealizada
+    };
+    
+    hideLoader();
+    mostrarModalComprovante();
+  }, 1200);
 }
 
 function mostrarModalComprovante(){
@@ -988,7 +1045,6 @@ function mostrarModalComprovante(){
   
   document.getElementById("btnOkComprovante").onclick = function(){
     modal.classList.remove("aberto");
-    // Navega para tela de comprovante
     renderScreen('comprovante', true);
   };
 }
@@ -1020,7 +1076,6 @@ function telaComprovante(){
 }
 
 function voltarInicio(){
-  // Reseta o estado do ponto
   document.getElementById("finalizarPontoBtn").style.display = "none";
   document.getElementById("iniciarPontoBtn").style.display = "block";
   if(document.getElementById("cronodisplay")) document.getElementById("cronodisplay").innerText = "00:00:00";
@@ -1091,20 +1146,28 @@ document.getElementById("btnContinuarSem").onclick = function(){
 };
 
 function iniciarPontoComSeguranca(){
-  let agora = Date.now();
-  let dataChave = getDataChave();
-  let historicoRef = db.ref("historico/"+currentUser+"/"+dataChave);
-  historicoRef.update({
-    inicio: agora,
-    calculo: segOperacaoRealizada,
-    timestamp_inicio: agora
-  });
-  db.ref("pontos/"+currentUser+"/ativo").set({inicio: agora});
-  showMessage("Ponto iniciado");
-  if(document.getElementById("cronodisplay")) atualizaCronometroDisplay();
-  carregarMiniHistorico();
-  if(document.getElementById("finalizarPontoBtn")) document.getElementById("finalizarPontoBtn").style.display = "block";
-  if(document.getElementById("iniciarPontoBtn")) document.getElementById("iniciarPontoBtn").style.display = "none";
+  showLoader('Iniciando ponto...', '', '');
+  
+  setTimeout(() => {
+    let agora = Date.now();
+    let dataChave = getDataChave();
+    let historicoRef = db.ref("historico/"+currentUser+"/"+dataChave);
+    historicoRef.update({
+      inicio: agora,
+      calculo: segOperacaoRealizada,
+      timestamp_inicio: agora
+    });
+    db.ref("pontos/"+currentUser+"/ativo").set({inicio: agora});
+    
+    playNotificationSound();
+    hideLoader();
+    showMessage("Ponto iniciado");
+    
+    if(document.getElementById("cronodisplay")) atualizaCronometroDisplay();
+    carregarMiniHistorico();
+    if(document.getElementById("finalizarPontoBtn")) document.getElementById("finalizarPontoBtn").style.display = "block";
+    if(document.getElementById("iniciarPontoBtn")) document.getElementById("iniciarPontoBtn").style.display = "none";
+  }, 1200);
 }
 
 function telaCarga(){
@@ -1121,41 +1184,96 @@ function telaCarga(){
     let [mm,yyyy] = raw.split("/");
     let mes=parseInt(mm), ano=parseInt(yyyy);
     if(mes<1||mes>12||ano<2000){ showMessage("Mes ou ano invalido"); return; }
-    let snap = await db.ref("historico/"+currentUser).once("value");
-    let pontos = snap.val()||{};
-    let totalMs=0, linhas="";
-    let registros = Object.entries(pontos).filter(([data])=>{ let [y,m]=data.split("-").map(Number); return y===ano && m===mes; }).sort((a,b)=>b[0].localeCompare(a[0]));
-    for(let [data, val] of registros){
-      let ini = val.inicio ? new Date(val.inicio).toLocaleTimeString().slice(0,5) : "--";
-      let fim = val.fim ? new Date(val.fim).toLocaleTimeString().slice(0,5) : "--";
-      let dur = "--";
-      if(val.inicio && val.fim){
-        let diff = val.fim - val.inicio;
-        totalMs += diff;
-        dur = `${Math.floor(diff/3600000)}h ${Math.floor((diff%3600000)/60000)}m`;
+    
+    showLoader('Buscando registros...', '', '');
+    
+    setTimeout(async () => {
+      let snap = await db.ref("historico/"+currentUser).once("value");
+      let pontos = snap.val()||{};
+      let totalMs=0, linhas="";
+      let registros = Object.entries(pontos).filter(([data])=>{ let [y,m]=data.split("-").map(Number); return y===ano && m===mes; }).sort((a,b)=>b[0].localeCompare(a[0]));
+      for(let [data, val] of registros){
+        let ini = val.inicio ? new Date(val.inicio).toLocaleTimeString().slice(0,5) : "--";
+        let fim = val.fim ? new Date(val.fim).toLocaleTimeString().slice(0,5) : "--";
+        let dur = "--";
+        if(val.inicio && val.fim){
+          let diff = val.fim - val.inicio;
+          totalMs += diff;
+          dur = `${Math.floor(diff/3600000)}h ${Math.floor((diff%3600000)/60000)}m`;
+        }
+        linhas += `<tr><td>${data}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td></tr>`;
       }
-      linhas += `<tr><td>${data}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td></tr>`;
-    }
-    let totalH = Math.floor(totalMs/3600000);
-    let totalM = Math.floor((totalMs%3600000)/60000);
-    document.getElementById("cargaResultado").innerHTML = `<div class="total-horas-card"><span>Total ${mm}/${yyyy}</span><strong>${totalH}h ${totalM}m</strong></div><table class="tabela-ponto"><thead><tr><th>Data</th><th>Entrada</th><th>Saida</th><th>Duracao</th></tr></thead><tbody>${linhas||'<tr><td colspan="4">Nenhum registro</td></tr>'}</tbody></table>`;
+      let totalH = Math.floor(totalMs/3600000);
+      let totalM = Math.floor((totalMs%3600000)/60000);
+      hideLoader();
+      document.getElementById("cargaResultado").innerHTML = `<div class="total-horas-card"><span>Total ${mm}/${yyyy}</span><strong>${totalH}h ${totalM}m</strong></div><table class="tabela-ponto"><thead><tr><th>Data</th><th>Entrada</th><th>Saida</th><th>Duracao</th></tr></thead><tbody>${linhas||'<tr><td colspan="4" style="color:#94a3b8;padding:20px;">Nenhum registro</td></tr>'}</tbody></table>`;
+    }, 800);
   };
 }
 
 function telaChamado(){
-  mainEl.innerHTML = `<div style="padding:20px 16px;background:#fff;min-height:calc(100vh - 64px);"><div id="formChamadoArea"><h3 style="margin-bottom:20px;">Abrir Chamado</h3><div style="background:#f8fafc;padding:16px;border-radius:24px;margin-bottom:20px;"><p><strong>Nome:</strong> ${userData.nome || '--'}</p><p><strong>NA:</strong> ${currentUser}</p><p><strong>Telefone:</strong> ${userData.telefone || '--'}</p></div><label>Descreva o motivo do chamado (edicao de ponto, correcao):</label><textarea id="motivacaoTexto" rows="5" style="width:100%;margin:12px 0;padding:14px;border-radius:24px;border:1px solid #cbd5e1;font-family:inherit;"></textarea><button id="enviarChamadoFinalBtn" style="background:#2c6e2c;color:white;border:none;padding:14px;width:100%;border-radius:60px;font-weight:600;">Enviar para WhatsApp</button><div id="protocoloAviso" style="margin-top:16px;font-size:13px;color:#4b5563;"></div></div><button id="voltarDoChamadoBtn" style="margin-top:30px;background:#e2e8f0;border:none;padding:12px;border-radius:60px;width:100%;">Voltar</button></div>`;
+  mainEl.innerHTML = `<div style="padding:20px 16px;background:#fff;min-height:calc(100vh - 64px);">
+    <div id="formChamadoArea">
+      <h3 style="margin-bottom:6px;color:#0f172a;font-size:18px;">Abrir Chamado</h3>
+      <p style="color:#64748b;font-size:13px;margin-bottom:16px;">Preencha os dados para abrir um chamado de suporte</p>
+      <div style="background:#f8fafc;padding:16px;border-radius:8px;margin-bottom:16px;border:1px solid #e2e8f0;">
+        <p style="font-size:14px;padding:4px 0;"><strong>Nome:</strong> ${userData.nome || '--'}</p>
+        <p style="font-size:14px;padding:4px 0;"><strong>NA:</strong> ${currentUser}</p>
+        <p style="font-size:14px;padding:4px 0;"><strong>Telefone:</strong> ${userData.telefone || '--'}</p>
+      </div>
+      <label style="font-weight:500;font-size:14px;display:block;margin-top:12px;">Motivo do chamado</label>
+      <textarea id="motivacaoTexto" rows="4" placeholder="Descreva detalhadamente o problema..." style="width:100%;margin:8px 0;padding:14px;border-radius:8px;border:1px solid #e2e8f0;font-family:inherit;font-size:14px;resize:vertical;"></textarea>
+      
+      <div class="termos-container">
+        <p>Declaro que sou o(a) portador(a) do NA <strong>${currentUser}</strong>, responsavel pelas informacoes acima, e autorizo a DomusFit a tratar meus dados para fins de suporte e correcao de ponto, conforme a LGPD.</p>
+        <div class="termo-check">
+          <input type="checkbox" id="termoCheck">
+          <label for="termoCheck">Li e concordo com os termos acima e autorizo o tratamento dos meus dados.</label>
+        </div>
+      </div>
+      
+      <button id="enviarChamadoFinalBtn" style="width:100%;padding:14px;border-radius:8px;border:none;background:#0f172a;color:white;font-weight:600;font-size:15px;cursor:pointer;margin-top:12px;transition:0.2s;">Enviar para WhatsApp</button>
+      <div id="protocoloAviso" style="margin-top:12px;font-size:13px;color:#64748b;text-align:center;"></div>
+    </div>
+    <button id="voltarDoChamadoBtn" style="margin-top:20px;background:#f1f5f9;border:1px solid #e2e8f0;padding:12px;border-radius:8px;width:100%;font-weight:500;cursor:pointer;transition:0.2s;">Voltar</button>
+  </div>`;
+  
   document.getElementById("enviarChamadoFinalBtn").onclick = async()=>{
     let motiv = document.getElementById("motivacaoTexto").value.trim();
+    let termo = document.getElementById("termoCheck").checked;
+    
     if(motiv.length < 5){ showMessage("Descreva o motivo com pelo menos 5 caracteres"); return; }
-    let protocolo = Math.random().toString(36).substring(2,10).toUpperCase() + Date.now().toString(36).toUpperCase();
-    let dataHora = new Date().toLocaleString("pt-BR");
-    let chamadoData = { nome: userData.nome, na: currentUser, telefone: userData.telefone||"", motivacao: motiv, dataHoraEnvio: dataHora, protocolo: protocolo, timestamp: Date.now() };
-    await db.ref("chamadosEdicao/"+currentUser).push(chamadoData);
-    let mensagem = `CHAMADO DOMUSFIT\n\nNome: ${userData.nome || ''}\nNA: ${currentUser}\nTelefone: ${userData.telefone || ''}\nProtocolo: ${protocolo}\nData: ${dataHora}\n----------------------------------\nMensagem:\n${motiv}`;
-    window.open(`https://wa.me/5584991778690?text=${encodeURIComponent(mensagem)}`, '_blank');
-    document.getElementById("protocoloAviso").innerHTML = `Protocolo gerado: ${protocolo}. Enviado ao WhatsApp.`;
-    document.getElementById("motivacaoTexto").value = '';
+    if(!termo){ showMessage("Voce precisa concordar com os termos para enviar"); return; }
+    
+    showLoader('Enviando chamado...', '', '');
+    
+    setTimeout(async () => {
+      let protocolo = Math.random().toString(36).substring(2,10).toUpperCase() + Date.now().toString(36).toUpperCase();
+      let dataHora = new Date().toLocaleString("pt-BR");
+      let chamadoData = { 
+        nome: userData.nome, 
+        na: currentUser, 
+        telefone: userData.telefone||"", 
+        motivacao: motiv, 
+        dataHoraEnvio: dataHora, 
+        protocolo: protocolo, 
+        timestamp: Date.now(),
+        termos_aceitos: true
+      };
+      await db.ref("chamadosEdicao/"+currentUser).push(chamadoData);
+      
+      let mensagem = `CHAMADO DOMUSFIT\n\nNome: ${userData.nome || ''}\nNA: ${currentUser}\nTelefone: ${userData.telefone || ''}\nProtocolo: ${protocolo}\nData: ${dataHora}\n----------------------------------\nMensagem:\n${motiv}`;
+      window.open(`https://wa.me/5584991778690?text=${encodeURIComponent(mensagem)}`, '_blank');
+      
+      playNotificationSound();
+      hideLoader();
+      document.getElementById("protocoloAviso").innerHTML = `Protocolo gerado: <strong>${protocolo}</strong>. Enviado ao WhatsApp.`;
+      document.getElementById("motivacaoTexto").value = '';
+      document.getElementById("termoCheck").checked = false;
+      showMessage("Chamado enviado com sucesso!");
+    }, 1000);
   };
+  
   document.getElementById("voltarDoChamadoBtn").onclick = ()=> renderScreen('tripode', true);
 }
 
