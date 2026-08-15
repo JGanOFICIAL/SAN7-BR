@@ -4,29 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Ponto Mais · DomusFit</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:100vh;display:flex;flex-direction:column;}
-.app-header{position:sticky;top:0;width:100%;background:#0f172a;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1e293b;z-index:30;}
-.back-btn{background:transparent;border:1px solid #334155;width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;color:#94a3b8;transition:0.2s;}
-.back-btn:hover{background:#1e293b;color:#fff;}
-.header-left{display:flex;align-items:center;gap:12px;}
-.avatar-mini{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #334155;background:#1e293b;cursor:pointer;transition:0.2s;}
-.avatar-mini:hover{border-color:#22c55e;}
-.header-title{font-weight:600;font-size:16px;color:#f1f5f9;letter-spacing:0.5px;}
-.header-right{display:flex;align-items:center;gap:12px;}
-.status-indicator{display:flex;align-items:center;gap:6px;font-size:12px;color:#94a3b8;}
-.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
-.status-dot.verde{background:#22c55e;}
-.status-dot.vermelho{background:#b91c1c;}
-.main-dynamic{flex:1;display:flex;flex-direction:column;background:#f1f5f9;}
+body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:100vh;display:flex;flex-direction:column;}
+.app-header{position:sticky;top:0;width:100%;background:#ffffff;padding:0 24px;height:68px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.04);z-index:30;box-shadow:0 1px 3px rgba(0,0,0,0.02);}
+.back-btn{background:transparent;border:1.5px solid #1a6b3c;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;color:#1a6b3c;transition:all 0.2s;}
+.back-btn:hover{background:#f0f7f3;}
+.header-left{display:flex;align-items:center;gap:14px;}
+.avatar-mini{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid #1a6b3c;background:#e8f0ec;cursor:pointer;transition:all 0.2s;}
+.avatar-mini:hover{border-color:#0f4a2a;transform:scale(1.04);}
+.header-title{font-weight:600;font-size:17px;color:#1a2332;letter-spacing:-0.2px;}
+.header-right{display:flex;align-items:center;gap:14px;}
+.main-dynamic{flex:1;display:flex;flex-direction:column;background:#f0f4f8;}
 
-.login-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:24px;background:#f1f5f9;}
-.avatar-circle{width:140px;height:140px;border-radius:50%;object-fit:cover;border:3px solid #e2e8f0;background:#f8fafc;}
-.nome-bemvindo{font-size:26px;font-weight:600;color:#0f172a;}
-.acessar-btn{background:#0f172a;border:none;padding:14px 42px;border-radius:8px;font-weight:600;font-size:18px;color:white;margin-top:20px;cursor:pointer;transition:0.2s;}
-.acessar-btn:hover{background:#1e293b;}
+.login-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:24px;background:#f0f4f8;}
+.avatar-circle{width:140px;height:140px;border-radius:50%;object-fit:cover;border:3px solid #dce8e2;background:#f8fafc;}
+.nome-bemvindo{font-size:26px;font-weight:600;color:#1a2332;}
+.acessar-btn{background:#1a6b3c;border:none;padding:14px 48px;border-radius:12px;font-weight:600;font-size:17px;color:white;margin-top:16px;cursor:pointer;transition:all 0.25s;box-shadow:0 4px 14px rgba(26,107,60,0.25);}
+.acessar-btn:hover{background:#0f4a2a;transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,107,60,0.35);}
 
 .three-buttons-vertical{
   display:flex;
@@ -37,17 +33,17 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 }
 .three-buttons-vertical button{
   background:transparent;
-  border:1px solid #e2e8f0;
-  border-radius:8px;
-  padding:16px 20px;
+  border:1.5px solid #dce8e2;
+  border-radius:12px;
+  padding:18px 20px;
   font-weight:500;
   font-size:15px;
-  color:#1e293b;
+  color:#1a2332;
   cursor:pointer;
   text-align:center;
-  transition:0.2s;
+  transition:all 0.2s;
 }
-.three-buttons-vertical button:hover{background:#f8fafc;border-color:#94a3b8;}
+.three-buttons-vertical button:hover{background:#f8fafc;border-color:#1a6b3c;}
 .content-pane{flex:1;padding:24px 16px;background:#fff;}
 
 .bottom-sheet{
@@ -56,12 +52,12 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
   left:0;
   right:0;
   background:#fff;
-  border-radius:16px 16px 0 0;
-  box-shadow:0 -8px 30px rgba(0,0,0,0.12);
+  border-radius:20px 20px 0 0;
+  box-shadow:0 -8px 40px rgba(0,0,0,0.08);
   transform:translateY(100%);
-  transition:transform 0.3s ease-out;
+  transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);
   z-index:200;
-  padding:24px 20px 32px;
+  padding:28px 24px 32px;
   max-width:500px;
   margin:0 auto;
 }
@@ -69,18 +65,18 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 .sheet-overlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.4);
+  background:rgba(0,0,0,0.3);
   z-index:199;
   visibility:hidden;
   opacity:0;
-  transition:0.2s;
+  transition:0.25s;
 }
 .sheet-overlay.open{visibility:visible;opacity:1;}
-.sheet-title{font-weight:600;font-size:18px;margin-bottom:12px;color:#0f172a;}
+.sheet-title{font-weight:600;font-size:19px;margin-bottom:12px;color:#1a2332;}
 .sheet-cronometro-mini{
-  background:#fef2f2;
+  background:#f5f8f6;
   padding:12px;
-  border-radius:8px;
+  border-radius:12px;
   text-align:center;
   margin:12px 0;
   font-weight:600;
@@ -89,39 +85,41 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
   color:#b91c1c;
 }
 .sheet-buttons{display:flex;gap:12px;margin-top:20px;}
-.sheet-buttons button{flex:1;padding:14px;border-radius:8px;font-weight:600;border:none;cursor:pointer;}
-.btn-sheet-cancel{background:#f1f5f9;color:#1e293b;}
-.btn-sheet-confirm{background:#0f172a;color:white;}
+.sheet-buttons button{flex:1;padding:16px;border-radius:12px;font-weight:600;border:none;cursor:pointer;transition:0.2s;}
+.btn-sheet-cancel{background:#f0f4f8;color:#1a2332;}
+.btn-sheet-cancel:hover{background:#e2e8f0;}
+.btn-sheet-confirm{background:#1a6b3c;color:white;}
+.btn-sheet-confirm:hover{background:#0f4a2a;}
 
 .cronometro-grande{
-  font-size:48px;
+  font-size:52px;
   font-weight:600;
   text-align:center;
   font-feature-settings:"tnum";
   letter-spacing:2px;
   margin:20px 0;
-  color:#0f172a;
+  color:#1a2332;
 }
 .botoes-acao{
   display:flex;
-  gap:12px;
+  gap:14px;
   justify-content:center;
   margin:20px 0 32px;
 }
 .botoes-acao button{
   flex:1;
-  padding:14px 0;
-  border-radius:8px;
+  padding:16px 0;
+  border-radius:12px;
   font-weight:600;
   border:none;
   font-size:15px;
   cursor:pointer;
-  transition:0.2s;
+  transition:all 0.25s;
 }
-.btn-iniciar-ponto{background:#0f172a;color:white;}
-.btn-iniciar-ponto:hover{background:#1e293b;}
-.btn-finalizar-ponto{background:#b91c1c;color:white;display:none;}
-.btn-finalizar-ponto:hover{background:#991b1b;}
+.btn-iniciar-ponto{background:#1a6b3c;color:white;box-shadow:0 4px 14px rgba(26,107,60,0.2);}
+.btn-iniciar-ponto:hover{background:#0f4a2a;transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,107,60,0.3);}
+.btn-finalizar-ponto{background:#b91c1c;color:white;display:none;box-shadow:0 4px 14px rgba(185,28,28,0.2);}
+.btn-finalizar-ponto:hover{background:#991b1b;transform:translateY(-2px);}
 
 .filtro-mes{
   display:flex;
@@ -131,25 +129,30 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 }
 .filtro-mes input{
   flex:1;
-  padding:12px;
-  border:1px solid #e2e8f0;
-  border-radius:8px;
+  padding:12px 16px;
+  border:1.5px solid #dce8e2;
+  border-radius:12px;
   font-size:14px;
   min-width:120px;
+  background:#fff;
+  transition:0.2s;
 }
+.filtro-mes input:focus{outline:none;border-color:#1a6b3c;}
 .filtro-mes button{
-  background:#0f172a;
+  background:#1a6b3c;
   border:none;
-  padding:0 20px;
-  border-radius:8px;
+  padding:0 24px;
+  border-radius:12px;
   font-weight:500;
   color:white;
   cursor:pointer;
+  transition:0.2s;
 }
+.filtro-mes button:hover{background:#0f4a2a;}
 .total-horas-card{
-  background:#f0f9f0;
-  padding:12px 16px;
-  border-radius:8px;
+  background:#f0f7f3;
+  padding:14px 18px;
+  border-radius:12px;
   margin:8px 0 16px;
   display:flex;
   justify-content:space-between;
@@ -161,19 +164,20 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
   font-size:13px;
 }
 .tabela-ponto th, .tabela-ponto td{
-  padding:10px 4px;
-  border-bottom:1px solid #e2e8f0;
+  padding:12px 6px;
+  border-bottom:1px solid #e8edf0;
   text-align:center;
 }
-.tabela-ponto th{color:#0f172a;font-weight:600;}
+.tabela-ponto th{color:#1a6b3c;font-weight:600;}
 
 .loader-overlay{
   position:fixed;
-  top:64px;
+  top:68px;
   left:0;
   right:0;
   bottom:0;
-  background:#f1f5f9;
+  background:rgba(240,244,248,0.92);
+  backdrop-filter:blur(6px);
   display:none;
   flex-direction:column;
   align-items:center;
@@ -184,31 +188,31 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 .loader-spinner{
   width:48px;
   height:48px;
-  border:3px solid #e2e8f0;
-  border-top-color:#0f172a;
+  border:3px solid #dce8e2;
+  border-top-color:#1a6b3c;
   border-radius:50%;
-  animation:spin 0.8s linear infinite;
+  animation:spin 0.7s linear infinite;
 }
 .loader-texto{
   margin-top:16px;
   font-size:14px;
   color:#64748b;
   font-weight:500;
-  letter-spacing:0.5px;
+  letter-spacing:0.3px;
 }
 .loader-icone{
   font-size:48px;
   margin-bottom:12px;
   line-height:1;
 }
-.loader-icone.verde{color:#22c55e;}
+.loader-icone.verde{color:#1a6b3c;}
 .loader-icone.vermelho{color:#b91c1c;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
 .modal-camera{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.9);
+  background:rgba(0,0,0,0.92);
   display:flex;
   align-items:center;
   justify-content:center;
@@ -229,7 +233,7 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
   justify-content:center;
   position:relative;
   overflow:hidden;
-  box-shadow:0 0 80px rgba(0,0,0,0.6);
+  box-shadow:0 0 80px rgba(0,0,0,0.5);
 }
 .camera-oval video{
   width:100%;
@@ -240,7 +244,7 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 .camera-oval .spinner-overlay{
   position:absolute;
   inset:0;
-  background:rgba(0,0,0,0.6);
+  background:rgba(0,0,0,0.5);
   display:flex;
   align-items:center;
   justify-content:center;
@@ -250,21 +254,21 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 .camera-oval .spinner-overlay .spinner-bola{
   width:60px;
   height:60px;
-  border:4px solid rgba(255,255,255,0.15);
-  border-top-color:#22c55e;
+  border:4px solid rgba(255,255,255,0.12);
+  border-top-color:#1a6b3c;
   border-radius:50%;
   animation:spin 0.8s linear infinite;
 }
 .camera-oval .btn-cancelar-camera{
   position:absolute;
-  bottom:20px;
+  bottom:24px;
   left:50%;
   transform:translateX(-50%);
-  background:rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.08);
   backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,0.15);
-  padding:10px 28px;
-  border-radius:8px;
+  border:1px solid rgba(255,255,255,0.12);
+  padding:12px 32px;
+  border-radius:12px;
   color:#fff;
   font-weight:500;
   font-size:14px;
@@ -272,12 +276,12 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
   z-index:10;
   transition:0.3s;
 }
-.camera-oval .btn-cancelar-camera:hover{background:rgba(255,255,255,0.2);}
+.camera-oval .btn-cancelar-camera:hover{background:rgba(255,255,255,0.15);}
 
 .modal-sem-camera{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.6);
+  background:rgba(0,0,0,0.5);
   display:flex;
   align-items:center;
   justify-content:center;
@@ -289,13 +293,13 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 .modal-sem-camera.aberto{visibility:visible;opacity:1;}
 .modal-sem-camera-content{
   background:#fff;
-  border-radius:12px;
+  border-radius:16px;
   padding:32px 24px;
   max-width:380px;
   width:90%;
   text-align:center;
 }
-.modal-sem-camera-content h3{color:#0f172a;margin-bottom:12px;}
+.modal-sem-camera-content h3{color:#1a2332;margin-bottom:12px;}
 .modal-sem-camera-content p{color:#64748b;font-size:14px;margin-bottom:20px;line-height:1.6;}
 .modal-sem-camera-content .botoes{
   display:flex;
@@ -303,53 +307,58 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 }
 .modal-sem-camera-content .botoes button{
   flex:1;
-  padding:12px;
-  border-radius:8px;
+  padding:14px;
+  border-radius:12px;
   font-weight:500;
   border:none;
   cursor:pointer;
+  transition:0.2s;
 }
-.modal-sem-camera-content .btn-cancelar-sem{background:#f1f5f9;color:#1e293b;}
-.modal-sem-camera-content .btn-continuar-sem{background:#0f172a;color:white;}
+.modal-sem-camera-content .btn-cancelar-sem{background:#f0f4f8;color:#1a2332;}
+.modal-sem-camera-content .btn-cancelar-sem:hover{background:#e2e8f0;}
+.modal-sem-camera-content .btn-continuar-sem{background:#1a6b3c;color:white;}
+.modal-sem-camera-content .btn-continuar-sem:hover{background:#0f4a2a;}
 
 .notif-toast{
   position:fixed;
   bottom:80px;
   left:50%;
   transform:translateX(-50%);
-  background:#0f172a;
+  background:#1a2332;
   color:white;
-  padding:10px 24px;
-  border-radius:8px;
+  padding:12px 28px;
+  border-radius:12px;
   z-index:999;
   font-size:14px;
   max-width:90%;
+  box-shadow:0 4px 20px rgba(0,0,0,0.15);
 }
 
 .notificacao-ponto-aberto{
   position:fixed;
-  bottom:20px;
+  bottom:24px;
   left:50%;
   transform:translateX(-50%);
   background:#b91c1c;
   color:white;
-  padding:12px 24px;
-  border-radius:8px;
+  padding:14px 28px;
+  border-radius:12px;
   z-index:150;
   font-weight:500;
   font-size:13px;
-  box-shadow:0 4px 20px rgba(185,28,28,0.25);
+  box-shadow:0 4px 24px rgba(185,28,28,0.25);
   cursor:pointer;
   max-width:90%;
   text-align:center;
   display:none;
+  transition:0.2s;
 }
-.notificacao-ponto-aberto:hover{opacity:0.9;}
+.notificacao-ponto-aberto:hover{opacity:0.92;}
 
 .modal-seguranca{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.5);
+  background:rgba(0,0,0,0.4);
   display:flex;
   align-items:center;
   justify-content:center;
@@ -361,58 +370,64 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 .modal-seguranca.aberto{visibility:visible;opacity:1;}
 .modal-seguranca-content{
   background:#fff;
-  border-radius:16px;
-  padding:32px 24px;
+  border-radius:20px;
+  padding:36px 28px;
   max-width:400px;
   width:90%;
   max-height:90vh;
   overflow-y:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,0.15);
 }
-.modal-seguranca-content h3{font-size:18px;margin-bottom:6px;color:#0f172a;}
-.modal-seguranca-content .subtitulo{color:#64748b;font-size:14px;margin-bottom:16px;}
-.modal-seguranca-content .label{font-weight:500;font-size:14px;color:#1e293b;margin-bottom:4px;}
+.modal-seguranca-content h3{font-size:19px;margin-bottom:6px;color:#1a2332;}
+.modal-seguranca-content .subtitulo{color:#64748b;font-size:14px;margin-bottom:18px;}
+.modal-seguranca-content .label{font-weight:500;font-size:14px;color:#1a2332;margin-bottom:4px;}
 .modal-seguranca-content .campo-calculo{
-  background:#f8fafc;
-  padding:16px;
-  border-radius:8px;
+  background:#f5f8f6;
+  padding:18px;
+  border-radius:12px;
   text-align:center;
   font-size:28px;
   font-weight:600;
   margin:12px 0;
   font-family:monospace;
-  border:1px solid #e2e8f0;
+  border:1px solid #e8edf0;
 }
 .modal-seguranca-content input[type="number"]{
   width:100%;
-  padding:14px;
-  border:1px solid #e2e8f0;
-  border-radius:8px;
+  padding:16px;
+  border:1.5px solid #dce8e2;
+  border-radius:12px;
   font-size:18px;
   text-align:center;
   margin:8px 0 16px;
   font-weight:500;
+  transition:0.2s;
 }
+.modal-seguranca-content input[type="number"]:focus{outline:none;border-color:#1a6b3c;}
 .modal-seguranca-content .botoes-modal{
   display:flex;
   gap:12px;
-  margin-top:16px;
+  margin-top:18px;
 }
 .modal-seguranca-content .botoes-modal button{
   flex:1;
-  padding:14px;
-  border-radius:8px;
+  padding:16px;
+  border-radius:12px;
   font-weight:500;
   border:none;
   cursor:pointer;
+  transition:0.2s;
 }
-.modal-seguranca-content .btn-cancelar-seg{background:#f1f5f9;color:#1e293b;}
-.modal-seguranca-content .btn-confirmar-seg{background:#0f172a;color:white;}
+.modal-seguranca-content .btn-cancelar-seg{background:#f0f4f8;color:#1a2332;}
+.modal-seguranca-content .btn-cancelar-seg:hover{background:#e2e8f0;}
+.modal-seguranca-content .btn-confirmar-seg{background:#1a6b3c;color:white;}
+.modal-seguranca-content .btn-confirmar-seg:hover:not(:disabled){background:#0f4a2a;}
 .modal-seguranca-content .btn-confirmar-seg:disabled{opacity:0.4;cursor:not-allowed;}
 
 .modal-comprovante{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.5);
+  background:rgba(0,0,0,0.4);
   backdrop-filter:blur(4px);
   display:flex;
   align-items:center;
@@ -420,56 +435,59 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
   z-index:700;
   visibility:hidden;
   opacity:0;
-  transition:0.2s;
+  transition:0.25s;
 }
 .modal-comprovante.aberto{visibility:visible;opacity:1;}
 .modal-comprovante-content{
   background:#fff;
-  border-radius:16px;
-  padding:32px 28px 28px;
+  border-radius:20px;
+  padding:36px 28px 28px;
   max-width:420px;
   width:92%;
   text-align:center;
-  box-shadow:0 20px 60px rgba(0,0,0,0.2);
+  box-shadow:0 20px 60px rgba(0,0,0,0.15);
+  transform:scale(0.96);
+  transition:transform 0.3s;
 }
+.modal-comprovante.aberto .modal-comprovante-content{transform:scale(1);}
 .modal-comprovante-content .icone-check{
-  width:64px;
-  height:64px;
+  width:72px;
+  height:72px;
   border-radius:50%;
-  background:#dcfce7;
+  background:#e8f5ee;
   display:flex;
   align-items:center;
   justify-content:center;
   margin:0 auto 12px;
-  font-size:32px;
-  color:#22c55e;
+  font-size:34px;
+  color:#1a6b3c;
 }
-.modal-comprovante-content h3{color:#0f172a;font-size:18px;margin-bottom:4px;}
-.modal-comprovante-content .sub-texto{color:#64748b;font-size:13px;margin-bottom:12px;}
+.modal-comprovante-content h3{color:#1a2332;font-size:19px;margin-bottom:4px;}
+.modal-comprovante-content .sub-texto{color:#64748b;font-size:13px;margin-bottom:14px;}
 .modal-comprovante-content .dados-ponto{
-  background:#f8fafc;
-  padding:14px 16px;
-  border-radius:8px;
+  background:#f5f8f6;
+  padding:16px 18px;
+  border-radius:12px;
   text-align:left;
   font-size:13px;
-  line-height:2;
-  margin:12px 0 16px;
-  border:1px solid #e2e8f0;
+  line-height:2.2;
+  margin:12px 0 18px;
+  border:1px solid #e8edf0;
 }
-.modal-comprovante-content .dados-ponto strong{color:#0f172a;}
+.modal-comprovante-content .dados-ponto strong{color:#1a2332;}
 .modal-comprovante-content .dados-ponto .label{color:#64748b;}
 .modal-comprovante-content .btn-ok-comprovante{
-  padding:14px 40px;
-  border-radius:8px;
+  padding:16px 44px;
+  border-radius:12px;
   border:none;
-  background:#0f172a;
+  background:#1a6b3c;
   color:white;
   font-weight:500;
   font-size:15px;
   cursor:pointer;
   transition:0.2s;
 }
-.modal-comprovante-content .btn-ok-comprovante:hover{background:#1e293b;}
+.modal-comprovante-content .btn-ok-comprovante:hover{background:#0f4a2a;}
 
 .tela-comprovante{
   flex:1;
@@ -478,27 +496,27 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
   align-items:center;
   justify-content:center;
   padding:24px;
-  background:#f1f5f9;
+  background:#f0f4f8;
 }
 .tela-comprovante .card-comprovante{
   background:#fff;
-  border-radius:12px;
-  padding:32px 28px;
+  border-radius:16px;
+  padding:36px 32px;
   max-width:480px;
   width:100%;
-  box-shadow:0 2px 12px rgba(0,0,0,0.04);
-  border:1px solid #e2e8f0;
+  box-shadow:0 2px 16px rgba(0,0,0,0.04);
+  border:1px solid #e8edf0;
 }
 .tela-comprovante .card-comprovante .header-comp{
   text-align:center;
-  padding-bottom:16px;
-  border-bottom:2px solid #0f172a;
-  margin-bottom:16px;
+  padding-bottom:18px;
+  border-bottom:2px solid #1a6b3c;
+  margin-bottom:18px;
 }
 .tela-comprovante .card-comprovante .header-comp .logo-text{
   font-size:20px;
   font-weight:700;
-  color:#0f172a;
+  color:#1a2332;
 }
 .tela-comprovante .card-comprovante .header-comp .sub-text{
   font-size:12px;
@@ -507,58 +525,58 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 }
 .tela-comprovante .card-comprovante .icone-verificado{
   text-align:center;
-  margin:8px 0 12px;
+  margin:8px 0 14px;
 }
 .tela-comprovante .card-comprovante .icone-verificado span{
   display:inline-block;
   width:56px;
   height:56px;
   border-radius:50%;
-  background:#dcfce7;
+  background:#e8f5ee;
   line-height:56px;
   font-size:28px;
-  color:#22c55e;
+  color:#1a6b3c;
 }
 .tela-comprovante .card-comprovante .linha-dado{
   display:flex;
   justify-content:space-between;
-  padding:8px 0;
-  border-bottom:1px solid #f1f5f9;
+  padding:10px 0;
+  border-bottom:1px solid #f0f4f8;
   font-size:14px;
 }
 .tela-comprovante .card-comprovante .linha-dado .rotulo{color:#64748b;}
-.tela-comprovante .card-comprovante .linha-dado .valor{font-weight:600;color:#0f172a;}
+.tela-comprovante .card-comprovante .linha-dado .valor{font-weight:600;color:#1a2332;}
 .tela-comprovante .card-comprovante .rodape-comp{
-  margin-top:16px;
-  padding-top:12px;
-  border-top:2px solid #0f172a;
+  margin-top:18px;
+  padding-top:14px;
+  border-top:2px solid #1a6b3c;
   text-align:center;
   font-size:10px;
   color:#94a3b8;
   line-height:1.6;
 }
 .tela-comprovante .btn-voltar-inicio{
-  margin-top:16px;
-  padding:14px 40px;
-  border-radius:8px;
+  margin-top:18px;
+  padding:16px 44px;
+  border-radius:12px;
   border:none;
-  background:#0f172a;
+  background:#1a6b3c;
   color:white;
   font-weight:500;
   font-size:15px;
   cursor:pointer;
   transition:0.2s;
 }
-.tela-comprovante .btn-voltar-inicio:hover{background:#1e293b;}
+.tela-comprovante .btn-voltar-inicio:hover{background:#0f4a2a;}
 
 .termos-container{
-  background:#f8fafc;
+  background:#f5f8f6;
   padding:16px;
-  border-radius:8px;
-  border:1px solid #e2e8f0;
+  border-radius:12px;
+  border:1px solid #e8edf0;
   margin:12px 0;
   font-size:13px;
-  line-height:1.6;
+  line-height:1.7;
   color:#475569;
   text-align:justify;
 }
@@ -568,21 +586,20 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
   gap:10px;
   margin-top:12px;
   padding-top:12px;
-  border-top:1px solid #e2e8f0;
+  border-top:1px solid #e8edf0;
 }
 .termos-container .termo-check input[type="checkbox"]{
   width:18px;
   height:18px;
   margin-top:2px;
-  accent-color:#0f172a;
+  accent-color:#1a6b3c;
 }
-.termos-container .termo-check label{font-size:13px;color:#1e293b;cursor:pointer;}
+.termos-container .termo-check label{font-size:13px;color:#1a2332;cursor:pointer;}
 
-/* MODAL PERFIL */
 .modal-perfil{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.5);
+  background:rgba(0,0,0,0.35);
   backdrop-filter:blur(4px);
   display:flex;
   align-items:center;
@@ -590,45 +607,48 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
   z-index:600;
   visibility:hidden;
   opacity:0;
-  transition:0.2s;
+  transition:0.25s;
 }
 .modal-perfil.aberto{visibility:visible;opacity:1;}
 .modal-perfil-content{
   background:#fff;
-  border-radius:16px;
-  padding:32px 28px 28px;
+  border-radius:20px;
+  padding:36px 28px 28px;
   max-width:420px;
   width:92%;
   text-align:center;
-  box-shadow:0 20px 60px rgba(0,0,0,0.2);
+  box-shadow:0 20px 60px rgba(0,0,0,0.12);
+  transform:scale(0.96);
+  transition:transform 0.3s;
 }
+.modal-perfil.aberto .modal-perfil-content{transform:scale(1);}
 .modal-perfil-content .foto-grande{
   width:100px;
   height:100px;
   border-radius:50%;
   object-fit:cover;
-  border:3px solid #22c55e;
+  border:3px solid #1a6b3c;
   margin:0 auto 12px;
 }
-.modal-perfil-content h3{color:#0f172a;font-size:18px;margin-bottom:4px;}
+.modal-perfil-content h3{color:#1a2332;font-size:19px;margin-bottom:2px;}
 .modal-perfil-content .sub-info{color:#64748b;font-size:14px;margin-bottom:16px;}
 .modal-perfil-content .linha-info{
   display:flex;
   justify-content:space-between;
   padding:10px 0;
-  border-bottom:1px solid #f1f5f9;
+  border-bottom:1px solid #f0f4f8;
   font-size:14px;
   text-align:left;
 }
 .modal-perfil-content .linha-info .rotulo{color:#64748b;}
-.modal-perfil-content .linha-info .valor{font-weight:500;color:#0f172a;}
+.modal-perfil-content .linha-info .valor{font-weight:500;color:#1a2332;}
 .modal-perfil-content .btn-fechar-perfil{
   margin-top:16px;
-  padding:12px 32px;
-  border-radius:8px;
+  padding:14px 36px;
+  border-radius:12px;
   border:none;
-  background:#f1f5f9;
-  color:#1e293b;
+  background:#f0f4f8;
+  color:#1a2332;
   font-weight:500;
   font-size:14px;
   cursor:pointer;
@@ -645,10 +665,6 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
     <div class="header-title" id="headerTitle">Ponto Mais</div>
   </div>
   <div class="header-right">
-    <div class="status-indicator">
-      <span class="status-dot" id="statusDot"></span>
-      <span id="statusTexto">Offline</span>
-    </div>
     <img class="avatar-mini" id="avatarMini" src="" alt="perfil" onclick="abrirPerfil()">
   </div>
 </header>
@@ -692,7 +708,7 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
 <div class="modal-sem-camera" id="modalSemCamera">
   <div class="modal-sem-camera-content">
     <h3>Problemas com a camera?</h3>
-    <p>Se voce nao esta conseguindo usar a camera, marque abaixo e prossiga sem reconhecimento facial.</p>
+    <p>Se voce nao esta conseguindo usar a camera, prossiga sem reconhecimento facial.</p>
     <div class="botoes">
       <button class="btn-cancelar-sem" id="btnCancelarSem">Cancelar</button>
       <button class="btn-continuar-sem" id="btnContinuarSem">Prosseguir sem camera</button>
@@ -718,7 +734,6 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;color:#1e293b;min-height:
     <div class="linha-info"><span class="rotulo">Nome</span><span class="valor" id="perfilNomeValor">--</span></div>
     <div class="linha-info"><span class="rotulo">NA</span><span class="valor" id="perfilNaValor">--</span></div>
     <div class="linha-info"><span class="rotulo">Telefone</span><span class="valor" id="perfilTelefone">--</span></div>
-    <div class="linha-info"><span class="rotulo">Status</span><span class="valor" id="perfilStatus">--</span></div>
     <button class="btn-fechar-perfil" onclick="fecharPerfil()">Fechar</button>
   </div>
 </div>
@@ -759,8 +774,6 @@ const loader = document.getElementById("loaderOverlay");
 const loaderSpinner = document.getElementById("loaderSpinner");
 const loaderIcone = document.getElementById("loaderIcone");
 const loaderTexto = document.getElementById("loaderTexto");
-const statusDot = document.getElementById("statusDot");
-const statusTexto = document.getElementById("statusTexto");
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -838,21 +851,10 @@ function startCronometroLocal(){
     if(sheetCrono && pontoAtivo && pontoStart) sheetCrono.innerText = formatDuration(Date.now() - pontoStart);
     else if(sheetCrono && !pontoAtivo) sheetCrono.innerText = "00:00:00";
     verificarNotificacaoPontoAberto();
-    atualizarStatus();
   }, 1000);
 }
 function getDataChave(){
   let d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-
-function atualizarStatus(){
-  if(pontoAtivo){
-    statusDot.className = 'status-dot verde';
-    statusTexto.textContent = 'Online';
-  } else {
-    statusDot.className = 'status-dot vermelho';
-    statusTexto.textContent = 'Offline';
-  }
 }
 
 function verificarNotificacaoPontoAberto(){
@@ -923,7 +925,7 @@ function showPontoAbertoSheet(){
 db.ref("usuarios/"+currentUser).on("value", snap=>{ if(snap.exists()){ userData = snap.val(); updateAvatarMini(); atualizarPerfil(); } });
 function updateAvatarMini(){
   if(userData.foto) avatarMini.src = userData.foto;
-  else avatarMini.src = `https://ui-avatars.com/api/?background=1e293b&color=fff&name=${encodeURIComponent(userData.nome||'')}`;
+  else avatarMini.src = `https://ui-avatars.com/api/?background=1a6b3c&color=fff&name=${encodeURIComponent(userData.nome||'')}`;
   avatarMini.style.display = (currentViewStack.length>0 && currentViewStack[currentViewStack.length-1]!=='login') ? "block" : "none";
 }
 
@@ -933,8 +935,7 @@ function atualizarPerfil(){
   document.getElementById("perfilNomeValor").textContent = userData.nome || '--';
   document.getElementById("perfilNaValor").textContent = currentUser || '--';
   document.getElementById("perfilTelefone").textContent = userData.telefone || '--';
-  document.getElementById("perfilStatus").textContent = pontoAtivo ? 'Online' : 'Offline';
-  document.getElementById("fotoPerfilGrande").src = userData.foto || `https://ui-avatars.com/api/?background=1e293b&color=fff&name=${encodeURIComponent(userData.nome||'')}`;
+  document.getElementById("fotoPerfilGrande").src = userData.foto || `https://ui-avatars.com/api/?background=1a6b3c&color=fff&name=${encodeURIComponent(userData.nome||'')}`;
 }
 
 function abrirPerfil(){
@@ -960,7 +961,6 @@ db.ref("pontos/"+currentUser+"/ativo/inicio").on("value", snap=>{
     if(currentViewStack[currentViewStack.length-1] === 'tripode'){
       showPontoAbertoSheet();
     }
-    atualizarStatus();
     atualizarPerfil();
   } else {
     pontoAtivo = false;
@@ -968,7 +968,6 @@ db.ref("pontos/"+currentUser+"/ativo/inicio").on("value", snap=>{
     if(cronInterval) clearInterval(cronInterval);
     if(document.getElementById("cronodisplay")) document.getElementById("cronodisplay").innerText = "00:00:00";
     notifPontoAberto.style.display = "none";
-    atualizarStatus();
     atualizarPerfil();
   }
 });
@@ -1005,9 +1004,9 @@ function goBack(){
 backBtn.onclick = goBack;
 
 function telaLogin(){
-  mainEl.innerHTML = `<div class="login-screen"><img class="avatar-circle" id="loginAvatar" src="${userData.foto||''}" onerror="this.src='https://ui-avatars.com/api/?background=0f172a&color=fff&name=${encodeURIComponent(userData.nome||'User')}'"><div class="nome-bemvindo" id="loginNome">${userData.nome||'Carregando...'}</div><button class="acessar-btn" id="acessarPrincipalBtn">Acessar</button></div>`;
+  mainEl.innerHTML = `<div class="login-screen"><img class="avatar-circle" id="loginAvatar" src="${userData.foto||''}" onerror="this.src='https://ui-avatars.com/api/?background=1a6b3c&color=fff&name=${encodeURIComponent(userData.nome||'User')}'"><div class="nome-bemvindo" id="loginNome">${userData.nome||'Carregando...'}</div><button class="acessar-btn" id="acessarPrincipalBtn">Acessar</button></div>`;
   if(userData.nome) document.getElementById("loginNome").innerText = userData.nome;
-  db.ref("usuarios/"+currentUser).once("value").then(s=>{ if(s.exists()){ let d=s.val(); document.getElementById("loginAvatar").src = d.foto || `https://ui-avatars.com/api/?background=0f172a&color=fff&name=${encodeURIComponent(d.nome||'')}`; document.getElementById("loginNome").innerText = d.nome; } });
+  db.ref("usuarios/"+currentUser).once("value").then(s=>{ if(s.exists()){ let d=s.val(); document.getElementById("loginAvatar").src = d.foto || `https://ui-avatars.com/api/?background=1a6b3c&color=fff&name=${encodeURIComponent(d.nome||'')}`; document.getElementById("loginNome").innerText = d.nome; } });
   document.getElementById("acessarPrincipalBtn").onclick = ()=> renderScreen('tripode', true);
 }
 
@@ -1023,7 +1022,7 @@ function telaTripode(){
 }
 
 function telaPonto(){
-  mainEl.innerHTML = `<div style="padding:24px 16px;background:#fff;min-height:calc(100vh - 64px);"><div class="cronometro-grande" id="cronodisplay">00:00:00</div><div class="botoes-acao"><button class="btn-iniciar-ponto" id="iniciarPontoBtn">Iniciar Ponto</button><button class="btn-finalizar-ponto" id="finalizarPontoBtn">Finalizar Dia</button></div><div style="margin-top:30px;"><h4 style="font-size:15px;color:#64748b;font-weight:500;">Ultimos registros</h4><div id="miniResumo"></div></div></div>`;
+  mainEl.innerHTML = `<div style="padding:24px 16px;background:#fff;min-height:calc(100vh - 68px);"><div class="cronometro-grande" id="cronodisplay">00:00:00</div><div class="botoes-acao"><button class="btn-iniciar-ponto" id="iniciarPontoBtn">Iniciar Ponto</button><button class="btn-finalizar-ponto" id="finalizarPontoBtn">Finalizar Dia</button></div><div style="margin-top:30px;"><h4 style="font-size:15px;color:#64748b;font-weight:500;">Ultimos registros</h4><div id="miniResumo"></div></div></div>`;
   if(pontoAtivo) { document.getElementById("finalizarPontoBtn").style.display = "block"; document.getElementById("iniciarPontoBtn").style.display = "none"; atualizaCronometroDisplay(); }
   else { document.getElementById("finalizarPontoBtn").style.display = "none"; document.getElementById("iniciarPontoBtn").style.display = "block"; }
   startCronometroLocal();
@@ -1184,7 +1183,7 @@ function telaComprovante(){
         <div class="linha-dado"><span class="rotulo">Hora finalizacao</span><span class="valor">${dadosComprovante.hora}</span></div>
         <div class="linha-dado"><span class="rotulo">Tempo total</span><span class="valor">${dadosComprovante.tempo}</span></div>
         <div class="linha-dado"><span class="rotulo">Calculo</span><span class="valor">${dadosComprovante.calculo}</span></div>
-        <div class="linha-dado"><span class="rotulo">Status</span><span class="valor" style="color:#22c55e;">Finalizado</span></div>
+        <div class="linha-dado"><span class="rotulo">Status</span><span class="valor" style="color:#1a6b3c;">Finalizado</span></div>
         <div class="rodape-comp">
           Documento gerado automaticamente pelo sistema DomusFit<br>
           ID: ${Math.random().toString(36).substring(2,10).toUpperCase() + Date.now().toString(36).toUpperCase()}
@@ -1293,7 +1292,7 @@ function iniciarPontoComSeguranca(){
 }
 
 function telaCarga(){
-  mainEl.innerHTML = `<div style="padding:0 16px 20px;background:#fff;min-height:calc(100vh - 64px);"><div class="filtro-mes"><input type="text" id="mesAnoInput" placeholder="MM/AAAA" maxlength="7"><button id="buscarCargaBtn">Buscar</button></div><div id="cargaResultado"></div></div>`;
+  mainEl.innerHTML = `<div style="padding:0 16px 20px;background:#fff;min-height:calc(100vh - 68px);"><div class="filtro-mes"><input type="text" id="mesAnoInput" placeholder="MM/AAAA" maxlength="7"><button id="buscarCargaBtn">Buscar</button></div><div id="cargaResultado"></div></div>`;
   let input = document.getElementById("mesAnoInput");
   input.addEventListener("input", function(e){
     let val = e.target.value.replace(/\D/g,'');
@@ -1335,17 +1334,17 @@ function telaCarga(){
 }
 
 function telaChamado(){
-  mainEl.innerHTML = `<div style="padding:20px 16px;background:#fff;min-height:calc(100vh - 64px);">
+  mainEl.innerHTML = `<div style="padding:20px 16px;background:#fff;min-height:calc(100vh - 68px);">
     <div id="formChamadoArea">
-      <h3 style="margin-bottom:6px;color:#0f172a;font-size:18px;">Abrir Chamado</h3>
+      <h3 style="margin-bottom:6px;color:#1a2332;font-size:18px;">Abrir Chamado</h3>
       <p style="color:#64748b;font-size:13px;margin-bottom:16px;">Preencha os dados para abrir um chamado de suporte</p>
-      <div style="background:#f8fafc;padding:16px;border-radius:8px;margin-bottom:16px;border:1px solid #e2e8f0;">
+      <div style="background:#f5f8f6;padding:16px;border-radius:12px;margin-bottom:16px;border:1px solid #e8edf0;">
         <p style="font-size:14px;padding:4px 0;"><strong>Nome:</strong> ${userData.nome || '--'}</p>
         <p style="font-size:14px;padding:4px 0;"><strong>NA:</strong> ${currentUser}</p>
         <p style="font-size:14px;padding:4px 0;"><strong>Telefone:</strong> ${userData.telefone || '--'}</p>
       </div>
       <label style="font-weight:500;font-size:14px;display:block;margin-top:12px;">Motivo do chamado</label>
-      <textarea id="motivacaoTexto" rows="4" placeholder="Descreva detalhadamente o problema..." style="width:100%;margin:8px 0;padding:14px;border-radius:8px;border:1px solid #e2e8f0;font-family:inherit;font-size:14px;resize:vertical;"></textarea>
+      <textarea id="motivacaoTexto" rows="4" placeholder="Descreva detalhadamente o problema..." style="width:100%;margin:8px 0;padding:14px;border-radius:12px;border:1.5px solid #dce8e2;font-family:inherit;font-size:14px;resize:vertical;transition:0.2s;"></textarea>
       
       <div class="termos-container">
         <p>Declaro que sou o(a) portador(a) do NA <strong>${currentUser}</strong>, responsavel pelas informacoes acima, e autorizo a DomusFit a tratar meus dados para fins de suporte e correcao de ponto, conforme a LGPD.</p>
@@ -1355,10 +1354,10 @@ function telaChamado(){
         </div>
       </div>
       
-      <button id="enviarChamadoFinalBtn" style="width:100%;padding:14px;border-radius:8px;border:none;background:#0f172a;color:white;font-weight:600;font-size:15px;cursor:pointer;margin-top:12px;transition:0.2s;">Enviar para WhatsApp</button>
+      <button id="enviarChamadoFinalBtn" style="width:100%;padding:16px;border-radius:12px;border:none;background:#1a6b3c;color:white;font-weight:600;font-size:15px;cursor:pointer;margin-top:12px;transition:0.2s;box-shadow:0 4px 14px rgba(26,107,60,0.2);">Enviar para WhatsApp</button>
       <div id="protocoloAviso" style="margin-top:12px;font-size:13px;color:#64748b;text-align:center;"></div>
     </div>
-    <button id="voltarDoChamadoBtn" style="margin-top:20px;background:#f1f5f9;border:1px solid #e2e8f0;padding:12px;border-radius:8px;width:100%;font-weight:500;cursor:pointer;transition:0.2s;">Voltar</button>
+    <button id="voltarDoChamadoBtn" style="margin-top:20px;background:#f0f4f8;border:1.5px solid #dce8e2;padding:14px;border-radius:12px;width:100%;font-weight:500;cursor:pointer;transition:0.2s;">Voltar</button>
   </div>`;
   
   document.getElementById("enviarChamadoFinalBtn").onclick = async()=>{
