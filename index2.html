@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Ponto Mais · DomusFit</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:100vh;display:flex;flex-direction:column;}
 .app-header{position:sticky;top:0;width:100%;background:#ffffff;padding:0 24px;height:68px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.04);z-index:30;box-shadow:0 1px 3px rgba(0,0,0,0.02);}
-.back-btn{background:transparent;border:1.5px solid #1a6b3c;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;color:#1a6b3c;transition:all 0.2s;}
+.back-btn{background:transparent;border:1.5px solid #1a6b3c;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;color:#1a6b3c;transition:all 0.2s;}
 .back-btn:hover{background:#f0f7f3;}
 .header-left{display:flex;align-items:center;gap:14px;}
 .avatar-mini{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid #1a6b3c;background:#e8f0ec;cursor:pointer;transition:all 0.2s;}
@@ -28,7 +29,7 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
   display:flex;
   flex-direction:column;
   gap:12px;
-  padding:32px 20px;
+  padding:32px 20px 16px;
   background:#fff;
 }
 .three-buttons-vertical button{
@@ -44,6 +45,79 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
   transition:all 0.2s;
 }
 .three-buttons-vertical button:hover{background:#f8fafc;border-color:#1a6b3c;}
+.three-buttons-vertical button i{margin-right:10px;color:#1a6b3c;}
+
+.documents-section{
+  background:#fff;
+  padding:12px 20px 24px;
+  border-top:1px solid #e8edf0;
+}
+.documents-section .doc-header-section{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:12px;
+}
+.documents-section .doc-header-section i{
+  color:#1a6b3c;
+  font-size:16px;
+}
+.documents-section .doc-title{
+  font-size:13px;
+  font-weight:600;
+  color:#64748b;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
+}
+.doc-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 0;
+  border-bottom:1px solid #f0f4f8;
+}
+.doc-item:last-child{border-bottom:none;}
+.doc-item .doc-info{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.doc-item .doc-info i{
+  font-size:18px;
+  color:#b91c1c;
+  width:20px;
+  text-align:center;
+}
+.doc-item .doc-name{
+  font-size:14px;
+  color:#1a2332;
+  font-weight:500;
+}
+.doc-item .doc-actions{
+  display:flex;
+  gap:16px;
+}
+.doc-item .doc-actions span{
+  font-size:13px;
+  cursor:pointer;
+  transition:0.2s;
+  font-weight:500;
+}
+.doc-item .doc-actions .ver{
+  color:#1a6b3c;
+}
+.doc-item .doc-actions .ver:hover{
+  color:#0f4a2a;
+  text-decoration:underline;
+}
+.doc-item .doc-actions .baixar{
+  color:#2563eb;
+}
+.doc-item .doc-actions .baixar:hover{
+  color:#1d4ed8;
+  text-decoration:underline;
+}
+
 .content-pane{flex:1;padding:24px 16px;background:#fff;}
 
 .bottom-sheet{
@@ -655,13 +729,96 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
   transition:0.2s;
 }
 .modal-perfil-content .btn-fechar-perfil:hover{background:#e2e8f0;}
+
+.modal-documento{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(4px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:700;
+  visibility:hidden;
+  opacity:0;
+  transition:0.25s;
+}
+.modal-documento.aberto{visibility:visible;opacity:1;}
+.modal-documento-content{
+  background:#fff;
+  border-radius:20px;
+  padding:32px 28px;
+  max-width:540px;
+  width:92%;
+  max-height:80vh;
+  overflow-y:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,0.15);
+}
+.modal-documento-content .doc-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:16px;
+  padding-bottom:12px;
+  border-bottom:2px solid #1a6b3c;
+}
+.modal-documento-content .doc-header h3{
+  font-size:18px;
+  color:#1a2332;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.modal-documento-content .doc-header h3 i{
+  color:#b91c1c;
+  font-size:20px;
+}
+.modal-documento-content .doc-header .fechar-doc{
+  font-size:22px;
+  cursor:pointer;
+  color:#64748b;
+  background:transparent;
+  border:none;
+  transition:0.2s;
+}
+.modal-documento-content .doc-header .fechar-doc:hover{color:#1a2332;}
+.modal-documento-content .doc-corpo{
+  font-size:14px;
+  line-height:1.9;
+  color:#1a2332;
+  white-space:pre-wrap;
+}
+.modal-documento-content .doc-corpo .titulo-doc{
+  font-weight:700;
+  font-size:16px;
+  margin-bottom:8px;
+  color:#1a6b3c;
+}
+.modal-documento-content .doc-corpo p{margin-bottom:8px;}
+.modal-documento-content .btn-baixar-doc{
+  margin-top:16px;
+  padding:12px 28px;
+  border-radius:12px;
+  border:none;
+  background:#1a6b3c;
+  color:white;
+  font-weight:500;
+  font-size:14px;
+  cursor:pointer;
+  transition:0.2s;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.modal-documento-content .btn-baixar-doc:hover{background:#0f4a2a;}
+.modal-documento-content .btn-baixar-doc i{font-size:16px;}
 </style>
 </head>
 <body>
 
 <header class="app-header" id="appHeader" style="display:none;">
   <div class="header-left">
-    <div class="back-btn" id="backBtn">‹</div>
+    <div class="back-btn" id="backBtn"><i class="fas fa-chevron-left"></i></div>
     <div class="header-title" id="headerTitle">Ponto Mais</div>
   </div>
   <div class="header-right">
@@ -678,19 +835,19 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
 <div class="main-dynamic" id="mainDynamic"></div>
 
 <div class="notificacao-ponto-aberto" id="notificacaoPontoAberto">
-  Ponto aberto ha mais de 5h30 - Clique para abrir chamado
+  <i class="fas fa-clock" style="margin-right:8px;"></i> Ponto aberto ha mais de 5h30 - Clique para abrir chamado
 </div>
 
 <div class="modal-seguranca" id="modalSeguranca">
   <div class="modal-seguranca-content">
-    <h3 id="segTitulo">Verificacao de Seguranca</h3>
+    <h3 id="segTitulo"><i class="fas fa-shield-alt" style="margin-right:8px;color:#1a6b3c;"></i>Verificacao de Seguranca</h3>
     <div class="subtitulo" id="segSubtitulo">Resolva o calculo para continuar</div>
     <div class="label">Calcule o resultado:</div>
     <div class="campo-calculo" id="campoCalculo">10 + 10 = ?</div>
     <input type="number" id="inputResultado" placeholder="Digite o resultado" inputmode="numeric">
     <div class="botoes-modal">
-      <button class="btn-cancelar-seg" id="btnCancelarSeg">Cancelar</button>
-      <button class="btn-confirmar-seg" id="btnConfirmarSeg" disabled>Confirmar</button>
+      <button class="btn-cancelar-seg" id="btnCancelarSeg"><i class="fas fa-times"></i> Cancelar</button>
+      <button class="btn-confirmar-seg" id="btnConfirmarSeg" disabled><i class="fas fa-check"></i> Confirmar</button>
     </div>
   </div>
 </div>
@@ -701,28 +858,28 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
     <div class="spinner-overlay" id="spinnerOverlay" style="display:none;">
       <div class="spinner-bola"></div>
     </div>
-    <button class="btn-cancelar-camera" id="cancelarCameraBtn">Cancelar</button>
+    <button class="btn-cancelar-camera" id="cancelarCameraBtn"><i class="fas fa-times"></i> Cancelar</button>
   </div>
 </div>
 
 <div class="modal-sem-camera" id="modalSemCamera">
   <div class="modal-sem-camera-content">
-    <h3>Problemas com a camera?</h3>
+    <h3><i class="fas fa-camera-slash" style="color:#b91c1c;margin-right:8px;"></i>Problemas com a camera?</h3>
     <p>Se voce nao esta conseguindo usar a camera, prossiga sem reconhecimento facial.</p>
     <div class="botoes">
-      <button class="btn-cancelar-sem" id="btnCancelarSem">Cancelar</button>
-      <button class="btn-continuar-sem" id="btnContinuarSem">Prosseguir sem camera</button>
+      <button class="btn-cancelar-sem" id="btnCancelarSem"><i class="fas fa-times"></i> Cancelar</button>
+      <button class="btn-continuar-sem" id="btnContinuarSem"><i class="fas fa-arrow-right"></i> Prosseguir</button>
     </div>
   </div>
 </div>
 
 <div class="modal-comprovante" id="modalComprovante">
   <div class="modal-comprovante-content">
-    <div class="icone-check">✓</div>
+    <div class="icone-check"><i class="fas fa-check"></i></div>
     <h3>Ponto Finalizado</h3>
     <div class="sub-texto">Expediente encerrado com sucesso</div>
     <div class="dados-ponto" id="dadosComprovante"></div>
-    <button class="btn-ok-comprovante" id="btnOkComprovante">Ver Comprovante</button>
+    <button class="btn-ok-comprovante" id="btnOkComprovante"><i class="fas fa-file-alt"></i> Ver Comprovante</button>
   </div>
 </div>
 
@@ -731,15 +888,29 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
     <img class="foto-grande" id="fotoPerfilGrande" src="" alt="perfil">
     <h3 id="perfilNome">Carregando...</h3>
     <div class="sub-info" id="perfilNa">NA: Carregando...</div>
-    <div class="linha-info"><span class="rotulo">Nome</span><span class="valor" id="perfilNomeValor">--</span></div>
-    <div class="linha-info"><span class="rotulo">NA</span><span class="valor" id="perfilNaValor">--</span></div>
-    <div class="linha-info"><span class="rotulo">Telefone</span><span class="valor" id="perfilTelefone">--</span></div>
-    <button class="btn-fechar-perfil" onclick="fecharPerfil()">Fechar</button>
+    <div class="linha-info"><span class="rotulo"><i class="fas fa-user" style="margin-right:6px;color:#64748b;"></i>Nome</span><span class="valor" id="perfilNomeValor">--</span></div>
+    <div class="linha-info"><span class="rotulo"><i class="fas fa-id-badge" style="margin-right:6px;color:#64748b;"></i>NA</span><span class="valor" id="perfilNaValor">--</span></div>
+    <div class="linha-info"><span class="rotulo"><i class="fas fa-phone" style="margin-right:6px;color:#64748b;"></i>Telefone</span><span class="valor" id="perfilTelefone">--</span></div>
+    <button class="btn-fechar-perfil" onclick="fecharPerfil()"><i class="fas fa-times"></i> Fechar</button>
+  </div>
+</div>
+
+<div class="modal-documento" id="modalDocumento">
+  <div class="modal-documento-content">
+    <div class="doc-header">
+      <h3 id="docTituloModal"><i class="fas fa-file-pdf"></i> Documento</h3>
+      <button class="fechar-doc" onclick="fecharDocumento()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="doc-corpo" id="docCorpoModal"></div>
+    <button class="btn-baixar-doc" onclick="baixarDocumento()">
+      <i class="fas fa-download"></i> Baixar PDF
+    </button>
   </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 const firebaseConfig = {
@@ -763,6 +934,7 @@ let segResultadoCorreto = 0;
 let segOperacaoRealizada = '';
 let cameraStreamActive = null;
 let dadosComprovante = null;
+let documentoAtual = '';
 
 const mainEl = document.getElementById("mainDynamic");
 const headerEl = document.getElementById("appHeader");
@@ -776,6 +948,117 @@ const loaderIcone = document.getElementById("loaderIcone");
 const loaderTexto = document.getElementById("loaderTexto");
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+// DOCUMENTOS - 4 documentos
+const documentos = {
+  privacidade: {
+    titulo: 'Politica de Privacidade',
+    icone: 'fas fa-shield-alt',
+    conteudo: `POLITICA DE PRIVACIDADE - DOMUSFIT
+
+A DomusFit respeita sua privacidade e esta comprometida em proteger seus dados pessoais. Este documento descreve como tratamos as informacoes coletadas atraves do Sistema de Batimento de Ponto.
+
+1. COLETA DE DADOS: Coletamos seu nome, NA (Numero do Aluno), telefone e registros de ponto (data, hora de entrada e saida).
+
+2. USO DOS DADOS: Os dados sao utilizados exclusivamente para controle de frequencia, gestao de pessoal e cumprimento de obrigacoes trabalhistas.
+
+3. ARMAZENAMENTO: Seus dados sao armazenados de forma segura no Firebase, com criptografia e acesso restrito.
+
+4. COMPARTILHAMENTO: Nao compartilhamos seus dados com terceiros, exceto quando exigido por lei.
+
+5. SEUS DIREITOS: Voce pode solicitar acesso, correcao ou exclusao de seus dados a qualquer momento.
+
+6. CONTATO: Duvidas sobre privacidade devem ser enviadas para o suporte da DomusFit.
+
+Este documento e valido para o Sistema de Batimento de Ponto da DomusFit.`
+  },
+  seguranca: {
+    titulo: 'Dicas de Seguranca',
+    icone: 'fas fa-lock',
+    conteudo: `DICAS DE SEGURANCA - DOMUSFIT
+
+Mantenha sua conta segura seguindo estas recomendacoes:
+
+1. NA E SENHA: Nunca compartilhe seu NA e senha com ninguem. A DomusFit nunca solicita esses dados por telefone ou mensagem.
+
+2. DISPOSITIVOS: Utilize apenas dispositivos confiaveis para acessar o sistema. Evite computadores ou celulares publicos.
+
+3. SESSAO: Sempre finalize sua sessao ao terminar o expediente, especialmente em dispositivos compartilhados.
+
+4. FOTOS: As fotos capturadas pelo reconhecimento facial sao utilizadas apenas para confirmacao de identidade.
+
+5. DENUNCIAS: Caso suspeite de uso indevido da sua conta, comunique imediatamente o suporte.
+
+6. ATUALIZACOES: Mantenha seu navegador e sistema operacional atualizados para garantir seguranca.
+
+7. VERIFICACAO: O sistema utiliza calculos matematicos para garantir que voce esta presente durante o registro do ponto.
+
+Lembre-se: sua seguranca e responsabilidade de todos.`
+  },
+  termos: {
+    titulo: 'Termos de Uso',
+    icone: 'fas fa-file-contract',
+    conteudo: `TERMOS DE USO - SISTEMA DE BATIMENTO DE PONTO
+
+1. ACEITACAO: Ao utilizar o Sistema de Batimento de Ponto da DomusFit, o usuario concorda com estes termos.
+
+2. RESPONSABILIDADE: O usuario e responsavel pela veracidade das informacoes fornecidas durante o registro do ponto.
+
+3. REGISTROS: Os registros de ponto sao documentos oficiais e podem ser utilizados para fins trabalhistas e legais.
+
+4. USO ADEQUADO: O sistema deve ser utilizado exclusivamente para fins de controle de frequencia da DomusFit.
+
+5. PROIBICOES: E proibido compartilhar credenciais, manipular registros ou utilizar o sistema para fins nao autorizados.
+
+6. ALTERACOES: A DomusFit pode alterar estes termos a qualquer momento, com comunicacao previa aos usuarios.
+
+7. VIGENCIA: Estes termos entram em vigor a partir do primeiro uso do sistema e permanecem validos enquanto o usuario estiver ativo.
+
+8. FORO: Qualquer disputa relacionada a este sistema sera resolvida no foro da comarca de Joao Camara/RN.`
+  },
+  manual: {
+    titulo: 'Manual do Usuario',
+    icone: 'fas fa-book',
+    conteudo: `MANUAL DO USUARIO - SISTEMA DE BATIMENTO DE PONTO
+
+COMO UTILIZAR O SISTEMA:
+
+1. ACESSO: Acesse o sistema com seu NA e senha fornecidos pela DomusFit.
+
+2. INICIAR PONTO:
+   - Clique no botao "Iniciar Ponto"
+   - Resolva o calculo matematico exibido
+   - Permita o acesso a camera
+   - Aguarde o reconhecimento facial (2 segundos)
+   - O ponto sera iniciado automaticamente
+
+3. FINALIZAR PONTO:
+   - Clique no botao "Finalizar Dia"
+   - Resolva o calculo matematico exibido
+   - O sistema finalizara o ponto automaticamente
+   - Um comprovante sera exibido
+
+4. CONSULTAR CARGA HORARIA:
+   - Acesse o menu "Carga Horaria"
+   - Selecione o mes/ano desejado
+   - Visualize todos os registros e total de horas
+
+5. ABRIR CHAMADO:
+   - Utilize para correcao de ponto ou problemas tecnicos
+   - Preencha o formulario e aceite os termos
+   - Envie para o WhatsApp do suporte
+
+6. DOCUMENTOS:
+   - Acesse a secao de documentos na tela inicial
+   - Visualize ou baixe os documentos disponiveis (PDF)
+
+7. PERFIL:
+   - Clique na foto no cabecalho para visualizar seus dados
+   - Verifique seu nome, NA e telefone cadastrados
+
+DUVIDAS: Entre em contato com o suporte atraves do WhatsApp.`
+  }
+};
 
 function playNotificationSound(){
   try {
@@ -865,7 +1148,7 @@ function verificarNotificacaoPontoAberto(){
       notifPontoAberto.style.display = "block";
       let horas = Math.floor(diff/3600000);
       let minutos = Math.floor((diff%3600000)/60000);
-      notifPontoAberto.innerHTML = `Ponto aberto ha ${horas}h${minutos}m - Clique para abrir chamado`;
+      notifPontoAberto.innerHTML = `<i class="fas fa-clock" style="margin-right:8px;"></i> Ponto aberto ha ${horas}h${minutos}m - Clique para abrir chamado`;
     } else {
       notifPontoAberto.style.display = "none";
     }
@@ -887,7 +1170,7 @@ function showBottomSheet(title, message, confirmText, onConfirm, closeOnConfirm=
     divOverlay.id="sheetOverlay"; divOverlay.className="sheet-overlay";
     let divSheet = document.createElement("div");
     divSheet.id="bottomSheet"; divSheet.className="bottom-sheet";
-    divSheet.innerHTML = `<div class="sheet-title" id="sheetTitle"></div><div id="sheetMsg"></div><div class="sheet-cronometro-mini" id="sheetCronometro" style="display:none;">00:00:00</div><div class="sheet-buttons"><button class="btn-sheet-cancel" id="sheetCancelBtn">Cancelar</button><button class="btn-sheet-confirm" id="sheetConfirmBtn"></button></div>`;
+    divSheet.innerHTML = `<div class="sheet-title" id="sheetTitle"></div><div id="sheetMsg"></div><div class="sheet-cronometro-mini" id="sheetCronometro" style="display:none;">00:00:00</div><div class="sheet-buttons"><button class="btn-sheet-cancel" id="sheetCancelBtn"><i class="fas fa-times"></i> Cancelar</button><button class="btn-sheet-confirm" id="sheetConfirmBtn"></button></div>`;
     document.body.appendChild(divOverlay);
     document.body.appendChild(divSheet);
     overlay = divOverlay; sheet = divSheet;
@@ -896,7 +1179,7 @@ function showBottomSheet(title, message, confirmText, onConfirm, closeOnConfirm=
   }
   document.getElementById("sheetTitle").innerText = title;
   document.getElementById("sheetMsg").innerHTML = `<p style="margin:8px 0">${message}</p>`;
-  document.getElementById("sheetConfirmBtn").innerText = confirmText;
+  document.getElementById("sheetConfirmBtn").innerHTML = `<i class="fas fa-check"></i> ${confirmText}`;
   let cronoDiv = document.getElementById("sheetCronometro");
   if(showCronometro && pontoAtivo){
     cronoDiv.style.display = "block";
@@ -1004,14 +1287,67 @@ function goBack(){
 backBtn.onclick = goBack;
 
 function telaLogin(){
-  mainEl.innerHTML = `<div class="login-screen"><img class="avatar-circle" id="loginAvatar" src="${userData.foto||''}" onerror="this.src='https://ui-avatars.com/api/?background=1a6b3c&color=fff&name=${encodeURIComponent(userData.nome||'User')}'"><div class="nome-bemvindo" id="loginNome">${userData.nome||'Carregando...'}</div><button class="acessar-btn" id="acessarPrincipalBtn">Acessar</button></div>`;
+  mainEl.innerHTML = `<div class="login-screen"><img class="avatar-circle" id="loginAvatar" src="${userData.foto||''}" onerror="this.src='https://ui-avatars.com/api/?background=1a6b3c&color=fff&name=${encodeURIComponent(userData.nome||'User')}'"><div class="nome-bemvindo" id="loginNome">${userData.nome||'Carregando...'}</div><button class="acessar-btn" id="acessarPrincipalBtn"><i class="fas fa-sign-in-alt"></i> Acessar</button></div>`;
   if(userData.nome) document.getElementById("loginNome").innerText = userData.nome;
   db.ref("usuarios/"+currentUser).once("value").then(s=>{ if(s.exists()){ let d=s.val(); document.getElementById("loginAvatar").src = d.foto || `https://ui-avatars.com/api/?background=1a6b3c&color=fff&name=${encodeURIComponent(d.nome||'')}`; document.getElementById("loginNome").innerText = d.nome; } });
   document.getElementById("acessarPrincipalBtn").onclick = ()=> renderScreen('tripode', true);
 }
 
 function telaTripode(){
-  mainEl.innerHTML = `<div class="three-buttons-vertical"><button id="btnPonto">Batida de Ponto</button><button id="btnCarga">Carga Horaria</button><button id="btnChamado">Abrir Chamado</button></div><div class="content-pane"><div style="text-align:center;margin-top:40px;color:#94a3b8;font-size:14px;">Selecione uma opcao</div></div>`;
+  mainEl.innerHTML = `
+    <div class="three-buttons-vertical">
+      <button id="btnPonto"><i class="fas fa-clock"></i> Batida de Ponto</button>
+      <button id="btnCarga"><i class="fas fa-chart-bar"></i> Carga Horaria</button>
+      <button id="btnChamado"><i class="fas fa-headset"></i> Abrir Chamado</button>
+    </div>
+    <div class="documents-section">
+      <div class="doc-header-section">
+        <i class="fas fa-folder"></i>
+        <span class="doc-title">Documentos</span>
+      </div>
+      <div class="doc-item">
+        <div class="doc-info">
+          <i class="fas fa-file-pdf"></i>
+          <span class="doc-name">Politica de Privacidade</span>
+        </div>
+        <div class="doc-actions">
+          <span class="ver" onclick="verDocumento('privacidade')">Ver</span>
+          <span class="baixar" onclick="baixarDocumentoEspecifico('privacidade')">Baixar</span>
+        </div>
+      </div>
+      <div class="doc-item">
+        <div class="doc-info">
+          <i class="fas fa-file-pdf"></i>
+          <span class="doc-name">Dicas de Seguranca</span>
+        </div>
+        <div class="doc-actions">
+          <span class="ver" onclick="verDocumento('seguranca')">Ver</span>
+          <span class="baixar" onclick="baixarDocumentoEspecifico('seguranca')">Baixar</span>
+        </div>
+      </div>
+      <div class="doc-item">
+        <div class="doc-info">
+          <i class="fas fa-file-pdf"></i>
+          <span class="doc-name">Termos de Uso</span>
+        </div>
+        <div class="doc-actions">
+          <span class="ver" onclick="verDocumento('termos')">Ver</span>
+          <span class="baixar" onclick="baixarDocumentoEspecifico('termos')">Baixar</span>
+        </div>
+      </div>
+      <div class="doc-item">
+        <div class="doc-info">
+          <i class="fas fa-file-pdf"></i>
+          <span class="doc-name">Manual do Usuario</span>
+        </div>
+        <div class="doc-actions">
+          <span class="ver" onclick="verDocumento('manual')">Ver</span>
+          <span class="baixar" onclick="baixarDocumentoEspecifico('manual')">Baixar</span>
+        </div>
+      </div>
+    </div>
+    <div class="content-pane"><div style="text-align:center;margin-top:20px;color:#94a3b8;font-size:14px;">Selecione uma opcao acima</div></div>
+  `;
   document.getElementById("btnPonto").onclick = ()=> renderScreen('ponto', true);
   document.getElementById("btnCarga").onclick = ()=> renderScreen('carga', true);
   document.getElementById("btnChamado").onclick = ()=> renderScreen('chamado', true);
@@ -1021,8 +1357,77 @@ function telaTripode(){
   atualizarPerfil();
 }
 
+// FUNCOES DOCUMENTOS
+function verDocumento(chave){
+  const doc = documentos[chave];
+  if(!doc) return;
+  documentoAtual = chave;
+  document.getElementById("docTituloModal").innerHTML = `<i class="fas fa-file-pdf"></i> ${doc.titulo}`;
+  document.getElementById("docCorpoModal").innerHTML = `<div class="titulo-doc">${doc.titulo}</div><p>${doc.conteudo.replace(/\n/g, '</p><p>')}</p>`;
+  document.getElementById("modalDocumento").classList.add("aberto");
+}
+
+function fecharDocumento(){
+  document.getElementById("modalDocumento").classList.remove("aberto");
+}
+document.getElementById("modalDocumento").addEventListener("click", function(e){
+  if(e.target === this) fecharDocumento();
+});
+
+function gerarPDFDocumento(chave){
+  const doc = documentos[chave];
+  if(!doc) return;
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  let y = 20;
+  
+  pdf.setFontSize(18);
+  pdf.setTextColor(26, 107, 60);
+  pdf.text('DomusFit', pageWidth/2, y, { align: 'center' });
+  y += 8;
+  
+  pdf.setFontSize(14);
+  pdf.setTextColor(0, 0, 0);
+  pdf.text(doc.titulo, pageWidth/2, y, { align: 'center' });
+  y += 10;
+  
+  pdf.setFontSize(10);
+  pdf.setTextColor(100, 100, 100);
+  pdf.text('Documento Homologado - Sistema de Batimento de Ponto', pageWidth/2, y, { align: 'center' });
+  y += 6;
+  pdf.text('Gerado em: ' + new Date().toLocaleString('pt-BR'), pageWidth/2, y, { align: 'center' });
+  y += 12;
+  
+  pdf.setFontSize(11);
+  pdf.setTextColor(26, 26, 26);
+  const lines = pdf.splitTextToSize(doc.conteudo, pageWidth - 30);
+  pdf.text(lines, 15, y);
+  
+  y = pdf.internal.pageSize.getHeight() - 15;
+  pdf.setFontSize(8);
+  pdf.setTextColor(150, 150, 150);
+  pdf.text('DomusFit - Documento Oficial', pageWidth/2, y, { align: 'center' });
+  pdf.text('ID: ' + Math.random().toString(36).substring(2,10).toUpperCase(), pageWidth/2, y+5, { align: 'center' });
+  
+  return pdf;
+}
+
+function baixarDocumento(){
+  if(!documentoAtual) return;
+  const pdf = gerarPDFDocumento(documentoAtual);
+  const doc = documentos[documentoAtual];
+  pdf.save(doc.titulo.replace(/ /g, '_') + '.pdf');
+}
+
+function baixarDocumentoEspecifico(chave){
+  const pdf = gerarPDFDocumento(chave);
+  const doc = documentos[chave];
+  pdf.save(doc.titulo.replace(/ /g, '_') + '.pdf');
+}
+
 function telaPonto(){
-  mainEl.innerHTML = `<div style="padding:24px 16px;background:#fff;min-height:calc(100vh - 68px);"><div class="cronometro-grande" id="cronodisplay">00:00:00</div><div class="botoes-acao"><button class="btn-iniciar-ponto" id="iniciarPontoBtn">Iniciar Ponto</button><button class="btn-finalizar-ponto" id="finalizarPontoBtn">Finalizar Dia</button></div><div style="margin-top:30px;"><h4 style="font-size:15px;color:#64748b;font-weight:500;">Ultimos registros</h4><div id="miniResumo"></div></div></div>`;
+  mainEl.innerHTML = `<div style="padding:24px 16px;background:#fff;min-height:calc(100vh - 68px);"><div class="cronometro-grande" id="cronodisplay">00:00:00</div><div class="botoes-acao"><button class="btn-iniciar-ponto" id="iniciarPontoBtn"><i class="fas fa-play"></i> Iniciar Ponto</button><button class="btn-finalizar-ponto" id="finalizarPontoBtn"><i class="fas fa-stop"></i> Finalizar Dia</button></div><div style="margin-top:30px;"><h4 style="font-size:15px;color:#64748b;font-weight:500;"><i class="fas fa-history"></i> Ultimos registros</h4><div id="miniResumo"></div></div></div>`;
   if(pontoAtivo) { document.getElementById("finalizarPontoBtn").style.display = "block"; document.getElementById("iniciarPontoBtn").style.display = "none"; atualizaCronometroDisplay(); }
   else { document.getElementById("finalizarPontoBtn").style.display = "none"; document.getElementById("iniciarPontoBtn").style.display = "block"; }
   startCronometroLocal();
@@ -1076,7 +1481,7 @@ function abrirModalSeguranca(acao){
   document.getElementById("btnConfirmarSeg").disabled = true;
   
   const titulo = acao === 'iniciar' ? 'Iniciar Ponto' : 'Finalizar Ponto';
-  document.getElementById("segTitulo").innerHTML = `Seguranca - ${titulo}`;
+  document.getElementById("segTitulo").innerHTML = `<i class="fas fa-shield-alt" style="margin-right:8px;color:#1a6b3c;"></i>Seguranca - ${titulo}`;
   document.getElementById("segSubtitulo").innerHTML = `Resolva o calculo para ${acao === 'iniciar' ? 'iniciar' : 'finalizar'} o ponto`;
   
   segCallback = ()=>{
@@ -1176,20 +1581,20 @@ function telaComprovante(){
           <div class="logo-text">DomusFit</div>
           <div class="sub-text">Comprovante de Ponto - Documento Homologado</div>
         </div>
-        <div class="icone-verificado"><span>✓</span></div>
+        <div class="icone-verificado"><span><i class="fas fa-check"></i></span></div>
         <div class="linha-dado"><span class="rotulo">Funcionario</span><span class="valor">${dadosComprovante.nome}</span></div>
         <div class="linha-dado"><span class="rotulo">NA</span><span class="valor">${dadosComprovante.na}</span></div>
         <div class="linha-dado"><span class="rotulo">Data</span><span class="valor">${dadosComprovante.data}</span></div>
         <div class="linha-dado"><span class="rotulo">Hora finalizacao</span><span class="valor">${dadosComprovante.hora}</span></div>
         <div class="linha-dado"><span class="rotulo">Tempo total</span><span class="valor">${dadosComprovante.tempo}</span></div>
         <div class="linha-dado"><span class="rotulo">Calculo</span><span class="valor">${dadosComprovante.calculo}</span></div>
-        <div class="linha-dado"><span class="rotulo">Status</span><span class="valor" style="color:#1a6b3c;">Finalizado</span></div>
+        <div class="linha-dado"><span class="rotulo">Status</span><span class="valor" style="color:#1a6b3c;"><i class="fas fa-check-circle"></i> Finalizado</span></div>
         <div class="rodape-comp">
           Documento gerado automaticamente pelo sistema DomusFit<br>
           ID: ${Math.random().toString(36).substring(2,10).toUpperCase() + Date.now().toString(36).toUpperCase()}
         </div>
       </div>
-      <button class="btn-voltar-inicio" onclick="voltarInicio()">Voltar para Inicio</button>
+      <button class="btn-voltar-inicio" onclick="voltarInicio()"><i class="fas fa-arrow-left"></i> Voltar para Inicio</button>
     </div>
   `;
   atualizarPerfil();
@@ -1292,7 +1697,7 @@ function iniciarPontoComSeguranca(){
 }
 
 function telaCarga(){
-  mainEl.innerHTML = `<div style="padding:0 16px 20px;background:#fff;min-height:calc(100vh - 68px);"><div class="filtro-mes"><input type="text" id="mesAnoInput" placeholder="MM/AAAA" maxlength="7"><button id="buscarCargaBtn">Buscar</button></div><div id="cargaResultado"></div></div>`;
+  mainEl.innerHTML = `<div style="padding:0 16px 20px;background:#fff;min-height:calc(100vh - 68px);"><div class="filtro-mes"><input type="text" id="mesAnoInput" placeholder="MM/AAAA" maxlength="7"><button id="buscarCargaBtn"><i class="fas fa-search"></i> Buscar</button></div><div id="cargaResultado"></div></div>`;
   let input = document.getElementById("mesAnoInput");
   input.addEventListener("input", function(e){
     let val = e.target.value.replace(/\D/g,'');
@@ -1327,7 +1732,7 @@ function telaCarga(){
       let totalH = Math.floor(totalMs/3600000);
       let totalM = Math.floor((totalMs%3600000)/60000);
       hideLoader();
-      document.getElementById("cargaResultado").innerHTML = `<div class="total-horas-card"><span>Total ${mm}/${yyyy}</span><strong>${totalH}h ${totalM}m</strong></div><table class="tabela-ponto"><thead><tr><th>Data</th><th>Entrada</th><th>Saida</th><th>Duracao</th></tr></thead><tbody>${linhas||'<tr><td colspan="4" style="color:#94a3b8;padding:20px;">Nenhum registro</td></tr>'}</tbody></table>`;
+      document.getElementById("cargaResultado").innerHTML = `<div class="total-horas-card"><span><i class="fas fa-clock"></i> Total ${mm}/${yyyy}</span><strong>${totalH}h ${totalM}m</strong></div><table class="tabela-ponto"><thead><tr><th>Data</th><th>Entrada</th><th>Saida</th><th>Duracao</th></tr></thead><tbody>${linhas||'<tr><td colspan="4" style="color:#94a3b8;padding:20px;">Nenhum registro</td></tr>'}</tbody></table>`;
     }, 800);
   };
   atualizarPerfil();
@@ -1336,28 +1741,28 @@ function telaCarga(){
 function telaChamado(){
   mainEl.innerHTML = `<div style="padding:20px 16px;background:#fff;min-height:calc(100vh - 68px);">
     <div id="formChamadoArea">
-      <h3 style="margin-bottom:6px;color:#1a2332;font-size:18px;">Abrir Chamado</h3>
+      <h3 style="margin-bottom:6px;color:#1a2332;font-size:18px;"><i class="fas fa-headset"></i> Abrir Chamado</h3>
       <p style="color:#64748b;font-size:13px;margin-bottom:16px;">Preencha os dados para abrir um chamado de suporte</p>
       <div style="background:#f5f8f6;padding:16px;border-radius:12px;margin-bottom:16px;border:1px solid #e8edf0;">
-        <p style="font-size:14px;padding:4px 0;"><strong>Nome:</strong> ${userData.nome || '--'}</p>
-        <p style="font-size:14px;padding:4px 0;"><strong>NA:</strong> ${currentUser}</p>
-        <p style="font-size:14px;padding:4px 0;"><strong>Telefone:</strong> ${userData.telefone || '--'}</p>
+        <p style="font-size:14px;padding:4px 0;"><i class="fas fa-user" style="color:#1a6b3c;width:20px;"></i> <strong>Nome:</strong> ${userData.nome || '--'}</p>
+        <p style="font-size:14px;padding:4px 0;"><i class="fas fa-id-badge" style="color:#1a6b3c;width:20px;"></i> <strong>NA:</strong> ${currentUser}</p>
+        <p style="font-size:14px;padding:4px 0;"><i class="fas fa-phone" style="color:#1a6b3c;width:20px;"></i> <strong>Telefone:</strong> ${userData.telefone || '--'}</p>
       </div>
-      <label style="font-weight:500;font-size:14px;display:block;margin-top:12px;">Motivo do chamado</label>
+      <label style="font-weight:500;font-size:14px;display:block;margin-top:12px;"><i class="fas fa-edit"></i> Motivo do chamado</label>
       <textarea id="motivacaoTexto" rows="4" placeholder="Descreva detalhadamente o problema..." style="width:100%;margin:8px 0;padding:14px;border-radius:12px;border:1.5px solid #dce8e2;font-family:inherit;font-size:14px;resize:vertical;transition:0.2s;"></textarea>
       
       <div class="termos-container">
-        <p>Declaro que sou o(a) portador(a) do NA <strong>${currentUser}</strong>, responsavel pelas informacoes acima, e autorizo a DomusFit a tratar meus dados para fins de suporte e correcao de ponto, conforme a LGPD.</p>
+        <p><i class="fas fa-check-circle" style="color:#1a6b3c;"></i> Declaro que sou o(a) portador(a) do NA <strong>${currentUser}</strong>, responsavel pelas informacoes acima, e autorizo a DomusFit a tratar meus dados para fins de suporte e correcao de ponto, conforme a LGPD.</p>
         <div class="termo-check">
           <input type="checkbox" id="termoCheck">
-          <label for="termoCheck">Li e concordo com os termos acima e autorizo o tratamento dos meus dados.</label>
+          <label for="termoCheck"><i class="fas fa-check-square" style="color:#1a6b3c;"></i> Li e concordo com os termos acima e autorizo o tratamento dos meus dados.</label>
         </div>
       </div>
       
-      <button id="enviarChamadoFinalBtn" style="width:100%;padding:16px;border-radius:12px;border:none;background:#1a6b3c;color:white;font-weight:600;font-size:15px;cursor:pointer;margin-top:12px;transition:0.2s;box-shadow:0 4px 14px rgba(26,107,60,0.2);">Enviar para WhatsApp</button>
+      <button id="enviarChamadoFinalBtn" style="width:100%;padding:16px;border-radius:12px;border:none;background:#1a6b3c;color:white;font-weight:600;font-size:15px;cursor:pointer;margin-top:12px;transition:0.2s;box-shadow:0 4px 14px rgba(26,107,60,0.2);"><i class="fab fa-whatsapp"></i> Enviar para WhatsApp</button>
       <div id="protocoloAviso" style="margin-top:12px;font-size:13px;color:#64748b;text-align:center;"></div>
     </div>
-    <button id="voltarDoChamadoBtn" style="margin-top:20px;background:#f0f4f8;border:1.5px solid #dce8e2;padding:14px;border-radius:12px;width:100%;font-weight:500;cursor:pointer;transition:0.2s;">Voltar</button>
+    <button id="voltarDoChamadoBtn" style="margin-top:20px;background:#f0f4f8;border:1.5px solid #dce8e2;padding:14px;border-radius:12px;width:100%;font-weight:500;cursor:pointer;transition:0.2s;"><i class="fas fa-arrow-left"></i> Voltar</button>
   </div>`;
   
   document.getElementById("enviarChamadoFinalBtn").onclick = async()=>{
