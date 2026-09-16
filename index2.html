@@ -915,6 +915,23 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
   color:#94a3b8;
 }
 .footer .footer-dev strong{color:#1a6b3c;}
+
+/* CORREÇÃO DE PONTO */
+.correcao-btn{
+  background: #1a6b3c !important;
+  color: white !important;
+  border: none !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 14px rgba(26,107,60,0.25) !important;
+}
+.correcao-btn:hover{
+  background: #0f4a2a !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(26,107,60,0.35) !important;
+}
+.correcao-btn i{
+  color: white !important;
+}
 </style>
 </head>
 <body>
@@ -1011,9 +1028,38 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
   </div>
 </div>
 
+<!-- MODAL CONCERTA PONTO -->
+<div class="modal-correcao" id="modalCorrecao" style="position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:800;visibility:hidden;opacity:0;transition:0.25s;">
+  <div class="modal-correcao-content" style="background:#fff;border-radius:20px;padding:36px 28px;max-width:520px;width:92%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15);">
+    <h3 style="font-size:19px;margin-bottom:6px;color:#1a2332;"><i class="fas fa-edit" style="color:#1a6b3c;margin-right:8px;"></i>Concerta meu Ponto</h3>
+    <div style="color:#64748b;font-size:14px;margin-bottom:18px;">Corrija um ponto que voce esqueceu ou nao iniciou</div>
+    
+    <div id="correcaoPasso1">
+      <label style="font-weight:500;font-size:14px;display:block;margin-bottom:6px;">Mes e Ano</label>
+      <input type="text" id="correcaoMesAno" placeholder="MM/AAAA" maxlength="7" style="width:100%;padding:14px;border:1.5px solid #dce8e2;border-radius:12px;font-size:15px;margin-bottom:12px;">
+      <button id="correcaoBuscarBtn" style="width:100%;padding:14px;border-radius:12px;border:none;background:#1a6b3c;color:white;font-weight:600;font-size:15px;cursor:pointer;transition:0.2s;"><i class="fas fa-search"></i> Buscar Registros</button>
+    </div>
+    
+    <div id="correcaoPasso2" style="display:none;">
+      <div id="correcaoListaDias" style="max-height:300px;overflow-y:auto;margin-bottom:12px;"></div>
+      <button id="correcaoVoltarBtn" style="width:100%;padding:14px;border-radius:12px;border:1.5px solid #dce8e2;background:#fff;color:#1a2332;font-weight:500;font-size:14px;cursor:pointer;"><i class="fas fa-arrow-left"></i> Voltar</button>
+    </div>
+    
+    <div id="correcaoPasso3" style="display:none;">
+      <div id="correcaoFormulario"></div>
+    </div>
+    
+    <div id="correcaoAviso" style="margin-top:12px;font-size:13px;color:#64748b;text-align:center;"></div>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- reCAPTCHA -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<!-- Cloudinary SDK -->
+<script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
 
 <script>
 const firebaseConfig = {
@@ -1051,6 +1097,12 @@ const loaderIcone = document.getElementById("loaderIcone");
 const loaderTexto = document.getElementById("loaderTexto");
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+// CONFIGURACOES
+const RECAPTCHA_SITE_KEY = "6LekcL8tAAAAAFAVuCmcZZIuJ7zlZl6HLhw_zn7a";
+const CLOUD_NAME = "dzmjto17f";
+const UPLOAD_PRESET = "ml_default";
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
 // DOCUMENTOS
 const documentos = {
@@ -1547,6 +1599,7 @@ function telaTripode(){
       <button id="btnPonto"><i class="fas fa-clock"></i> Batida de Ponto</button>
       <button id="btnCarga"><i class="fas fa-chart-bar"></i> Carga Horaria</button>
       <button id="btnChamado"><i class="fas fa-headset"></i> Abrir Chamado</button>
+      <button id="btnConcertaPonto" class="correcao-btn"><i class="fas fa-edit"></i> Concerta meu Ponto</button>
     </div>
     <div class="documents-section">
       <div class="doc-header-section">
@@ -1607,6 +1660,7 @@ function telaTripode(){
   document.getElementById("btnPonto").onclick = ()=> renderScreen('ponto', true);
   document.getElementById("btnCarga").onclick = ()=> renderScreen('carga', true);
   document.getElementById("btnChamado").onclick = ()=> renderScreen('chamado', true);
+  document.getElementById("btnConcertaPonto").onclick = abrirCorrecaoPonto;
   if(pontoAtivo){
     setTimeout(() => { showPontoAbertoSheet(); }, 200);
   }
@@ -1616,7 +1670,6 @@ function telaTripode(){
 function abrirFerramenta(chave){
   const ferramenta = ferramentas[chave];
   if(!ferramenta) return;
-  // Armazena para a tela
   window.ferramentaAtual = ferramenta;
   renderScreen('ferramenta', true);
 }
@@ -2085,7 +2138,398 @@ function telaChamado(){
   atualizarPerfil();
 }
 
-// RODAPE com politicas
+// ============ CORREÇÃO DE PONTO ============
+let correcaoDiaSelecionado = null;
+let correcaoMesAno = null;
+
+function abrirCorrecaoPonto(){
+  const modal = document.getElementById('modalCorrecao');
+  // Reset
+  document.getElementById('correcaoPasso1').style.display = 'block';
+  document.getElementById('correcaoPasso2').style.display = 'none';
+  document.getElementById('correcaoPasso3').style.display = 'none';
+  document.getElementById('correcaoAviso').innerHTML = '';
+  document.getElementById('correcaoMesAno').value = '';
+  correcaoDiaSelecionado = null;
+  correcaoMesAno = null;
+  
+  modal.style.visibility = 'visible';
+  modal.style.opacity = '1';
+  
+  document.getElementById('correcaoBuscarBtn').onclick = buscarRegistrosCorrecao;
+  document.getElementById('correcaoVoltarBtn').onclick = ()=>{
+    document.getElementById('correcaoPasso1').style.display = 'block';
+    document.getElementById('correcaoPasso2').style.display = 'none';
+    document.getElementById('correcaoPasso3').style.display = 'none';
+    document.getElementById('correcaoAviso').innerHTML = '';
+  };
+  
+  // Input mask MM/AAAA
+  const mesAnoInput = document.getElementById('correcaoMesAno');
+  mesAnoInput.oninput = function(e){
+    let val = e.target.value.replace(/\D/g,'');
+    if(val.length>=2) val = val.slice(0,2)+'/'+val.slice(2,6);
+    e.target.value = val;
+  };
+}
+
+async function buscarRegistrosCorrecao(){
+  const mesAno = document.getElementById('correcaoMesAno').value.trim();
+  if(!mesAno.match(/^\d{2}\/\d{4}$/)){
+    document.getElementById('correcaoAviso').innerHTML = '<span style="color:#b91c1c;">Formato invalido. Use MM/AAAA</span>';
+    return;
+  }
+  const [mm, yyyy] = mesAno.split('/');
+  const mes = parseInt(mm), ano = parseInt(yyyy);
+  if(mes < 1 || mes > 12 || ano < 2000){
+    document.getElementById('correcaoAviso').innerHTML = '<span style="color:#b91c1c;">Mes ou ano invalido</span>';
+    return;
+  }
+  
+  correcaoMesAno = { mes, ano };
+  document.getElementById('correcaoAviso').innerHTML = 'Buscando registros...';
+  
+  try {
+    const snap = await db.ref("historico/" + currentUser).once("value");
+    const pontos = snap.val() || {};
+    
+    const registros = Object.entries(pontos)
+      .filter(([data]) => {
+        const [y, m] = data.split("-").map(Number);
+        return y === ano && m === mes;
+      })
+      .sort((a, b) => b[0].localeCompare(a[0]));
+    
+    // Gerar lista de todos os dias do mês para mostrar os que faltam
+    const diasNoMes = new Date(ano, mes, 0).getDate();
+    const registrosMap = {};
+    registros.forEach(([data, val]) => { registrosMap[data] = val; });
+    
+    let html = '<div style="display:flex;flex-direction:column;gap:6px;">';
+    for (let d = 1; d <= diasNoMes; d++) {
+      const diaStr = `${ano}-${String(mes).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const reg = registrosMap[diaStr];
+      const temEntrada = reg && reg.inicio;
+      const temSaida = reg && reg.fim;
+      const status = !temEntrada ? 'sem registro' : (!temSaida ? 'sem saida' : 'completo');
+      
+      let statusColor = '#94a3b8';
+      let statusText = 'Sem registro';
+      let statusIcon = 'fa-circle';
+      if (status === 'sem saida') {
+        statusColor = '#f59e0b';
+        statusText = 'Sem saida';
+        statusIcon = 'fa-exclamation-circle';
+      } else if (status === 'completo') {
+        statusColor = '#1a6b3c';
+        statusText = 'Completo';
+        statusIcon = 'fa-check-circle';
+      }
+      
+      const entradaStr = temEntrada ? new Date(reg.inicio).toLocaleTimeString('pt-BR').slice(0,5) : '--';
+      const saidaStr = temSaida ? new Date(reg.fim).toLocaleTimeString('pt-BR').slice(0,5) : '--';
+      
+      html += `
+        <div class="correcao-dia-item" data-dia="${diaStr}" style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid #e8edf0;border-radius:10px;cursor:pointer;transition:0.2s;background:#fff;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-weight:600;font-size:14px;min-width:30px;">${String(d).padStart(2,'0')}</span>
+            <div style="font-size:12px;color:#64748b;">
+              <span>E: ${entradaStr}</span> &nbsp; <span>S: ${saidaStr}</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:${statusColor};font-weight:500;">
+            <i class="fas ${statusIcon}"></i> ${statusText}
+          </div>
+        </div>
+      `;
+    }
+    html += '</div>';
+    
+    document.getElementById('correcaoListaDias').innerHTML = html;
+    document.getElementById('correcaoPasso1').style.display = 'none';
+    document.getElementById('correcaoPasso2').style.display = 'block';
+    document.getElementById('correcaoAviso').innerHTML = `Registros de ${mm}/${yyyy}. Selecione um dia para corrigir.`;
+    
+    // Event listeners
+    document.querySelectorAll('.correcao-dia-item').forEach(item => {
+      item.onclick = () => selecionarDiaCorrecao(item.dataset.dia);
+    });
+  } catch(e) {
+    document.getElementById('correcaoAviso').innerHTML = '<span style="color:#b91c1c;">Erro ao buscar registros</span>';
+  }
+}
+
+function selecionarDiaCorrecao(diaStr) {
+  correcaoDiaSelecionado = diaStr;
+  const [y, m, d] = diaStr.split('-');
+  const dataFormatada = `${d}/${m}/${y}`;
+  
+  // Buscar registro existente
+  db.ref("historico/" + currentUser + "/" + diaStr).once("value").then(snap => {
+    const reg = snap.val() || {};
+    const entrada = reg.inicio ? new Date(reg.inicio).toTimeString().slice(0,5) : '';
+    const saida = reg.fim ? new Date(reg.fim).toTimeString().slice(0,5) : '';
+    
+    document.getElementById('correcaoFormulario').innerHTML = `
+      <h4 style="font-size:16px;margin-bottom:12px;color:#1a2332;">Corrigir dia ${dataFormatada}</h4>
+      <div style="margin-bottom:10px;">
+        <label style="font-weight:500;font-size:13px;display:block;margin-bottom:4px;">Entrada</label>
+        <input type="time" id="correcaoEntrada" value="${entrada}" style="width:100%;padding:12px;border:1.5px solid #dce8e2;border-radius:10px;font-size:15px;">
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="font-weight:500;font-size:13px;display:block;margin-bottom:4px;">Saida</label>
+        <input type="time" id="correcaoSaida" value="${saida}" style="width:100%;padding:12px;border:1.5px solid #dce8e2;border-radius:10px;font-size:15px;">
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="font-weight:500;font-size:13px;display:block;margin-bottom:4px;">Motivo da correcao</label>
+        <textarea id="correcaoMotivo" rows="2" placeholder="Descreva o motivo..." style="width:100%;padding:12px;border:1.5px solid #dce8e2;border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>
+      </div>
+      
+      <div class="termos-container" style="font-size:12px;">
+        <p><i class="fas fa-check-circle" style="color:#1a6b3c;"></i> Declaro que as informacoes acima sao verdadeiras e autorizo a alteracao do meu registro de ponto.</p>
+        <div class="termo-check">
+          <input type="checkbox" id="correcaoTermoCheck">
+          <label for="correcaoTermoCheck">Li e concordo com os termos e autorizo a alteracao.</label>
+        </div>
+      </div>
+      
+      <div id="recaptchaContainer" style="display:flex;justify-content:center;margin:12px 0;">
+        <div class="g-recaptcha" data-sitekey="${RECAPTCHA_SITE_KEY}"></div>
+      </div>
+      
+      <button id="correcaoConfirmarBtn" style="width:100%;padding:14px;border-radius:12px;border:none;background:#1a6b3c;color:white;font-weight:600;font-size:15px;cursor:pointer;margin-top:8px;transition:0.2s;">
+        <i class="fas fa-camera"></i> Prosseguir para Reconhecimento Facial
+      </button>
+    `;
+    
+    document.getElementById('correcaoPasso2').style.display = 'none';
+    document.getElementById('correcaoPasso3').style.display = 'block';
+    document.getElementById('correcaoAviso').innerHTML = '';
+    
+    document.getElementById('correcaoConfirmarBtn').onclick = () => validarCorrecao();
+  });
+}
+
+function validarCorrecao() {
+  const entrada = document.getElementById('correcaoEntrada').value;
+  const saida = document.getElementById('correcaoSaida').value;
+  const motivo = document.getElementById('correcaoMotivo').value.trim();
+  const termo = document.getElementById('correcaoTermoCheck').checked;
+  
+  if (!entrada && !saida) {
+    showMessage('Preencha pelo menos um horario (entrada ou saida)');
+    return;
+  }
+  if (motivo.length < 5) {
+    showMessage('Descreva o motivo com pelo menos 5 caracteres');
+    return;
+  }
+  if (!termo) {
+    showMessage('Voce precisa concordar com os termos');
+    return;
+  }
+  
+  const recaptchaResponse = grecaptcha.getResponse();
+  if (!recaptchaResponse) {
+    showMessage('Por favor, complete a verificacao "Nao sou um robo"');
+    return;
+  }
+  
+  // Prosseguir para camera
+  abrirCameraCorrecao(entrada, saida, motivo);
+}
+
+function abrirCameraCorrecao(entrada, saida, motivo) {
+  const modal = document.getElementById('modalCorrecao');
+  modal.style.visibility = 'hidden';
+  modal.style.opacity = '0';
+  
+  // Usar a mesma lógica do modal de câmera existente
+  const modalCamera = document.getElementById('modalCamera');
+  const video = document.getElementById('videoCam');
+  const spinner = document.getElementById('spinnerOverlay');
+  
+  modalCamera.classList.add('aberto');
+  spinner.style.display = 'none';
+  
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: { ideal: 320 }, height: { ideal: 380 } } })
+    .then(stream => {
+      cameraStreamActive = stream;
+      video.srcObject = stream;
+      
+      setTimeout(() => {
+        if (cameraStreamActive) {
+          spinner.style.display = 'flex';
+          setTimeout(() => {
+            // Capturar foto
+            const canvas = document.createElement('canvas');
+            canvas.width = 320;
+            canvas.height = 380;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, 320, 380);
+            const fotoBase64 = canvas.toDataURL('image/jpeg', 0.8);
+            
+            if (cameraStreamActive) {
+              cameraStreamActive.getTracks().forEach(t => t.stop());
+              cameraStreamActive = null;
+              video.srcObject = null;
+            }
+            fecharModalCamera();
+            
+            // Fazer upload da foto e salvar correção
+            uploadFotoCorrecao(fotoBase64, entrada, saida, motivo);
+          }, 2000);
+        }
+      }, 2000);
+    })
+    .catch(() => {
+      fecharModalCamera();
+      // Sem camera - continua sem foto
+      salvarCorrecao(null, entrada, saida, motivo);
+    });
+  
+  document.getElementById("cancelarCameraBtn").onclick = function() {
+    if (cameraStreamActive) {
+      cameraStreamActive.getTracks().forEach(t => t.stop());
+      cameraStreamActive = null;
+      video.srcObject = null;
+    }
+    fecharModalCamera();
+    document.getElementById('modalCorrecao').style.visibility = 'visible';
+    document.getElementById('modalCorrecao').style.opacity = '1';
+  };
+}
+
+async function uploadFotoCorrecao(fotoBase64, entrada, saida, motivo) {
+  showLoader('Enviando imagem...', '', '');
+  
+  try {
+    const response = await fetch(fotoBase64);
+    const blob = await response.blob();
+    
+    const formData = new FormData();
+    formData.append('file', blob);
+    formData.append('upload_preset', UPLOAD_PRESET);
+    
+    const uploadResponse = await fetch(CLOUDINARY_URL, {
+      method: 'POST',
+      body: formData
+    });
+    
+    const data = await uploadResponse.json();
+    const fotoUrl = data.secure_url;
+    
+    hideLoader();
+    salvarCorrecao(fotoUrl, entrada, saida, motivo);
+  } catch (error) {
+    hideLoader();
+    console.error('Erro no upload:', error);
+    salvarCorrecao(null, entrada, saida, motivo);
+  }
+}
+
+async function salvarCorrecao(fotoUrl, entrada, saida, motivo) {
+  showLoader('Registrando correcao...', '', '');
+  
+  try {
+    const protocolo = 'CORR-' + Math.random().toString(36).substring(2, 8).toUpperCase() + Date.now().toString(36).toUpperCase();
+    const [ano, mes, dia] = correcaoDiaSelecionado.split('-');
+    
+    // Montar timestamps
+    let inicioTimestamp = null;
+    let fimTimestamp = null;
+    
+    if (entrada) {
+      const [h, m] = entrada.split(':').map(Number);
+      const d = new Date(ano, mes - 1, dia, h, m, 0);
+      inicioTimestamp = d.getTime();
+    }
+    
+    if (saida) {
+      const [h, m] = saida.split(':').map(Number);
+      const d = new Date(ano, mes - 1, dia, h, m, 0);
+      fimTimestamp = d.getTime();
+    }
+    
+    // Buscar registro atual
+    const snap = await db.ref("historico/" + currentUser + "/" + correcaoDiaSelecionado).once("value");
+    const regAtual = snap.val() || {};
+    
+    // Dados da correção
+    const correcaoData = {
+      protocolo: protocolo,
+      data: correcaoDiaSelecionado,
+      dataFormatada: `${dia}/${mes}/${ano}`,
+      entrada_original: regAtual.inicio ? new Date(regAtual.inicio).toLocaleTimeString('pt-BR') : null,
+      saida_original: regAtual.fim ? new Date(regAtual.fim).toLocaleTimeString('pt-BR') : null,
+      entrada_nova: entrada || null,
+      saida_nova: saida || null,
+      motivo: motivo,
+      foto_url: fotoUrl,
+      timestamp: Date.now(),
+      usuario: currentUser,
+      nome_usuario: userData.nome || '',
+      termos_aceitos: true,
+      recaptcha_verificado: true
+    };
+    
+    // Salvar no Firebase
+    await db.ref("correcoes/" + currentUser + "/" + protocolo).set(correcaoData);
+    
+    // Atualizar o histórico
+    const updateData = {};
+    if (inicioTimestamp) updateData.inicio = inicioTimestamp;
+    if (fimTimestamp) updateData.fim = fimTimestamp;
+    updateData.correcao_protocolo = protocolo;
+    updateData.correcao_timestamp = Date.now();
+    
+    await db.ref("historico/" + currentUser + "/" + correcaoDiaSelecionado).update(updateData);
+    
+    // Salvar log geral
+    await db.ref("logs_correcoes").push(correcaoData);
+    
+    hideLoader();
+    playNotificationSound();
+    
+    // Fechar modal e mostrar sucesso
+    document.getElementById('modalCorrecao').style.visibility = 'hidden';
+    document.getElementById('modalCorrecao').style.opacity = '0';
+    
+    showMessage('Ponto corrigido com sucesso! Protocolo: ' + protocolo);
+    
+    // Registrar no histórico local
+    const correcaoInfo = {
+      protocolo,
+      data: correcaoDiaSelecionado,
+      entrada_nova: entrada,
+      saida_nova: saida,
+      foto_url: fotoUrl,
+      motivo,
+      timestamp: Date.now()
+    };
+    
+    localStorage.setItem('ultimaCorrecao', JSON.stringify(correcaoInfo));
+    
+    // Recarregar dados
+    if (pontoAtivo) {
+      atualizarPerfil();
+    }
+    
+    // Voltar ao menu
+    setTimeout(() => {
+      renderScreen('tripode', false);
+    }, 500);
+    
+  } catch (error) {
+    hideLoader();
+    console.error('Erro ao salvar correção:', error);
+    showMessage('Erro ao salvar correcao. Tente novamente.');
+    document.getElementById('modalCorrecao').style.visibility = 'visible';
+    document.getElementById('modalCorrecao').style.opacity = '1';
+  }
+}
+
+// RODAPE
 function criarFooter(){
   const footer = document.createElement("div");
   footer.className = "footer";
@@ -2103,7 +2547,6 @@ function criarFooter(){
   return footer;
 }
 
-// Adiciona o footer apos o mainDynamic
 const footerElement = criarFooter();
 document.body.appendChild(footerElement);
 
