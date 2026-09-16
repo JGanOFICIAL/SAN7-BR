@@ -47,6 +47,15 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
 .three-buttons-vertical button:hover{background:#f8fafc;border-color:#1a6b3c;}
 .three-buttons-vertical button i{margin-right:10px;color:#1a6b3c;}
 
+/* Botão Concerta meu ponto integrado */
+.three-buttons-vertical button.btn-concerta{
+  background:#f0f7f3;
+  border:1.5px solid #1a6b3c;
+  color:#1a6b3c;
+  font-weight:600;
+}
+.three-buttons-vertical button.btn-concerta:hover{background:#e0efe6;border-color:#0f4a2a;color:#0f4a2a;}
+
 .documents-section{
   background:#fff;
   padding:12px 20px 16px;
@@ -88,7 +97,6 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
 .doc-item .doc-actions .baixar{color:#2563eb;}
 .doc-item .doc-actions .baixar:hover{color:#1d4ed8;text-decoration:underline;}
 
-/* FERRAMENTAS */
 .ferramentas-section{
   background:#fff;
   padding:8px 20px 20px;
@@ -832,7 +840,6 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
 .modal-documento-content .btn-baixar-doc:hover{background:#0f4a2a;}
 .modal-documento-content .btn-baixar-doc i{font-size:16px;}
 
-/* TELA FERRAMENTA */
 .tela-ferramenta{
   flex:1;
   padding:24px 20px;
@@ -887,7 +894,6 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
   border-left:3px solid #1a6b3c;
 }
 
-/* RODAPE */
 .footer{
   background:#e8edf0;
   padding:16px 20px;
@@ -916,33 +922,7 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
 }
 .footer .footer-dev strong{color:#1a6b3c;}
 
-/* BOTÃO CONCERTA MEU PONTO */
-.concerta-ponto-btn{
-  position:fixed;
-  top:80px;
-  right:20px;
-  z-index:100;
-  background:#1a6b3c;
-  color:#fff;
-  border:none;
-  border-radius:50px;
-  padding:14px 24px;
-  font-weight:600;
-  font-size:14px;
-  cursor:pointer;
-  box-shadow:0 4px 20px rgba(26,107,60,0.4);
-  transition:all 0.25s;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.concerta-ponto-btn:hover{
-  background:#0f4a2a;
-  transform:translateY(-2px);
-  box-shadow:0 6px 28px rgba(26,107,60,0.5);
-}
-.concerta-ponto-btn i{font-size:16px;}
-
+/* MODAL CONCERTA MEU PONTO */
 .modal-concerta{
   position:fixed;
   inset:0;
@@ -1061,7 +1041,122 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
   cursor:not-allowed;
 }
 
-/* PROTOCOLO RESULT */
+/* MODAL RECONHECIMENTO FACIAL (CENTRAL) */
+.modal-reconhecimento{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.88);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:1200;
+  visibility:hidden;
+  opacity:0;
+  transition:0.25s;
+}
+.modal-reconhecimento.aberto{visibility:visible;opacity:1;}
+.reconhecimento-content{
+  background:#fff;
+  border-radius:20px;
+  padding:28px 24px 24px;
+  max-width:420px;
+  width:92%;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.reconhecimento-content h3{
+  color:#1a2332;
+  font-size:18px;
+  margin-bottom:6px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  justify-content:center;
+}
+.reconhecimento-content h3 i{color:#1a6b3c;}
+.reconhecimento-content .sub{
+  color:#64748b;
+  font-size:13px;
+  margin-bottom:16px;
+}
+.reconhecimento-video-wrap{
+  width:260px;
+  height:310px;
+  border-radius:50% / 40%;
+  overflow:hidden;
+  position:relative;
+  background:#000;
+  box-shadow:0 0 30px rgba(26,107,60,0.4);
+  margin-bottom:20px;
+}
+.reconhecimento-video-wrap video,
+.reconhecimento-video-wrap canvas{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:50% / 40%;
+}
+.reconhecimento-video-wrap .overlay-loading{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50% / 40%;
+  z-index:5;
+}
+.reconhecimento-video-wrap .overlay-loading .spinner-bola{
+  width:50px;
+  height:50px;
+  border:4px solid rgba(255,255,255,0.12);
+  border-top-color:#1a6b3c;
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+.reconhecimento-video-wrap .overlay-loading-texto{
+  position:absolute;
+  bottom:20px;
+  left:0;
+  right:0;
+  text-align:center;
+  color:#fff;
+  font-size:12px;
+  font-weight:500;
+  z-index:6;
+}
+.reconhecimento-botoes{
+  display:flex;
+  gap:12px;
+  width:100%;
+  max-width:320px;
+}
+.reconhecimento-botoes button{
+  flex:1;
+  padding:14px;
+  border-radius:12px;
+  font-weight:600;
+  border:none;
+  cursor:pointer;
+  font-size:14px;
+  transition:0.2s;
+}
+.btn-cancelar-rec{
+  background:#f0f4f8;
+  color:#1a2332;
+}
+.btn-cancelar-rec:hover{background:#e2e8f0;}
+.btn-registrar-rec{
+  background:#1a6b3c;
+  color:#fff;
+}
+.btn-registrar-rec:hover:not(:disabled){background:#0f4a2a;}
+.btn-registrar-rec:disabled{opacity:0.5;cursor:not-allowed;}
+
+/* PROTOCOLO RESULT (comprovante de correção) */
 .protocolo-result{
   background:#e8f5ee;
   padding:16px;
@@ -1086,7 +1181,6 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
 </head>
 <body>
 
-<!-- reCAPTCHA script -->
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <header class="app-header" id="appHeader" style="display:none;">
@@ -1098,11 +1192,6 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
     <img class="avatar-mini" id="avatarMini" src="" alt="perfil" onclick="abrirPerfil()">
   </div>
 </header>
-
-<!-- BOTÃO CONCERTA MEU PONTO -->
-<button class="concerta-ponto-btn" id="btnConcertaPonto" style="display:none;">
-  <i class="fas fa-edit"></i> Concerta meu ponto
-</button>
 
 <div class="loader-overlay" id="loaderOverlay">
   <div id="loaderIcone" class="loader-icone"></div>
@@ -1224,10 +1313,43 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
     
     <div class="btn-group">
       <button class="btn-cancelar-concerta" id="btnCancelarConcerta"><i class="fas fa-times"></i> Cancelar</button>
-      <button class="btn-enviar-concerta" id="btnEnviarConcerta" disabled><i class="fas fa-paper-plane"></i> Enviar correcao</button>
+      <button class="btn-enviar-concerta" id="btnEnviarConcerta" disabled><i class="fas fa-arrow-right"></i> Continuar</button>
     </div>
     
     <div id="concertaResultado"></div>
+  </div>
+</div>
+
+<!-- MODAL RECONHECIMENTO FACIAL (CENTRAL SOBREPONDO A TELA) -->
+<div class="modal-reconhecimento" id="modalReconhecimento">
+  <div class="reconhecimento-content">
+    <h3><i class="fas fa-camera"></i> Reconhecimento facial</h3>
+    <div class="sub">Posicione o rosto no centro e clique em Registrar</div>
+    
+    <div class="reconhecimento-video-wrap">
+      <video id="videoReconhecimento" autoplay playsinline muted></video>
+      <canvas id="canvasReconhecimento" style="display:none;"></canvas>
+      <div class="overlay-loading" id="overlayLoadingRec" style="display:none;">
+        <div class="spinner-bola"></div>
+      </div>
+      <div class="overlay-loading-texto" id="overlayLoadingTextoRec" style="display:none;">Processando...</div>
+    </div>
+    
+    <div class="reconhecimento-botoes">
+      <button class="btn-cancelar-rec" id="btnCancelarRec"><i class="fas fa-times"></i> Cancelar</button>
+      <button class="btn-registrar-rec" id="btnRegistrarRec"><i class="fas fa-camera"></i> Registrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- COMPROVANTE DE CORREÇÃO -->
+<div class="modal-comprovante" id="modalComprovanteCorrecao">
+  <div class="modal-comprovante-content">
+    <div class="icone-check"><i class="fas fa-check"></i></div>
+    <h3>Correcao Registrada</h3>
+    <div class="sub-texto">Protocolo gerado com sucesso</div>
+    <div class="dados-ponto" id="dadosComprovanteCorrecao"></div>
+    <button class="btn-ok-comprovante" id="btnOkComprovanteCorrecao"><i class="fas fa-check"></i> Concluir</button>
   </div>
 </div>
 
@@ -1264,6 +1386,10 @@ const CLOUD_NAME = "dzmjto17f";
 const UPLOAD_PRESET = "ml_default";
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
+// Estado para correção de ponto
+let correcaoPendente = null;
+let streamReconhecimento = null;
+
 const mainEl = document.getElementById("mainDynamic");
 const headerEl = document.getElementById("appHeader");
 const backBtn = document.getElementById("backBtn");
@@ -1274,7 +1400,6 @@ const loader = document.getElementById("loaderOverlay");
 const loaderSpinner = document.getElementById("loaderSpinner");
 const loaderIcone = document.getElementById("loaderIcone");
 const loaderTexto = document.getElementById("loaderTexto");
-const btnConcertaPonto = document.getElementById("btnConcertaPonto");
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -1372,16 +1497,23 @@ COMO UTILIZAR O SISTEMA:
    - Selecione o mes/ano desejado
    - Visualize todos os registros e total de horas
 
-5. ABRIR CHAMADO:
+5. CONCERTA MEU PONTO:
+   - Utilize para corrigir um ponto esquecido ou nao iniciado
+   - Preencha data, entrada, saida e motivo
+   - Aceite os termos e o reCAPTCHA
+   - Faca o reconhecimento facial clicando em Registrar
+   - Guarde o protocolo gerado
+
+6. ABRIR CHAMADO:
    - Utilize para correcao de ponto ou problemas tecnicos
    - Preencha o formulario e aceite os termos
    - Envie para o WhatsApp do suporte
 
-6. DOCUMENTOS:
+7. DOCUMENTOS:
    - Acesse a secao de documentos na tela inicial
    - Visualize ou baixe os documentos disponiveis (PDF)
 
-7. PERFIL:
+8. PERFIL:
    - Clique na foto no cabecalho para visualizar seus dados
    - Verifique seu nome, NA e telefone cadastrados
 
@@ -1728,12 +1860,6 @@ function renderScreen(screenId, pushToStack=true){
   if(pushToStack) currentViewStack.push(screenId);
   headerEl.style.display = (screenId === 'login') ? 'none' : 'flex';
   updateAvatarMini();
-  // Botão Concerta meu ponto
-  if(screenId === 'login') {
-    btnConcertaPonto.style.display = 'none';
-  } else {
-    btnConcertaPonto.style.display = 'flex';
-  }
   if(screenId === 'login') headerTitleSpan.innerText = '';
   else if(screenId === 'tripode') headerTitleSpan.innerText = 'Menu';
   else if(screenId === 'ponto') headerTitleSpan.innerText = 'Batida de Ponto';
@@ -1779,6 +1905,7 @@ function telaTripode(){
       <button id="btnPonto"><i class="fas fa-clock"></i> Batida de Ponto</button>
       <button id="btnCarga"><i class="fas fa-chart-bar"></i> Carga Horaria</button>
       <button id="btnChamado"><i class="fas fa-headset"></i> Abrir Chamado</button>
+      <button id="btnConcertaPonto" class="btn-concerta"><i class="fas fa-edit"></i> Concerta meu ponto</button>
     </div>
     <div class="documents-section">
       <div class="doc-header-section">
@@ -1839,6 +1966,7 @@ function telaTripode(){
   document.getElementById("btnPonto").onclick = ()=> renderScreen('ponto', true);
   document.getElementById("btnCarga").onclick = ()=> renderScreen('carga', true);
   document.getElementById("btnChamado").onclick = ()=> renderScreen('chamado', true);
+  document.getElementById("btnConcertaPonto").onclick = ()=> abrirModalConcerta();
   if(pontoAtivo){
     setTimeout(() => { showPontoAbertoSheet(); }, 200);
   }
@@ -1868,7 +1996,6 @@ function telaFerramenta(){
   atualizarPerfil();
 }
 
-// FUNCOES DOCUMENTOS
 function verDocumento(chave){
   const doc = documentos[chave];
   if(!doc) return;
@@ -2320,13 +2447,8 @@ function telaChamado(){
 // FUNCIONALIDADE: CONCERTA MEU PONTO
 // ============================================================
 
-btnConcertaPonto.onclick = function() {
-  abrirModalConcerta();
-};
-
 function abrirModalConcerta() {
   const modal = document.getElementById("modalConcerta");
-  // Reset form
   document.getElementById("concertaData").value = '';
   document.getElementById("concertaEntrada").value = '';
   document.getElementById("concertaSaida").value = '';
@@ -2334,15 +2456,16 @@ function abrirModalConcerta() {
   document.getElementById("concertaTermos").checked = false;
   document.getElementById("concertaResultado").innerHTML = '';
   document.getElementById("btnEnviarConcerta").disabled = true;
+  document.getElementById("btnEnviarConcerta").innerHTML = '<i class="fas fa-arrow-right"></i> Continuar';
   
   modal.classList.add("aberto");
   
-  // Validação em tempo real
   const campos = ['concertaData', 'concertaEntrada', 'concertaSaida', 'concertaMotivo'];
   campos.forEach(id => {
-    document.getElementById(id).addEventListener('input', verificarFormularioConcerta);
+    const el = document.getElementById(id);
+    el.oninput = verificarFormularioConcerta;
   });
-  document.getElementById("concertaTermos").addEventListener('change', verificarFormularioConcerta);
+  document.getElementById("concertaTermos").onchange = verificarFormularioConcerta;
 }
 
 function verificarFormularioConcerta() {
@@ -2351,7 +2474,7 @@ function verificarFormularioConcerta() {
   const saida = document.getElementById("concertaSaida").value;
   const motivo = document.getElementById("concertaMotivo").value.trim();
   const termos = document.getElementById("concertaTermos").checked;
-  const captchaOk = grecaptcha && grecaptcha.getResponse() !== '';
+  const captchaOk = (typeof grecaptcha !== 'undefined') && grecaptcha.getResponse() !== '';
   
   document.getElementById("btnEnviarConcerta").disabled = !(data && entrada && saida && motivo.length >= 5 && termos && captchaOk);
 }
@@ -2362,6 +2485,7 @@ function gerarProtocolo() {
   return `PRT-${timestamp}-${random}`;
 }
 
+// Upload para Cloudinary
 async function uploadFotoCloudinary(blob) {
   const formData = new FormData();
   formData.append('file', blob);
@@ -2380,110 +2504,129 @@ async function uploadFotoCloudinary(blob) {
   return data.secure_url;
 }
 
-async function capturarFotoReconhecimento() {
-  return new Promise((resolve, reject) => {
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 320 }, height: { ideal: 380 } } })
-      .then(stream => {
-        const video = document.createElement('video');
-        video.srcObject = stream;
-        video.setAttribute('playsinline', true);
-        video.play();
-        
-        // Mostra um mini-preview
-        const previewDiv = document.createElement('div');
-        previewDiv.style.cssText = 'position:fixed;bottom:20px;right:20px;width:120px;height:140px;border-radius:50%/40%;overflow:hidden;z-index:9999;border:3px solid #1a6b3c;box-shadow:0 4px 20px rgba(0,0,0,0.3);';
-        video.style.cssText = 'width:100%;height:100%;object-fit:cover;';
-        previewDiv.appendChild(video);
-        document.body.appendChild(previewDiv);
-        
-        setTimeout(() => {
-          const canvas = document.createElement('canvas');
-          canvas.width = 320;
-          canvas.height = 380;
-          canvas.getContext('2d').drawImage(video, 0, 0, 320, 380);
-          
-          canvas.toBlob(blob => {
-            stream.getTracks().forEach(t => t.stop());
-            previewDiv.remove();
-            resolve(blob);
-          }, 'image/jpeg', 0.85);
-        }, 2000);
-      })
-      .catch(err => {
-        reject(err);
-      });
-  });
+// Abre o modal de reconhecimento facial central
+function abrirReconhecimentoFacial() {
+  const modal = document.getElementById("modalReconhecimento");
+  const video = document.getElementById("videoReconhecimento");
+  const canvas = document.getElementById("canvasReconhecimento");
+  const overlayLoading = document.getElementById("overlayLoadingRec");
+  const overlayTexto = document.getElementById("overlayLoadingTextoRec");
+  const btnRegistrar = document.getElementById("btnRegistrarRec");
+  
+  // Reset
+  canvas.style.display = "none";
+  video.style.display = "block";
+  overlayLoading.style.display = "none";
+  overlayTexto.style.display = "none";
+  btnRegistrar.disabled = false;
+  btnRegistrar.innerHTML = '<i class="fas fa-camera"></i> Registrar';
+  
+  modal.classList.add("aberto");
+  
+  navigator.mediaDevices.getUserMedia({video:{facingMode:"user", width:{ideal:480}, height:{ideal:560}}})
+    .then(stream => {
+      streamReconhecimento = stream;
+      video.srcObject = stream;
+    })
+    .catch(err => {
+      console.error(err);
+      fecharReconhecimentoFacial();
+      showMessage("Nao foi possivel acessar a camera");
+    });
 }
 
-document.getElementById("btnEnviarConcerta").onclick = async function() {
-  const data = document.getElementById("concertaData").value;
-  const entrada = document.getElementById("concertaEntrada").value;
-  const saida = document.getElementById("concertaSaida").value;
-  const motivo = document.getElementById("concertaMotivo").value.trim();
-  const termos = document.getElementById("concertaTermos").checked;
-  
-  if (!data || !entrada || !saida || motivo.length < 5 || !termos) {
-    showMessage("Preencha todos os campos corretamente");
-    return;
+function fecharReconhecimentoFacial() {
+  const modal = document.getElementById("modalReconhecimento");
+  modal.classList.remove("aberto");
+  if (streamReconhecimento) {
+    streamReconhecimento.getTracks().forEach(t => t.stop());
+    streamReconhecimento = null;
   }
-  
-  // Verifica reCAPTCHA
-  const captchaResponse = grecaptcha.getResponse();
-  if (!captchaResponse) {
-    showMessage("Por favor, complete a verificacao de seguranca");
-    return;
-  }
-  
-  // Valida reCAPTCHA no servidor (simulado - em produção usar backend)
-  // Nota: A validação server-side requer chave secreta no backend.
-  // Aqui confiamos na resposta do cliente para demonstração.
-  
+  const video = document.getElementById("videoReconhecimento");
+  if (video) video.srcObject = null;
+}
+
+document.getElementById("btnCancelarRec").onclick = function() {
+  fecharReconhecimentoFacial();
+};
+
+// Botão Registrar: captura a foto, envia pro Cloudinary e salva a correção
+document.getElementById("btnRegistrarRec").onclick = async function() {
   const btn = this;
+  const video = document.getElementById("videoReconhecimento");
+  const canvas = document.getElementById("canvasReconhecimento");
+  const overlayLoading = document.getElementById("overlayLoadingRec");
+  const overlayTexto = document.getElementById("overlayLoadingTextoRec");
+  
+  if (!streamReconhecimento || !correcaoPendente) return;
+  
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
+  overlayLoading.style.display = "flex";
+  overlayTexto.style.display = "block";
+  overlayTexto.innerText = "Processando...";
   
   try {
-    // 1. Captura reconhecimento facial
-    showLoader('Capturando reconhecimento facial...', '', '');
-    let fotoUrl = '';
-    try {
-      const blob = await capturarFotoReconhecimento();
-      hideLoader();
-      showLoader('Enviando imagem...', '', '');
-      fotoUrl = await uploadFotoCloudinary(blob);
-      hideLoader();
-    } catch (err) {
-      hideLoader();
-      // Continua sem foto se falhar
-      console.warn('Reconhecimento facial falhou:', err);
-    }
+    // Captura o frame do vídeo
+    canvas.width = 480;
+    canvas.height = 560;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     
-    // 2. Gera protocolo
+    // Converte para blob
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.85));
+    
+    // Upload para Cloudinary
+    const fotoUrl = await uploadFotoCloudinary(blob);
+    
+    // Fecha modal de reconhecimento
+    fecharReconhecimentoFacial();
+    
+    // Finaliza a correção com a foto
+    await finalizarCorrecao(fotoUrl);
+    
+  } catch (err) {
+    console.error(err);
+    overlayLoading.style.display = "none";
+    overlayTexto.style.display = "none";
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-camera"></i> Registrar';
+    showMessage("Erro ao processar imagem. Tente novamente.");
+  }
+};
+
+// Finaliza a correção salvando no Firebase e mostrando o comprovante
+async function finalizarCorrecao(fotoUrl) {
+  if (!correcaoPendente) return;
+  
+  showLoader('Registrando correcao...', '', '');
+  
+  try {
     const protocolo = gerarProtocolo();
     const agora = Date.now();
-    const dataChave = data; // YYYY-MM-DD
+    const data = correcaoPendente.data;
     const [ano, mes, dia] = data.split('-');
+    const dataChave = data;
     
     // Converte horários para timestamp
-    const inicioTimestamp = new Date(`${data}T${entrada}:00`).getTime();
-    const fimTimestamp = new Date(`${data}T${saida}:00`).getTime();
+    const inicioTimestamp = new Date(`${data}T${correcaoPendente.entrada}:00`).getTime();
+    const fimTimestamp = new Date(`${data}T${correcaoPendente.saida}:00`).getTime();
     
     if (fimTimestamp <= inicioTimestamp) {
+      hideLoader();
       showMessage("Horario de saida deve ser apos a entrada");
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar correcao';
       return;
     }
     
-    // 3. Salva correção no Firebase
+    // Dados da correção
     const correcaoData = {
       protocolo: protocolo,
       na: currentUser,
       nome: userData.nome || '',
       data_correcao: dataChave,
-      entrada: entrada,
-      saida: saida,
-      motivo: motivo,
+      entrada: correcaoPendente.entrada,
+      saida: correcaoPendente.saida,
+      motivo: correcaoPendente.motivo,
       termos_aceitos: true,
       captcha_ok: true,
       foto_url: fotoUrl,
@@ -2497,8 +2640,7 @@ document.getElementById("btnEnviarConcerta").onclick = async function() {
     // Salva no nó de correções
     await db.ref("correcoes/"+currentUser).push(correcaoData);
     
-    // Também salva o registro no histórico (para consulta de carga horária)
-    // Marca como correção
+    // Atualiza o histórico do dia
     const historicoRef = db.ref("historico/"+currentUser+"/"+dataChave);
     await historicoRef.update({
       inicio: inicioTimestamp,
@@ -2511,48 +2653,104 @@ document.getElementById("btnEnviarConcerta").onclick = async function() {
       protocolo_correcao: protocolo
     });
     
-    // 4. Exibe resultado
-    document.getElementById("concertaResultado").innerHTML = `
-      <div class="protocolo-result">
-        <div><i class="fas fa-check-circle" style="color:#1a6b3c;font-size:28px;"></i></div>
-        <div style="font-weight:600;color:#1a2332;margin:8px 0 4px;">Correcao enviada com sucesso!</div>
-        <div class="proto-numero">${protocolo}</div>
-        <div class="proto-info">Guarde este protocolo para consulta. A correcao foi registrada em ${new Date(agora).toLocaleString('pt-BR')}.</div>
-      </div>
-    `;
-    
-    // Limpa formulário após 3 segundos
-    setTimeout(() => {
-      document.getElementById("modalConcerta").classList.remove("aberto");
-      document.getElementById("concertaData").value = '';
-      document.getElementById("concertaEntrada").value = '';
-      document.getElementById("concertaSaida").value = '';
-      document.getElementById("concertaMotivo").value = '';
-      document.getElementById("concertaTermos").checked = false;
-      document.getElementById("concertaResultado").innerHTML = '';
-      grecaptcha.reset();
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar correcao';
-    }, 4000);
-    
     playNotificationSound();
-    showMessage("Correcao protocolada: " + protocolo);
+    hideLoader();
+    
+    // Fecha modal do formulário
+    document.getElementById("modalConcerta").classList.remove("aberto");
+    
+    // Mostra comprovante
+    mostrarComprovanteCorrecao(protocolo, correcaoData);
+    
+    // Reset
+    correcaoPendente = null;
+    document.getElementById("concertaData").value = '';
+    document.getElementById("concertaEntrada").value = '';
+    document.getElementById("concertaSaida").value = '';
+    document.getElementById("concertaMotivo").value = '';
+    document.getElementById("concertaTermos").checked = false;
+    if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
     
   } catch (err) {
     hideLoader();
     console.error(err);
-    showMessage("Erro ao enviar correcao. Tente novamente.");
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar correcao';
+    showMessage("Erro ao registrar correcao. Tente novamente.");
   }
+}
+
+function mostrarComprovanteCorrecao(protocolo, dados) {
+  const modal = document.getElementById("modalComprovanteCorrecao");
+  const dadosDiv = document.getElementById("dadosComprovanteCorrecao");
+  
+  dadosDiv.innerHTML = `
+    <div><span class="label">Funcionario</span> <strong>${dados.nome}</strong></div>
+    <div><span class="label">NA</span> <strong>${dados.na}</strong></div>
+    <div><span class="label">Protocolo</span> <strong>${protocolo}</strong></div>
+    <div><span class="label">Data corrigida</span> <strong>${dados.data_correcao}</strong></div>
+    <div><span class="label">Entrada</span> <strong>${dados.entrada}</strong></div>
+    <div><span class="label">Saida</span> <strong>${dados.saida}</strong></div>
+    <div><span class="label">Registrado em</span> <strong>${dados.data_hora_envio}</strong></div>
+  `;
+  
+  modal.classList.add("aberto");
+  
+  document.getElementById("btnOkComprovanteCorrecao").onclick = function() {
+    modal.classList.remove("aberto");
+    renderScreen('tripode', false);
+  };
+}
+
+// Botão Continuar do formulário: valida e abre o reconhecimento facial
+document.getElementById("btnEnviarConcerta").onclick = function() {
+  const data = document.getElementById("concertaData").value;
+  const entrada = document.getElementById("concertaEntrada").value;
+  const saida = document.getElementById("concertaSaida").value;
+  const motivo = document.getElementById("concertaMotivo").value.trim();
+  const termos = document.getElementById("concertaTermos").checked;
+  
+  if (!data || !entrada || !saida || motivo.length < 5 || !termos) {
+    showMessage("Preencha todos os campos corretamente");
+    return;
+  }
+  
+  const captchaResponse = grecaptcha.getResponse();
+  if (!captchaResponse) {
+    showMessage("Por favor, complete a verificacao de seguranca");
+    return;
+  }
+  
+  // Valida se saída > entrada
+  const inicioTimestamp = new Date(`${data}T${entrada}:00`).getTime();
+  const fimTimestamp = new Date(`${data}T${saida}:00`).getTime();
+  if (fimTimestamp <= inicioTimestamp) {
+    showMessage("Horario de saida deve ser apos a entrada");
+    return;
+  }
+  
+  // Guarda os dados pendentes
+  correcaoPendente = {
+    data: data,
+    entrada: entrada,
+    saida: saida,
+    motivo: motivo
+  };
+  
+  // Fecha o formulário e abre o reconhecimento facial
+  document.getElementById("modalConcerta").classList.remove("aberto");
+  abrirReconhecimentoFacial();
 };
 
 document.getElementById("btnCancelarConcerta").onclick = function() {
   document.getElementById("modalConcerta").classList.remove("aberto");
 };
 
-// Fechar modal ao clicar fora
 document.getElementById("modalConcerta").addEventListener("click", function(e) {
+  if (e.target === this) {
+    this.classList.remove("aberto");
+  }
+});
+
+document.getElementById("modalComprovanteCorrecao").addEventListener("click", function(e) {
   if (e.target === this) {
     this.classList.remove("aberto");
   }
