@@ -1898,31 +1898,23 @@ function abrirModalCamera(){
   modal.classList.add("aberto");
   spinner.style.display = "none";
   
-  navigator.mediaDevices.getUserMedia({video:{facingMode:"user", width:{ideal:640}, height:{ideal:480}}, audio:true})
+  navigator.mediaDevices.getUserMedia({video:{facingMode:"user", width:{ideal:640}, height:{ideal:480}}, audio:false})
     .then(stream => {
       cameraStreamActive = stream;
       video.srcObject = stream;
 
-      // Espera 2.5s antes de comecar a carregar a bolinha
+      // Espera 3 segundos com a camera aberta
       setTimeout(() => {
         if(!cameraStreamActive) return;
         spinner.style.display = "flex";
 
-        // Bolinha carrega por 1s e depois minimiza
+        // Bolinha carrega por 2 segundos
         setTimeout(() => {
           if(!cameraStreamActive) return;
-          // Inicia gravacao de 10s em background (sem UI)
-          iniciarGravacaoSeguranca(cameraStreamActive, acaoPontoAtual);
-          // Fecha o modal (minimiza)
-          fecharModalCamera();
-          // Prossegue com o fluxo do ponto
-          if(acaoPontoAtual === 'iniciar'){
-            iniciarPontoComSeguranca();
-          } else {
-            finalizarPontoComSeguranca();
-          }
-        }, 1000);
-      }, 2500);
+          // Captura foto
+          capturarFotoIniciar();
+        }, 2000);
+      }, 3000);
     })
     .catch(() => {
       fecharModalCamera();
@@ -1939,63 +1931,52 @@ function abrirModalCamera(){
   };
 }
 
-function iniciarGravacaoSeguranca(stream, acao){
+async function capturarFotoIniciar(){
+  const video = document.getElementById("videoCam");
+  const canvas = document.createElement("canvas");
+  canvas.width = 640;
+  canvas.height = 480;
   try {
-    if(typeof MediaRecorder === 'undefined') return;
-    const tipos = ['video/webm;codecs=vp8,opus','video/webm;codecs=vp9,opus','video/webm'];
-    let mimeType = '';
-    for(let i=0;i<tipos.length;i++){
-      if(MediaRecorder.isTypeSupported(tipos[i])){ mimeType = tipos[i]; break; }
-    }
-    if(!mimeType) return;
-
-    const chunks = [];
-    let recorder;
-    try {
-      recorder = new MediaRecorder(stream, { mimeType });
-    } catch(e){ return; }
-
-    recorder.ondataavailable = e=>{ if(e.data && e.data.size>0) chunks.push(e.data); };
-
-    recorder.onstop = ()=>{
-      // Para o stream depois da gravacao
-      try { stream.getTracks().forEach(t=>t.stop()); } catch(e){}
-      if(cameraStreamActive === stream) cameraStreamActive = null;
-
-      const videoBlob = new Blob(chunks, { type: mimeType });
-      if(videoBlob.size === 0) return;
-
-      blobParaBase64(videoBlob).then(dataUrl => {
-        const dataChave = getDataChave();
-        const ref = db.ref("historico/"+currentUser+"/"+dataChave);
-        const campo = acao === 'iniciar' ? 'video_inicio' : 'video_fim';
-        const update = {};
-        update[campo] = dataUrl;
-        ref.update(update).catch(e=>console.error(e));
-      }).catch(e=>console.error(e));
-    };
-
-    recorder.start(100);
-    setTimeout(()=>{
-      try { if(recorder.state !== 'inactive') recorder.stop(); } catch(e){}
-    }, 10000);
+    canvas.getContext("2d").drawImage(video, 0, 0, 640, 480);
   } catch(e){ console.error(e); }
+
+  let fotoUrl = null;
+  try {
+    const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.9));
+    fotoUrl = await uploadCloudinary(blob);
+  } catch(e){
+    console.error('upload', e);
+  }
+
+  // Para o stream
+  if(cameraStreamActive){
+    cameraStreamActive.getTracks().forEach(t=>t.stop());
+    cameraStreamActive = null;
+  }
+  fecharModalCamera();
+
+  // Salva foto no Firebase e prossegue
+  if(acaoPontoAtual === 'iniciar'){
+    iniciarPontoComSeguranca(fotoUrl);
+  } else {
+    finalizarPontoComSeguranca(fotoUrl);
+  }
 }
 
-function blobParaBase64(blob){
-  return new Promise((resolve, reject)=>{
-    const reader = new FileReader();
-    reader.onloadend = ()=> resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
+function uploadCloudinary(blob){
+  const fd = new FormData();
+  fd.append('file', blob);
+  fd.append('upload_preset', UPLOAD_PRESET);
+  return fetch(CLOUDINARY_URL, { method:'POST', body: fd }).then(r=>{
+    if(!r.ok) throw new Error('Upload falhou');
+    return r.json();
+  }).then(d=> d.secure_url);
 }
 
 function fecharModalCamera(){
   const modal = document.getElementById("modalCamera");
   modal.classList.remove("aberto");
   document.getElementById("videoCam").srcObject = null;
-  // Nao para o stream aqui — a gravacao em background continua
 }
 
 document.getElementById("btnCancelarSem").onclick = function(){
@@ -2005,24 +1986,26 @@ document.getElementById("btnCancelarSem").onclick = function(){
 document.getElementById("btnContinuarSem").onclick = function(){
   document.getElementById("modalSemCamera").classList.remove("aberto");
   if(acaoPontoAtual === 'iniciar'){
-    iniciarPontoComSeguranca();
+    iniciarPontoComSeguranca(null);
   } else {
-    finalizarPontoComSeguranca();
+    finalizarPontoComSeguranca(null);
   }
 };
 
-function iniciarPontoComSeguranca(){
+function iniciarPontoComSeguranca(fotoUrl){
   showLoader('Iniciando ponto...', '', '');
   
   setTimeout(() => {
     let agora = Date.now();
     let dataChave = getDataChave();
     let historicoRef = db.ref("historico/"+currentUser+"/"+dataChave);
-    historicoRef.update({
+    let updateData = {
       inicio: agora,
       calculo: segOperacaoRealizada,
       timestamp_inicio: agora
-    });
+    };
+    if(fotoUrl) updateData.foto_inicio = fotoUrl;
+    historicoRef.update(updateData);
     db.ref("pontos/"+currentUser+"/ativo").set({inicio: agora});
     
     playNotificationSound();
@@ -2033,6 +2016,45 @@ function iniciarPontoComSeguranca(){
     carregarMiniHistorico();
     if(document.getElementById("finalizarPontoBtn")) document.getElementById("finalizarPontoBtn").style.display = "block";
     if(document.getElementById("iniciarPontoBtn")) document.getElementById("iniciarPontoBtn").style.display = "none";
+    atualizarPerfil();
+  }, 1200);
+}
+
+function finalizarPontoComSeguranca(fotoUrl){
+  showLoader('Finalizando ponto...', '', '');
+  
+  setTimeout(() => {
+    let fim = Date.now();
+    let dataChave = getDataChave();
+    let historicoRef = db.ref("historico/"+currentUser+"/"+dataChave);
+    let updateData = {
+      fim: fim,
+      calculo_fim: segOperacaoRealizada,
+      timestamp_fim: fim
+    };
+    if(fotoUrl) updateData.foto_fim = fotoUrl;
+    historicoRef.update(updateData);
+    db.ref("pontos/"+currentUser+"/ativo").remove();
+    
+    playNotificationSound();
+    
+    let dataAtual = new Date().toLocaleDateString('pt-BR');
+    let horaAtual = new Date().toLocaleTimeString('pt-BR');
+    let nome = userData.nome || 'Nao informado';
+    let na = currentUser || 'Nao informado';
+    let tempoDecorrido = pontoStart ? formatDuration(Date.now() - pontoStart) : '00:00:00';
+    
+    dadosComprovante = {
+      nome: nome,
+      na: na,
+      data: dataAtual,
+      hora: horaAtual,
+      tempo: tempoDecorrido,
+      calculo: segOperacaoRealizada
+    };
+    
+    hideLoader();
+    mostrarModalComprovante();
     atualizarPerfil();
   }, 1200);
 }
