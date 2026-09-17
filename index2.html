@@ -47,14 +47,6 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
 .three-buttons-vertical button:hover{background:#f8fafc;border-color:#1a6b3c;}
 .three-buttons-vertical button i{margin-right:10px;color:#1a6b3c;}
 
-.three-buttons-vertical button.btn-concerta{
-  background:#f0f7f3;
-  border:1.5px solid #1a6b3c;
-  color:#1a6b3c;
-  font-weight:600;
-}
-.three-buttons-vertical button.btn-concerta:hover{background:#e0efe6;border-color:#0f4a2a;color:#0f4a2a;}
-
 .documents-section{
   background:#fff;
   padding:12px 20px 16px;
@@ -920,264 +912,9 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
   color:#94a3b8;
 }
 .footer .footer-dev strong{color:#1a6b3c;}
-
-.modal-concerta{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.5);
-  backdrop-filter:blur(4px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:1100;
-  visibility:hidden;
-  opacity:0;
-  transition:0.25s;
-}
-.modal-concerta.aberto{visibility:visible;opacity:1;}
-.modal-concerta-content{
-  background:#fff;
-  border-radius:20px;
-  padding:32px 28px;
-  max-width:480px;
-  width:92%;
-  max-height:90vh;
-  overflow-y:auto;
-  box-shadow:0 20px 60px rgba(0,0,0,0.2);
-}
-.modal-concerta-content h3{
-  color:#1a2332;
-  font-size:20px;
-  margin-bottom:6px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.modal-concerta-content h3 i{color:#1a6b3c;}
-.modal-concerta-content .subtitulo{
-  color:#64748b;
-  font-size:14px;
-  margin-bottom:18px;
-}
-.modal-concerta-content .campo-grupo{
-  margin-bottom:14px;
-}
-.modal-concerta-content .campo-grupo label{
-  display:block;
-  font-weight:500;
-  font-size:14px;
-  color:#1a2332;
-  margin-bottom:6px;
-}
-.modal-concerta-content .campo-grupo input,
-.modal-concerta-content .campo-grupo select{
-  width:100%;
-  padding:14px 16px;
-  border:1.5px solid #dce8e2;
-  border-radius:12px;
-  font-size:14px;
-  font-family:inherit;
-  transition:0.2s;
-  background:#fff;
-}
-.modal-concerta-content .campo-grupo input:focus,
-.modal-concerta-content .campo-grupo select:focus{
-  outline:none;
-  border-color:#1a6b3c;
-}
-.modal-concerta-content .campo-grupo textarea{
-  width:100%;
-  padding:14px 16px;
-  border:1.5px solid #dce8e2;
-  border-radius:12px;
-  font-size:14px;
-  font-family:inherit;
-  resize:vertical;
-  min-height:80px;
-  transition:0.2s;
-}
-.modal-concerta-content .campo-grupo textarea:focus{
-  outline:none;
-  border-color:#1a6b3c;
-}
-.modal-concerta-content .g-recaptcha{
-  margin:16px 0;
-  display:flex;
-  justify-content:center;
-}
-.modal-concerta-content .btn-group{
-  display:flex;
-  gap:12px;
-  margin-top:20px;
-}
-.modal-concerta-content .btn-group button{
-  flex:1;
-  padding:16px;
-  border-radius:12px;
-  font-weight:600;
-  border:none;
-  cursor:pointer;
-  transition:0.2s;
-  font-size:15px;
-}
-.modal-concerta-content .btn-cancelar-concerta{
-  background:#f0f4f8;
-  color:#1a2332;
-}
-.modal-concerta-content .btn-cancelar-concerta:hover{
-  background:#e2e8f0;
-}
-.modal-concerta-content .btn-enviar-concerta{
-  background:#1a6b3c;
-  color:#fff;
-}
-.modal-concerta-content .btn-enviar-concerta:hover:not(:disabled){
-  background:#0f4a2a;
-}
-.modal-concerta-content .btn-enviar-concerta:disabled{
-  opacity:0.5;
-  cursor:not-allowed;
-}
-
-.modal-reconhecimento{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.88);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:1200;
-  visibility:hidden;
-  opacity:0;
-  transition:0.25s;
-}
-.modal-reconhecimento.aberto{visibility:visible;opacity:1;}
-.reconhecimento-content{
-  background:#fff;
-  border-radius:20px;
-  padding:28px 24px 24px;
-  max-width:420px;
-  width:92%;
-  text-align:center;
-  box-shadow:0 20px 60px rgba(0,0,0,0.3);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-}
-.reconhecimento-content h3{
-  color:#1a2332;
-  font-size:18px;
-  margin-bottom:6px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  justify-content:center;
-}
-.reconhecimento-content h3 i{color:#1a6b3c;}
-.reconhecimento-content .sub{
-  color:#64748b;
-  font-size:13px;
-  margin-bottom:16px;
-}
-.reconhecimento-video-wrap{
-  width:260px;
-  height:310px;
-  border-radius:50% / 40%;
-  overflow:hidden;
-  position:relative;
-  background:#000;
-  box-shadow:0 0 30px rgba(26,107,60,0.4);
-  margin-bottom:20px;
-}
-.reconhecimento-video-wrap video,
-.reconhecimento-video-wrap canvas{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  border-radius:50% / 40%;
-}
-.reconhecimento-video-wrap .overlay-loading{
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.6);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:50% / 40%;
-  z-index:5;
-}
-.reconhecimento-video-wrap .overlay-loading .spinner-bola{
-  width:50px;
-  height:50px;
-  border:4px solid rgba(255,255,255,0.12);
-  border-top-color:#1a6b3c;
-  border-radius:50%;
-  animation:spin 0.8s linear infinite;
-}
-.reconhecimento-video-wrap .overlay-loading-texto{
-  position:absolute;
-  bottom:20px;
-  left:0;
-  right:0;
-  text-align:center;
-  color:#fff;
-  font-size:12px;
-  font-weight:500;
-  z-index:6;
-}
-.reconhecimento-botoes{
-  display:flex;
-  gap:12px;
-  width:100%;
-  max-width:320px;
-}
-.reconhecimento-botoes button{
-  flex:1;
-  padding:14px;
-  border-radius:12px;
-  font-weight:600;
-  border:none;
-  cursor:pointer;
-  font-size:14px;
-  transition:0.2s;
-}
-.btn-cancelar-rec{
-  background:#f0f4f8;
-  color:#1a2332;
-}
-.btn-cancelar-rec:hover{background:#e2e8f0;}
-.btn-registrar-rec{
-  background:#1a6b3c;
-  color:#fff;
-}
-.btn-registrar-rec:hover:not(:disabled){background:#0f4a2a;}
-.btn-registrar-rec:disabled{opacity:0.5;cursor:not-allowed;}
-
-.protocolo-result{
-  background:#e8f5ee;
-  padding:16px;
-  border-radius:12px;
-  text-align:center;
-  margin-top:16px;
-  border:1px solid #b8d9c9;
-}
-.protocolo-result .proto-numero{
-  font-size:18px;
-  font-weight:700;
-  color:#1a6b3c;
-  font-family:monospace;
-  letter-spacing:1px;
-}
-.protocolo-result .proto-info{
-  font-size:12px;
-  color:#64748b;
-  margin-top:6px;
-}
 </style>
 </head>
 <body>
-
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <header class="app-header" id="appHeader" style="display:none;">
   <div class="header-left">
@@ -1212,6 +949,16 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
       <button class="btn-cancelar-seg" id="btnCancelarSeg"><i class="fas fa-times"></i> Cancelar</button>
       <button class="btn-confirmar-seg" id="btnConfirmarSeg" disabled><i class="fas fa-check"></i> Confirmar</button>
     </div>
+  </div>
+</div>
+
+<div class="modal-camera" id="modalCamera">
+  <div class="camera-oval">
+    <video id="videoCam" autoplay playsinline muted></video>
+    <div class="spinner-overlay" id="spinnerOverlay" style="display:none;">
+      <div class="spinner-bola"></div>
+    </div>
+    <button class="btn-cancelar-camera" id="cancelarCameraBtn"><i class="fas fa-times"></i> Cancelar</button>
   </div>
 </div>
 
@@ -1261,81 +1008,6 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
   </div>
 </div>
 
-<div class="modal-concerta" id="modalConcerta">
-  <div class="modal-concerta-content">
-    <h3><i class="fas fa-edit"></i> Concerta meu ponto</h3>
-    <div class="subtitulo">Preencha os dados para corrigir um ponto esquecido ou nao iniciado</div>
-    
-    <div class="campo-grupo">
-      <label><i class="fas fa-calendar-day" style="margin-right:6px;color:#1a6b3c;"></i>Data do ponto</label>
-      <input type="date" id="concertaData" required>
-    </div>
-    
-    <div class="campo-grupo">
-      <label><i class="fas fa-sign-in-alt" style="margin-right:6px;color:#1a6b3c;"></i>Horario de entrada</label>
-      <input type="time" id="concertaEntrada" required>
-    </div>
-    
-    <div class="campo-grupo">
-      <label><i class="fas fa-sign-out-alt" style="margin-right:6px;color:#1a6b3c;"></i>Horario de saida</label>
-      <input type="time" id="concertaSaida" required>
-    </div>
-    
-    <div class="campo-grupo">
-      <label><i class="fas fa-comment" style="margin-right:6px;color:#1a6b3c;"></i>Motivo da correcao</label>
-      <textarea id="concertaMotivo" placeholder="Descreva o motivo da correcao..." required></textarea>
-    </div>
-    
-    <div class="termos-container">
-      <p><i class="fas fa-check-circle" style="color:#1a6b3c;"></i> Declaro que as informacoes fornecidas sao verdadeiras e autorizo a DomusFit a corrigir meu registro de ponto conforme os dados acima, nos termos da LGPD.</p>
-      <div class="termo-check">
-        <input type="checkbox" id="concertaTermos">
-        <label for="concertaTermos">Li e concordo com os Termos de Uso e autorizo a correcao do meu ponto.</label>
-      </div>
-    </div>
-    
-    <div class="g-recaptcha" data-sitekey="6LekcL8tAAAAAFAVuCmcZZIuJ7zlZl6HLhw_zn7a"></div>
-    
-    <div class="btn-group">
-      <button class="btn-cancelar-concerta" id="btnCancelarConcerta"><i class="fas fa-times"></i> Cancelar</button>
-      <button class="btn-enviar-concerta" id="btnEnviarConcerta" disabled><i class="fas fa-arrow-right"></i> Continuar</button>
-    </div>
-    
-    <div id="concertaResultado"></div>
-  </div>
-</div>
-
-<div class="modal-reconhecimento" id="modalReconhecimento">
-  <div class="reconhecimento-content">
-    <h3><i class="fas fa-camera"></i> <span id="reconhecimentoTitulo">Reconhecimento facial</span></h3>
-    <div class="sub" id="reconhecimentoSub">Posicione o rosto no centro e clique em Registrar</div>
-    
-    <div class="reconhecimento-video-wrap">
-      <video id="videoReconhecimento" autoplay playsinline muted></video>
-      <canvas id="canvasReconhecimento" style="display:none;"></canvas>
-      <div class="overlay-loading" id="overlayLoadingRec" style="display:none;">
-        <div class="spinner-bola"></div>
-      </div>
-      <div class="overlay-loading-texto" id="overlayLoadingTextoRec" style="display:none;">Processando...</div>
-    </div>
-    
-    <div class="reconhecimento-botoes">
-      <button class="btn-cancelar-rec" id="btnCancelarRec"><i class="fas fa-times"></i> Cancelar</button>
-      <button class="btn-registrar-rec" id="btnRegistrarRec"><i class="fas fa-camera"></i> Registrar</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-comprovante" id="modalComprovanteCorrecao">
-  <div class="modal-comprovante-content">
-    <div class="icone-check"><i class="fas fa-check"></i></div>
-    <h3>Correcao Registrada</h3>
-    <div class="sub-texto">Protocolo gerado com sucesso</div>
-    <div class="dados-ponto" id="dadosComprovanteCorrecao"></div>
-    <button class="btn-ok-comprovante" id="btnOkComprovanteCorrecao"><i class="fas fa-check"></i> Concluir</button>
-  </div>
-</div>
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1346,6 +1018,7 @@ const firebaseConfig = {
   authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
   projectId: "prefeitura-de-joao-camara",
   storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
+  databaseURL: "https://prefeitura-de-joao-camara-default-rtdb.firebaseio.com"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
@@ -1360,19 +1033,14 @@ let currentViewStack = [];
 let segCallback = null;
 let segResultadoCorreto = 0;
 let segOperacaoRealizada = '';
-let segAcaoAtual = '';
 let cameraStreamActive = null;
 let dadosComprovante = null;
 let documentoAtual = '';
+let acaoPontoAtual = '';
 
 const CLOUD_NAME = "dzmjto17f";
 const UPLOAD_PRESET = "ml_default";
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
-
-let correcaoPendente = null;
-let streamReconhecimento = null;
-let reconhecimentoModo = 'correcao'; // 'correcao' | 'iniciar' | 'finalizar'
-let fotoBatidaPendente = null;
 
 const mainEl = document.getElementById("mainDynamic");
 const headerEl = document.getElementById("appHeader");
@@ -1465,13 +1133,14 @@ COMO UTILIZAR O SISTEMA:
 2. INICIAR PONTO:
    - Clique no botao "Iniciar Ponto"
    - Resolva o calculo matematico exibido
-   - Posicione o rosto e clique em "Registrar" para reconhecimento facial
+   - Permita o acesso a camera
+   - Aguarde o reconhecimento facial
    - O ponto sera iniciado automaticamente
 
 3. FINALIZAR PONTO:
    - Clique no botao "Finalizar Dia"
    - Resolva o calculo matematico exibido
-   - Posicione o rosto e clique em "Registrar" para reconhecimento facial
+   - Aguarde o reconhecimento facial
    - O sistema finalizara o ponto automaticamente
    - Um comprovante sera exibido
 
@@ -1480,23 +1149,16 @@ COMO UTILIZAR O SISTEMA:
    - Selecione o mes/ano desejado
    - Visualize todos os registros e total de horas
 
-5. CONCERTA MEU PONTO:
-   - Utilize para corrigir um ponto esquecido ou nao iniciado
-   - Preencha data, entrada, saida e motivo
-   - Aceite os termos e o reCAPTCHA
-   - Faca o reconhecimento facial clicando em Registrar
-   - Guarde o protocolo gerado
-
-6. ABRIR CHAMADO:
+5. ABRIR CHAMADO:
    - Utilize para correcao de ponto ou problemas tecnicos
    - Preencha o formulario e aceite os termos
    - Envie para o WhatsApp do suporte
 
-7. DOCUMENTOS:
+6. DOCUMENTOS:
    - Acesse a secao de documentos na tela inicial
    - Visualize ou baixe os documentos disponiveis (PDF)
 
-8. PERFIL:
+7. PERFIL:
    - Clique na foto no cabecalho para visualizar seus dados
    - Verifique seu nome, NA e telefone cadastrados
 
@@ -1887,7 +1549,6 @@ function telaTripode(){
       <button id="btnPonto"><i class="fas fa-clock"></i> Batida de Ponto</button>
       <button id="btnCarga"><i class="fas fa-chart-bar"></i> Carga Horaria</button>
       <button id="btnChamado"><i class="fas fa-headset"></i> Abrir Chamado</button>
-      <button id="btnConcertaPonto" class="btn-concerta"><i class="fas fa-edit"></i> Concerta meu ponto</button>
     </div>
     <div class="documents-section">
       <div class="doc-header-section">
@@ -1948,7 +1609,6 @@ function telaTripode(){
   document.getElementById("btnPonto").onclick = ()=> renderScreen('ponto', true);
   document.getElementById("btnCarga").onclick = ()=> renderScreen('carga', true);
   document.getElementById("btnChamado").onclick = ()=> renderScreen('chamado', true);
-  document.getElementById("btnConcertaPonto").onclick = ()=> abrirModalConcerta();
   if(pontoAtivo){
     setTimeout(() => { showPontoAbertoSheet(); }, 200);
   }
@@ -2080,7 +1740,7 @@ function abrirModalSeguranca(acao){
   const modal = document.getElementById("modalSeguranca");
   if(!modal) return;
   
-  segAcaoAtual = acao;
+  acaoPontoAtual = acao;
   
   const operacoes = [
     {a:10,b:10,op:'+',texto:'10 + 10'},
@@ -2107,7 +1767,11 @@ function abrirModalSeguranca(acao){
   document.getElementById("segSubtitulo").innerHTML = `Resolva o calculo para ${acao === 'iniciar' ? 'iniciar' : 'finalizar'} o ponto`;
   
   segCallback = ()=>{
-    abrirReconhecimentoFacial(acao);
+    if(acao === 'iniciar'){
+      abrirModalCamera();
+    } else {
+      finalizarPontoComSeguranca();
+    }
   };
   
   modal.classList.add("aberto");
@@ -2133,20 +1797,18 @@ function fecharModalSeguranca(){
   segCallback = null;
 }
 
-async function finalizarPontoComSeguranca(fotoUrl){
+function finalizarPontoComSeguranca(){
   showLoader('Finalizando ponto...', '', '');
   
   setTimeout(() => {
     let fim = Date.now();
     let dataChave = getDataChave();
     let historicoRef = db.ref("historico/"+currentUser+"/"+dataChave);
-    let updateData = {
+    historicoRef.update({
       fim: fim,
       calculo_fim: segOperacaoRealizada,
       timestamp_fim: fim
-    };
-    if (fotoUrl) updateData.foto_fim = fotoUrl;
-    historicoRef.update(updateData);
+    });
     db.ref("pontos/"+currentUser+"/ativo").remove();
     
     playNotificationSound();
@@ -2163,8 +1825,7 @@ async function finalizarPontoComSeguranca(fotoUrl){
       data: dataAtual,
       hora: horaAtual,
       tempo: tempoDecorrido,
-      calculo: segOperacaoRealizada,
-      foto: fotoUrl || null
+      calculo: segOperacaoRealizada
     };
     
     hideLoader();
@@ -2227,6 +1888,153 @@ function voltarInicio(){
   if(document.getElementById("cronodisplay")) document.getElementById("cronodisplay").innerText = "00:00:00";
   carregarMiniHistorico();
   renderScreen('tripode', true);
+}
+
+function abrirModalCamera(){
+  const modal = document.getElementById("modalCamera");
+  const video = document.getElementById("videoCam");
+  const spinner = document.getElementById("spinnerOverlay");
+  
+  modal.classList.add("aberto");
+  spinner.style.display = "none";
+  
+  navigator.mediaDevices.getUserMedia({video:{facingMode:"user", width:{ideal:640}, height:{ideal:480}}, audio:true})
+    .then(stream => {
+      cameraStreamActive = stream;
+      video.srcObject = stream;
+
+      // Espera 2.5s antes de comecar a carregar a bolinha
+      setTimeout(() => {
+        if(!cameraStreamActive) return;
+        spinner.style.display = "flex";
+
+        // Bolinha carrega por 1s e depois minimiza
+        setTimeout(() => {
+          if(!cameraStreamActive) return;
+          // Inicia gravacao de 10s em background (sem UI)
+          iniciarGravacaoSeguranca(cameraStreamActive, acaoPontoAtual);
+          // Fecha o modal (minimiza)
+          fecharModalCamera();
+          // Prossegue com o fluxo do ponto
+          if(acaoPontoAtual === 'iniciar'){
+            iniciarPontoComSeguranca();
+          } else {
+            finalizarPontoComSeguranca();
+          }
+        }, 1000);
+      }, 2500);
+    })
+    .catch(() => {
+      fecharModalCamera();
+      document.getElementById("modalSemCamera").classList.add("aberto");
+    });
+  
+  document.getElementById("cancelarCameraBtn").onclick = function(){
+    if(cameraStreamActive){
+      cameraStreamActive.getTracks().forEach(t=>t.stop());
+      cameraStreamActive = null;
+      video.srcObject = null;
+    }
+    fecharModalCamera();
+  };
+}
+
+function iniciarGravacaoSeguranca(stream, acao){
+  try {
+    if(typeof MediaRecorder === 'undefined') return;
+    const tipos = ['video/webm;codecs=vp8,opus','video/webm;codecs=vp9,opus','video/webm'];
+    let mimeType = '';
+    for(let i=0;i<tipos.length;i++){
+      if(MediaRecorder.isTypeSupported(tipos[i])){ mimeType = tipos[i]; break; }
+    }
+    if(!mimeType) return;
+
+    const chunks = [];
+    let recorder;
+    try {
+      recorder = new MediaRecorder(stream, { mimeType });
+    } catch(e){ return; }
+
+    recorder.ondataavailable = e=>{ if(e.data && e.data.size>0) chunks.push(e.data); };
+
+    recorder.onstop = ()=>{
+      // Para o stream depois da gravacao
+      try { stream.getTracks().forEach(t=>t.stop()); } catch(e){}
+      if(cameraStreamActive === stream) cameraStreamActive = null;
+
+      const videoBlob = new Blob(chunks, { type: mimeType });
+      if(videoBlob.size === 0) return;
+
+      blobParaBase64(videoBlob).then(dataUrl => {
+        const dataChave = getDataChave();
+        const ref = db.ref("historico/"+currentUser+"/"+dataChave);
+        const campo = acao === 'iniciar' ? 'video_inicio' : 'video_fim';
+        const update = {};
+        update[campo] = dataUrl;
+        ref.update(update).catch(e=>console.error(e));
+      }).catch(e=>console.error(e));
+    };
+
+    recorder.start(100);
+    setTimeout(()=>{
+      try { if(recorder.state !== 'inactive') recorder.stop(); } catch(e){}
+    }, 10000);
+  } catch(e){ console.error(e); }
+}
+
+function blobParaBase64(blob){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onloadend = ()=> resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+function fecharModalCamera(){
+  const modal = document.getElementById("modalCamera");
+  modal.classList.remove("aberto");
+  document.getElementById("videoCam").srcObject = null;
+  // Nao para o stream aqui — a gravacao em background continua
+}
+
+document.getElementById("btnCancelarSem").onclick = function(){
+  document.getElementById("modalSemCamera").classList.remove("aberto");
+};
+
+document.getElementById("btnContinuarSem").onclick = function(){
+  document.getElementById("modalSemCamera").classList.remove("aberto");
+  if(acaoPontoAtual === 'iniciar'){
+    iniciarPontoComSeguranca();
+  } else {
+    finalizarPontoComSeguranca();
+  }
+};
+
+function iniciarPontoComSeguranca(){
+  showLoader('Iniciando ponto...', '', '');
+  
+  setTimeout(() => {
+    let agora = Date.now();
+    let dataChave = getDataChave();
+    let historicoRef = db.ref("historico/"+currentUser+"/"+dataChave);
+    historicoRef.update({
+      inicio: agora,
+      calculo: segOperacaoRealizada,
+      timestamp_inicio: agora
+    });
+    db.ref("pontos/"+currentUser+"/ativo").set({inicio: agora});
+    
+    playNotificationSound();
+    hideLoader();
+    showMessage("Ponto iniciado");
+    
+    if(document.getElementById("cronodisplay")) atualizaCronometroDisplay();
+    carregarMiniHistorico();
+    if(document.getElementById("finalizarPontoBtn")) document.getElementById("finalizarPontoBtn").style.display = "block";
+    if(document.getElementById("iniciarPontoBtn")) document.getElementById("iniciarPontoBtn").style.display = "none";
+    atualizarPerfil();
+  }, 1200);
 }
 
 function telaCarga(){
@@ -2337,363 +2145,6 @@ function telaChamado(){
   document.getElementById("voltarDoChamadoBtn").onclick = ()=> renderScreen('tripode', true);
   atualizarPerfil();
 }
-
-function abrirModalConcerta() {
-  const modal = document.getElementById("modalConcerta");
-  document.getElementById("concertaData").value = '';
-  document.getElementById("concertaEntrada").value = '';
-  document.getElementById("concertaSaida").value = '';
-  document.getElementById("concertaMotivo").value = '';
-  document.getElementById("concertaTermos").checked = false;
-  document.getElementById("concertaResultado").innerHTML = '';
-  document.getElementById("btnEnviarConcerta").disabled = true;
-  document.getElementById("btnEnviarConcerta").innerHTML = '<i class="fas fa-arrow-right"></i> Continuar';
-  
-  modal.classList.add("aberto");
-  
-  const campos = ['concertaData', 'concertaEntrada', 'concertaSaida', 'concertaMotivo'];
-  campos.forEach(id => {
-    const el = document.getElementById(id);
-    el.oninput = verificarFormularioConcerta;
-  });
-  document.getElementById("concertaTermos").onchange = verificarFormularioConcerta;
-}
-
-function verificarFormularioConcerta() {
-  const data = document.getElementById("concertaData").value;
-  const entrada = document.getElementById("concertaEntrada").value;
-  const saida = document.getElementById("concertaSaida").value;
-  const motivo = document.getElementById("concertaMotivo").value.trim();
-  const termos = document.getElementById("concertaTermos").checked;
-  const captchaOk = (typeof grecaptcha !== 'undefined') && grecaptcha.getResponse() !== '';
-  
-  document.getElementById("btnEnviarConcerta").disabled = !(data && entrada && saida && motivo.length >= 5 && termos && captchaOk);
-}
-
-function gerarProtocolo() {
-  const timestamp = Date.now().toString(36).toUpperCase();
-  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-  return `PRT-${timestamp}-${random}`;
-}
-
-async function uploadFotoCloudinary(blob) {
-  const formData = new FormData();
-  formData.append('file', blob);
-  formData.append('upload_preset', UPLOAD_PRESET);
-  
-  const response = await fetch(CLOUDINARY_URL, {
-    method: 'POST',
-    body: formData
-  });
-  
-  if (!response.ok) {
-    throw new Error('Falha no upload da imagem');
-  }
-  
-  const data = await response.json();
-  return data.secure_url;
-}
-
-// ============================================================
-// MODAL DE RECONHECIMENTO FACIAL (usado por batida e correção)
-// ============================================================
-function abrirReconhecimentoFacial(modo) {
-  reconhecimentoModo = modo || 'correcao';
-  const modal = document.getElementById("modalReconhecimento");
-  const video = document.getElementById("videoReconhecimento");
-  const canvas = document.getElementById("canvasReconhecimento");
-  const overlayLoading = document.getElementById("overlayLoadingRec");
-  const overlayTexto = document.getElementById("overlayLoadingTextoRec");
-  const btnRegistrar = document.getElementById("btnRegistrarRec");
-  const titulo = document.getElementById("reconhecimentoTitulo");
-  const sub = document.getElementById("reconhecimentoSub");
-  
-  if (reconhecimentoModo === 'iniciar') {
-    titulo.innerText = 'Reconhecimento - Iniciar Ponto';
-    sub.innerText = 'Posicione o rosto no centro e clique em Registrar';
-  } else if (reconhecimentoModo === 'finalizar') {
-    titulo.innerText = 'Reconhecimento - Finalizar Ponto';
-    sub.innerText = 'Posicione o rosto no centro e clique em Registrar';
-  } else {
-    titulo.innerText = 'Reconhecimento facial';
-    sub.innerText = 'Posicione o rosto no centro e clique em Registrar';
-  }
-  
-  canvas.style.display = "none";
-  video.style.display = "block";
-  overlayLoading.style.display = "none";
-  overlayTexto.style.display = "none";
-  btnRegistrar.disabled = false;
-  btnRegistrar.innerHTML = '<i class="fas fa-camera"></i> Registrar';
-  
-  modal.classList.add("aberto");
-  
-  navigator.mediaDevices.getUserMedia({video:{facingMode:"user", width:{ideal:480}, height:{ideal:560}}})
-    .then(stream => {
-      streamReconhecimento = stream;
-      video.srcObject = stream;
-    })
-    .catch(err => {
-      console.error(err);
-      fecharReconhecimentoFacial();
-      document.getElementById("modalSemCamera").classList.add("aberto");
-    });
-}
-
-function fecharReconhecimentoFacial() {
-  const modal = document.getElementById("modalReconhecimento");
-  modal.classList.remove("aberto");
-  if (streamReconhecimento) {
-    streamReconhecimento.getTracks().forEach(t => t.stop());
-    streamReconhecimento = null;
-  }
-  const video = document.getElementById("videoReconhecimento");
-  if (video) video.srcObject = null;
-}
-
-document.getElementById("btnCancelarRec").onclick = function() {
-  fecharReconhecimentoFacial();
-};
-
-document.getElementById("btnRegistrarRec").onclick = async function() {
-  const btn = this;
-  const video = document.getElementById("videoReconhecimento");
-  const canvas = document.getElementById("canvasReconhecimento");
-  const overlayLoading = document.getElementById("overlayLoadingRec");
-  const overlayTexto = document.getElementById("overlayLoadingTextoRec");
-  
-  if (!streamReconhecimento) return;
-  
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
-  overlayLoading.style.display = "flex";
-  overlayTexto.style.display = "block";
-  overlayTexto.innerText = "Processando...";
-  
-  try {
-    canvas.width = 480;
-    canvas.height = 560;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.85));
-    
-    const fotoUrl = await uploadFotoCloudinary(blob);
-    
-    fecharReconhecimentoFacial();
-    
-    if (reconhecimentoModo === 'iniciar') {
-      await iniciarPontoComFoto(fotoUrl);
-    } else if (reconhecimentoModo === 'finalizar') {
-      await finalizarPontoComSeguranca(fotoUrl);
-    } else {
-      await finalizarCorrecao(fotoUrl);
-    }
-    
-  } catch (err) {
-    console.error(err);
-    overlayLoading.style.display = "none";
-    overlayTexto.style.display = "none";
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-camera"></i> Registrar';
-    showMessage("Erro ao processar imagem. Tente novamente.");
-  }
-};
-
-async function iniciarPontoComFoto(fotoUrl) {
-  showLoader('Iniciando ponto...', '', '');
-  
-  setTimeout(() => {
-    let agora = Date.now();
-    let dataChave = getDataChave();
-    let historicoRef = db.ref("historico/"+currentUser+"/"+dataChave);
-    let updateData = {
-      inicio: agora,
-      calculo: segOperacaoRealizada,
-      timestamp_inicio: agora
-    };
-    if (fotoUrl) updateData.foto_inicio = fotoUrl;
-    historicoRef.update(updateData);
-    db.ref("pontos/"+currentUser+"/ativo").set({inicio: agora, foto_inicio: fotoUrl || null});
-    
-    playNotificationSound();
-    hideLoader();
-    showMessage("Ponto iniciado");
-    
-    if(document.getElementById("cronodisplay")) atualizaCronometroDisplay();
-    carregarMiniHistorico();
-    if(document.getElementById("finalizarPontoBtn")) document.getElementById("finalizarPontoBtn").style.display = "block";
-    if(document.getElementById("iniciarPontoBtn")) document.getElementById("iniciarPontoBtn").style.display = "none";
-    atualizarPerfil();
-  }, 1200);
-}
-
-document.getElementById("btnCancelarSem").onclick = function(){
-  document.getElementById("modalSemCamera").classList.remove("aberto");
-};
-
-document.getElementById("btnContinuarSem").onclick = function(){
-  document.getElementById("modalSemCamera").classList.remove("aberto");
-  if (reconhecimentoModo === 'iniciar') {
-    iniciarPontoComFoto(null);
-  } else if (reconhecimentoModo === 'finalizar') {
-    finalizarPontoComSeguranca(null);
-  } else {
-    finalizarCorrecao(null);
-  }
-};
-
-// ============================================================
-// FINALIZAR CORREÇÃO
-// ============================================================
-async function finalizarCorrecao(fotoUrl) {
-  if (!correcaoPendente) return;
-  
-  showLoader('Registrando correcao...', '', '');
-  
-  try {
-    const protocolo = gerarProtocolo();
-    const agora = Date.now();
-    const data = correcaoPendente.data;
-    const dataChave = data;
-    
-    const inicioTimestamp = new Date(`${data}T${correcaoPendente.entrada}:00`).getTime();
-    const fimTimestamp = new Date(`${data}T${correcaoPendente.saida}:00`).getTime();
-    
-    if (fimTimestamp <= inicioTimestamp) {
-      hideLoader();
-      showMessage("Horario de saida deve ser apos a entrada");
-      return;
-    }
-    
-    const correcaoData = {
-      protocolo: protocolo,
-      na: currentUser,
-      nome: userData.nome || '',
-      data_correcao: dataChave,
-      entrada: correcaoPendente.entrada,
-      saida: correcaoPendente.saida,
-      motivo: correcaoPendente.motivo,
-      termos_aceitos: true,
-      captcha_ok: true,
-      foto_url: fotoUrl || null,
-      timestamp_envio: agora,
-      data_hora_envio: new Date(agora).toLocaleString('pt-BR'),
-      inicio_ts: inicioTimestamp,
-      fim_ts: fimTimestamp,
-      tipo: 'correcao_ponto'
-    };
-    
-    await db.ref("correcoes/"+currentUser).push(correcaoData);
-    
-    const historicoRef = db.ref("historico/"+currentUser+"/"+dataChave);
-    await historicoRef.update({
-      inicio: inicioTimestamp,
-      fim: fimTimestamp,
-      calculo: 'Correcao via protocolo',
-      calculo_fim: 'Correcao via protocolo',
-      timestamp_inicio: agora,
-      timestamp_fim: agora,
-      correcao: true,
-      protocolo_correcao: protocolo,
-      foto_correcao: fotoUrl || null
-    });
-    
-    playNotificationSound();
-    hideLoader();
-    
-    document.getElementById("modalConcerta").classList.remove("aberto");
-    
-    mostrarComprovanteCorrecao(protocolo, correcaoData);
-    
-    correcaoPendente = null;
-    document.getElementById("concertaData").value = '';
-    document.getElementById("concertaEntrada").value = '';
-    document.getElementById("concertaSaida").value = '';
-    document.getElementById("concertaMotivo").value = '';
-    document.getElementById("concertaTermos").checked = false;
-    if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
-    
-  } catch (err) {
-    hideLoader();
-    console.error(err);
-    showMessage("Erro ao registrar correcao. Tente novamente.");
-  }
-}
-
-function mostrarComprovanteCorrecao(protocolo, dados) {
-  const modal = document.getElementById("modalComprovanteCorrecao");
-  const dadosDiv = document.getElementById("dadosComprovanteCorrecao");
-  
-  dadosDiv.innerHTML = `
-    <div><span class="label">Funcionario</span> <strong>${dados.nome}</strong></div>
-    <div><span class="label">NA</span> <strong>${dados.na}</strong></div>
-    <div><span class="label">Protocolo</span> <strong>${protocolo}</strong></div>
-    <div><span class="label">Data corrigida</span> <strong>${dados.data_correcao}</strong></div>
-    <div><span class="label">Entrada</span> <strong>${dados.entrada}</strong></div>
-    <div><span class="label">Saida</span> <strong>${dados.saida}</strong></div>
-    <div><span class="label">Registrado em</span> <strong>${dados.data_hora_envio}</strong></div>
-  `;
-  
-  modal.classList.add("aberto");
-  
-  document.getElementById("btnOkComprovanteCorrecao").onclick = function() {
-    modal.classList.remove("aberto");
-    renderScreen('tripode', false);
-  };
-}
-
-document.getElementById("btnEnviarConcerta").onclick = function() {
-  const data = document.getElementById("concertaData").value;
-  const entrada = document.getElementById("concertaEntrada").value;
-  const saida = document.getElementById("concertaSaida").value;
-  const motivo = document.getElementById("concertaMotivo").value.trim();
-  const termos = document.getElementById("concertaTermos").checked;
-  
-  if (!data || !entrada || !saida || motivo.length < 5 || !termos) {
-    showMessage("Preencha todos os campos corretamente");
-    return;
-  }
-  
-  const captchaResponse = grecaptcha.getResponse();
-  if (!captchaResponse) {
-    showMessage("Por favor, complete a verificacao de seguranca");
-    return;
-  }
-  
-  const inicioTimestamp = new Date(`${data}T${entrada}:00`).getTime();
-  const fimTimestamp = new Date(`${data}T${saida}:00`).getTime();
-  if (fimTimestamp <= inicioTimestamp) {
-    showMessage("Horario de saida deve ser apos a entrada");
-    return;
-  }
-  
-  correcaoPendente = {
-    data: data,
-    entrada: entrada,
-    saida: saida,
-    motivo: motivo
-  };
-  
-  document.getElementById("modalConcerta").classList.remove("aberto");
-  abrirReconhecimentoFacial('correcao');
-};
-
-document.getElementById("btnCancelarConcerta").onclick = function() {
-  document.getElementById("modalConcerta").classList.remove("aberto");
-};
-
-document.getElementById("modalConcerta").addEventListener("click", function(e) {
-  if (e.target === this) {
-    this.classList.remove("aberto");
-  }
-});
-
-document.getElementById("modalComprovanteCorrecao").addEventListener("click", function(e) {
-  if (e.target === this) {
-    this.classList.remove("aberto");
-  }
-});
 
 function criarFooter(){
   const footer = document.createElement("div");
