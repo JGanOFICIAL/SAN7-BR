@@ -304,6 +304,7 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
 .loader-icone.vermelho{color:#b91c1c;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
+/* MODAL CAMERA - QUADRADO RETANGULAR VERTICAL */
 .modal-camera{
   position:fixed;
   inset:0;
@@ -315,63 +316,69 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
   visibility:hidden;
   opacity:0;
   transition:0.15s;
+  padding:20px;
 }
 .modal-camera.aberto{visibility:visible;opacity:1;}
-.camera-oval{
-  width:320px;
-  height:380px;
+.camera-square{
+  width:340px;
+  height:440px;
   background:#000;
-  border-radius:50% / 40%;
+  border-radius:16px;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
   position:relative;
   overflow:hidden;
-  box-shadow:0 0 80px rgba(0,0,0,0.5);
+  box-shadow:0 0 80px rgba(0,0,0,0.6), 0 0 0 3px #1a6b3c;
 }
-.camera-oval video{
+.camera-square video{
+  position:absolute;
+  top:0;
+  left:0;
   width:100%;
   height:100%;
   object-fit:cover;
-  border-radius:50% / 40%;
+  border-radius:16px;
+  background:#000;
+  transform:scaleX(-1);
 }
-.camera-oval .spinner-overlay{
+.camera-square .spinner-overlay{
   position:absolute;
   inset:0;
-  background:rgba(0,0,0,0.5);
+  background:rgba(0,0,0,0.55);
   display:flex;
   align-items:center;
   justify-content:center;
-  border-radius:50% / 40%;
+  border-radius:16px;
   z-index:5;
 }
-.camera-oval .spinner-overlay .spinner-bola{
+.camera-square .spinner-overlay .spinner-bola{
   width:60px;
   height:60px;
-  border:4px solid rgba(255,255,255,0.12);
+  border:4px solid rgba(255,255,255,0.15);
   border-top-color:#1a6b3c;
   border-radius:50%;
   animation:spin 0.8s linear infinite;
 }
-.camera-oval .btn-cancelar-camera{
+.camera-square .btn-cancelar-camera{
   position:absolute;
-  bottom:24px;
+  bottom:16px;
   left:50%;
   transform:translateX(-50%);
-  background:rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.12);
   backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,0.12);
-  padding:12px 32px;
-  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.15);
+  padding:10px 28px;
+  border-radius:10px;
   color:#fff;
   font-weight:500;
-  font-size:14px;
+  font-size:13px;
   cursor:pointer;
   z-index:10;
   transition:0.3s;
 }
-.camera-oval .btn-cancelar-camera:hover{background:rgba(255,255,255,0.15);}
+.camera-square .btn-cancelar-camera:hover{background:rgba(255,255,255,0.2);}
 
 .modal-sem-camera{
   position:fixed;
@@ -953,7 +960,7 @@ body{background:#f0f4f8;font-family:'Inter',sans-serif;color:#1a2332;min-height:
 </div>
 
 <div class="modal-camera" id="modalCamera">
-  <div class="camera-oval">
+  <div class="camera-square">
     <video id="videoCam" autoplay playsinline muted></video>
     <div class="spinner-overlay" id="spinnerOverlay" style="display:none;">
       <div class="spinner-bola"></div>
@@ -1767,11 +1774,7 @@ function abrirModalSeguranca(acao){
   document.getElementById("segSubtitulo").innerHTML = `Resolva o calculo para ${acao === 'iniciar' ? 'iniciar' : 'finalizar'} o ponto`;
   
   segCallback = ()=>{
-    if(acao === 'iniciar'){
-      abrirModalCamera();
-    } else {
-      finalizarPontoComSeguranca();
-    }
+    abrirModalCamera();
   };
   
   modal.classList.add("aberto");
@@ -1797,99 +1800,6 @@ function fecharModalSeguranca(){
   segCallback = null;
 }
 
-function finalizarPontoComSeguranca(){
-  showLoader('Finalizando ponto...', '', '');
-  
-  setTimeout(() => {
-    let fim = Date.now();
-    let dataChave = getDataChave();
-    let historicoRef = db.ref("historico/"+currentUser+"/"+dataChave);
-    historicoRef.update({
-      fim: fim,
-      calculo_fim: segOperacaoRealizada,
-      timestamp_fim: fim
-    });
-    db.ref("pontos/"+currentUser+"/ativo").remove();
-    
-    playNotificationSound();
-    
-    let dataAtual = new Date().toLocaleDateString('pt-BR');
-    let horaAtual = new Date().toLocaleTimeString('pt-BR');
-    let nome = userData.nome || 'Nao informado';
-    let na = currentUser || 'Nao informado';
-    let tempoDecorrido = pontoStart ? formatDuration(Date.now() - pontoStart) : '00:00:00';
-    
-    dadosComprovante = {
-      nome: nome,
-      na: na,
-      data: dataAtual,
-      hora: horaAtual,
-      tempo: tempoDecorrido,
-      calculo: segOperacaoRealizada
-    };
-    
-    hideLoader();
-    mostrarModalComprovante();
-    atualizarPerfil();
-  }, 1200);
-}
-
-function mostrarModalComprovante(){
-  const modal = document.getElementById("modalComprovante");
-  const dadosDiv = document.getElementById("dadosComprovante");
-  
-  dadosDiv.innerHTML = `
-    <div><span class="label">Funcionario</span> <strong>${dadosComprovante.nome}</strong></div>
-    <div><span class="label">NA</span> <strong>${dadosComprovante.na}</strong></div>
-    <div><span class="label">Data</span> <strong>${dadosComprovante.data}</strong></div>
-    <div><span class="label">Hora finalizacao</span> <strong>${dadosComprovante.hora}</strong></div>
-    <div><span class="label">Tempo total</span> <strong>${dadosComprovante.tempo}</strong></div>
-    <div><span class="label">Calculo</span> <strong>${dadosComprovante.calculo}</strong></div>
-  `;
-  
-  modal.classList.add("aberto");
-  
-  document.getElementById("btnOkComprovante").onclick = function(){
-    modal.classList.remove("aberto");
-    renderScreen('comprovante', true);
-  };
-}
-
-function telaComprovante(){
-  mainEl.innerHTML = `
-    <div class="tela-comprovante">
-      <div class="card-comprovante">
-        <div class="header-comp">
-          <div class="logo-text">DomusFit</div>
-          <div class="sub-text">Comprovante de Ponto - Documento Homologado</div>
-        </div>
-        <div class="icone-verificado"><span><i class="fas fa-check"></i></span></div>
-        <div class="linha-dado"><span class="rotulo">Funcionario</span><span class="valor">${dadosComprovante.nome}</span></div>
-        <div class="linha-dado"><span class="rotulo">NA</span><span class="valor">${dadosComprovante.na}</span></div>
-        <div class="linha-dado"><span class="rotulo">Data</span><span class="valor">${dadosComprovante.data}</span></div>
-        <div class="linha-dado"><span class="rotulo">Hora finalizacao</span><span class="valor">${dadosComprovante.hora}</span></div>
-        <div class="linha-dado"><span class="rotulo">Tempo total</span><span class="valor">${dadosComprovante.tempo}</span></div>
-        <div class="linha-dado"><span class="rotulo">Calculo</span><span class="valor">${dadosComprovante.calculo}</span></div>
-        <div class="linha-dado"><span class="rotulo">Status</span><span class="valor" style="color:#1a6b3c;"><i class="fas fa-check-circle"></i> Finalizado</span></div>
-        <div class="rodape-comp">
-          Documento gerado automaticamente pelo sistema DomusFit<br>
-          ID: ${Math.random().toString(36).substring(2,10).toUpperCase() + Date.now().toString(36).toUpperCase()}
-        </div>
-      </div>
-      <button class="btn-voltar-inicio" onclick="voltarInicio()"><i class="fas fa-arrow-left"></i> Voltar para Inicio</button>
-    </div>
-  `;
-  atualizarPerfil();
-}
-
-function voltarInicio(){
-  document.getElementById("finalizarPontoBtn").style.display = "none";
-  document.getElementById("iniciarPontoBtn").style.display = "block";
-  if(document.getElementById("cronodisplay")) document.getElementById("cronodisplay").innerText = "00:00:00";
-  carregarMiniHistorico();
-  renderScreen('tripode', true);
-}
-
 function abrirModalCamera(){
   const modal = document.getElementById("modalCamera");
   const video = document.getElementById("videoCam");
@@ -1898,12 +1808,23 @@ function abrirModalCamera(){
   modal.classList.add("aberto");
   spinner.style.display = "none";
   
-  navigator.mediaDevices.getUserMedia({video:{facingMode:"user", width:{ideal:640}, height:{ideal:480}}, audio:false})
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    modal.classList.remove("aberto");
+    document.getElementById("modalSemCamera").classList.add("aberto");
+    return;
+  }
+  
+  navigator.mediaDevices.getUserMedia({
+    video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 640 } },
+    audio: false
+  })
     .then(stream => {
       cameraStreamActive = stream;
       video.srcObject = stream;
+      // Importante: alguns navegadores precisam de play() explicito
+      video.play().catch(e=>console.log('play:', e));
 
-      // Espera 3 segundos com a camera aberta
+      // Aguarda 3 segundos com camera aberta
       setTimeout(() => {
         if(!cameraStreamActive) return;
         spinner.style.display = "flex";
@@ -1911,13 +1832,13 @@ function abrirModalCamera(){
         // Bolinha carrega por 2 segundos
         setTimeout(() => {
           if(!cameraStreamActive) return;
-          // Captura foto
           capturarFotoIniciar();
         }, 2000);
       }, 3000);
     })
-    .catch(() => {
-      fecharModalCamera();
+    .catch(err => {
+      console.error('Camera erro:', err);
+      modal.classList.remove("aberto");
       document.getElementById("modalSemCamera").classList.add("aberto");
     });
   
@@ -1935,9 +1856,9 @@ async function capturarFotoIniciar(){
   const video = document.getElementById("videoCam");
   const canvas = document.createElement("canvas");
   canvas.width = 640;
-  canvas.height = 480;
+  canvas.height = 640;
   try {
-    canvas.getContext("2d").drawImage(video, 0, 0, 640, 480);
+    canvas.getContext("2d").drawImage(video, 0, 0, 640, 640);
   } catch(e){ console.error(e); }
 
   let fotoUrl = null;
@@ -1948,14 +1869,12 @@ async function capturarFotoIniciar(){
     console.error('upload', e);
   }
 
-  // Para o stream
   if(cameraStreamActive){
     cameraStreamActive.getTracks().forEach(t=>t.stop());
     cameraStreamActive = null;
   }
   fecharModalCamera();
 
-  // Salva foto no Firebase e prossegue
   if(acaoPontoAtual === 'iniciar'){
     iniciarPontoComSeguranca(fotoUrl);
   } else {
@@ -1976,7 +1895,8 @@ function uploadCloudinary(blob){
 function fecharModalCamera(){
   const modal = document.getElementById("modalCamera");
   modal.classList.remove("aberto");
-  document.getElementById("videoCam").srcObject = null;
+  const v = document.getElementById("videoCam");
+  if(v) v.srcObject = null;
 }
 
 document.getElementById("btnCancelarSem").onclick = function(){
@@ -2057,6 +1977,62 @@ function finalizarPontoComSeguranca(fotoUrl){
     mostrarModalComprovante();
     atualizarPerfil();
   }, 1200);
+}
+
+function mostrarModalComprovante(){
+  const modal = document.getElementById("modalComprovante");
+  const dadosDiv = document.getElementById("dadosComprovante");
+  
+  dadosDiv.innerHTML = `
+    <div><span class="label">Funcionario</span> <strong>${dadosComprovante.nome}</strong></div>
+    <div><span class="label">NA</span> <strong>${dadosComprovante.na}</strong></div>
+    <div><span class="label">Data</span> <strong>${dadosComprovante.data}</strong></div>
+    <div><span class="label">Hora finalizacao</span> <strong>${dadosComprovante.hora}</strong></div>
+    <div><span class="label">Tempo total</span> <strong>${dadosComprovante.tempo}</strong></div>
+    <div><span class="label">Calculo</span> <strong>${dadosComprovante.calculo}</strong></div>
+  `;
+  
+  modal.classList.add("aberto");
+  
+  document.getElementById("btnOkComprovante").onclick = function(){
+    modal.classList.remove("aberto");
+    renderScreen('comprovante', true);
+  };
+}
+
+function telaComprovante(){
+  mainEl.innerHTML = `
+    <div class="tela-comprovante">
+      <div class="card-comprovante">
+        <div class="header-comp">
+          <div class="logo-text">DomusFit</div>
+          <div class="sub-text">Comprovante de Ponto - Documento Homologado</div>
+        </div>
+        <div class="icone-verificado"><span><i class="fas fa-check"></i></span></div>
+        <div class="linha-dado"><span class="rotulo">Funcionario</span><span class="valor">${dadosComprovante.nome}</span></div>
+        <div class="linha-dado"><span class="rotulo">NA</span><span class="valor">${dadosComprovante.na}</span></div>
+        <div class="linha-dado"><span class="rotulo">Data</span><span class="valor">${dadosComprovante.data}</span></div>
+        <div class="linha-dado"><span class="rotulo">Hora finalizacao</span><span class="valor">${dadosComprovante.hora}</span></div>
+        <div class="linha-dado"><span class="rotulo">Tempo total</span><span class="valor">${dadosComprovante.tempo}</span></div>
+        <div class="linha-dado"><span class="rotulo">Calculo</span><span class="valor">${dadosComprovante.calculo}</span></div>
+        <div class="linha-dado"><span class="rotulo">Status</span><span class="valor" style="color:#1a6b3c;"><i class="fas fa-check-circle"></i> Finalizado</span></div>
+        <div class="rodape-comp">
+          Documento gerado automaticamente pelo sistema DomusFit<br>
+          ID: ${Math.random().toString(36).substring(2,10).toUpperCase() + Date.now().toString(36).toUpperCase()}
+        </div>
+      </div>
+      <button class="btn-voltar-inicio" onclick="voltarInicio()"><i class="fas fa-arrow-left"></i> Voltar para Inicio</button>
+    </div>
+  `;
+  atualizarPerfil();
+}
+
+function voltarInicio(){
+  document.getElementById("finalizarPontoBtn").style.display = "none";
+  document.getElementById("iniciarPontoBtn").style.display = "block";
+  if(document.getElementById("cronodisplay")) document.getElementById("cronodisplay").innerText = "00:00:00";
+  carregarMiniHistorico();
+  renderScreen('tripode', true);
 }
 
 function telaCarga(){
@@ -2179,7 +2155,7 @@ function criarFooter(){
       <span onclick="abrirFerramenta('lgpd')">LGPD</span>
     </div>
     <div class="footer-dev">
-      Desenvolvido por <strong>SAN7DOC TECNOLOGIA</strong>
+      Desenvolvido por <strong>SAN7DOC Tecnologia</strong>
     </div>
   `;
   return footer;
