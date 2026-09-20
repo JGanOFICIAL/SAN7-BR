@@ -106,7 +106,7 @@ body{
 .menu-link:hover{background:#f8fafc;padding-left:6px;transition:0.2s;}
 .menu-link img{width:26px;height:26px;object-fit:contain;}
 
-/* CONTEUDO PRINCIPAL */
+/* CONTEÚDO PRINCIPAL */
 .main-content{
   flex:1;
   padding:24px 16px 40px;
@@ -115,108 +115,118 @@ body{
   margin:0 auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
-/* CARD DE BOAS-VINDAS NO PADRÃO DO DASHBOARD */
-.welcome-wrap{
-  width: 100%;
-  max-width: 400px;
+/* LISTA DE OPÇÕES (UMA ABAIXO DA OUTRA) */
+.opcoes-lista{
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto 24px auto;
+}
+.opcao-item{
+  display: flex;
   align-items: center;
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.welcome-title{
-  font-size: 24px;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 10px;
-  letter-spacing: -0.3px;
-}
-.welcome-sub{
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 28px;
-  line-height: 1.5;
-}
-
-/* BOTÕES DE AÇÃO - PADRÃO DASHBOARD */
-.btn-acessar{
-  width: 100%;
-  max-width: 340px;
-  padding: 16px 24px;
+  gap: 14px;
   background: #ffffff;
-  color: var(--dark);
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  padding: 16px 18px;
+  text-decoration: none;
+  color: var(--dark);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: all 0.2s;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+.opcao-item:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+.opcao-item:active{
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.opcao-item .icone{
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(46, 125, 50, 0.1);
+  border-radius: 8px;
+}
+.opcao-item .icone svg{
+  width: 20px;
+  height: 20px;
+  stroke: var(--green);
+}
+.opcao-item .texto{
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--dark);
+}
+.opcao-item .seta{
+  color: #94a3b8;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+/* SEÇÃO DE PLANOS */
+.secao-titulo{
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto 14px auto;
   font-size: 16px;
   font-weight: 700;
-  cursor: pointer;
-  transition: opacity 0.2s;
-  margin-bottom: 14px;
-  letter-spacing: 0.3px;
-}
-.btn-acessar:hover{opacity: 0.92;}
-.btn-acessar:active{opacity: 0.85;}
-
-.btn-sair{
-  width: 100%;
-  max-width: 340px;
-  padding: 16px 24px;
-  background: transparent;
   color: #ffffff;
-  border: 2px solid #ffffff;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.2s;
-  margin-bottom: 28px;
   letter-spacing: 0.3px;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding-bottom: 8px;
 }
-.btn-sair:hover{background: rgba(255,255,255,0.12);}
-.btn-sair:active{background: rgba(255,255,255,0.2);}
 
-/* PLACA DE INFORMAÇÕES DO ALUNO (PADRÃO DASHBOARD) */
-.aluno-container{
+/* CARD DE PLANOS (PADRÃO DASHBOARD) */
+.plano-box{
   width: 100%;
-  max-width: 340px;
-  padding: 18px 20px;
+  max-width: 400px;
+  padding: 20px;
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
+  border-radius: 8px;
   text-align: center;
-  margin-bottom: 24px;
+  margin: 0 auto 24px auto;
 }
-.aluno-container .foto-perfil{
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #ffffff;
-  cursor: pointer;
-  background: #f1f5f9;
-  margin-bottom: 10px;
-}
-.aluno-container .aluno-titulo{
-  font-size: 13px;
+.plano-box .plano-titulo{
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: rgba(255,255,255,0.75);
   margin-bottom: 8px;
   font-weight: 600;
 }
-.aluno-container .aluno-nome{
+.plano-box .plano-nome{
   font-size: 18px;
   font-weight: 700;
   color: #ffffff;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
-.aluno-container .aluno-na{
+.plano-box .plano-dias{
   font-size: 14px;
   color: rgba(255,255,255,0.9);
+  line-height: 1.5;
+}
+.plano-box .plano-aviso{
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.15);
   line-height: 1.5;
 }
 
@@ -228,7 +238,7 @@ body{
   position: relative;
   background: #0f172a;
   border-radius: 8px;
-  margin-bottom: 28px;
+  margin: 0 auto 24px auto;
 }
 .carrossel{display: flex; transition: transform .7s ease-in-out;}
 .slide-item{
@@ -258,77 +268,67 @@ body{
 .slide-texto h2{font-size: 1.1rem; margin-bottom: 4px; font-weight: 700;}
 .slide-texto p{font-size: 0.8rem; opacity: 0.9;}
 
-/* GRID DE FERRAMENTAS - PADRÃO DASHBOARD */
-.opcoes-grid{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+/* TÓPICOS INFORMATIVOS */
+.topicos{
   width: 100%;
   max-width: 400px;
-  margin-bottom: 28px;
-}
-.opcao-card{
-  background: #ffffff;
-  border: none;
-  border-radius: 8px;
-  padding: 18px 10px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  text-decoration: none;
-  color: var(--dark);
+  margin: 0 auto 24px auto;
   display: flex;
   flex-direction: column;
+  gap: 10px;
+}
+.topico-item{
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.topico-item .topico-icone{
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 110px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
 }
-.opcao-card:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+.topico-item .topico-icone svg{
+  width: 18px;
+  height: 18px;
+  stroke: #ffffff;
 }
-.opcao-card:active{
-  transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-.opcao-card img{
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-  margin-bottom: 10px;
-}
-.opcao-card span{
-  display: block;
+.topico-item .topico-texto{
+  flex: 1;
   font-size: 13px;
-  font-weight: 600;
-  color: var(--dark);
-  line-height: 1.3;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.95);
 }
 
-/* RODAPÉ DE TERMOS E DIREITOS */
-.rodape-termos{
+/* RODAPÉ COM DESENVOLVEDOR */
+.rodape-dev{
   width: 100%;
   max-width: 400px;
-  margin-top: 24px;
+  margin: 24px auto 0 auto;
   padding-top: 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
   text-align: center;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.8;
 }
-.rodape-termos a{
-  color: rgba(255, 255, 255, 0.9);
-  text-decoration: underline;
-  margin: 0 6px;
-}
-.rodape-termos .dev{
-  margin-top: 12px;
-  font-weight: 700;
+.rodape-dev .dev-nome{
+  font-size: 14px;
+  font-weight: 800;
   color: #ffffff;
-  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.rodape-dev .dev-label{
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 4px;
   letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 /* BOTÕES SOCIAIS FLUTUANTES */
@@ -492,12 +492,9 @@ body{
 
 /* RESPONSIVO */
 @media(max-width:480px){
-  .opcoes-grid{gap: 10px;}
-  .opcao-card{padding: 16px 8px; min-height: 100px;}
-  .opcao-card img{width: 36px; height: 36px;}
   .slide-item{height: 180px;}
-  .welcome-title{font-size: 22px;}
-  .welcome-sub{font-size: 14px; margin-bottom: 22px;}
+  .opcao-item{padding: 14px 16px;}
+  .opcao-item .texto{font-size: 14px;}
   .form-complementar-box { padding: 24px 20px; }
 }
 </style>
@@ -539,78 +536,160 @@ body{
 
 <div class="main-content">
 
-  <!-- BOAS-VINDAS -->
-  <div class="welcome-wrap">
-    <h1 class="welcome-title">Bem-vindo de volta!</h1>
-    <p class="welcome-sub" id="welcomeSub">Carregando...</p>
+  <!-- LISTA DE OPÇÕES - UMA ABAIXO DA OUTRA -->
+  <div class="opcoes-lista">
 
-    <button class="btn-acessar" onclick="window.location.href='index.html'">ACESSAR</button>
-    <button class="btn-sair" onclick="logout()">SAIR</button>
+    <a class="opcao-item" href="calendario.html">
+      <div class="icone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+      </div>
+      <div class="texto">Meus treinos</div>
+      <div class="seta">›</div>
+    </a>
+
+    <a class="opcao-item" href="videos.html">
+      <div class="icone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="23 7 16 12 23 17 23 7"/>
+          <rect x="1" y="5" width="15" height="14" rx="2"/>
+        </svg>
+      </div>
+      <div class="texto">Vídeos e resumos</div>
+      <div class="seta">›</div>
+    </a>
+
+    <a class="opcao-item" href="dashboard.html">
+      <div class="icone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7"/>
+          <rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/>
+        </svg>
+      </div>
+      <div class="texto">Meu plano</div>
+      <div class="seta">›</div>
+    </a>
+
+    <a class="opcao-item" href="treino.html">
+      <div class="icone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+      </div>
+      <div class="texto">Tempo de treino</div>
+      <div class="seta">›</div>
+    </a>
+
+    <a class="opcao-item" href="re.html">
+      <div class="icone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+      </div>
+      <div class="texto">Feedback</div>
+      <div class="seta">›</div>
+    </a>
+
+    <a class="opcao-item" href="corrida.html">
+      <div class="icone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="13" cy="4" r="2"/>
+          <path d="M4 17l3-4 4 2 3-5 5 3"/>
+        </svg>
+      </div>
+      <div class="texto">Corrida e caminhada</div>
+      <div class="seta">›</div>
+    </a>
+
+    <a class="opcao-item" href="avaliar.html">
+      <div class="icone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <div class="texto">Perguntas e respostas</div>
+      <div class="seta">›</div>
+    </a>
+
+    <a class="opcao-item" href="na.html">
+      <div class="icone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+      </div>
+      <div class="texto">Sobre o NA</div>
+      <div class="seta">›</div>
+    </a>
+
   </div>
 
-  <!-- DADOS DO ALUNO (PADRÃO DASHBOARD) -->
-  <div class="aluno-container">
-    <img class="foto-perfil" id="fotoPerfil" src="" alt="Foto">
-    <div class="aluno-titulo">Meus Dados</div>
-    <div class="aluno-nome" id="nomeAluno">Carregando...</div>
-    <div class="aluno-na">NA: <span id="naAluno">---</span></div>
+  <!-- SEÇÃO PLANOS -->
+  <div class="secao-titulo">Meu Plano</div>
+  <div class="plano-box">
+    <div class="plano-titulo">Plano Atual</div>
+    <div class="plano-nome" id="planoNome">Carregando...</div>
+    <div class="plano-dias" id="planoDias">Aguarde...</div>
+    <div class="plano-aviso">Para renovar, fale com a administração da academia.</div>
   </div>
 
-  <!-- CARROSSEL -->
+  <!-- CARROSSEL DE BOAS-VINDAS -->
   <div class="carrossel-container">
     <div class="carrossel" id="carrossel">
-      <div class="slide-item"><img src="https://www.polar.com/img/cms/ace4fffbd0d795347afa99983af8a72d780153b7-3489x1841-2880.webp" alt="Cardio"><div class="slide-texto"><h2>Cardio</h2><p>Fortalece coracao e pulmoes</p></div></div>
-      <div class="slide-item"><img src="https://s2-ge.glbimg.com/1poTdSoDJL7BQu_ZqPQF9z_-wYY=/0x0:1253x836/600x0/smart/filters:gifv():strip_icc()/i.s3.glbimg.com/v1/AUTH_bc8228b6673f488aa253bbcb03c80ec5/internal_photos/bs/2021/a/l/Lx0f1GQHak9pFJj2uCxw/exercicios-em-casa.jpg" alt="Preparacao"><div class="slide-texto"><h2>Preparacao</h2><p>Alongamentos e aquecimento</p></div></div>
+      <div class="slide-item"><img src="https://www.polar.com/img/cms/ace4fffbd0d795347afa99983af8a72d780153b7-3489x1841-2880.webp" alt="Cardio"><div class="slide-texto"><h2>Cardio</h2><p>Fortalece coração e pulmões</p></div></div>
+      <div class="slide-item"><img src="https://s2-ge.glbimg.com/1poTdSoDJL7BQu_ZqPQF9z_-wYY=/0x0:1253x836/600x0/smart/filters:gifv():strip_icc()/i.s3.glbimg.com/v1/AUTH_bc8228b6673f488aa253bbcb03c80ec5/internal_photos/bs/2021/a/l/Lx0f1GQHak9pFJj2uCxw/exercicios-em-casa.jpg" alt="Preparacao"><div class="slide-texto"><h2>Preparação</h2><p>Alongamentos e aquecimento</p></div></div>
       <div class="slide-item"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQiCW9edkIFEoRj1brXl4X83sOTRUGfGhmoiu8u8AR42-pCsO6ZihZj58&s=10" alt="Creatina"><div class="slide-texto"><h2>Creatina</h2><p>Energia e desempenho muscular</p></div></div>
       <div class="slide-item"><img src="https://assets.entrepreneur.com/content/3x2/2000/20190620131326-Example-of-Personal-Trainer-Business-Ideas-Bigstock-4000pxW-X-2670pxH-copy.jpeg" alt="Personal"><div class="slide-texto"><h2>Personal Trainer</h2><p>Programas personalizados</p></div></div>
-      <div class="slide-item"><img src="https://media.istockphoto.com/id/1441694626/pt/foto/hand-of-athlete-woman-holding-dumbbell-from-the-rack-in-the-gym-muscular-fitness-female.jpg?s=612x612&w=0&k=20&c=keUz19Hez2bL8unh6rbVKqQOZ2Ypub0d9seVKT1o9Ak=" alt="Organizacao"><div class="slide-texto"><h2>Organizacao</h2><p>Rotinas para equilibrio diario</p></div></div>
+      <div class="slide-item"><img src="https://media.istockphoto.com/id/1441694626/pt/foto/hand-of-athlete-woman-holding-dumbbell-from-the-rack-in-the-gym-muscular-fitness-female.jpg?s=612x612&w=0&k=20&c=keUz19Hez2bL8unh6rbVKqQOZ2Ypub0d9seVKT1o9Ak=" alt="Organizacao"><div class="slide-texto"><h2>Organização</h2><p>Rotinas para equilíbrio diário</p></div></div>
     </div>
   </div>
 
-  <!-- GRID DE FERRAMENTAS -->
-  <div class="opcoes-grid">
-    <a class="opcao-card" href="videos.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" alt="Videos">
-      <span>Videos e resumos</span>
-    </a>
-    <a class="opcao-card" href="calendario.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/929/929452.png" alt="Calendario">
-      <span>Meus treinos</span>
-    </a>
-    <a class="opcao-card" href="dashboard.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/2910/2910783.png" alt="Plano">
-      <span>Meu Plano</span>
-    </a>
-    <a class="opcao-card" href="treino.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/2964/2964514.png" alt="Treino">
-      <span>Tempo de treino</span>
-    </a>
-    <a class="opcao-card" href="re.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/3145/3145131.png" alt="Feedback">
-      <span>Feedback</span>
-    </a>
-    <a class="opcao-card" href="corrida.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/2972/2972246.png" alt="Corrida">
-      <span>Corrida e caminhada</span>
-    </a>
-    <a class="opcao-card" href="avaliar.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/3176/3176366.png" alt="Perguntas">
-      <span>Perguntas e respostas</span>
-    </a>
-    <a class="opcao-card" href="na.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="NA">
-      <span>Sobre o NA</span>
-    </a>
+  <!-- TÓPICOS INFORMATIVOS -->
+  <div class="topicos">
+    <div class="topico-item">
+      <div class="topico-icone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+      <div class="topico-texto">A LGPD vale para qualquer tratamento de dados pessoais, físicos ou digitais.</div>
+    </div>
+    <div class="topico-item">
+      <div class="topico-icone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <div class="topico-texto">Guarde seu NA em sigilo e não o compartilhe com ninguém.</div>
+    </div>
+    <div class="topico-item">
+      <div class="topico-icone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </div>
+      <div class="topico-texto">O seu NA só pode ser compartilhado com a equipe técnica ou personal.</div>
+    </div>
   </div>
 
-  <!-- RODAPÉ COM TERMOS, DIREITOS, DESENVOLVEDOR -->
-  <div class="rodape-termos">
-    <div>
-      <a href="termos.html">Termos de Uso</a> ·
-      <a href="privacidade.html">Politicas de Privacidade</a>
-    </div>
-    <div style="margin-top:8px;">© 2025 DomusFit · Todos os direitos reservados</div>
-    <div class="dev">Desenvolvido por SAN7DOC</div>
+  <!-- RODAPÉ - DESENVOLVEDOR -->
+  <div class="rodape-dev">
+    <div class="dev-nome">SAN7DOC</div>
+    <div class="dev-label">Desenvolvedor</div>
   </div>
 
 </div>
@@ -622,19 +701,11 @@ body{
 
 <div class="toast" id="toast"></div>
 
-<div class="modal-foto" id="modalFoto">
-  <div class="modal-foto-content">
-    <button class="modal-fechar" onclick="fecharModalFoto()">✕</button>
-    <h3>Selecione sua foto de perfil</h3>
-    <div class="grid-fotos" id="gridFotos"></div>
-  </div>
-</div>
-
 <!-- FORMULÁRIO COMPLEMENTAR -->
 <div class="form-complementar-overlay" id="formComplementarOverlay">
   <div class="form-complementar-box">
     <h2>Continue seu cadastro</h2>
-    <p>Preencha as informacoes que faltam para usar todas as ferramentas da academia.</p>
+    <p>Preencha as informações que faltam para usar todas as ferramentas da academia.</p>
     <div class="campo">
       <label>Telefone</label>
       <input type="tel" id="compTelefone" placeholder="(00) 00000-0000" inputmode="tel">
@@ -667,40 +738,6 @@ const db = firebase.database();
 const loggedUser = localStorage.getItem('loggedUser');
 const userRef = loggedUser ? db.ref('users/' + loggedUser) : null;
 
-const DEFAULT_AVATAR = 'https://ui-avatars.com/api/?background=2e7d32&color=fff&name=User';
-
-const IMAGE_OPTIONS = [
-  'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691505.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJN1lHhM68w8n8VIGmiUGzO59Y_BiHfJXt86m94_wH-Q&s=10',
-  'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691491.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTecuIAp5S0xUeEEw1aVvfdERFYmkOzSrHNnmt5HCCl-g&s=10',
-  'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666670.jpg',
-  'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666661.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRe9uWfgvRM-afv5rw3X2aWR-1njImjPVPmKYnjmG7nTg&s=10',
-  'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666664.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQME5j8LTjIK3djuBJAoThzmjxPSaQm4xKZmuJkkL2Zg&s=10',
-  'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666658.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWyLuxokYGHoes2CTsZY35kxr0AoBtklklSash7qE9qQ&s=10',
-  'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691385.jpg',
-  'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691377.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMFLuN0I_uPtGRR2Mb7zkf_eKpmSSknQrI_sxSt_shrw&s=10',
-  'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691457.jpg',
-  'https://64.media.tumblr.com/badc82a2f1ade24ed34d3de251e21f7f/582f7acddc2418d8-f6/s540x810/f92ee2a43e1f4dcfc989886e91ce6ff934173465.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyOlFEluzKTe_KXdzF7oCg3kbh63G9EkmRsKGJ5xc-Eg&s=10',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpKi_6slFAGAV0DBmXWcD2BluGhgmEdZsNppI_GLFc1Q&s=10',
-  'https://img.freepik.com/free-photo/portrait-anime-character-doing-fitness-exercising_23-2151666659.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTApOa8fmlisFHwqVYpdE3MN1eBEyYOHOZXRffwWRqWbg&s=10'
-];
-
-// Elementos
-const welcomeSubEl = document.getElementById('welcomeSub');
-const nomeEl = document.getElementById('nomeAluno');
-const naEl = document.getElementById('naAluno');
-const fotoPerfilEl = document.getElementById('fotoPerfil');
-const modalFoto = document.getElementById('modalFoto');
-const gridFotos = document.getElementById('gridFotos');
-const toast = document.getElementById('toast');
-
 // MENU
 const menuBtn = document.getElementById('menuBtn');
 const menuBox = document.getElementById('menuBox');
@@ -715,26 +752,32 @@ menuBtn.onclick = () => toggleMenu(true);
 menuClose.onclick = () => toggleMenu(false);
 menuOverlay.onclick = () => toggleMenu(false);
 
-// LOGOUT / REDIRECIONAMENTO
-function logout(){
-  localStorage.removeItem('loggedUser');
-  window.location.href = 'login.html';
-}
+// REDIRECIONAMENTO
 function redirectToLogin(){
   localStorage.removeItem('loggedUser');
   window.location.href = 'login.html';
 }
 
 // TOAST
+const toast = document.getElementById('toast');
 function showToast(msg){
   toast.textContent = msg;
   toast.style.display = 'block';
   setTimeout(() => { toast.style.display = 'none'; }, 3000);
 }
 
-// FOTO PERFIL
-function updateFoto(url){
-  fotoPerfilEl.src = url || DEFAULT_AVATAR;
+// ELEMENTOS DO PLANO
+const planoNomeEl = document.getElementById('planoNome');
+const planoDiasEl = document.getElementById('planoDias');
+
+function calcularDiasRestantes(dataTermino) {
+  if (!dataTermino) return null;
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  const termino = new Date(dataTermino + 'T00:00:00');
+  termino.setHours(0, 0, 0, 0);
+  const diff = Math.ceil((termino - hoje) / (1000 * 60 * 60 * 24));
+  return diff;
 }
 
 // FORMULÁRIO COMPLEMENTAR
@@ -802,18 +845,32 @@ function carregarDados(){
   userRef.get().then(snap => {
     if(snap.exists()){
       const user = snap.val();
-      const primeiroNome = (user.name || 'Aluno').split(' ')[0];
-      welcomeSubEl.textContent = 'Olá, ' + primeiroNome + '! Que bom te ver por aqui.';
-      nomeEl.textContent = user.name || 'Nao informado';
-      naEl.textContent = loggedUser;
-      updateFoto(user.profileImageUrl);
       
+      // Plano
+      planoNomeEl.textContent = user.planName || 'Sem plano';
+      
+      if (user.endDate) {
+        const dias = calcularDiasRestantes(user.endDate);
+        if (dias < 0) {
+          planoDiasEl.textContent = 'Plano expirado em ' + user.endDate + '.';
+        } else if (dias === 0) {
+          planoDiasEl.textContent = 'Seu plano expira hoje.';
+        } else if (dias === 1) {
+          planoDiasEl.textContent = 'Falta 1 dia para expirar.';
+        } else {
+          planoDiasEl.textContent = 'Faltam ' + dias + ' dias para expirar.';
+        }
+      } else {
+        planoDiasEl.textContent = 'Data de expiração não informada.';
+      }
+      
+      // Verifica cadastro
       verificarCadastroCompleto(user);
       
+      // Listener tempo real
       userRef.on('value', s => {
         const u = s.val();
         if(u){
-          updateFoto(u.profileImageUrl);
           verificarCadastroCompleto(u);
         }
       });
@@ -822,37 +879,6 @@ function carregarDados(){
     }
   }).catch(() => redirectToLogin());
 }
-
-// MODAL FOTO
-function abrirModalFoto(){
-  if(!loggedUser) return;
-  gridFotos.innerHTML = '';
-  IMAGE_OPTIONS.forEach(url => {
-    const img = document.createElement('img');
-    img.src = url;
-    img.onclick = () => selecionarFoto(url);
-    gridFotos.appendChild(img);
-  });
-  modalFoto.classList.add('aberto');
-}
-
-function fecharModalFoto(){
-  modalFoto.classList.remove('aberto');
-}
-
-function selecionarFoto(url){
-  if(!loggedUser) return;
-  userRef.update({ profileImageUrl: url })
-    .then(() => {
-      updateFoto(url);
-      fecharModalFoto();
-      showToast('Foto atualizada com sucesso');
-    })
-    .catch(() => showToast('Erro ao salvar foto'));
-}
-
-fotoPerfilEl.onclick = abrirModalFoto;
-modalFoto.addEventListener('click', e => { if(e.target === modalFoto) fecharModalFoto(); });
 
 // CARROSSEL
 let slideAtual = 0;
