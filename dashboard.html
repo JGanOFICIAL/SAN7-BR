@@ -6,187 +6,166 @@
 <title>Dashboard - Academia</title>
 <style>
 :root{
-  --bg:#fff;
-  --dark:#111;
-  --green:#32CD32;
-  --green-hover:#28a428;
-  --border:#eee;
+  --green:#2e7d32;
+  --green-hover:#1b5e20;
+  --white:#ffffff;
+  --border:#e9eef3;
 }
-*{box-sizing:border-box;margin:0;padding:0;font-family: 'Inter', system-ui, -apple-system, sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter', system-ui, -apple-system, sans-serif}
+
+html, body {
+  height: 100%;
+}
 
 body{
   min-height:100vh;
-  position:relative;
-  color:var(--dark);
-  overflow-x:hidden;
-  /* Fundo original preservado com overlay para leitura */
-  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url("https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000009-6019860199/700/F9AE5F2E-C42C-4BD5-8DFF-7CF4761814EF.webp") no-repeat center center/cover;
-  background-attachment: fixed;
+  background: var(--green);
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-x: hidden;
 }
 
-/* Cabeçalho Branco Sólido e Imóvel */
-header{
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  height:64px;
-  background:#ffffff;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 20px;
-  border-bottom:1px solid var(--border);
-  z-index:100;
-}
-
-.logo-canto-esquerdo{height:38px;width:auto}
-
-/* Botão Suporte Quadrado e Compacto (Igual ao Login) */
-.btn-suporte-header {
-  background-color: #8DC63F;
-  color: #fff;
-  border: none;
-  width: 70px;
-  height: 35px;
-  font-weight: bold;
-  font-size: 11px;
-  cursor: pointer;
-  text-transform: uppercase;
-}
-
-main{
-  width:100%;
-  max-width:400px;
-  padding:20px;
-  margin: 100px auto 20px auto;
-  z-index: 5;
-}
-
-/* Card Principal Quadrado */
-.card{
-  background: #ffffff;
-  padding: 30px 20px;
-  border-radius: 0px; /* QUADRADÃO */
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+/* Container Principal */
+.welcome-wrap {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 
-.card h3{
+/* Logo */
+.logo-top {
+  height: 56px;
+  width: auto;
+  margin-bottom: 32px;
+}
+
+/* Título Boas-Vindas */
+.welcome-title {
   font-size: 24px;
-  font-weight: 800;
-  margin-bottom: 15px;
-  color: #000;
-  text-transform: uppercase;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 10px;
+  letter-spacing: -0.3px;
 }
 
-.meta{
-  color:#555;
-  font-size: 14px;
+.welcome-sub {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 36px;
+  line-height: 1.5;
+}
+
+/* Botão Acessar - Branco sólido */
+.btn-acessar {
+  width: 100%;
+  max-width: 340px;
+  padding: 16px 24px;
+  background: #ffffff;
+  color: #1e293b;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-bottom: 14px;
+  letter-spacing: 0.3px;
+}
+.btn-acessar:hover { opacity: 0.92; }
+.btn-acessar:active { opacity: 0.85; }
+
+/* Botão Sair - Transparente com borda branca */
+.btn-sair {
+  width: 100%;
+  max-width: 340px;
+  padding: 16px 24px;
+  background: transparent;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-bottom: 36px;
+  letter-spacing: 0.3px;
+}
+.btn-sair:hover { background: rgba(255, 255, 255, 0.12); }
+.btn-sair:active { background: rgba(255, 255, 255, 0.2); }
+
+/* Plano do Usuário */
+.plano-info {
+  width: 100%;
+  max-width: 340px;
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  text-align: center;
+}
+.plano-info .plano-titulo {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.75);
   margin-bottom: 8px;
-  padding: 8px;
-  background: #f9f9f9;
-  border-left: 4px solid var(--green);
-  text-align: left;
-  font-weight: 500;
+  font-weight: 600;
+}
+.plano-info .plano-nome {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+.plano-info .plano-dias {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.5;
+}
+.plano-info .plano-aviso {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  line-height: 1.5;
 }
 
-/* Estilo do Carrossel de Avisos */
-.menu-scroll{
-  position:relative;
-  width:100%;
-  max-width:400px;
-  margin:20px auto;
-  overflow:hidden;
-  background:#fff;
-  border-radius: 0px; /* QUADRADÃO */
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:10px;
-}
-
-.menu-container{
-  display:flex;
-  gap:10px;
-  overflow-x:auto;
-  scroll-behavior:smooth;
-  width:100%;
-  padding:5px 0;
-  scrollbar-width:none;
-}
-.menu-container::-webkit-scrollbar{display:none}
-
-.menu-item{
-  position:relative;
-  min-width:100%;
-  height:180px;
-  background:#ccc;
-  flex:0 0 auto;
-  display:flex;
-  align-items:flex-end;
-  justify-content:flex-start;
-  background-size:cover;
-  background-position:center;
-}
-
-.menu-item span{
-  position:absolute;
-  bottom:0;
-  left:0;
-  right:0;
-  color:#fff;
-  background:rgba(0,0,0,0.7);
-  padding:12px;
-  font-size:13px;
-  font-weight:600;
-  line-height: 1.4;
-}
-
-.menu-dots{display:flex;justify-content:center;gap:5px;margin-top:10px}
-.menu-dots div{width:8px;height:8px;background:var(--green);opacity: 0.3;}
-.menu-dots div.active{opacity: 1;}
-
-/* Rodapé com Botões Quadrados */
-.footer-buttons{
+/* Loading */
+#loadingScreen{
   position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  background:#ffffff;
-  padding:10px 15px;
+  inset:0;
+  background: var(--green);
   display:flex;
-  justify-content:space-between;
-  gap: 10px;
-  border-top:1px solid var(--border);
-  z-index:100;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  transition:opacity .4s;
+}
+.spinner{
+  width:44px;
+  height:44px;
+  border:4px solid rgba(255, 255, 255, 0.25);
+  border-top:4px solid #ffffff;
+  border-radius:50%;
+  animation:spin 0.9s linear infinite;
+}
+@keyframes spin{
+  0%{transform:rotate(0deg)}
+  100%{transform:rotate(360deg)}
 }
 
-.footer-buttons button{
-  flex:1;
-  background: #333; /* Cor neutra para destacar */
-  border:none;
-  color:#fff;
-  font-weight:700;
-  font-size:13px;
-  padding:15px;
-  border-radius: 0px; /* QUADRADÃO */
-  cursor:pointer;
-  text-transform: uppercase;
-  transition:.3s;
+@media (max-width: 480px) {
+  .welcome-title { font-size: 22px; }
+  .welcome-sub { font-size: 14px; margin-bottom: 30px; }
+  .logo-top { height: 48px; margin-bottom: 24px; }
 }
-
-.footer-buttons button:first-child {
-    background: var(--green);
-}
-
-.footer-buttons button:hover{ opacity: 0.9; }
-
-/* Loading Modernizado */
-#loadingScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
-.spinner{width:40px;height:40px;border:4px solid #f3f3f3;border-top:4px solid var(--green);border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -195,110 +174,119 @@ main{
     <div class="spinner"></div>
 </div>
 
-<header>
-  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-canto-esquerdo">
-  <button class="btn-suporte-header" onclick="window.location.href='chat.html'">Suporte</button>
-</header>
+<div class="welcome-wrap">
 
-<main>
-  <div class="card" id="userCard">
-    <h3 id="userName">Carregando...</h3>
-    <div class="meta" id="userCpf">Aguarde...</div>
-    <div class="meta" id="planInfo">Buscando dados do plano...</div>
+  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-top" alt="DomusFit">
+
+  <h1 class="welcome-title">Bem-vindo de volta!</h1>
+  <p class="welcome-sub" id="welcomeSub">Carregando...</p>
+
+  <button class="btn-acessar" onclick="window.location.href='index.html'">ACESSAR</button>
+  <button class="btn-sair" onclick="logout()">SAIR</button>
+
+  <div class="plano-info" id="planoInfoBox">
+    <div class="plano-titulo">Seu Plano</div>
+    <div class="plano-nome" id="planoNome">Carregando...</div>
+    <div class="plano-dias" id="planoDias">Aguarde...</div>
+    <div class="plano-aviso">Para renovar, fale com a administração da academia.</div>
   </div>
 
-  <div class="menu-scroll"> 
-    <div class="menu-container" id="menuContainer"> 
-      <div class="menu-item" style="background-image:url('https://blog.agenciaamp.com/wp-content/uploads/2024/04/LGPD.jpg');">
-        <span>A LGPD vale para qualquer tratamento de dados pessoais, físicos ou digitais.</span> 
-      </div> 
-      <div class="menu-item" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtr-gUCLPBV87Jn6xBCb6up6BCBkAujcg2D8edeGthmQ&s=10');">
-        <span>Guarde seu NA em sigilo e não o compartilhe com ninguém.</span>
-      </div> 
-      <div class="menu-item" style="background-image:url('https://www.politicaetc.com.br/wp-content/uploads/2025/01/00-2.jpg');">
-        <span>O seu NA só pode ser compartilhado com a equipe técnica ou personal.</span>
-      </div> 
-    </div> 
-    <div class="menu-dots">
-        <div class="active"></div><div></div><div></div>
-    </div> 
-  </div>
-</main>
-
-<div class="footer-buttons">
-  <button onclick="window.location.href='index.html'">Acessar</button>
-  <button onclick="logout()">Sair</button>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
 // Configuração Firebase
-const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomain:"prefeitura-de-joao-camara.firebaseapp.com",projectId:"prefeitura-de-joao-camara",storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",messagingSenderId:"269299041577",appId:"1:269299041577:web:fd41b2939240e9eb476338",measurementId:"G-YT7NHR342J"};
+const firebaseConfig = {
+  apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+  authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
+  projectId: "prefeitura-de-joao-camara",
+  storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
+  messagingSenderId: "269299041577",
+  appId: "1:269299041577:web:fd41b2939240e9eb476338",
+  measurementId: "G-YT7NHR342J"
+};
 firebase.initializeApp(firebaseConfig);
-const db=firebase.database();
+const db = firebase.database();
 
-// Lógica de Autenticação
+// Verificação de autenticação
 const logged = localStorage.getItem('loggedUser');
-if(!logged){ window.location.href='index.html'; }
-
-const userNameEl = document.getElementById('userName');
-const userCpfEl = document.getElementById('userCpf');
-const planInfoEl = document.getElementById('planInfo');
-
-// Monitoramento em Tempo Real
-const userRef = db.ref('users/' + logged);
-userRef.on('value', snap => {
-  if(!snap.exists()){
-    alert('Usuário não encontrado.');
-    logout();
-    return;
-  }
-  
-  const u = snap.val();
-  const today = new Date().toISOString().slice(0,10);
-  
-  // Verificação de Atividade
-  if(!u.active || (u.endDate && u.endDate < today)){
-    alert('Seu plano está inativo ou expirado.');
-    logout();
-    return;
-  }
-
-  // Preenchimento dos dados
-  userNameEl.textContent = u.name || 'Usuário';
-  userCpfEl.textContent = 'NA: ' + logged;
-  
-  let info = 'PLANO: ' + (u.planName || 'Padrão');
-  if(u.endDate) {
-    const left = Math.ceil((new Date(u.endDate) - new Date(today)) / (1000 * 60 * 60 * 24));
-    info += ' • Expira em: ' + u.endDate + ' (' + (left > 0 ? left : 0) + ' dias)';
-  }
-  planInfoEl.textContent = info;
-  
-  // Esconde loading ao carregar dados
-  document.getElementById('loadingScreen').style.opacity = '0';
-  setTimeout(() => { document.getElementById('loadingScreen').style.display = 'none'; }, 500);
-});
-
-function logout() {
-    localStorage.removeItem('loggedUser');
-    window.location.href = 'login.html';
+if (!logged) {
+  window.location.href = 'login.html';
 }
 
-// Controle Simples do Carrossel (Dots)
-const container = document.getElementById('menuContainer');
-const dots = document.querySelectorAll('.menu-dots div');
-container.addEventListener('scroll', () => {
-    const index = Math.round(container.scrollLeft / container.offsetWidth);
-    dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === index);
-    });
-});
+const welcomeSubEl = document.getElementById('welcomeSub');
+const planoNomeEl = document.getElementById('planoNome');
+const planoDiasEl = document.getElementById('planoDias');
+
+// Função para calcular dias restantes
+function calcularDiasRestantes(dataTermino) {
+  if (!dataTermino) return null;
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  const termino = new Date(dataTermino + 'T00:00:00');
+  termino.setHours(0, 0, 0, 0);
+  const diff = Math.ceil((termino - hoje) / (1000 * 60 * 60 * 24));
+  return diff;
+}
+
+// Monitoramento em Tempo Real
+if (logged) {
+  const userRef = db.ref('users/' + logged);
+  userRef.on('value', snap => {
+    if (!snap.exists()) {
+      alert('Usuário não encontrado.');
+      logout();
+      return;
+    }
+
+    const u = snap.val();
+    const hoje = new Date().toISOString().slice(0, 10);
+
+    // Verificação de Atividade
+    if (u.endDate && u.endDate < hoje) {
+      alert('Seu plano está expirado. Fale com a administração para renovar.');
+      // Continua mostrando a tela, mas com aviso
+    }
+
+    // Nome de boas-vindas
+    const primeiroNome = (u.name || 'Aluno').split(' ')[0];
+    welcomeSubEl.textContent = 'Olá, ' + primeiroNome + '!';
+
+    // Plano
+    planoNomeEl.textContent = u.planName || 'Sem plano';
+
+    // Dias restantes
+    if (u.endDate) {
+      const dias = calcularDiasRestantes(u.endDate);
+      if (dias < 0) {
+        planoDiasEl.textContent = 'Plano expirado em ' + u.endDate + '. Fale com a administração.';
+      } else if (dias === 0) {
+        planoDiasEl.textContent = 'Seu plano expira hoje.';
+      } else if (dias === 1) {
+        planoDiasEl.textContent = 'Falta 1 dia para expirar.';
+      } else {
+        planoDiasEl.textContent = 'Faltam ' + dias + ' dias para expirar.';
+      }
+    } else {
+      planoDiasEl.textContent = 'Data de expiração não informada.';
+    }
+
+    // Esconde loading
+    const loading = document.getElementById('loadingScreen');
+    loading.style.opacity = '0';
+    setTimeout(() => { loading.style.display = 'none'; }, 400);
+  }, err => {
+    console.error(err);
+    document.getElementById('loadingScreen').style.display = 'none';
+  });
+}
+
+function logout() {
+  localStorage.removeItem('loggedUser');
+  window.location.href = 'login.html';
+}
 </script>
 
 </body>
 </html>
-
-
-<script src="san7doc.acesso-seguro.js" defer></script>
