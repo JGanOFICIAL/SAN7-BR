@@ -4,17 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Validador</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
+
 body{
   background:#ffffff;
   min-height:100vh;
   display:flex;
   flex-direction:column;
   align-items:center;
-  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
-  color:#0b1a2e;
-  padding:0 1rem;
+  font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+  color:#000000;
+  padding:0 1rem 6rem;
 }
 
 header{
@@ -25,41 +27,41 @@ header{
 }
 
 .main-title{
-  font-size:2.4rem;
+  font-size:2.2rem;
   font-weight:700;
-  letter-spacing:1px;
-  color:#0b1a2e;
+  letter-spacing:0.5px;
+  color:#000000;
 }
 
 .sub-title{
   font-size:1rem;
-  font-weight:300;
-  color:#4a6a8a;
+  font-weight:400;
+  color:#000000;
   margin-top:0.4rem;
-  letter-spacing:2px;
+  opacity:0.7;
 }
 
 .content{
   max-width:780px;
   width:100%;
-  padding:1.5rem 0 5rem;
+  padding:1.5rem 0 3rem;
 }
 
-/* Bolinha preta pequena de loading */
+/* Bolinha preta grande no centro da própria tela */
 .loading-wrap{
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  padding:3rem 0;
-  gap:1rem;
+  padding:5rem 0;
+  gap:1.4rem;
 }
 
-.mini-spinner{
-  width:26px;
-  height:26px;
-  border:3px solid #e5e5e5;
-  border-top-color:#0b1a2e;
+.big-spinner{
+  width:80px;
+  height:80px;
+  border:6px solid #e5e5e5;
+  border-top-color:#000000;
   border-radius:50%;
   animation:girar 0.85s linear infinite;
 }
@@ -67,14 +69,16 @@ header{
 @keyframes girar{to{transform:rotate(360deg);}}
 
 .loading-text{
-  font-size:0.9rem;
-  color:#4a6a8a;
-  letter-spacing:1px;
+  font-size:0.95rem;
+  color:#000000;
+  opacity:0.7;
+  letter-spacing:0.5px;
 }
 
 /* Bloco do comprovante */
 .doc{
   padding:1rem 0 0.5rem;
+  color:#000000;
 }
 
 .doc-linha{
@@ -83,20 +87,21 @@ header{
   align-items:baseline;
   gap:1rem;
   padding:0.85rem 0;
-  border-bottom:1px dashed #cfd8e3;
+  border-bottom:1px dashed #d0d0d0;
   font-size:0.98rem;
+  color:#000000;
 }
 
 .doc-linha:last-child{border-bottom:none;}
 
 .doc-rotulo{
-  color:#5a7a9a;
+  color:#000000;
+  opacity:0.65;
   font-weight:400;
-  letter-spacing:0.5px;
 }
 
 .doc-valor{
-  color:#0b1a2e;
+  color:#000000;
   font-weight:600;
   text-align:right;
   word-break:break-word;
@@ -105,17 +110,74 @@ header{
 .doc-secao{
   margin-top:1.5rem;
   padding-top:1rem;
-  border-top:2px solid #eef2f7;
+  border-top:2px solid #f0f0f0;
 }
 
 .doc-secao-title{
-  font-size:0.8rem;
-  color:#4a6a8a;
-  letter-spacing:2px;
-  text-transform:uppercase;
+  font-size:0.85rem;
+  color:#000000;
+  opacity:0.65;
+  letter-spacing:1px;
   margin-bottom:0.6rem;
 }
 
+/* Área do QR Code + ID */
+.qr-area{
+  margin-top:2rem;
+  padding-top:1.5rem;
+  border-top:2px solid #f0f0f0;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:0.8rem;
+}
+
+.qr-title{
+  font-size:0.85rem;
+  color:#000000;
+  opacity:0.65;
+  letter-spacing:1px;
+}
+
+.qr-box{
+  background:#ffffff;
+  padding:10px;
+  border:1px solid #e5e5e5;
+  border-radius:4px;
+  display:inline-block;
+}
+
+.qr-box img,
+.qr-box canvas{
+  display:block;
+  width:160px;
+  height:160px;
+}
+
+.qr-id{
+  font-size:0.9rem;
+  color:#000000;
+}
+
+.qr-id strong{
+  font-weight:700;
+  letter-spacing:0.5px;
+}
+
+/* Termos abaixo do QR */
+.termos{
+  margin-top:2.5rem;
+  padding-top:1.5rem;
+  border-top:1px dashed #d0d0d0;
+  font-size:0.82rem;
+  color:#000000;
+  opacity:0.7;
+  line-height:1.7;
+}
+
+.termos p{margin-bottom:0.5rem;}
+
+/* Erro */
 .msg-erro{
   text-align:center;
   padding:2rem 1rem;
@@ -124,55 +186,43 @@ header{
   line-height:1.7;
 }
 
-/* Botão flutuante redondo */
+/* Botão flutuante largo, verde, de um canto ao outro */
 .btn-flutuante{
   position:fixed;
-  bottom:24px;
-  right:24px;
-  width:56px;
-  height:56px;
-  border-radius:50%;
-  background:#0b1a2e;
+  bottom:0;
+  left:0;
+  right:0;
+  width:100%;
+  background:#2E8B57;
   color:#ffffff;
   border:none;
   cursor:pointer;
-  box-shadow:0 6px 18px rgba(11,26,46,0.35);
+  padding:18px 20px;
+  font-family:inherit;
+  font-size:16px;
+  font-weight:600;
+  letter-spacing:0.5px;
   display:none;
   align-items:center;
   justify-content:center;
-  font-size:22px;
-  font-family:inherit;
-  font-weight:700;
-  line-height:1;
-  transition:transform 0.15s, background 0.15s;
+  box-shadow:0 -4px 14px rgba(0,0,0,0.12);
+  transition:background 0.15s;
   z-index:100;
 }
 
-.btn-flutuante:hover{background:#1a2f44;transform:scale(1.06);}
+.btn-flutuante:hover{background:#25704A;}
 .btn-flutuante.visivel{display:flex;}
 
-.btn-flutuante::after{
-  content:'';
-  display:inline-block;
-  width:12px;
-  height:12px;
-  border-left:2.5px solid #ffffff;
-  border-bottom:2.5px solid #ffffff;
-  transform:rotate(45deg);
-  margin-left:4px;
-  margin-top:-2px;
-}
-
-/* Rodapé discreto */
+/* Rodapé minúsculo */
 .rodape-min{
   width:100%;
   max-width:900px;
   text-align:center;
-  padding:1.5rem 0 2rem;
-  font-size:0.72rem;
-  color:#b8c2cc;
-  letter-spacing:1.5px;
-  text-transform:uppercase;
+  padding:1rem 0 5rem;
+  font-size:0.75rem;
+  color:#000000;
+  opacity:0.5;
+  letter-spacing:0.5px;
 }
 </style>
 </head>
@@ -185,17 +235,18 @@ header{
 
 <div class="content" id="conteudo">
   <div class="loading-wrap" id="loadingWrap">
-    <div class="mini-spinner"></div>
+    <div class="big-spinner"></div>
     <div class="loading-text">Carregando comprovante...</div>
   </div>
 </div>
 
-<div class="rodape-min">Academia DomusFit</div>
+<button class="btn-flutuante" id="btnVoltar" onclick="voltarIndex()">Voltar ao sistema</button>
 
-<button class="btn-flutuante" id="btnVoltar" title="Voltar" onclick="voltarIndex()"></button>
+<div class="rodape-min">Academia DomusFit</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
@@ -211,7 +262,6 @@ const params = new URLSearchParams(window.location.search);
 const idValidador = params.get('id');
 
 const conteudo = document.getElementById('conteudo');
-const loadingWrap = document.getElementById('loadingWrap');
 const btnVoltar = document.getElementById('btnVoltar');
 
 function voltarIndex(){
@@ -236,7 +286,7 @@ function renderComprovante(d){
         <span class="doc-valor">${escapar(d.nome)}</span>
       </div>
       <div class="doc-linha">
-        <span class="doc-rotulo">Número de Acesso (NA)</span>
+        <span class="doc-rotulo">Número de acesso</span>
         <span class="doc-valor">${escapar(d.na)}</span>
       </div>
       <div class="doc-linha">
@@ -255,16 +305,75 @@ function renderComprovante(d){
         <span class="doc-rotulo">Status</span>
         <span class="doc-valor">Finalizado</span>
       </div>
+    </div>
 
-      <div class="doc-secao">
-        <div class="doc-secao-title">Identificação do documento</div>
-        <div class="doc-linha">
-          <span class="doc-rotulo">ID de validação</span>
-          <span class="doc-valor">${escapar(d.id)}</span>
-        </div>
-      </div>
+    <div class="qr-area">
+      <div class="qr-title">Consulta por QR Code</div>
+      <div class="qr-box" id="qrBox"></div>
+      <div class="qr-id">ID do comprovante: <strong>${escapar(d.id)}</strong></div>
+    </div>
+
+    <div class="termos">
+      <p>Este comprovante é emitido automaticamente pelo sistema de ponto DomusFit e pode ser validado por meio do QR Code acima ou pelo ID informado.</p>
+      <p>A consulta é pública, gratuita e não permite alteração dos dados originais. Em caso de divergência, procure o suporte da Academia DomusFit.</p>
     </div>
   `;
+
+  // Gera QR Code com URL do scanner (scaner.html) passando série, mês, ano e check
+  const urlScanner = gerarUrlScanner(d);
+  const qrBox = document.getElementById('qrBox');
+  qrBox.innerHTML = '';
+  if (typeof QRCode !== 'undefined') {
+    new QRCode(qrBox, {
+      text: urlScanner,
+      width: 160,
+      height: 160,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  } else {
+    qrBox.innerHTML = '<div style="padding:20px;font-size:12px;color:#666;">QR Code indisponível</div>';
+  }
+
+  btnVoltar.classList.add('visivel');
+}
+
+function gerarUrlScanner(d){
+  // d.data está no formato DD/MM/AAAA
+  let mes = '', ano = '', serie = d.na, check = '';
+  try {
+    if (d.data && d.data.indexOf('/') > -1) {
+      const partes = d.data.split('/');
+      if (partes.length === 3) {
+        mes = parseInt(partes[1], 10);
+        ano = partes[2];
+      }
+    }
+  } catch(e){}
+
+  // Gera um check determinístico a partir do id (formato compatível com o scanner)
+  // O check é um número de série composto pelo ID + hash simples
+  check = gerarCheck(d.id || '00000000', serie);
+
+  const base = window.location.href.replace(/[^/]*$/, '');
+  const url = `${base}scaner.html?serie=${encodeURIComponent(serie)}&mes=${mes}&ano=${ano}&check=${encodeURIComponent(check)}`;
+  return url;
+}
+
+function gerarCheck(id, na){
+  // Monta uma string de 40 caracteres alfanuméricos determinística baseada em id + na
+  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const seed = (id + '|' + na + '|DOMUSFIT');
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  let out = '';
+  let x = h;
+  for (let i = 0; i < 40; i++) {
+    x = (x * 1103515245 + 12345) >>> 0;
+    out += chars.charAt(x % chars.length);
+  }
+  return out;
 }
 
 function renderErro(msg){
@@ -277,7 +386,7 @@ function renderErro(msg){
 
 function iniciar(){
   if(!idValidador){
-    renderErro('Nenhum ID de validação foi informado na URL.<br>Verifique o link recebido e tente novamente.');
+    renderErro('Nenhum ID de validação foi informado.<br>Verifique o link recebido e tente novamente.');
     return;
   }
 
@@ -288,12 +397,22 @@ function iniciar(){
     }
     const dados = snap.val();
     renderComprovante(dados);
-    btnVoltar.classList.add('visivel');
   }).catch(err => {
     console.error(err);
     renderErro('Não foi possível carregar o comprovante.<br>Tente novamente em alguns instantes.');
   });
 }
+
+// Se o usuário já tiver um usuário salvo, redireciona direto para o index2.html
+// (regra: se abrir o validador e já estiver logado no mesmo navegador, volta pro sistema)
+(function redirecionarSeLogado(){
+  try {
+    const user = localStorage.getItem('usuarioAtual');
+    if (user && !idValidador) {
+      window.location.href = "index2.html";
+    }
+  } catch(e){}
+})();
 
 iniciar();
 </script>
