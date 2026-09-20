@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" 
-    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SAN7DOC TECNOLOGIA - Sistema de Gestão</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -13,447 +13,650 @@
         }
 
         :root {
-            --bg-glass: rgba(255, 255, 255, 0.96);
-            --card-glass: rgba(255, 255, 255, 1);
-            --primary: #007aff;
-            --primary-dark: #005fc1;
-            --primary-light: #e3f2ff;
-            --success: #34c759;
-            --success-light: #e8f5e9;
-            --warning: #ff9500;
-            --danger: #ff3b30;
-            --danger-light: #ffebee;
-            --danger-dark: #d70015;
-            --text-primary: #1c1c1e;
-            --text-secondary: #8e8e93;
-            --text-tertiary: #c6c6c8;
-            --border-light: rgba(60, 60, 67, 0.08);
-            --border-medium: rgba(60, 60, 67, 0.12);
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04), 0 0 0 0.5px rgba(0, 0, 0, 0.02);
-            --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.08), 0 0 0 0.5px rgba(0, 0, 0, 0.02);
-            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12), 0 0 0 0.5px rgba(0, 0, 0, 0.03);
-            --radius-sm: 10px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
-            --radius-xl: 32px;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #eff6ff;
+            --success: #22c55e;
+            --success-light: #f0fdf4;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --danger-light: #fef2f2;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-tertiary: #94a3b8;
+            --border-light: #e2e8f0;
+            --border-medium: #cbd5e1;
+            --bg-white: #ffffff;
+            --bg-offwhite: #f8fafc;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 32px rgba(0,0,0,0.12);
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-offwhite);
+            color: var(--text-primary);
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
-            position: relative;
         }
 
-        /* Background GIF - sem esbranquiçado */
-        .bg-gif-overlay {
+        /* ===== LOADING BAR (ESTILO WINDOWS) ===== */
+        .loading-bar-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            z-index: -2;
-        }
-        
-        .bg-gif {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 1;
-            pointer-events: none;
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--border-light);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--text-secondary);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary);
-        }
-
-        /* Loading */
-        .loading-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
+            height: 4px;
+            z-index: 10001;
             display: none;
-            place-items: center;
-            z-index: 10000;
+            background: rgba(37, 99, 235, 0.1);
         }
-        .loading-spinner {
-            width: 44px;
-            height: 44px;
-            border: 3px solid var(--border-medium);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Menu Lateral */
-        .side-menu {
-            position: fixed;
-            top: 0;
-            left: -100%;
-            width: 85%;
-            max-width: 340px;
-            height: 100vh;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(30px);
-            box-shadow: var(--shadow-lg);
-            z-index: 2000;
-            transition: left 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-            display: flex;
-            flex-direction: column;
-            border-right: 0.5px solid var(--border-medium);
-        }
-        .side-menu.open {
-            left: 0;
-        }
-        .menu-header {
-            padding: 24px 20px;
-            border-bottom: 0.5px solid var(--border-medium);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .menu-header h3 {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        .menu-close {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-md);
-            background: var(--border-light);
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-        .menu-close:hover {
-            background: var(--border-medium);
-        }
-        .menu-items {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .menu-item {
-            padding: 16px;
-            border-radius: var(--radius-md);
-            background: white;
-            border: 0.5px solid var(--border-medium);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-        .menu-item:hover {
-            background: var(--primary-light);
-            border-color: var(--primary);
-            transform: translateX(4px);
-        }
-        .menu-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(4px);
-            z-index: 1999;
-            display: none;
-        }
-        .menu-overlay.active {
+        .loading-bar-container.active {
             display: block;
         }
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), #60a5fa, var(--primary));
+            background-size: 200% 100%;
+            animation: loadingBar 1.2s ease-in-out infinite;
+            border-radius: 0 2px 2px 0;
+            box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+        }
+        @keyframes loadingBar {
+            0% { width: 0%; margin-left: 0; }
+            50% { width: 70%; margin-left: 0; }
+            100% { width: 0%; margin-left: 100%; }
+        }
 
-        /* Header */
-        header {
-            position: sticky;
+        /* ===== DEV NAME OVERLAY ===== */
+        .dev-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(12px);
+            display: none;
+            place-items: center;
+            z-index: 10002;
+        }
+        .dev-overlay.active {
+            display: grid;
+        }
+        .dev-name {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -1px;
+            animation: devPulse 0.6s ease-in-out;
+            text-shadow: 0 2px 12px rgba(37, 99, 235, 0.2);
+        }
+        @keyframes devPulse {
+            0% { opacity: 0; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @media (max-width: 600px) {
+            .dev-name { font-size: 32px; }
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
             top: 0;
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(25px);
-            border-bottom: 0.5px solid var(--border-medium);
-            padding: 12px 24px;
+            left: 0;
+            width: 260px;
+            height: 100vh;
+            background: var(--bg-white);
+            border-right: 1px solid var(--border-light);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .sidebar-logo {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            z-index: 100;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 16px;
+            color: var(--primary);
+            letter-spacing: -0.5px;
         }
-        .menu-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: var(--radius-md);
-            background: white;
-            border: 0.5px solid var(--border-medium);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .logo-icon {
-            width: 36px;
-            height: 36px;
+        .sidebar-logo-icon {
+            width: 32px;
+            height: 32px;
             background: var(--primary);
             border-radius: var(--radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
+            color: white;
+            flex-shrink: 0;
         }
-        .logo-text {
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            overflow-y: auto;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+            font-family: inherit;
+        }
+        .nav-item:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .nav-item.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .nav-item svg {
+            flex-shrink: 0;
+            opacity: 0.7;
+        }
+        .nav-item.active svg,
+        .nav-item:hover svg {
+            opacity: 1;
+        }
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-light);
+            font-size: 11px;
+            color: var(--text-tertiary);
+            text-align: center;
+        }
+
+        /* ===== MOBILE HEADER ===== */
+        .mobile-header {
+            display: none;
+            position: sticky;
+            top: 0;
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border-light);
+            padding: 12px 16px;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 999;
+        }
+        .mobile-menu-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background: transparent;
+            border: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .mobile-title {
             font-weight: 700;
-            font-size: 16px;
+            font-size: 14px;
+            color: var(--primary);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            margin-left: 260px;
+            min-height: 100vh;
+            padding: 24px 32px 48px;
+        }
+
+        /* ===== PAGE SECTIONS ===== */
+        .page-section {
+            display: none;
+            animation: fadeIn 0.2s ease;
+        }
+        .page-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
             color: var(--text-primary);
             letter-spacing: -0.5px;
         }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px 24px 40px;
+        .section-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 4px;
         }
 
-        /* Cards de boas-vindas - fundo branco sólido */
-        .welcome-card {
-            background: white;
+        /* ===== VIDEO WIDGET ===== */
+        .video-widget {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
             border-radius: var(--radius-lg);
-            padding: 32px;
-            margin-bottom: 32px;
-            text-align: center;
-            border: 0.5px solid var(--border-medium);
+            overflow: hidden;
+            margin-bottom: 24px;
             box-shadow: var(--shadow-sm);
         }
-        .welcome-title {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
-        .welcome-sub {
+        .video-widget-header {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
             color: var(--text-secondary);
-            font-size: 15px;
+        }
+        .video-widget-body {
+            width: 100%;
+            height: 180px;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+        .video-widget-body img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-widget-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
 
-        /* Action Bar */
-        .action-bar {
+        /* ===== DASHBOARD CARDS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .stat-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+        }
+        .stat-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+        }
+        .stat-value.primary { color: var(--primary); }
+        .stat-value.success { color: var(--success); }
+        .stat-value.danger { color: var(--danger); }
+
+        /* ===== TABLE ===== */
+        .table-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        .table-toolbar {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-light);
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
-            margin-bottom: 28px;
-            justify-content: center;
-        }
-        .action-btn {
-            background: white;
-            border: 0.5px solid var(--border-medium);
-            padding: 12px 20px;
-            border-radius: var(--radius-lg);
-            font-weight: 500;
-            font-size: 14px;
-            color: var(--text-primary);
-            cursor: pointer;
-            display: flex;
             align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-            box-shadow: var(--shadow-sm);
         }
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-            border-color: var(--primary);
-        }
-        .action-btn.panic {
-            background: var(--danger);
-            color: white;
-            border: none;
-        }
-
-        /* Inputs */
-        .search-box, .field input, .field textarea, .field select {
-            width: 100%;
-            padding: 16px 18px;
-            background: white;
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 14px;
             border: 1px solid var(--border-medium);
             border-radius: var(--radius-md);
-            font-size: 16px;
-            font-weight: 500;
-            transition: all 0.2s;
-            outline: none;
+            font-size: 14px;
             font-family: inherit;
+            outline: none;
+            transition: all 0.15s;
+            background: var(--bg-white);
         }
-        .search-box:focus, .field input:focus, .field textarea:focus {
+        .search-input:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        .search-input.error {
+            border-color: var(--danger) !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
         }
 
-        .btn-new, .btn-save, .btn-secondary, .btn-danger, .keys-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: var(--radius-lg);
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
-            box-shadow: var(--shadow-sm);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn-new:hover, .btn-save:hover, .keys-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-            background: var(--primary-dark);
-        }
-        .btn-danger {
-            background: var(--danger);
-        }
-        .btn-danger:hover {
-            background: var(--danger-dark);
-        }
-        .btn-secondary {
-            background: var(--text-secondary);
-        }
-
-        /* Tabela - fundo branco sólido para não transparente */
-        .table-container {
-            background: white;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-sm);
-            overflow-x: auto;
-            border: 0.5px solid var(--border-medium);
-        }
         table {
             width: 100%;
             border-collapse: collapse;
             min-width: 700px;
         }
-        th {
-            padding: 18px 20px;
+        thead th {
+            padding: 12px 20px;
             text-align: left;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            border-bottom: 0.5px solid var(--border-medium);
-            background: #fafafc;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: var(--bg-offwhite);
+            border-bottom: 1px solid var(--border-light);
         }
-        td {
-            padding: 16px 20px;
-            border-bottom: 0.5px solid var(--border-light);
+        tbody td {
+            padding: 14px 20px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-light);
             cursor: pointer;
-            background: white;
+            transition: background 0.1s;
         }
-        tr:hover td {
+        tbody tr:hover td {
             background: var(--primary-light);
         }
-        .na-cell {
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .na-badge {
+            font-family: 'SF Mono', 'Fira Code', monospace;
             font-weight: 700;
-            font-family: monospace;
-            font-size: 16px;
+            font-size: 15px;
+            color: var(--primary);
         }
-        .badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
+        .status-badge {
             display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
-        .badge-active {
-            background: var(--success);
+        .status-active {
+            background: var(--success-light);
+            color: var(--success);
+        }
+        .status-inactive {
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+        .days-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .btn-primary {
+            background: var(--primary);
             color: white;
         }
-        .badge-expired {
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: var(--shadow-md);
+        }
+        .btn-secondary {
+            background: var(--bg-white);
+            color: var(--text-primary);
+            border: 1px solid var(--border-medium);
+        }
+        .btn-secondary:hover {
+            background: var(--bg-offwhite);
+            border-color: var(--text-tertiary);
+        }
+        .btn-danger {
             background: var(--danger);
             color: white;
         }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        .btn-warning:hover {
+            background: #d97706;
+        }
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        .btn-success:hover {
+            background: #16a34a;
+        }
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
 
-        /* Modais */
+        /* ===== MODAL ===== */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(8px);
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 3000;
+            z-index: 2000;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex;
         }
         .modal {
-            background: white;
+            background: var(--bg-white);
             border-radius: var(--radius-xl);
-            width: 90%;
-            max-width: 550px;
-            max-height: 85vh;
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
             overflow-y: auto;
             box-shadow: var(--shadow-lg);
-            animation: modalFadeIn 0.2s ease;
+            animation: modalIn 0.2s ease;
         }
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        .modal.modal-lg {
+            max-width: 720px;
+        }
+        .modal.modal-xl {
+            max-width: 900px;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.96) translateY(8px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
         .modal-header {
             padding: 20px 24px;
-            border-bottom: 0.5px solid var(--border-medium);
+            border-bottom: 1px solid var(--border-light);
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
-            background: white;
+            background: var(--bg-white);
             border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            z-index: 1;
+        }
+        .modal-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-primary);
         }
         .modal-close {
             width: 36px;
             height: 36px;
             border-radius: var(--radius-md);
-            background: var(--border-light);
+            background: var(--bg-offwhite);
             border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: var(--text-secondary);
+            transition: all 0.15s;
         }
-        .modal-content {
+        .modal-close:hover {
+            background: var(--border-light);
+            color: var(--text-primary);
+        }
+        .modal-body {
             padding: 24px;
         }
+
+        /* ===== FORM ===== */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.15s;
+            background: var(--bg-white);
+            color: var(--text-primary);
+        }
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        .form-input.error,
+        .form-textarea.error,
+        .form-select.error {
+            border-color: var(--danger) !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+        }
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+        @media (max-width: 500px) {
+            .form-row, .form-row-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 12px;
+        }
+        .radio-option {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.15s;
+        }
+        .radio-option:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .radio-option input[type="radio"] {
+            accent-color: var(--primary);
+        }
+
+        /* ===== KEYS GRID ===== */
         .keys-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
         }
         .key-card {
-            background: white;
-            border: 2px solid var(--border-medium);
+            background: var(--bg-white);
+            border: 2px solid var(--border-light);
             border-radius: var(--radius-md);
             padding: 16px;
             text-align: center;
@@ -462,24 +665,73 @@
             position: relative;
         }
         .key-card.available {
-            background: var(--success-light);
             border-color: var(--success);
+            background: var(--success-light);
         }
         .key-card.occupied {
-            background: var(--danger-light);
             border-color: var(--danger);
+            background: var(--danger-light);
         }
         .key-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-2px);
             box-shadow: var(--shadow-md);
         }
-        .btn-clear-key {
+        .key-card-icon {
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .key-card.available .key-card-icon {
+            background: var(--success);
+            color: white;
+        }
+        .key-card.occupied .key-card-icon {
+            background: var(--danger);
+            color: white;
+        }
+        .key-card-number {
+            font-size: 18px;
+            font-weight: 800;
+            font-family: monospace;
+            color: var(--text-primary);
+        }
+        .key-card-status {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+        .key-card.available .key-card-status { color: var(--success); }
+        .key-card.occupied .key-card-status { color: var(--danger); }
+        .key-card-user {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 8px;
+            word-break: break-word;
+        }
+        .key-card-date {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        .key-card-datetime {
+            font-size: 9px;
+            color: var(--text-tertiary);
+            margin-top: 2px;
+        }
+        .key-clear-btn {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 28px;
-            height: 28px;
-            border-radius: 20px;
+            top: 6px;
+            right: 6px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
             background: var(--danger);
             color: white;
             border: none;
@@ -489,241 +741,1436 @@
             justify-content: center;
             font-size: 14px;
             font-weight: bold;
-            transition: all 0.2s;
+            line-height: 1;
+            opacity: 0;
+            transition: opacity 0.15s;
         }
-        .btn-clear-key:hover {
-            transform: scale(1.1);
-            background: var(--danger-dark);
+        .key-card:hover .key-clear-btn {
+            opacity: 1;
         }
-        .grid-3 {
+
+        /* ===== ITEMS LIST ===== */
+        .items-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+        }
+        .list-item {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            transition: background 0.1s;
+        }
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        .list-item:hover {
+            background: var(--bg-offwhite);
+        }
+        .list-item-content {
+            flex: 1;
+            min-width: 0;
+        }
+        .list-item-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            word-break: break-word;
+        }
+        .list-item-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            word-break: break-word;
+        }
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 14px;
+        }
+
+        /* ===== VIDEO GRID ===== */
+        .video-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 16px;
         }
         .video-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
             border-radius: var(--radius-md);
             overflow: hidden;
             cursor: pointer;
-            border: 0.5px solid var(--border-medium);
             transition: all 0.2s;
-            background: white;
         }
         .video-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-2px);
             box-shadow: var(--shadow-md);
+            border-color: var(--primary);
         }
         .video-card img {
             width: 100%;
             aspect-ratio: 16/9;
             object-fit: cover;
+            display: block;
         }
-        .video-card p {
-            padding: 12px;
-            font-size: 13px;
+        .video-card-title {
+            padding: 10px 12px;
+            font-size: 12px;
             font-weight: 500;
-        }
-        .items-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .list-item {
-            padding: 16px;
-            border-bottom: 0.5px solid var(--border-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
+            color: var(--text-primary);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
-        @media (max-width: 700px) {
-            .container {
-                padding: 16px;
+        /* ===== ALERT ===== */
+        .alert {
+            padding: 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .alert-info {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+        .alert-success {
+            background: var(--success-light);
+            color: var(--success);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        .na-display {
+            font-size: 32px;
+            font-weight: 800;
+            font-family: monospace;
+            letter-spacing: 2px;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-medium);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-tertiary);
+        }
+
+        /* ===== MOBILE RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .sidebar {
+                transform: translateX(-100%);
             }
-            .action-btn {
-                padding: 10px 16px;
-                font-size: 13px;
+            .sidebar.open {
+                transform: translateX(0);
+                box-shadow: var(--shadow-lg);
+            }
+            .mobile-header {
+                display: flex;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 16px 16px 40px;
+            }
+            .section-title {
+                font-size: 20px;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .stat-value {
+                font-size: 24px;
+            }
+            .keys-grid {
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            }
+            .video-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
         }
+        @media (min-width: 901px) {
+            .sidebar-overlay {
+                display: none !important;
+            }
+        }
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            z-index: 999;
+            display: none;
+        }
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--text-primary);
+            color: white;
+            padding: 14px 20px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            z-index: 10003;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 320px;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
     </style>
 </head>
 <body>
 
-<!-- Fundo GIF - sem esbranquiçado -->
-<div class="bg-gif-overlay">
-    <img class="bg-gif" id="bgGifImage" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhntYLwluptcvGGk78e-_7GXQMRfj9UfwkDy7RUp9mSDxxZ-TD2O5DAtkUN_hyEk9I2fBA5N3IXbCVONiw9VIRaXDFAGuZI6KWASnt8pN8YP9s_7pwVoTOzzc1OPCbvI98qmzQLMsDblTpAe2TaUDwrYXYKGdCTdUFTFwGosrAQ4bFxLjsTn8VFkGUcV5pE/s400/BEE08ABC-CE1E-43AA-BFA4-E5FC30942A50.gif" alt="background gif">
+<!-- Loading Bar (Windows style) -->
+<div class="loading-bar-container" id="loadingBar">
+    <div class="loading-bar"></div>
 </div>
 
-<div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-spinner"></div>
+<!-- Dev Name Overlay -->
+<div class="dev-overlay" id="devOverlay">
+    <div class="dev-name">SAN7DOC</div>
 </div>
 
-<!-- Menu Lateral -->
-<div class="menu-overlay" id="menuOverlay"></div>
-<div class="side-menu" id="sideMenu">
-    <div class="menu-header">
-        <h3>SAN7DOC TECNOLOGIA</h3>
-        <button class="menu-close" id="closeMenuBtn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Sidebar Overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">
+            <div class="sidebar-logo-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+            </div>
+            SAN7DOC
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <button class="nav-item active" data-page="dashboard">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+            Dashboard
         </button>
-    </div>
-    <div class="menu-items">
-        <div class="menu-item" onclick="abrirModalCustom('modalAulas')">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <button class="nav-item" data-page="keys">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3"/></svg>
+            Chaves
+        </button>
+        <button class="nav-item" data-page="students">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Alunos / Cadastros
+        </button>
+        <button class="nav-item" data-page="experimental">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
             Aulas Experimentais
-        </div>
-        <div class="menu-item" onclick="abrirModalCustom('modalNotas')">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </button>
+        <button class="nav-item" data-page="notes">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
             Anotações
-        </div>
-        <div class="menu-item" onclick="abrirModalCustom('modalPanic')">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            Botão do Pânico
-        </div>
-        <div class="menu-item" onclick="abrirModalCustom('modalJogos'); buscarVideos();">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M9 12h6M12 9v6"/></svg>
+        </button>
+        <button class="nav-item" data-page="videos">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M9 12h6M12 9v6"/></svg>
             Jogos e Vídeos
-        </div>
-        <div class="menu-item" onclick="openModal('modalKeys')">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="16" r="2"/><path d="M12 8h.01M8 12h.01M16 8h.01M12 16h.01M21 12a9 9 0 1 0-9 9"/></svg>
-            Gestão de Chaves
-        </div>
+        </button>
+        <button class="nav-item" data-page="panic">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Botão do Pânico
+        </button>
+    </nav>
+    <div class="sidebar-footer">
+        SAN7DOC TECNOLOGIA © 2025
     </div>
-</div>
+</aside>
 
-<header>
-    <button class="menu-icon" id="menuIcon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+<!-- Mobile Header -->
+<header class="mobile-header">
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
-    <div class="logo-area">
-        <div class="logo-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-        </div>
-        <span class="logo-text">SAN7DOC TECNOLOGIA</span>
-    </div>
-    <div style="width: 44px;"></div>
+    <div class="mobile-title">SAN7DOC TECNOLOGIA</div>
+    <div style="width: 40px;"></div>
 </header>
 
-<main class="container">
-    <div class="welcome-card">
-        <div class="welcome-title" id="editableTitle" contenteditable="true">ACADEMIA DOMUSFIT</div>
-        <div class="welcome-sub">Gerencie alunos, chaves, anotações e muito mais</div>
-    </div>
+<!-- Main Content -->
+<main class="main-content">
 
-    <div class="action-bar">
-        <button class="action-btn" onclick="abrirModalCustom('modalAulas')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-            Aulas Exp
-        </button>
-        <button class="action-btn" onclick="abrirModalCustom('modalNotas')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            Anotações
-        </button>
-        <button class="action-btn panic" onclick="abrirModalCustom('modalPanic')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            Pânico
-        </button>
-        <button class="action-btn" onclick="abrirModalCustom('modalJogos'); buscarVideos();">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M9 12h6M12 9v6"/></svg>
-            Vídeos
-        </button>
-    </div>
+    <!-- ===== DASHBOARD PAGE ===== -->
+    <section class="page-section active" id="page-dashboard">
+        <div class="section-header">
+            <div>
+                <div class="section-title" id="editableTitle" contenteditable="true">ACADEMIA DOMUSFIT</div>
+                <div class="section-subtitle">Painel de controle e visão geral do sistema</div>
+            </div>
+        </div>
 
-    <button class="keys-btn" onclick="openModal('modalKeys')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="16" r="2"/><path d="M12 8h.01M8 12h.01M16 8h.01M12 16h.01M21 12a9 9 0 1 0-9 9"/></svg>
-        GESTÃO DE CHAVES
-    </button>
+        <!-- Video Widget -->
+        <div class="video-widget">
+            <div class="video-widget-header">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M9 12h6M12 9v6"/></svg>
+                VÍDEO INSTITUCIONAL
+            </div>
+            <div class="video-widget-body">
+                <img id="bgGifImage" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhntYLwluptcvGGk78e-_7GXQMRfj9UfwkDy7RUp9mSDxxZ-TD2O5DAtkUN_hyEk9I2fBA5N3IXbCVONiw9VIRaXDFAGuZI6KWASnt8pN8YP9s_7pwVoTOzzc1OPCbvI98qmzQLMsDblTpAe2TaUDwrYXYKGdCTdUFTFwGosrAQ4bFxLjsTn8VFkGUcV5pE/s400/BEE08ABC-CE1E-43AA-BFA4-E5FC30942A50.gif" alt="Vídeo institucional">
+            </div>
+        </div>
 
-    <div class="search-area" style="display: flex; gap: 15px; margin: 20px 0;">
-        <input type="text" id="search" class="search-box" placeholder="Pesquisar por aluno ou NA..." oninput="renderTable()">
-        <button class="btn-new" onclick="openModal('modalAdd')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            NOVO ALUNO
-        </button>
-    </div>
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total de Alunos</div>
+                <div class="stat-value primary" id="statTotal">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Alunos Ativos</div>
+                <div class="stat-value success" id="statActive">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Alunos Inativos</div>
+                <div class="stat-value danger" id="statInactive">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Chaves em Uso</div>
+                <div class="stat-value" id="statKeys">0 / 24</div>
+            </div>
+        </div>
 
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr><th>NA</th><th>NOME DO ALUNO</th><th>PLANO</th><th>STATUS / DIAS</th></tr>
-            </thead>
-            <tbody id="aluno-list"></tbody>
-        </table>
-    </div>
+        <!-- Recent Students -->
+        <div class="table-card">
+            <div class="table-toolbar">
+                <div style="font-weight: 700; font-size: 15px; color: var(--text-primary);">Alunos Recentes</div>
+                <button class="btn btn-primary btn-sm" onclick="openModal('modalAdd')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Novo Aluno
+                </button>
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr><th>NA</th><th>Nome</th><th>Plano</th><th>Status</th><th>Dias Restantes</th></tr>
+                    </thead>
+                    <tbody id="dashboardRecentList"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== KEYS PAGE ===== -->
+    <section class="page-section" id="page-keys">
+        <div class="section-header">
+            <div>
+                <div class="section-title">Gestão de Chaves</div>
+                <div class="section-subtitle">Controle de chaves - Verde (disponível) / Vermelho (em uso)</div>
+            </div>
+        </div>
+        <div class="keys-grid" id="keysContainer"></div>
+    </section>
+
+    <!-- ===== STUDENTS PAGE ===== -->
+    <section class="page-section" id="page-students">
+        <div class="section-header">
+            <div>
+                <div class="section-title">Alunos / Cadastros</div>
+                <div class="section-subtitle">Gerencie todos os alunos cadastrados</div>
+            </div>
+            <button class="btn btn-primary" onclick="openModal('modalAdd')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Novo Aluno
+            </button>
+        </div>
+        <div class="table-card">
+            <div class="table-toolbar">
+                <input type="text" class="search-input" id="searchStudents" placeholder="Pesquisar por nome ou NA..." oninput="renderStudentsTable()">
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr><th>NA</th><th>Nome do Aluno</th><th>Plano</th><th>Status / Dias</th></tr>
+                    </thead>
+                    <tbody id="studentsList"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== EXPERIMENTAL PAGE ===== -->
+    <section class="page-section" id="page-experimental">
+        <div class="section-header">
+            <div>
+                <div class="section-title">Aulas Experimentais</div>
+                <div class="section-subtitle">Cadastro completo de alunos para aulas experimentais</div>
+            </div>
+        </div>
+        <div style="background: var(--bg-white); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px;">
+            <div style="font-weight: 700; font-size: 15px; margin-bottom: 16px; color: var(--text-primary);">Novo Cadastro</div>
+            <div class="form-row-3" style="margin-bottom: 16px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Nome Completo</label>
+                    <input type="text" class="form-input" id="expNome" placeholder="Nome completo do aluno">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Telefone</label>
+                    <input type="tel" class="form-input" id="expTelefone" placeholder="(00) 00000-0000">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Sexo</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="expSexo" value="Masculino"> Masculino
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="expSexo" value="Feminino"> Feminino
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row-3" style="margin-bottom: 16px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Bairro</label>
+                    <input type="text" class="form-input" id="expBairro" placeholder="Nome do bairro">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Rua</label>
+                    <input type="text" class="form-input" id="expRua" placeholder="Nome da rua">
+                </div>
+                <div class="form-group" style="margin-bottom: 0; display: flex; align-items: flex-end;">
+                    <button class="btn btn-primary btn-block" onclick="cadastrarAulaExperimental()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Cadastrar
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="table-card">
+            <div class="table-toolbar">
+                <input type="text" class="search-input" id="searchExperimental" placeholder="Pesquisar por nome..." oninput="renderExperimentalTable()">
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr><th>Nome</th><th>Telefone</th><th>Sexo</th><th>Bairro</th><th>Rua</th><th>Data</th><th>Ações</th></tr>
+                    </thead>
+                    <tbody id="experimentalList"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== NOTES PAGE ===== -->
+    <section class="page-section" id="page-notes">
+        <div class="section-header">
+            <div>
+                <div class="section-title">Anotações</div>
+                <div class="section-subtitle">Gerencie suas anotações importantes</div>
+            </div>
+            <button class="btn btn-primary" onclick="abrirNovaNota()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Nova Anotação
+            </button>
+        </div>
+        <div class="items-list" id="notesList"></div>
+    </section>
+
+    <!-- ===== VIDEOS PAGE ===== -->
+    <section class="page-section" id="page-videos">
+        <div class="section-header">
+            <div>
+                <div class="section-title">Jogos e Vídeos</div>
+                <div class="section-subtitle">Pesquise e assista vídeos do YouTube</div>
+            </div>
+        </div>
+        <div class="table-card" style="padding: 20px; margin-bottom: 20px;">
+            <div style="display: flex; gap: 12px;">
+                <input type="text" class="search-input" id="videoSearch" placeholder="Pesquisar vídeos..." onkeydown="if(event.key==='Enter') buscarVideos(this.value)">
+                <button class="btn btn-primary" onclick="buscarVideos(document.getElementById('videoSearch').value)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    Buscar
+                </button>
+            </div>
+        </div>
+        <div class="video-grid" id="videoGrid"></div>
+    </section>
+
+    <!-- ===== PANIC PAGE ===== -->
+    <section class="page-section" id="page-panic">
+        <div class="section-header">
+            <div>
+                <div class="section-title">Botão do Pânico</div>
+                <div class="section-subtitle">Registros de ocorrências de pânico</div>
+            </div>
+            <button class="btn btn-danger" onclick="registrarPanico()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Registrar Ocorrência
+            </button>
+        </div>
+        <div class="items-list" id="panicList"></div>
+    </section>
+
 </main>
 
-<!-- Todos os modais -->
-<div id="modalPanic" class="modal-overlay" onclick="closeModalOnOut(event, 'modalPanic')"><div class="modal"><div class="modal-header"><h2>REGISTROS DE PÂNICO</h2><button class="modal-close" onclick="closeModal('modalPanic')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-content"><button class="btn-danger" style="width:100%; margin-bottom:20px;" onclick="registrarPanico()">REGISTRAR OCORRÊNCIA</button><div class="items-list" id="listaPanic"></div></div></div></div>
-<div id="modalAulas" class="modal-overlay" onclick="closeModalOnOut(event, 'modalAulas')"><div class="modal large" style="max-width:700px"><div class="modal-header"><h2>AULAS EXPERIMENTAIS</h2><button class="modal-close" onclick="closeModal('modalAulas')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-content"><input id="buscaAluno" class="search-box" placeholder="Pesquisar..." oninput="filtrarAulasExperimentais()"><div style="display:flex;gap:10px;margin:15px 0"><input id="nomeAluno" class="search-box" placeholder="Nome"><input id="telAluno" class="search-box" placeholder="Telefone"><button class="btn-save" onclick="cadastrarAulaExperimental()">Cadastrar</button></div><div class="items-list" id="listaAlunos"></div></div></div></div>
-<div id="modalNotas" class="modal-overlay" onclick="closeModalOnOut(event, 'modalNotas')"><div class="modal"><div class="modal-header"><h2>ANOTAÇÕES</h2><button class="modal-close" onclick="closeModal('modalNotas')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-content"><button class="btn-save" style="margin-bottom:20px;" onclick="abrirModalCustom('modalNovaNota')">NOVA ANOTAÇÃO</button><div class="items-list" id="listaNotas"></div></div></div></div>
-<div id="modalNovaNota" class="modal-overlay" onclick="closeModalOnOut(event, 'modalNovaNota')"><div class="modal"><div class="modal-header"><h2>NOVA ANOTAÇÃO</h2><button class="modal-close" onclick="closeModal('modalNovaNota')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-content"><div class="field"><label>TÍTULO</label><input id="notaTitulo"></div><div class="field"><label>TEXTO</label><textarea id="notaTexto" rows="6"></textarea></div><button class="btn-save" onclick="salvarNota()">SALVAR</button></div></div></div>
-<div id="modalVerNota" class="modal-overlay" onclick="closeModalOnOut(event, 'modalVerNota')"><div class="modal"><div class="modal-header"><h2 id="verTitulo"></h2><button class="modal-close" onclick="closeModal('modalVerNota')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-content"><p id="verData" style="font-size:12px;color:var(--text-secondary)"></p><div style="border:1px solid var(--border-medium);padding:16px;border-radius:var(--radius-md);margin:16px 0"><div id="verTexto"></div></div><button class="btn-secondary" id="btnPdf">BAIXAR PDF</button><button class="btn-danger" id="btnExcluirNota" style="margin-top:12px">EXCLUIR</button></div></div></div>
-<div id="modalJogos" class="modal-overlay" onclick="closeModalOnOut(event, 'modalJogos')"><div class="modal large" style="max-width:900px"><div class="modal-header"><h2>JOGOS E VÍDEOS</h2><button class="modal-close" onclick="closeModal('modalJogos')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-content"><input id="buscaVideo" class="search-box" placeholder="Pesquisar jogo..." onchange="buscarVideos(this.value)"><div class="grid-3" id="listaVideos" style="margin-top:20px"></div></div></div></div>
-<div id="modalPlayer" class="modal-overlay" onclick="fecharPlayer()"><div class="modal large" style="background:#000;max-width:1000px"><div style="padding:12px;display:flex;justify-content:flex-end"><button class="btn-danger" onclick="fecharPlayer()">FECHAR</button></div><iframe id="player" class="player-frame" style="width:100%;height:500px;border:none" allowfullscreen></iframe></div></div>
-<div id="modalKeys" class="modal-overlay" onclick="closeModalOnOut(event, 'modalKeys')"><div class="modal" style="max-width:900px"><div class="modal-header"><h2>GESTÃO DE CHAVES</h2><button class="modal-close" onclick="closeModal('modalKeys')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-content"><div class="keys-grid" id="keys-container"></div></div></div></div>
-<div id="modalAssignKey" class="modal-overlay" onclick="closeModalOnOut(event, 'modalAssignKey')"><div class="modal"><div class="modal-header"><h2 id="assign-title">ATRIBUIR CHAVE</h2><button class="modal-close" onclick="closeModal('modalAssignKey')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-content"><input type="hidden" id="key-number-val"><div class="field"><label>NOME</label><input id="key-user-name" placeholder="Quem pegou a chave?"></div><button class="btn-save" onclick="saveKeyAssignment()">CADASTRAR POSSE</button></div></div></div>
-<div id="modalAdd" class="modal-overlay" onclick="closeModalOnOut(event, 'modalAdd')"><div class="modal"><div class="modal-header"><h2>CADASTRAR ALUNO</h2><button class="modal-close" onclick="closeModal('modalAdd')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-content"><div class="na-alert" id="naAlert" style="display:none; background:#e3f2ff; padding:16px; border-radius:16px; margin-bottom:16px; text-align:center"><div class="na-number" id="naNumber" style="font-size:28px;font-weight:800"></div><div>NA GERADO</div></div><div class="field"><label>NOME</label><input id="add-name"></div><div class="field"><label>PLANO</label><input id="add-plan"></div><div class="field-row" style="display:flex;gap:12px"><div class="field"><label>INÍCIO</label><input type="date" id="add-start"></div><div class="field"><label>TÉRMINO</label><input type="date" id="add-end"></div></div><button class="btn-save" onclick="saveNewUser()">GERAR NA E CADASTRAR</button></div></div></div>
-<div id="modalEdit" class="modal-overlay" onclick="closeModalOnOut(event, 'modalEdit')"><div class="modal"><div class="modal-header"><h2>EDITAR ALUNO</h2><button class="modal-close" onclick="closeModal('modalEdit')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-content"><div id="edit-na-display" style="font-size:32px;font-weight:800;text-align:center;margin-bottom:16px"></div><input type="hidden" id="edit-na-val"><div class="field"><label>NOME</label><input id="edit-name"></div><div class="field"><label>PLANO</label><input id="edit-plan"></div><div class="field-row" style="display:flex;gap:12px"><div class="field"><label>INÍCIO</label><input type="date" id="edit-start"></div><div class="field"><label>TÉRMINO</label><input type="date" id="edit-end"></div></div><div id="diasRestantes" style="margin:16px 0;text-align:center;font-weight:600"></div><button class="btn-save" onclick="updateUser()">SALVAR</button><button class="btn-save" style="background:var(--warning);margin-top:12px" onclick="renovatePlan()">RENOVAR +30 DIAS</button><button class="btn-danger" style="margin-top:12px" onclick="deleteUser()">EXCLUIR ALUNO</button></div></div></div>
+<!-- ===== MODALS ===== -->
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- Add Student Modal -->
+<div class="modal-overlay" id="modalAdd" onclick="closeModalOnOut(event, 'modalAdd')">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <div class="modal-title">Cadastrar Aluno</div>
+            <button class="modal-close" onclick="closeModal('modalAdd')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-info" id="naAlert" style="display: none;">
+                <div class="na-display" id="naNumber"></div>
+                <div style="font-size: 12px; margin-top: 4px;">NA GERADO COM SUCESSO</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Nome Completo</label>
+                <input type="text" class="form-input" id="addName" placeholder="Nome do aluno">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Plano</label>
+                <input type="text" class="form-input" id="addPlan" placeholder="Ex: Mensal, Trimestral...">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Início</label>
+                    <input type="date" class="form-input" id="addStart">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Término</label>
+                    <input type="date" class="form-input" id="addEnd">
+                </div>
+            </div>
+            <button class="btn btn-primary btn-block" onclick="saveNewUser()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Gerar NA e Cadastrar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Student Modal -->
+<div class="modal-overlay" id="modalEdit" onclick="closeModalOnOut(event, 'modalEdit')">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <div class="modal-title">Editar Aluno</div>
+            <button class="modal-close" onclick="closeModal('modalEdit')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="font-size: 12px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">NA</div>
+                <div id="editNaDisplay" style="font-size: 32px; font-weight: 800; font-family: monospace; color: var(--primary);"></div>
+            </div>
+            <input type="hidden" id="editNaVal">
+            <div class="form-group">
+                <label class="form-label">Nome</label>
+                <input type="text" class="form-input" id="editName">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Plano</label>
+                <input type="text" class="form-input" id="editPlan">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Início</label>
+                    <input type="date" class="form-input" id="editStart">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Término</label>
+                    <input type="date" class="form-input" id="editEnd">
+                </div>
+            </div>
+            <div id="editDaysLeft" style="text-align: center; margin: 16px 0; font-weight: 600; font-size: 14px;"></div>
+            <button class="btn btn-primary btn-block" onclick="updateUser()" style="margin-bottom: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Salvar Alterações
+            </button>
+            <button class="btn btn-warning btn-block" onclick="renovatePlan()" style="margin-bottom: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                Renovar +30 Dias
+            </button>
+            <button class="btn btn-danger btn-block" onclick="deleteUser()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                Excluir Aluno
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Assign Key Modal -->
+<div class="modal-overlay" id="modalAssignKey" onclick="closeModalOnOut(event, 'modalAssignKey')">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <div class="modal-title" id="assignTitle">Atribuir Chave</div>
+            <button class="modal-close" onclick="closeModal('modalAssignKey')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="keyNumberVal">
+            <div class="form-group">
+                <label class="form-label">Nome de quem pegou a chave</label>
+                <input type="text" class="form-input" id="keyUserName" placeholder="Digite o nome">
+            </div>
+            <button class="btn btn-primary btn-block" onclick="saveKeyAssignment()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                Confirmar Retirada
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Note Modal -->
+<div class="modal-overlay" id="modalNote" onclick="closeModalOnOut(event, 'modalNote')">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <div class="modal-title" id="noteModalTitle">Nova Anotação</div>
+            <button class="modal-close" onclick="closeModal('modalNote')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="noteId">
+            <div class="form-group">
+                <label class="form-label">Título</label>
+                <input type="text" class="form-input" id="noteTitle" placeholder="Título da anotação">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Conteúdo</label>
+                <textarea class="form-textarea" id="noteText" placeholder="Escreva sua anotação..."></textarea>
+            </div>
+            <button class="btn btn-primary btn-block" onclick="salvarNota()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Salvar Anotação
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- View Note Modal -->
+<div class="modal-overlay" id="modalViewNote" onclick="closeModalOnOut(event, 'modalViewNote')">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <div class="modal-title" id="viewNoteTitle"></div>
+            <button class="modal-close" onclick="closeModal('modalViewNote')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;" id="viewNoteDate"></div>
+            <div style="background: var(--bg-offwhite); padding: 16px; border-radius: var(--radius-md); margin-bottom: 16px; font-size: 14px; line-height: 1.6; white-space: pre-wrap; word-break: break-word;" id="viewNoteText"></div>
+            <button class="btn btn-secondary btn-block" onclick="baixarPDF()" style="margin-bottom: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Baixar PDF
+            </button>
+            <button class="btn btn-danger btn-block" onclick="excluirNota()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                Excluir Anotação
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Video Player Modal -->
+<div class="modal-overlay" id="modalPlayer" onclick="closePlayer()">
+    <div class="modal modal-xl" style="background: #000; max-width: 900px;" onclick="event.stopPropagation()">
+        <div style="padding: 12px; display: flex; justify-content: flex-end;">
+            <button class="btn btn-danger btn-sm" onclick="closePlayer()">FECHAR</button>
+        </div>
+        <div style="aspect-ratio: 16/9; width: 100%;">
+            <iframe id="videoPlayer" style="width: 100%; height: 100%; border: none;" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-const firebaseConfig = { apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU", authDomain: "prefeitura-de-joao-camara.firebaseapp.com", projectId: "prefeitura-de-joao-camara", storageBucket: "prefeitura-de-joao-camara.firebasestorage.app", messagingSenderId: "269299041577", appId: "1:269299041577:web:fd41b2939240e9eb476338" };
+// ===== FIREBASE CONFIG =====
+const firebaseConfig = {
+    apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+    authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
+    projectId: "prefeitura-de-joao-camara",
+    storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
+    messagingSenderId: "269299041577",
+    appId: "1:269299041577:web:fd41b2939240e9eb476338"
+};
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-let USERS = {}, KEYS_DATA = {};
+
+// ===== GLOBAL STATE =====
+let USERS = {};
+let KEYS_DATA = {};
+let NOTES_DATA = {};
+let EXPERIMENTAL_DATA = {};
+let PANIC_DATA = {};
+let AULAS_EXP_DATA = {};
 const YOUTUBE_API_KEY = "AIzaSyDS9f8LJEx1CFkDdmVF5AoK02hkNvxBCEE";
+let currentViewNoteId = null;
 
-function showLoading() { document.getElementById('loadingOverlay').style.display = 'grid'; }
-function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
-function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-function abrirModalCustom(id) { openModal(id); }
-function closeModalOnOut(e, id) { if(e.target.classList.contains('modal-overlay')) closeModal(id); }
-function fecharPlayer() { document.getElementById('player').src = ""; closeModal('modalPlayer'); }
+// ===== LOADING BAR =====
+function showLoading() {
+    document.getElementById('loadingBar').classList.add('active');
+}
+function hideLoading() {
+    setTimeout(() => {
+        document.getElementById('loadingBar').classList.remove('active');
+    }, 300);
+}
 
-// Menu Lateral
-const menuIcon = document.getElementById('menuIcon');
-const sideMenu = document.getElementById('sideMenu');
-const menuOverlay = document.getElementById('menuOverlay');
-const closeMenuBtn = document.getElementById('closeMenuBtn');
-function closeMenu() { sideMenu.classList.remove('open'); menuOverlay.classList.remove('active'); }
-function openMenu() { sideMenu.classList.add('open'); menuOverlay.classList.add('active'); }
-menuIcon.onclick = openMenu;
-closeMenuBtn.onclick = closeMenu;
-menuOverlay.onclick = closeMenu;
+// ===== DEV NAME OVERLAY =====
+function showDevName(callback) {
+    const overlay = document.getElementById('devOverlay');
+    overlay.classList.add('active');
+    setTimeout(() => {
+        overlay.classList.remove('active');
+        if (callback) callback();
+    }, 2000);
+}
 
-// Título editável
-document.getElementById('editableTitle').addEventListener('blur', function() { localStorage.setItem('systemTitle', this.innerText); });
-if(localStorage.getItem('systemTitle')) document.getElementById('editableTitle').innerText = localStorage.getItem('systemTitle');
+// ===== TOAST =====
+function showToast(msg, type = '') {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.className = 'toast ' + type;
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
 
-function calcularDiasRestantes(dataTermino) { if (!dataTermino) return 'N/A'; const hoje = new Date(); hoje.setHours(0,0,0,0); const termino = new Date(dataTermino); termino.setHours(0,0,0,0); const diff = Math.ceil((termino - hoje) / (1000*60*60*24)); if(diff<0) return 'VENCIDO'; if(diff===0) return 'VENCE HOJE'; if(diff===1) return 'VENCE AMANHÃ'; return `${diff} DIAS`; }
-async function registrarPanico() { const agora=new Date(); await db.ref('panico_logs').push({data:agora.toLocaleDateString('pt-BR'), hora:agora.toLocaleTimeString('pt-BR')}); closeModal('modalPanic'); }
-db.ref('panico_logs').on('value', snap => { const lista=document.getElementById('listaPanic'); lista.innerHTML=''; const data=snap.val(); if(data) Object.keys(data).reverse().forEach(id=>{ const p=data[id]; const div=document.createElement('div'); div.className='list-item'; div.innerHTML=`<span>${p.data} ${p.hora}</span><button style="background:var(--danger);color:white;border:none;padding:6px 12px;border-radius:8px;cursor:pointer" onclick="excluirPanico('${id}')">X</button>`; lista.appendChild(div); }); });
-async function excluirPanico(id) { if(confirm("Excluir?")){ showLoading(); await db.ref('panico_logs/'+id).remove(); hideLoading(); } }
-async function salvarNota() { const titulo=document.getElementById('notaTitulo').value, texto=document.getElementById('notaTexto').value; if(!titulo||!texto) return alert("Preencha"); showLoading(); const agora=new Date(); await db.ref('anotacoes').push({titulo,texto,data:agora.toLocaleDateString('pt-BR'),hora:agora.toLocaleTimeString('pt-BR')}); document.getElementById('notaTitulo').value=""; document.getElementById('notaTexto').value=""; closeModal('modalNovaNota'); hideLoading(); }
-db.ref('anotacoes').on('value', snap => { const lista=document.getElementById('listaNotas'); lista.innerHTML=''; const data=snap.val(); if(data) Object.keys(data).reverse().forEach(id=>{ const n=data[id]; const div=document.createElement('div'); div.className='list-item'; div.style.cursor='pointer'; div.innerHTML=`<div><strong>${n.titulo}</strong><br><small>${n.data} ${n.hora}</small></div><span>→</span>`; div.onclick=()=>verNota(id,n); lista.appendChild(div); }); });
-function verNota(id,n) { document.getElementById('verTitulo').innerText=n.titulo; document.getElementById('verData').innerText=`${n.data} ${n.hora}`; document.getElementById('verTexto').innerText=n.texto; document.getElementById('btnExcluirNota').onclick=async()=>{ if(confirm("Excluir?")){ showLoading(); await db.ref('anotacoes/'+id).remove(); hideLoading(); closeModal('modalVerNota'); } }; document.getElementById('btnPdf').onclick=()=>{ const {jsPDF}=window.jspdf; const doc=new jsPDF(); doc.text(n.titulo,20,20); doc.text(`${n.data} ${n.hora}`,20,30); doc.text(doc.splitTextToSize(n.texto,170),20,45); doc.save(`anotacao.pdf`); }; openModal('modalVerNota'); }
-async function cadastrarAulaExperimental() { const nome=document.getElementById('nomeAluno').value.trim(), tel=document.getElementById('telAluno').value.trim(); if(!nome||!tel) return alert("Preencha"); showLoading(); await db.ref('aulas_experimentais').push({nome,tel,data:Date.now()}); document.getElementById('nomeAluno').value=""; document.getElementById('telAluno').value=""; hideLoading(); }
-db.ref('aulas_experimentais').on('value', snap=>{ window.aulasExpData=snap.val()||{}; renderAulasExperimentais(); });
-function renderAulasExperimentais() { const lista=document.getElementById('listaAlunos'); lista.innerHTML=''; const data=window.aulasExpData; if(data) Object.keys(data).reverse().forEach(id=>{ const a=data[id]; const div=document.createElement('div'); div.className='list-item'; div.setAttribute('data-nome',a.nome.toLowerCase()); div.innerHTML=`<div><strong>${a.nome}</strong><br><small>${a.tel}</small></div><button style="background:var(--danger);color:white;border:none;padding:6px 12px;border-radius:8px;cursor:pointer" onclick="deletarAulaExp('${id}',event)">X</button>`; lista.appendChild(div); }); }
-function filtrarAulasExperimentais() { const filtro=document.getElementById('buscaAluno').value.toLowerCase(); document.querySelectorAll('#listaAlunos .list-item').forEach(item=>{ const nome=item.getAttribute('data-nome'); item.style.display=nome.includes(filtro)||!filtro?'flex':'none'; }); }
-async function deletarAulaExp(id,e) { e.stopPropagation(); if(confirm("Excluir?")){ showLoading(); await db.ref('aulas_experimentais/'+id).remove(); hideLoading(); } }
-async function buscarVideos(termo="futebol ao vivo") { const grid=document.getElementById('listaVideos'); showLoading(); try{ const r=await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=12&q=${encodeURIComponent(termo)}&key=${YOUTUBE_API_KEY}`); const data=await r.json(); grid.innerHTML=''; if(data.items) data.items.forEach(v=>{ const card=document.createElement('div'); card.className='video-card'; card.onclick=()=>{ document.getElementById('player').src=`https://www.youtube.com/embed/${v.id.videoId}?autoplay=1`; openModal('modalPlayer'); }; card.innerHTML=`<img src="${v.snippet.thumbnails.medium.url}"><p>${v.snippet.title}</p>`; grid.appendChild(card); }); }catch(e){ grid.innerHTML='<div>Erro</div>'; } hideLoading(); }
-db.ref('chaves').on('value', snap=>{ KEYS_DATA=snap.val()||{}; renderKeys(); });
-function renderKeys() { const container=document.getElementById('keys-container'); container.innerHTML=''; for(let i=1;i<=24;i++){ const keyInfo=KEYS_DATA[i]; const isOccupied=!!keyInfo; const div=document.createElement('div'); div.className=`key-card ${isOccupied ? 'occupied' : 'available'}`; div.onclick=()=>isOccupied?null:openAssignKey(i); if(isOccupied){ div.innerHTML=`<button class="btn-clear-key" onclick="clearKey(event,${i})">X</button><strong>CHAVE ${String(i).padStart(2,'0')}</strong><br><span>${keyInfo.user}</span><br><small>${keyInfo.date}</small>`; } else { div.innerHTML=`<strong>CHAVE ${String(i).padStart(2,'0')}</strong><br><span>LIVRE</span>`; } container.appendChild(div); } }
-function openAssignKey(num) { document.getElementById('key-number-val').value=num; document.getElementById('assign-title').innerText=`CHAVE ${String(num).padStart(2,'0')}`; document.getElementById('key-user-name').value=''; openModal('modalAssignKey'); }
-async function saveKeyAssignment() { const num=document.getElementById('key-number-val').value, user=document.getElementById('key-user-name').value; if(!user) return alert("Digite o nome"); showLoading(); const now=new Date(); await db.ref('chaves/'+num).set({user, date:now.toLocaleDateString('pt-BR'), time:now.toLocaleTimeString('pt-BR')}); closeModal('modalAssignKey'); hideLoading(); }
-async function clearKey(e,num) { e.stopPropagation(); if(confirm(`Liberar chave ${num}?`)){ showLoading(); await db.ref('chaves/'+num).remove(); hideLoading(); } }
-db.ref('users').on('value', snap=>{ USERS=snap.val()||{}; renderTable(); });
-function renderTable() { const tbody=document.getElementById('aluno-list'); const search=document.getElementById('search').value.toLowerCase(); tbody.innerHTML=''; const today=new Date(); today.setHours(0,0,0,0); Object.keys(USERS).sort().forEach(na=>{ const u=USERS[na]; if((u.name.toLowerCase()+' '+na).includes(search)||search===''){ const expired=!u.endDate||new Date(u.endDate)<today; const dias=calcularDiasRestantes(u.endDate); const tr=document.createElement('tr'); tr.onclick=()=>openEdit(na,u); tr.innerHTML=`<td class="na-cell">${na}</td><td><strong>${u.name}</strong></td><td>${u.planName||'---'}</td><td><span class="badge ${expired?'badge-expired':'badge-active'}">${expired?'INATIVO':'ATIVO'}</span><div style="font-size:12px;margin-top:6px">${dias}</div></td>`; tbody.appendChild(tr); } }); }
-async function saveNewUser() { const na=Math.floor(10000+Math.random()*90000).toString(); const name=document.getElementById('add-name').value, end=document.getElementById('add-end').value; if(!name||!end) return alert("Preencha nome e término"); showLoading(); await db.ref('users/'+na).set({name, planName:document.getElementById('add-plan').value||'Sem Plano', startDate:document.getElementById('add-start').value||new Date().toISOString().split('T')[0], endDate:end, active:true, createdAt:new Date().toISOString().split('T')[0]}); document.getElementById('naNumber').innerText=na; document.getElementById('naAlert').style.display='block'; document.getElementById('add-name').value=""; document.getElementById('add-plan').value=""; document.getElementById('add-start').value=""; document.getElementById('add-end').value=""; hideLoading(); setTimeout(()=>{ closeModal('modalAdd'); document.getElementById('naAlert').style.display='none'; },3000); }
-function openEdit(na,u) { document.getElementById('edit-na-val').value=na; document.getElementById('edit-na-display').innerText=na; document.getElementById('edit-name').value=u.name; document.getElementById('edit-plan').value=u.planName||''; document.getElementById('edit-start').value=u.startDate||''; document.getElementById('edit-end').value=u.endDate||''; document.getElementById('diasRestantes').innerText=calcularDiasRestantes(u.endDate); openModal('modalEdit'); }
-async function updateUser() { const na=document.getElementById('edit-na-val').value; showLoading(); await db.ref('users/'+na).update({ name:document.getElementById('edit-name').value, planName:document.getElementById('edit-plan').value, startDate:document.getElementById('edit-start').value, endDate:document.getElementById('edit-end').value }); closeModal('modalEdit'); hideLoading(); }
-async function renovatePlan() { const na=document.getElementById('edit-na-val').value; let base=new Date(); const currentEnd=document.getElementById('edit-end').value; if(currentEnd){ const endDate=new Date(currentEnd); if(endDate>base) base=endDate; } base.setDate(base.getDate()+30); const newEnd=base.toISOString().split('T')[0]; showLoading(); await db.ref('users/'+na).update({endDate:newEnd, active:true}); document.getElementById('edit-end').value=newEnd; document.getElementById('diasRestantes').innerText=calcularDiasRestantes(newEnd); hideLoading(); }
-async function deleteUser() { const na=document.getElementById('edit-na-val').value, name=document.getElementById('edit-name').value; if(confirm(`Excluir ${name}?`)){ showLoading(); await db.ref('users/'+na).remove(); closeModal('modalEdit'); hideLoading(); } }
-document.addEventListener('DOMContentLoaded', ()=>{ hideLoading(); });
+// ===== INPUT VALIDATION =====
+function validateInput(input) {
+    if (!input.value.trim()) {
+        input.classList.add('error');
+        return false;
+    }
+    input.classList.remove('error');
+    return true;
+}
+function clearErrors(container) {
+    container.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+}
+
+// ===== NAVIGATION =====
+document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', function() {
+        const page = this.dataset.page;
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        this.classList.add('active');
+        document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+        document.getElementById('page-' + page).classList.add('active');
+        // Close mobile sidebar
+        if (window.innerWidth <= 900) {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        }
+        // Load data based on page
+        if (page === 'videos' && !document.getElementById('videoGrid').children.length) {
+            buscarVideos('futebol');
+        }
+    });
+});
+
+// Mobile menu
+document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebarOverlay').classList.add('active');
+});
+document.getElementById('sidebarOverlay').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('active');
+});
+
+// ===== MODAL FUNCTIONS =====
+function openModal(id) {
+    document.getElementById(id).classList.add('active');
+}
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+}
+function closeModalOnOut(event, id) {
+    if (event.target.classList.contains('modal-overlay')) {
+        closeModal(id);
+    }
+}
+function closePlayer() {
+    document.getElementById('videoPlayer').src = '';
+    closeModal('modalPlayer');
+}
+
+// ===== EDITABLE TITLE =====
+document.getElementById('editableTitle').addEventListener('blur', function() {
+    localStorage.setItem('systemTitle', this.innerText);
+});
+if (localStorage.getItem('systemTitle')) {
+    document.getElementById('editableTitle').innerText = localStorage.getItem('systemTitle');
+}
+
+// ===== UTILITY FUNCTIONS =====
+function calcularDiasRestantes(dataTermino) {
+    if (!dataTermino) return 'N/A';
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    const termino = new Date(dataTermino + 'T00:00:00');
+    termino.setHours(0, 0, 0, 0);
+    const diff = Math.ceil((termino - hoje) / (1000 * 60 * 60 * 24));
+    if (diff < 0) return 'VENCIDO (' + Math.abs(diff) + ' dias)';
+    if (diff === 0) return 'VENCE HOJE';
+    if (diff === 1) return 'VENCE AMANHÃ';
+    return diff + ' DIAS';
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('pt-BR');
+}
+
+// ===== FIREBASE LISTENERS =====
+db.ref('users').on('value', snap => {
+    USERS = snap.val() || {};
+    renderStudentsTable();
+    renderDashboard();
+});
+
+db.ref('chaves').on('value', snap => {
+    KEYS_DATA = snap.val() || {};
+    renderKeys();
+    renderDashboard();
+});
+
+db.ref('anotacoes').on('value', snap => {
+    NOTES_DATA = snap.val() || {};
+    renderNotes();
+});
+
+db.ref('aulas_experimentais').on('value', snap => {
+    EXPERIMENTAL_DATA = snap.val() || {};
+    renderExperimentalTable();
+});
+
+db.ref('panico_logs').on('value', snap => {
+    PANIC_DATA = snap.val() || {};
+    renderPanicList();
+});
+
+// ===== DASHBOARD =====
+function renderDashboard() {
+    const users = Object.values(USERS);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const total = users.length;
+    const active = users.filter(u => u.endDate && new Date(u.endDate + 'T00:00:00') >= today).length;
+    const inactive = total - active;
+    const keysInUse = Object.keys(KEYS_DATA).length;
+
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statActive').textContent = active;
+    document.getElementById('statInactive').textContent = inactive;
+    document.getElementById('statKeys').textContent = keysInUse + ' / 24';
+
+    // Recent students
+    const recentList = document.getElementById('dashboardRecentList');
+    const sorted = Object.entries(USERS).sort((a, b) => {
+        return (b[1].createdAt || '').localeCompare(a[1].createdAt || '');
+    }).slice(0, 5);
+
+    if (sorted.length === 0) {
+        recentList.innerHTML = '<tr><td colspan="5" class="empty-state">Nenhum aluno cadastrado</td></tr>';
+        return;
+    }
+
+    recentList.innerHTML = sorted.map(([na, u]) => {
+        const expired = !u.endDate || new Date(u.endDate + 'T00:00:00') < today;
+        return `<tr onclick="openEdit('${na}')">
+            <td><span class="na-badge">${na}</span></td>
+            <td><strong>${u.name || '---'}</strong></td>
+            <td>${u.planName || '---'}</td>
+            <td><span class="status-badge ${expired ? 'status-inactive' : 'status-active'}">${expired ? 'INATIVO' : 'ATIVO'}</span></td>
+            <td><div class="days-text">${calcularDiasRestantes(u.endDate)}</div></td>
+        </tr>`;
+    }).join('');
+}
+
+// ===== STUDENTS TABLE =====
+function renderStudentsTable() {
+    const tbody = document.getElementById('studentsList');
+    const search = document.getElementById('searchStudents').value.toLowerCase();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const filtered = Object.entries(USERS).filter(([na, u]) => {
+        if (!search) return true;
+        return (u.name || '').toLowerCase().includes(search) || na.includes(search);
+    }).sort((a, b) => a[0].localeCompare(b[0]));
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Nenhum aluno encontrado</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = filtered.map(([na, u]) => {
+        const expired = !u.endDate || new Date(u.endDate + 'T00:00:00') < today;
+        return `<tr onclick="openEdit('${na}')">
+            <td><span class="na-badge">${na}</span></td>
+            <td><strong>${u.name || '---'}</strong></td>
+            <td>${u.planName || '---'}</td>
+            <td>
+                <span class="status-badge ${expired ? 'status-inactive' : 'status-active'}">${expired ? 'INATIVO' : 'ATIVO'}</span>
+                <div class="days-text">${calcularDiasRestantes(u.endDate)}</div>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+// ===== KEYS =====
+function renderKeys() {
+    const container = document.getElementById('keysContainer');
+    let html = '';
+    for (let i = 1; i <= 24; i++) {
+        const keyInfo = KEYS_DATA[i];
+        const isOccupied = !!keyInfo;
+        html += `<div class="key-card ${isOccupied ? 'occupied' : 'available'}" onclick="${isOccupied ? '' : `openAssignKey(${i})`}">
+            ${isOccupied ? `<button class="key-clear-btn" onclick="clearKey(event, ${i})">✕</button>` : ''}
+            <div class="key-card-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="7.5" cy="15.5" r="5.5"/>
+                    <path d="M21 2l-9.6 9.6"/>
+                    <path d="M15.5 7.5l3 3"/>
+                </svg>
+            </div>
+            <div class="key-card-number">${String(i).padStart(2, '0')}</div>
+            <div class="key-card-status">${isOccupied ? 'EM USO' : 'DISPONÍVEL'}</div>
+            ${isOccupied ? `
+                <div class="key-card-user">${keyInfo.user}</div>
+                <div class="key-card-date">${keyInfo.date || ''}</div>
+                <div class="key-card-datetime">${keyInfo.time || ''}</div>
+            ` : ''}
+        </div>`;
+    }
+    container.innerHTML = html;
+}
+
+function openAssignKey(num) {
+    document.getElementById('keyNumberVal').value = num;
+    document.getElementById('assignTitle').textContent = `Chave ${String(num).padStart(2, '0')}`;
+    document.getElementById('keyUserName').value = '';
+    openModal('modalAssignKey');
+}
+
+async function saveKeyAssignment() {
+    const num = document.getElementById('keyNumberVal').value;
+    const input = document.getElementById('keyUserName');
+    const user = input.value.trim();
+
+    if (!user) {
+        input.classList.add('error');
+        showToast('Digite o nome de quem pegou a chave', 'error');
+        return;
+    }
+    input.classList.remove('error');
+
+    showLoading();
+    const now = new Date();
+    await db.ref('chaves/' + num).set({
+        user: user,
+        date: now.toLocaleDateString('pt-BR'),
+        time: now.toLocaleTimeString('pt-BR')
+    });
+
+    closeModal('modalAssignKey');
+    hideLoading();
+    showToast('Chave atribuída com sucesso!', 'success');
+}
+
+async function clearKey(e, num) {
+    e.stopPropagation();
+    if (confirm(`Liberar chave ${String(num).padStart(2, '0')}?`)) {
+        showLoading();
+        await db.ref('chaves/' + num).remove();
+        hideLoading();
+        showDevName();
+    }
+}
+
+// ===== STUDENT CRUD =====
+async function saveNewUser() {
+    const nameInput = document.getElementById('addName');
+    const endInput = document.getElementById('addEnd');
+    const planInput = document.getElementById('addPlan');
+    const startInput = document.getElementById('addStart');
+
+    // Validation
+    let valid = true;
+    if (!validateInput(nameInput)) valid = false;
+    if (!validateInput(endInput)) valid = false;
+    if (!valid) {
+        showToast('Preencha os campos obrigatórios', 'error');
+        return;
+    }
+
+    showLoading();
+
+    // Generate unique NA
+    let na;
+    do {
+        na = Math.floor(10000 + Math.random() * 90000).toString();
+    } while (USERS[na]);
+
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+
+    await db.ref('users/' + na).set({
+        name: nameInput.value.trim(),
+        planName: planInput.value.trim() || 'Sem Plano',
+        startDate: startInput.value || today,
+        endDate: endInput.value,
+        active: true,
+        createdAt: today
+    });
+
+    // Show NA alert
+    document.getElementById('naNumber').textContent = na;
+    document.getElementById('naAlert').style.display = 'block';
+
+    // Clear form
+    document.getElementById('addName').value = '';
+    document.getElementById('addPlan').value = '';
+    document.getElementById('addStart').value = '';
+    document.getElementById('addEnd').value = '';
+    clearErrors(document.querySelector('#modalAdd .modal-body'));
+
+    hideLoading();
+    showDevName();
+
+    setTimeout(() => {
+        closeModal('modalAdd');
+        document.getElementById('naAlert').style.display = 'none';
+        showToast('Aluno cadastrado! NA: ' + na, 'success');
+    }, 2500);
+}
+
+function openEdit(na) {
+    const u = USERS[na];
+    if (!u) return;
+
+    document.getElementById('editNaVal').value = na;
+    document.getElementById('editNaDisplay').textContent = na;
+    document.getElementById('editName').value = u.name || '';
+    document.getElementById('editPlan').value = u.planName || '';
+    document.getElementById('editStart').value = u.startDate || '';
+    document.getElementById('editEnd').value = u.endDate || '';
+    document.getElementById('editDaysLeft').textContent = calcularDiasRestantes(u.endDate);
+
+    openModal('modalEdit');
+}
+
+async function updateUser() {
+    const na = document.getElementById('editNaVal').value;
+    const nameInput = document.getElementById('editName');
+    const endInput = document.getElementById('editEnd');
+
+    let valid = true;
+    if (!validateInput(nameInput)) valid = false;
+    if (!validateInput(endInput)) valid = false;
+    if (!valid) {
+        showToast('Preencha os campos obrigatórios', 'error');
+        return;
+    }
+
+    showLoading();
+    await db.ref('users/' + na).update({
+        name: nameInput.value.trim(),
+        planName: document.getElementById('editPlan').value.trim() || 'Sem Plano',
+        startDate: document.getElementById('editStart').value,
+        endDate: endInput.value
+    });
+    closeModal('modalEdit');
+    hideLoading();
+    showDevName();
+    showToast('Dados atualizados com sucesso!', 'success');
+}
+
+async function renovatePlan() {
+    const na = document.getElementById('editNaVal').value;
+    const currentEnd = document.getElementById('editEnd').value;
+
+    let base = new Date();
+    if (currentEnd) {
+        const endDate = new Date(currentEnd + 'T00:00:00');
+        if (endDate > base) base = endDate;
+    }
+    base.setDate(base.getDate() + 30);
+    const newEnd = base.toISOString().split('T')[0];
+
+    showLoading();
+    await db.ref('users/' + na).update({ endDate: newEnd, active: true });
+    document.getElementById('editEnd').value = newEnd;
+    document.getElementById('editDaysLeft').textContent = calcularDiasRestantes(newEnd);
+    hideLoading();
+    showDevName();
+    showToast('Plano renovado por +30 dias!', 'success');
+}
+
+async function deleteUser() {
+    const na = document.getElementById('editNaVal').value;
+    const name = document.getElementById('editName').value;
+    if (confirm(`Excluir o aluno ${name} (NA: ${na})?`)) {
+        showLoading();
+        await db.ref('users/' + na).remove();
+        closeModal('modalEdit');
+        hideLoading();
+        showToast('Aluno excluído.', 'success');
+    }
+}
+
+// ===== EXPERIMENTAL CLASSES =====
+async function cadastrarAulaExperimental() {
+    const nome = document.getElementById('expNome');
+    const telefone = document.getElementById('expTelefone');
+    const bairro = document.getElementById('expBairro');
+    const rua = document.getElementById('expRua');
+    const sexo = document.querySelector('input[name="expSexo"]:checked');
+
+    let valid = true;
+    if (!validateInput(nome)) valid = false;
+    if (!validateInput(telefone)) valid = false;
+    if (!validateInput(bairro)) valid = false;
+    if (!validateInput(rua)) valid = false;
+    if (!sexo) {
+        showToast('Selecione o sexo', 'error');
+        valid = false;
+    }
+    if (!valid) {
+        showToast('Preencha todos os campos obrigatórios', 'error');
+        return;
+    }
+
+    showLoading();
+    const now = new Date();
+    await db.ref('aulas_experimentais').push({
+        nome: nome.value.trim(),
+        telefone: telefone.value.trim(),
+        sexo: sexo.value,
+        bairro: bairro.value.trim(),
+        rua: rua.value.trim(),
+        data: now.toLocaleDateString('pt-BR'),
+        timestamp: Date.now()
+    });
+
+    // Clear form
+    nome.value = '';
+    telefone.value = '';
+    bairro.value = '';
+    rua.value = '';
+    document.querySelectorAll('input[name="expSexo"]').forEach(r => r.checked = false);
+    clearErrors(document.querySelector('#page-experimental'));
+
+    hideLoading();
+    showDevName();
+    showToast('Aula experimental cadastrada!', 'success');
+}
+
+function renderExperimentalTable() {
+    const tbody = document.getElementById('experimentalList');
+    const search = document.getElementById('searchExperimental').value.toLowerCase();
+
+    const entries = Object.entries(EXPERIMENTAL_DATA)
+        .filter(([id, a]) => {
+            if (!search) return true;
+            return (a.nome || '').toLowerCase().includes(search);
+        })
+        .sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+
+    if (entries.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Nenhuma aula experimental cadastrada</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = entries.map(([id, a]) => `
+        <tr>
+            <td><strong>${a.nome || '---'}</strong></td>
+            <td>${a.telefone || '---'}</td>
+            <td>${a.sexo || '---'}</td>
+            <td>${a.bairro || '---'}</td>
+            <td>${a.rua || '---'}</td>
+            <td>${a.data || '---'}</td>
+            <td>
+                <button class="btn btn-danger btn-sm" onclick="deletarAulaExp('${id}')">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+async function deletarAulaExp(id) {
+    if (confirm('Excluir este cadastro de aula experimental?')) {
+        showLoading();
+        await db.ref('aulas_experimentais/' + id).remove();
+        hideLoading();
+        showToast('Cadastro excluído.', 'success');
+    }
+}
+
+// ===== NOTES =====
+function abrirNovaNota() {
+    document.getElementById('noteId').value = '';
+    document.getElementById('noteTitle').value = '';
+    document.getElementById('noteText').value = '';
+    document.getElementById('noteModalTitle').textContent = 'Nova Anotação';
+    clearErrors(document.querySelector('#modalNote .modal-body'));
+    openModal('modalNote');
+}
+
+async function salvarNota() {
+    const id = document.getElementById('noteId').value;
+    const titleInput = document.getElementById('noteTitle');
+    const textInput = document.getElementById('noteText');
+
+    let valid = true;
+    if (!validateInput(titleInput)) valid = false;
+    if (!validateInput(textInput)) valid = false;
+    if (!valid) {
+        showToast('Preencha título e conteúdo', 'error');
+        return;
+    }
+
+    showLoading();
+    const now = new Date();
+    const data = {
+        titulo: titleInput.value.trim(),
+        texto: textInput.value.trim(),
+        data: now.toLocaleDateString('pt-BR'),
+        hora: now.toLocaleTimeString('pt-BR'),
+        timestamp: Date.now()
+    };
+
+    if (id) {
+        await db.ref('anotacoes/' + id).update(data);
+        showToast('Anotação atualizada!', 'success');
+    } else {
+        await db.ref('anotacoes').push(data);
+        showToast('Anotação criada!', 'success');
+    }
+
+    closeModal('modalNote');
+    hideLoading();
+    showDevName();
+}
+
+function renderNotes() {
+    const container = document.getElementById('notesList');
+    const entries = Object.entries(NOTES_DATA)
+        .sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+
+    if (entries.length === 0) {
+        container.innerHTML = '<div class="empty-state">Nenhuma anotação criada</div>';
+        return;
+    }
+
+    container.innerHTML = entries.map(([id, n]) => `
+        <div class="list-item" onclick="verNota('${id}')" style="cursor: pointer;">
+            <div class="list-item-content">
+                <div class="list-item-title">${n.titulo || 'Sem título'}</div>
+                <div class="list-item-sub">${n.data || ''} ${n.hora || ''}</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+    `).join('');
+}
+
+function verNota(id) {
+    const n = NOTES_DATA[id];
+    if (!n) return;
+    currentViewNoteId = id;
+    document.getElementById('viewNoteTitle').textContent = n.titulo || 'Sem título';
+    document.getElementById('viewNoteDate').textContent = `${n.data || ''} ${n.hora || ''}`;
+    document.getElementById('viewNoteText').textContent = n.texto || '';
+    openModal('modalViewNote');
+}
+
+function baixarPDF() {
+    const n = NOTES_DATA[currentViewNoteId];
+    if (!n) return;
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text(n.titulo || 'Sem título', 20, 25);
+    doc.setFontSize(10);
+    doc.setTextColor(120);
+    doc.text(`${n.data || ''} ${n.hora || ''}`, 20, 35);
+    doc.setTextColor(0);
+    doc.setFontSize(12);
+    const lines = doc.splitTextToSize(n.texto || '', 170);
+    doc.text(lines, 20, 50);
+    doc.save('anotacao_' + (n.titulo || 'sem_titulo').replace(/\s+/g, '_') + '.pdf');
+}
+
+async function excluirNota() {
+    if (!currentViewNoteId) return;
+    if (confirm('Excluir esta anotação?')) {
+        showLoading();
+        await db.ref('anotacoes/' + currentViewNoteId).remove();
+        hideLoading();
+        closeModal('modalViewNote');
+        showToast('Anotação excluída.', 'success');
+    }
+}
+
+// ===== VIDEOS =====
+async function buscarVideos(termo) {
+    const grid = document.getElementById('videoGrid');
+    if (!termo || !termo.trim()) {
+        showToast('Digite um termo para buscar', 'error');
+        return;
+    }
+
+    showLoading();
+    try {
+        const r = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=12&q=${encodeURIComponent(termo)}&key=${YOUTUBE_API_KEY}`
+        );
+        const data = await r.json();
+
+        if (data.error) {
+            grid.innerHTML = '<div class="empty-state">Erro na API do YouTube. Tente novamente.</div>';
+            hideLoading();
+            return;
+        }
+
+        if (!data.items || data.items.length === 0) {
+            grid.innerHTML = '<div class="empty-state">Nenhum vídeo encontrado</div>';
+            hideLoading();
+            return;
+        }
+
+        grid.innerHTML = data.items.map(v => `
+            <div class="video-card" onclick="playVideo('${v.id.videoId}')">
+                <img src="${v.snippet.thumbnails.medium.url}" alt="${v.snippet.title.replace(/"/g, '&quot;')}">
+                <div class="video-card-title">${v.snippet.title}</div>
+            </div>
+        `).join('');
+    } catch (e) {
+        grid.innerHTML = '<div class="empty-state">Erro ao buscar vídeos</div>';
+    }
+    hideLoading();
+}
+
+function playVideo(videoId) {
+    document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    openModal('modalPlayer');
+}
+
+// ===== PANIC =====
+async function registrarPanico() {
+    if (!confirm('Registrar ocorrência de pânico agora?')) return;
+
+    showLoading();
+    const now = new Date();
+    await db.ref('panico_logs').push({
+        data: now.toLocaleDateString('pt-BR'),
+        hora: now.toLocaleTimeString('pt-BR'),
+        timestamp: Date.now()
+    });
+    hideLoading();
+    showDevName();
+    showToast('Ocorrência registrada!', 'success');
+}
+
+function renderPanicList() {
+    const container = document.getElementById('panicList');
+    const entries = Object.entries(PANIC_DATA)
+        .sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+
+    if (entries.length === 0) {
+        container.innerHTML = '<div class="empty-state">Nenhuma ocorrência registrada</div>';
+        return;
+    }
+
+    container.innerHTML = entries.map(([id, p]) => `
+        <div class="list-item">
+            <div class="list-item-content">
+                <div class="list-item-title">Ocorrência</div>
+                <div class="list-item-sub">${p.data || ''} às ${p.hora || ''}</div>
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="excluirPanico('${id}')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+        </div>
+    `).join('');
+}
+
+async function excluirPanico(id) {
+    if (confirm('Excluir este registro?')) {
+        showLoading();
+        await db.ref('panico_logs/' + id).remove();
+        hideLoading();
+    }
+}
+
+// ===== INPUT VALIDATION ON BLUR =====
+document.addEventListener('blur', function(e) {
+    if (e.target.matches('.form-input, .form-textarea, .search-input')) {
+        if (e.target.hasAttribute('required') && !e.target.value.trim()) {
+            e.target.classList.add('error');
+        } else {
+            e.target.classList.remove('error');
+        }
+    }
+}, true);
+
+document.addEventListener('input', function(e) {
+    if (e.target.matches('.form-input, .form-textarea, .search-input')) {
+        if (e.target.classList.contains('error') && e.target.value.trim()) {
+            e.target.classList.remove('error');
+        }
+    }
+});
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+    // Small delay to ensure everything is ready
+    setTimeout(() => {
+        hideLoading();
+    }, 500);
+});
 </script>
 </body>
 </html>
