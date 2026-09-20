@@ -1,544 +1,292 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>DomusFit - Inicio</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dashboard - Academia</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{background:#f8fafc;font-family:'Inter',sans-serif;color:#1e293b;min-height:100vh;display:flex;flex-direction:column;padding-top:64px;}
+:root{
+  --green:#2e7d32;
+  --green-hover:#1b5e20;
+  --white:#ffffff;
+  --border:#e9eef3;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter', system-ui, -apple-system, sans-serif}
 
-/* HEADER */
-.app-header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #e9eef3;z-index:30;}
-.logo{height:38px;width:auto;}
-.menu-btn{width:30px;height:22px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;background:transparent;border:none;}
-.menu-btn div{height:3px;background:#1e293b;border-radius:2px;transition:all .3s;}
+html, body {
+  height: 100%;
+}
 
-/* MENU LATERAL */
-.menu-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:40;display:none;}
-.menu-overlay.aberto{display:block;}
-.menu-box{position:fixed;top:0;right:-280px;width:270px;height:100%;background:#fff;padding:24px 20px;box-shadow:-4px 0 20px rgba(0,0,0,0.12);transition:right .35s ease;z-index:50;overflow-y:auto;}
-.menu-box.aberto{right:0;}
-.menu-close{font-size:28px;cursor:pointer;color:#4b5563;text-align:right;margin-bottom:8px;background:transparent;border:none;width:100%;}
-.menu-box h3{font-size:18px;color:#0f3b2c;border-bottom:2px solid #2c6e2c;padding-bottom:12px;margin-bottom:20px;}
-.menu-link{display:flex;align-items:center;padding:12px 0;cursor:pointer;border-bottom:1px solid #f1f5f9;gap:14px;text-decoration:none;color:#1e293b;}
-.menu-link:hover{background:#f8fafc;padding-left:6px;transition:0.2s;}
-.menu-link img{width:28px;height:28px;object-fit:contain;}
-
-/* CONTEUDO PRINCIPAL */
-.main-content{flex:1;padding:16px;max-width:480px;width:100%;margin:0 auto;}
-
-/* ALUNO CONTAINER */
-.aluno-container{background:#fff;border-radius:0;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.06);margin-bottom:20px;border:1px solid #e9eef3;}
-.aluno-header{display:flex;align-items:center;gap:16px;margin-bottom:12px;}
-.foto-perfil{width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid #2c6e2c;cursor:pointer;background:#f1f5f9;}
-.aluno-header h2{font-size:18px;color:#0f3b2c;}
-.aluno-info p{font-size:14px;color:#4b5563;padding:4px 0;border-bottom:1px solid #f1f5f9;}
-.aluno-info p:last-child{border-bottom:none;}
-.aluno-info strong{color:#1e293b;}
-
-/* OPCOES GRID */
-.opcoes-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;}
-.opcao-card{background:#fff;border:1px solid #e9eef3;padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.04);text-decoration:none;color:#1e293b;}
-.opcao-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.08);border-color:#2c6e2c;}
-.opcao-card img{width:44px;height:44px;object-fit:contain;margin-bottom:8px;}
-.opcao-card span{display:block;font-size:13px;font-weight:600;}
-
-/* CARROSSEL */
-.carrossel-container{width:100%;overflow:hidden;position:relative;background:#0f172a;margin-bottom:16px;}
-.carrossel{display:flex;transition:transform .7s ease-in-out;}
-.slide-item{min-width:100%;height:280px;position:relative;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;}
-.slide-item img{width:100%;height:100%;object-fit:cover;filter:brightness(0.7);}
-.slide-texto{position:absolute;bottom:0;width:100%;padding:24px 20px;background:linear-gradient(0deg,rgba(0,0,0,0.8),transparent);color:#fff;text-align:center;}
-.slide-texto h2{font-size:1.3rem;margin-bottom:4px;}
-.slide-texto p{font-size:0.85rem;opacity:0.9;}
-
-/* BOTOES SOCIAIS FLUTUANTES */
-.social-float{position:fixed;bottom:24px;right:20px;display:flex;flex-direction:column;gap:10px;z-index:20;}
-.social-float a img{width:50px;height:50px;object-fit:contain;box-shadow:0 2px 12px rgba(0,0,0,0.15);transition:transform 0.2s;}
-.social-float a img:hover{transform:scale(1.08);}
-
-/* NOTIFICACAO TOAST */
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 24px;border-radius:40px;font-size:14px;z-index:60;display:none;max-width:90%;}
-
-/* MODAL FOTO */
-.modal-foto{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:70;backdrop-filter:blur(4px);}
-.modal-foto.aberto{display:flex;}
-.modal-foto-content{background:#fff;padding:24px;width:92%;max-width:520px;max-height:80vh;overflow-y:auto;}
-.modal-foto-content h3{font-size:18px;color:#0f3b2c;margin-bottom:16px;border-bottom:2px solid #e9eef3;padding-bottom:10px;}
-.modal-fechar{float:right;font-size:28px;cursor:pointer;color:#4b5563;background:transparent;border:none;}
-.grid-fotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:10px;}
-.grid-fotos img{width:100%;height:80px;object-fit:cover;cursor:pointer;border:3px solid transparent;transition:border 0.2s;}
-.grid-fotos img:hover{border-color:#2c6e2c;}
-
-/* RODAPE */
-.footer-img{width:100%;max-width:400px;margin:20px auto;display:block;}
-
-/* FORMULÁRIO COMPLEMENTAR - SOBREPOSIÇÃO */
-.form-complementar-overlay {
-  position: fixed;
-  inset: 0;
-  background: #ffffff;
-  z-index: 9999;
-  display: none;
+body{
+  min-height:100vh;
+  background: var(--green);
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-}
-.form-complementar-overlay.aberto {
-  display: flex;
-}
-.form-complementar-box {
-  width: 100%;
-  max-width: 420px;
-  background: #ffffff;
-  padding: 32px 24px;
-}
-.form-complementar-box h2 {
-  font-size: 22px;
-  font-weight: 700;
-  color: #1e293b;
-  margin-bottom: 12px;
-  text-align: center;
-}
-.form-complementar-box p {
-  font-size: 15px;
-  color: #1e293b;
-  text-align: center;
-  margin-bottom: 28px;
-  line-height: 1.5;
-}
-.form-complementar-box .campo {
-  margin-bottom: 18px;
-}
-.form-complementar-box .campo label {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 8px;
-}
-.form-complementar-box .campo input {
-  width: 100%;
-  padding: 14px 16px;
-  font-size: 16px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  border: 1px solid #cbd5e1;
-  border-radius: 0;
-  background: #ffffff;
-  color: #1e293b;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-}
-.form-complementar-box .campo input:focus {
-  border-color: #2c6e2c;
-}
-.form-complementar-box .campo input.erro {
-  border-color: #dc2626;
-}
-.form-complementar-box .btn-concluir {
-  width: 100%;
-  padding: 18px;
-  margin-top: 8px;
-  font-size: 16px;
-  font-weight: 700;
-  color: #ffffff;
-  background: #2c6e2c;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-.form-complementar-box .btn-concluir:hover {
-  opacity: 0.9;
-}
-.form-complementar-box .btn-concluir:active {
-  opacity: 0.8;
+  padding: 24px;
+  overflow-x: hidden;
 }
 
-/* RESPONSIVO */
-@media(max-width:480px){
-  .opcoes-grid{gap:8px;}
-  .opcao-card{padding:12px 8px;}
-  .opcao-card img{width:36px;height:36px;}
-  .slide-item{height:200px;}
-  .form-complementar-box { padding: 24px 20px; }
+/* Container Principal */
+.welcome-wrap {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Logo */
+.logo-top {
+  height: 56px;
+  width: auto;
+  margin-bottom: 32px;
+}
+
+/* Título Boas-Vindas */
+.welcome-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 10px;
+  letter-spacing: -0.3px;
+}
+
+.welcome-sub {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 36px;
+  line-height: 1.5;
+}
+
+/* Botão Acessar - Branco sólido */
+.btn-acessar {
+  width: 100%;
+  max-width: 340px;
+  padding: 16px 24px;
+  background: #ffffff;
+  color: #1e293b;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-bottom: 14px;
+  letter-spacing: 0.3px;
+}
+.btn-acessar:hover { opacity: 0.92; }
+.btn-acessar:active { opacity: 0.85; }
+
+/* Botão Sair - Transparente com borda branca */
+.btn-sair {
+  width: 100%;
+  max-width: 340px;
+  padding: 16px 24px;
+  background: transparent;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-bottom: 36px;
+  letter-spacing: 0.3px;
+}
+.btn-sair:hover { background: rgba(255, 255, 255, 0.12); }
+.btn-sair:active { background: rgba(255, 255, 255, 0.2); }
+
+/* Plano do Usuário */
+.plano-info {
+  width: 100%;
+  max-width: 340px;
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  text-align: center;
+}
+.plano-info .plano-titulo {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.plano-info .plano-nome {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+.plano-info .plano-dias {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.5;
+}
+.plano-info .plano-aviso {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  line-height: 1.5;
+}
+
+/* Loading */
+#loadingScreen{
+  position:fixed;
+  inset:0;
+  background: var(--green);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  transition:opacity .4s;
+}
+.spinner{
+  width:44px;
+  height:44px;
+  border:4px solid rgba(255, 255, 255, 0.25);
+  border-top:4px solid #ffffff;
+  border-radius:50%;
+  animation:spin 0.9s linear infinite;
+}
+@keyframes spin{
+  0%{transform:rotate(0deg)}
+  100%{transform:rotate(360deg)}
+}
+
+@media (max-width: 480px) {
+  .welcome-title { font-size: 22px; }
+  .welcome-sub { font-size: 14px; margin-bottom: 30px; }
+  .logo-top { height: 48px; margin-bottom: 24px; }
 }
 </style>
 </head>
 <body>
 
-<header class="app-header">
-  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo" alt="DomusFit">
-  <button class="menu-btn" id="menuBtn" aria-label="Menu">
-    <div></div><div></div><div></div>
-  </button>
-</header>
-
-<div class="menu-overlay" id="menuOverlay"></div>
-<div class="menu-box" id="menuBox">
-  <button class="menu-close" id="menuClose">✕</button>
-  <h3>DomusFit Menu</h3>
-  <a class="menu-link" href="login.html">
-    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Sair">
-    <span>Sair da conta</span>
-  </a>
-  <a class="menu-link" href="treino.html">
-    <img src="https://cdn-icons-png.flaticon.com/512/2964/2964514.png" alt="Treinos">
-    <span>Meus treinos</span>
-  </a>
-  <a class="menu-link" href="corrida.html">
-    <img src="https://cdn-icons-png.flaticon.com/512/2972/2972246.png" alt="Corrida">
-    <span>Corrida e caminhada</span>
-  </a>
-  <a class="menu-link" href="dashboard.html">
-    <img src="https://cdn-icons-png.flaticon.com/512/3144/3144464.png" alt="Plano">
-    <span>Mensalidade / Meu Plano</span>
-  </a>
-  <a class="menu-link" href="chat.html">
-    <img src="https://cdn-icons-png.flaticon.com/512/724/724664.png" alt="Chat">
-    <span>Chat Zap</span>
-  </a>
+<div id="loadingScreen">
+    <div class="spinner"></div>
 </div>
 
-<div class="main-content">
+<div class="welcome-wrap">
 
-  <div class="aluno-container">
-    <div class="aluno-header">
-      <img class="foto-perfil" id="fotoPerfil" src="" alt="Foto">
-      <h2>Meus Dados</h2>
-    </div>
-    <div class="aluno-info">
-      <p><strong>Nome:</strong> <span id="nomeAluno">Carregando...</span></p>
-      <p><strong>NA:</strong> <span id="naAluno">Carregando...</span></p>
-      <p style="font-size:12px;color:#6c757d;margin-top:8px;">Nao compartilhe seu NA com terceiros.</p>
-    </div>
+  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-top" alt="DomusFit">
+
+  <h1 class="welcome-title">Bem-vindo de volta!</h1>
+  <p class="welcome-sub" id="welcomeSub">Carregando...</p>
+
+  <button class="btn-acessar" onclick="window.location.href='index.html'">ACESSAR</button>
+  <button class="btn-sair" onclick="logout()">SAIR</button>
+
+  <div class="plano-info" id="planoInfoBox">
+    <div class="plano-titulo">Seu Plano</div>
+    <div class="plano-nome" id="planoNome">Carregando...</div>
+    <div class="plano-dias" id="planoDias">Aguarde...</div>
+    <div class="plano-aviso">Para renovar, fale com a administração da academia.</div>
   </div>
 
-  <div class="carrossel-container">
-    <div class="carrossel" id="carrossel">
-      <div class="slide-item"><img src="https://www.polar.com/img/cms/ace4fffbd0d795347afa99983af8a72d780153b7-3489x1841-2880.webp" alt="Cardio"><div class="slide-texto"><h2>Cardio</h2><p>Fortalece coracao e pulmoes</p></div></div>
-      <div class="slide-item"><img src="https://s2-ge.glbimg.com/1poTdSoDJL7BQu_ZqPQF9z_-wYY=/0x0:1253x836/600x0/smart/filters:gifv():strip_icc()/i.s3.glbimg.com/v1/AUTH_bc8228b6673f488aa253bbcb03c80ec5/internal_photos/bs/2021/a/l/Lx0f1GQHak9pFJj2uCxw/exercicios-em-casa.jpg" alt="Preparacao"><div class="slide-texto"><h2>Preparacao</h2><p>Alongamentos e aquecimento</p></div></div>
-      <div class="slide-item"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQiCW9edkIFEoRj1brXl4X83sOTRUGfGhmoiu8u8AR42-pCsO6ZihZj58&s=10" alt="Creatina"><div class="slide-texto"><h2>Creatina</h2><p>Energia e desempenho muscular</p></div></div>
-      <div class="slide-item"><img src="https://assets.entrepreneur.com/content/3x2/2000/20190620131326-Example-of-Personal-Trainer-Business-Ideas-Bigstock-4000pxW-X-2670pxH-copy.jpeg" alt="Personal"><div class="slide-texto"><h2>Personal Trainer</h2><p>Programas personalizados</p></div></div>
-      <div class="slide-item"><img src="https://media.istockphoto.com/id/1441694626/pt/foto/hand-of-athlete-woman-holding-dumbbell-from-the-rack-in-the-gym-muscular-fitness-female.jpg?s=612x612&w=0&k=20&c=keUz19Hez2bL8unh6rbVKqQOZ2Ypub0d9seVKT1o9Ak=" alt="Organizacao"><div class="slide-texto"><h2>Organizacao</h2><p>Rotinas para equilibrio diario</p></div></div>
-    </div>
-  </div>
-
-  <div class="opcoes-grid">
-    <a class="opcao-card" href="videos.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/3144/3144456.png" alt="Videos">
-      <span>Videos e resumos</span>
-    </a>
-    <a class="opcao-card" href="calendario.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/929/929452.png" alt="Calendario">
-      <span>Calendario de treinos</span>
-    </a>
-    <a class="opcao-card" href="dashboard.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/2910/2910783.png" alt="Plano">
-      <span>Meu Plano</span>
-    </a>
-    <a class="opcao-card" href="treino.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/2964/2964514.png" alt="Treino">
-      <span>Tempo de treino</span>
-    </a>
-    <a class="opcao-card" href="re.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/3145/3145131.png" alt="Feedback">
-      <span>Feedback</span>
-    </a>
-    <a class="opcao-card" href="corrida.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/2972/2972246.png" alt="Corrida">
-      <span>Corrida e caminhada</span>
-    </a>
-    <a class="opcao-card" href="avaliar.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/3176/3176366.png" alt="Perguntas">
-      <span>Perguntas e respostas</span>
-    </a>
-    <a class="opcao-card" href="na.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="NA">
-      <span>Sobre o NA</span>
-    </a>
-  </div>
-
-  <img class="footer-img" src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000045-3172131723/700/6DB5AA35-5D1A-4000-8C13-247494510087.webp" alt="DomusFit">
-
-</div>
-
-<div class="social-float">
-  <a href="https://www.instagram.com/domusfit__/" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/600px-Instagram_icon.png" alt="Instagram"></a>
-  <a href="https://wa.me/5584991078696" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/512px-WhatsApp.svg.png" alt="WhatsApp"></a>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<div class="modal-foto" id="modalFoto">
-  <div class="modal-foto-content">
-    <button class="modal-fechar" onclick="fecharModalFoto()">✕</button>
-    <h3>Selecione sua foto de perfil</h3>
-    <div class="grid-fotos" id="gridFotos"></div>
-  </div>
-</div>
-
-<!-- FORMULÁRIO COMPLEMENTAR (aparece se faltar telefone/endereço) -->
-<div class="form-complementar-overlay" id="formComplementarOverlay">
-  <div class="form-complementar-box">
-    <h2>Continue seu cadastro</h2>
-    <p>Preencha as informacoes que faltam para usar todas as ferramentas da academia.</p>
-    <div class="campo">
-      <label>Telefone</label>
-      <input type="tel" id="compTelefone" placeholder="(00) 00000-0000" inputmode="tel">
-    </div>
-    <div class="campo">
-      <label>Bairro</label>
-      <input type="text" id="compBairro" placeholder="Seu bairro" inputmode="text">
-    </div>
-    <div class="campo">
-      <label>Rua</label>
-      <input type="text" id="compRua" placeholder="Nome da rua" inputmode="text">
-    </div>
-    <button class="btn-concluir" id="btnConcluirCadastro">Concluir</button>
-  </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-// FIREBASE
+// Configuração Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
   authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
   projectId: "prefeitura-de-joao-camara",
   storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
+  messagingSenderId: "269299041577",
+  appId: "1:269299041577:web:fd41b2939240e9eb476338",
+  measurementId: "G-YT7NHR342J"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-const loggedUser = localStorage.getItem('loggedUser');
-const userRef = loggedUser ? db.ref('users/' + loggedUser) : null;
-
-const DEFAULT_AVATAR = 'https://ui-avatars.com/api/?background=2c6e2c&color=fff&name=User';
-
-const IMAGE_OPTIONS = [
-  'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691505.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJN1lHhM68w8n8VIGmiUGzO59Y_BiHfJXt86m94_wH-Q&s=10',
-  'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691491.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTecuIAp5S0xUeEEw1aVvfdERFYmkOzSrHNnmt5HCCl-g&s=10',
-  'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666670.jpg',
-  'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666661.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRe9uWfgvRM-afv5rw3X2aWR-1njImjPVPmKYnjmG7nTg&s=10',
-  'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666664.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQME5j8LTjIK3djuBJAoThzmjxPSaQm4xKZmuJkkL2Zg&s=10',
-  'https://img.freepik.com/fotos-gratis/retrato-de-personagem-de-anime-fazendo-fitness-e-exercicio_23-2151666658.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWyLuxokYGHoes2CTsZY35kxr0AoBtklklSash7qE9qQ&s=10',
-  'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691385.jpg',
-  'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691377.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMFLuN0I_uPtGRR2Mb7zkf_eKpmSSknQrI_sxSt_shrw&s=10',
-  'https://img.freepik.com/fotos-gratis/homem-de-fitness-de-desenho-animado-3d_23-2151691457.jpg',
-  'https://64.media.tumblr.com/badc82a2f1ade24ed34d3de251e21f7f/582f7acddc2418d8-f6/s540x810/f92ee2a43e1f4dcfc989886e91ce6ff934173465.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyOlFEluzKTe_KXdzF7oCg3kbh63G9EkmRsKGJ5xc-Eg&s=10',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpKi_6slFAGAV0DBmXWcD2BluGhgmEdZsNppI_GLFc1Q&s=10',
-  'https://img.freepik.com/free-photo/portrait-anime-character-doing-fitness-exercising_23-2151666659.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTApOa8fmlisFHwqVYpdE3MN1eBEyYOHOZXRffwWRqWbg&s=10'
-];
-
-// Elementos
-const nomeEl = document.getElementById('nomeAluno');
-const naEl = document.getElementById('naAluno');
-const fotoPerfilEl = document.getElementById('fotoPerfil');
-const modalFoto = document.getElementById('modalFoto');
-const gridFotos = document.getElementById('gridFotos');
-const toast = document.getElementById('toast');
-
-// MENU
-const menuBtn = document.getElementById('menuBtn');
-const menuBox = document.getElementById('menuBox');
-const menuOverlay = document.getElementById('menuOverlay');
-const menuClose = document.getElementById('menuClose');
-
-function toggleMenu(abrir){
-  menuBox.classList.toggle('aberto', abrir);
-  menuOverlay.classList.toggle('aberto', abrir);
-}
-menuBtn.onclick = () => toggleMenu(true);
-menuClose.onclick = () => toggleMenu(false);
-menuOverlay.onclick = () => toggleMenu(false);
-
-// REDIRECIONAMENTO
-function redirectToLogin(){
-  localStorage.removeItem('loggedUser');
+// Verificação de autenticação
+const logged = localStorage.getItem('loggedUser');
+if (!logged) {
   window.location.href = 'login.html';
 }
 
-// TOAST
-function showToast(msg){
-  toast.textContent = msg;
-  toast.style.display = 'block';
-  setTimeout(() => { toast.style.display = 'none'; }, 3000);
+const welcomeSubEl = document.getElementById('welcomeSub');
+const planoNomeEl = document.getElementById('planoNome');
+const planoDiasEl = document.getElementById('planoDias');
+
+// Função para calcular dias restantes
+function calcularDiasRestantes(dataTermino) {
+  if (!dataTermino) return null;
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  const termino = new Date(dataTermino + 'T00:00:00');
+  termino.setHours(0, 0, 0, 0);
+  const diff = Math.ceil((termino - hoje) / (1000 * 60 * 60 * 24));
+  return diff;
 }
 
-// FOTO PERFIL
-function updateFoto(url){
-  fotoPerfilEl.src = url || DEFAULT_AVATAR;
-}
-
-// ===== FORMULÁRIO COMPLEMENTAR =====
-const formComplementarOverlay = document.getElementById('formComplementarOverlay');
-const compTelefone = document.getElementById('compTelefone');
-const compBairro = document.getElementById('compBairro');
-const compRua = document.getElementById('compRua');
-const btnConcluirCadastro = document.getElementById('btnConcluirCadastro');
-
-function verificarCadastroCompleto(user){
-  // Se falta telefone, bairro ou rua, mostra o formulário
-  const faltaTelefone = !user.phone || user.phone.trim() === '';
-  const faltaBairro = !user.bairro || user.bairro.trim() === '';
-  const faltaRua = !user.rua || user.rua.trim() === '';
-  
-  if(faltaTelefone || faltaBairro || faltaRua){
-    // Preenche o que já tem
-    if(user.phone) compTelefone.value = user.phone;
-    if(user.bairro) compBairro.value = user.bairro;
-    if(user.rua) compRua.value = user.rua;
-    
-    // Bloqueia scroll do body
-    document.body.style.overflow = 'hidden';
-    formComplementarOverlay.classList.add('aberto');
-  } else {
-    formComplementarOverlay.classList.remove('aberto');
-    document.body.style.overflow = '';
-  }
-}
-
-// Limpa erro ao digitar
-[compTelefone, compBairro, compRua].forEach(input => {
-  input.addEventListener('input', () => input.classList.remove('erro'));
-});
-
-btnConcluirCadastro.onclick = async () => {
-  const tel = compTelefone.value.trim();
-  const bai = compBairro.value.trim();
-  const rua = compRua.value.trim();
-  
-  let valido = true;
-  
-  if(!tel){
-    compTelefone.classList.add('erro');
-    valido = false;
-  }
-  if(!bai){
-    compBairro.classList.add('erro');
-    valido = false;
-  }
-  if(!rua){
-    compRua.classList.add('erro');
-    valido = false;
-  }
-  
-  if(!valido){
-    showToast('Preencha todos os campos');
-    return;
-  }
-  
-  if(!loggedUser) return;
-  
-  btnConcluirCadastro.disabled = true;
-  btnConcluirCadastro.textContent = 'Salvando...';
-  
-  try {
-    await userRef.update({
-      phone: tel,
-      bairro: bai,
-      rua: rua
-    });
-    
-    formComplementarOverlay.classList.remove('aberto');
-    document.body.style.overflow = '';
-    showToast('Cadastro completado com sucesso!');
-  } catch(e) {
-    showToast('Erro ao salvar. Tente novamente.');
-  } finally {
-    btnConcluirCadastro.disabled = false;
-    btnConcluirCadastro.textContent = 'Concluir';
-  }
-};
-
-// ===== CARREGAR DADOS =====
-function carregarDados(){
-  if(!loggedUser){ redirectToLogin(); return; }
-  
-  userRef.get().then(snap => {
-    if(snap.exists()){
-      const user = snap.val();
-      nomeEl.textContent = user.name || 'Nao informado';
-      naEl.textContent = loggedUser;
-      updateFoto(user.profileImageUrl);
-      
-      // Verifica se precisa completar cadastro
-      verificarCadastroCompleto(user);
-      
-      // Listener em tempo real
-      userRef.on('value', s => {
-        const u = s.val();
-        if(u){
-          updateFoto(u.profileImageUrl);
-          // Re-verifica se ainda falta algo (caso outro dispositivo complete)
-          verificarCadastroCompleto(u);
-        }
-      });
-    } else {
-      redirectToLogin();
+// Monitoramento em Tempo Real
+if (logged) {
+  const userRef = db.ref('users/' + logged);
+  userRef.on('value', snap => {
+    if (!snap.exists()) {
+      alert('Usuário não encontrado.');
+      logout();
+      return;
     }
-  }).catch(() => redirectToLogin());
-}
 
-// MODAL FOTO
-function abrirModalFoto(){
-  if(!loggedUser) return;
-  gridFotos.innerHTML = '';
-  IMAGE_OPTIONS.forEach(url => {
-    const img = document.createElement('img');
-    img.src = url;
-    img.onclick = () => selecionarFoto(url);
-    gridFotos.appendChild(img);
+    const u = snap.val();
+    const hoje = new Date().toISOString().slice(0, 10);
+
+    // Verificação de Atividade
+    if (u.endDate && u.endDate < hoje) {
+      alert('Seu plano está expirado. Fale com a administração para renovar.');
+      // Continua mostrando a tela, mas com aviso
+    }
+
+    // Nome de boas-vindas
+    const primeiroNome = (u.name || 'Aluno').split(' ')[0];
+    welcomeSubEl.textContent = 'Olá, ' + primeiroNome + '!';
+
+    // Plano
+    planoNomeEl.textContent = u.planName || 'Sem plano';
+
+    // Dias restantes
+    if (u.endDate) {
+      const dias = calcularDiasRestantes(u.endDate);
+      if (dias < 0) {
+        planoDiasEl.textContent = 'Plano expirado em ' + u.endDate + '. Fale com a administração.';
+      } else if (dias === 0) {
+        planoDiasEl.textContent = 'Seu plano expira hoje.';
+      } else if (dias === 1) {
+        planoDiasEl.textContent = 'Falta 1 dia para expirar.';
+      } else {
+        planoDiasEl.textContent = 'Faltam ' + dias + ' dias para expirar.';
+      }
+    } else {
+      planoDiasEl.textContent = 'Data de expiração não informada.';
+    }
+
+    // Esconde loading
+    const loading = document.getElementById('loadingScreen');
+    loading.style.opacity = '0';
+    setTimeout(() => { loading.style.display = 'none'; }, 400);
+  }, err => {
+    console.error(err);
+    document.getElementById('loadingScreen').style.display = 'none';
   });
-  modalFoto.classList.add('aberto');
 }
 
-function fecharModalFoto(){
-  modalFoto.classList.remove('aberto');
+function logout() {
+  localStorage.removeItem('loggedUser');
+  window.location.href = 'login.html';
 }
-
-function selecionarFoto(url){
-  if(!loggedUser) return;
-  userRef.update({ profileImageUrl: url })
-    .then(() => {
-      updateFoto(url);
-      fecharModalFoto();
-      showToast('Foto atualizada com sucesso');
-    })
-    .catch(() => showToast('Erro ao salvar foto'));
-}
-
-fotoPerfilEl.onclick = abrirModalFoto;
-modalFoto.addEventListener('click', e => { if(e.target === modalFoto) fecharModalFoto(); });
-
-// CARROSSEL
-let slideAtual = 0;
-const carrossel = document.getElementById('carrossel');
-const totalSlides = document.querySelectorAll('.slide-item').length;
-
-function mudarSlide(){
-  slideAtual = (slideAtual + 1) % totalSlides;
-  carrossel.style.transform = `translateX(-${slideAtual * 100}%)`;
-}
-let intervalo = setInterval(mudarSlide, 5000);
-carrossel.addEventListener('mouseenter', () => clearInterval(intervalo));
-carrossel.addEventListener('mouseleave', () => { intervalo = setInterval(mudarSlide, 5000); });
-
-// INICIALIZA
-carregarDados();
 </script>
+
 </body>
 </html>
