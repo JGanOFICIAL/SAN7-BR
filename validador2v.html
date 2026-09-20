@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Validador</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:#ffffff;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  color:#0b1a2e;
+  padding:0 1rem;
+}
+
+header{
+  width:100%;
+  max-width:900px;
+  padding:2.5rem 1rem 1.2rem;
+  text-align:center;
+}
+
+.main-title{
+  font-size:2.4rem;
+  font-weight:700;
+  letter-spacing:1px;
+  color:#0b1a2e;
+}
+
+.sub-title{
+  font-size:1rem;
+  font-weight:300;
+  color:#4a6a8a;
+  margin-top:0.4rem;
+  letter-spacing:2px;
+}
+
+.content{
+  max-width:780px;
+  width:100%;
+  padding:1.5rem 0 5rem;
+}
+
+/* Bolinha preta pequena de loading */
+.loading-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:3rem 0;
+  gap:1rem;
+}
+
+.mini-spinner{
+  width:26px;
+  height:26px;
+  border:3px solid #e5e5e5;
+  border-top-color:#0b1a2e;
+  border-radius:50%;
+  animation:girar 0.85s linear infinite;
+}
+
+@keyframes girar{to{transform:rotate(360deg);}}
+
+.loading-text{
+  font-size:0.9rem;
+  color:#4a6a8a;
+  letter-spacing:1px;
+}
+
+/* Bloco do comprovante */
+.doc{
+  padding:1rem 0 0.5rem;
+}
+
+.doc-linha{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:1rem;
+  padding:0.85rem 0;
+  border-bottom:1px dashed #cfd8e3;
+  font-size:0.98rem;
+}
+
+.doc-linha:last-child{border-bottom:none;}
+
+.doc-rotulo{
+  color:#5a7a9a;
+  font-weight:400;
+  letter-spacing:0.5px;
+}
+
+.doc-valor{
+  color:#0b1a2e;
+  font-weight:600;
+  text-align:right;
+  word-break:break-word;
+}
+
+.doc-secao{
+  margin-top:1.5rem;
+  padding-top:1rem;
+  border-top:2px solid #eef2f7;
+}
+
+.doc-secao-title{
+  font-size:0.8rem;
+  color:#4a6a8a;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:0.6rem;
+}
+
+.msg-erro{
+  text-align:center;
+  padding:2rem 1rem;
+  color:#b3241c;
+  font-size:0.95rem;
+  line-height:1.7;
+}
+
+/* Botão flutuante redondo */
+.btn-flutuante{
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  background:#0b1a2e;
+  color:#ffffff;
+  border:none;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(11,26,46,0.35);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  font-family:inherit;
+  font-weight:700;
+  line-height:1;
+  transition:transform 0.15s, background 0.15s;
+  z-index:100;
+}
+
+.btn-flutuante:hover{background:#1a2f44;transform:scale(1.06);}
+.btn-flutuante.visivel{display:flex;}
+
+.btn-flutuante::after{
+  content:'';
+  display:inline-block;
+  width:12px;
+  height:12px;
+  border-left:2.5px solid #ffffff;
+  border-bottom:2.5px solid #ffffff;
+  transform:rotate(45deg);
+  margin-left:4px;
+  margin-top:-2px;
+}
+
+/* Rodapé discreto */
+.rodape-min{
+  width:100%;
+  max-width:900px;
+  text-align:center;
+  padding:1.5rem 0 2rem;
+  font-size:0.72rem;
+  color:#b8c2cc;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1 class="main-title">Validador</h1>
+  <div class="sub-title">Conferência de comprovante de ponto</div>
+</header>
+
+<div class="content" id="conteudo">
+  <div class="loading-wrap" id="loadingWrap">
+    <div class="mini-spinner"></div>
+    <div class="loading-text">Carregando comprovante...</div>
+  </div>
+</div>
+
+<div class="rodape-min">Academia DomusFit</div>
+
+<button class="btn-flutuante" id="btnVoltar" title="Voltar" onclick="voltarIndex()"></button>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+  authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
+  projectId: "prefeitura-de-joao-camara",
+  storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
+  databaseURL: "https://prefeitura-de-joao-camara-default-rtdb.firebaseio.com"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const params = new URLSearchParams(window.location.search);
+const idValidador = params.get('id');
+
+const conteudo = document.getElementById('conteudo');
+const loadingWrap = document.getElementById('loadingWrap');
+const btnVoltar = document.getElementById('btnVoltar');
+
+function voltarIndex(){
+  window.location.href = "index2.html";
+}
+
+function escapar(txt){
+  if(txt === null || txt === undefined) return '--';
+  return String(txt)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function renderComprovante(d){
+  conteudo.innerHTML = `
+    <div class="doc">
+      <div class="doc-linha">
+        <span class="doc-rotulo">Nome</span>
+        <span class="doc-valor">${escapar(d.nome)}</span>
+      </div>
+      <div class="doc-linha">
+        <span class="doc-rotulo">Número de Acesso (NA)</span>
+        <span class="doc-valor">${escapar(d.na)}</span>
+      </div>
+      <div class="doc-linha">
+        <span class="doc-rotulo">Data</span>
+        <span class="doc-valor">${escapar(d.data)}</span>
+      </div>
+      <div class="doc-linha">
+        <span class="doc-rotulo">Hora de finalização</span>
+        <span class="doc-valor">${escapar(d.hora)}</span>
+      </div>
+      <div class="doc-linha">
+        <span class="doc-rotulo">Cálculo de verificação</span>
+        <span class="doc-valor">${escapar(d.calculo)}</span>
+      </div>
+      <div class="doc-linha">
+        <span class="doc-rotulo">Status</span>
+        <span class="doc-valor">Finalizado</span>
+      </div>
+
+      <div class="doc-secao">
+        <div class="doc-secao-title">Identificação do documento</div>
+        <div class="doc-linha">
+          <span class="doc-rotulo">ID de validação</span>
+          <span class="doc-valor">${escapar(d.id)}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderErro(msg){
+  conteudo.innerHTML = `
+    <div class="msg-erro">
+      ${msg}
+    </div>
+  `;
+}
+
+function iniciar(){
+  if(!idValidador){
+    renderErro('Nenhum ID de validação foi informado na URL.<br>Verifique o link recebido e tente novamente.');
+    return;
+  }
+
+  db.ref("comprovantes/" + idValidador).once("value").then(snap => {
+    if(!snap.exists()){
+      renderErro('Comprovante não encontrado.<br>O ID informado não corresponde a nenhum registro válido.');
+      return;
+    }
+    const dados = snap.val();
+    renderComprovante(dados);
+    btnVoltar.classList.add('visivel');
+  }).catch(err => {
+    console.error(err);
+    renderErro('Não foi possível carregar o comprovante.<br>Tente novamente em alguns instantes.');
+  });
+}
+
+iniciar();
+</script>
+</body>
+</html>
