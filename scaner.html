@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verificação de Comprovante</title>
+<title>Validador</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 
@@ -16,7 +17,7 @@ body{
   align-items:center;
   font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
   color:#000000;
-  padding:0 1rem 6rem;
+  padding:0 1rem 4rem;
 }
 
 header{
@@ -47,7 +48,7 @@ header{
   padding:1.5rem 0 3rem;
 }
 
-/* Bolinha preta grande e fina */
+/* Bolinha preta GRANDE e FINA */
 .loading-wrap{
   display:flex;
   flex-direction:column;
@@ -58,9 +59,9 @@ header{
 }
 
 .big-spinner{
-  width:150px;
-  height:150px;
-  border:4px solid #f0f0f0;
+  width:180px;
+  height:180px;
+  border:2px solid #e5e5e5;
   border-top-color:#000000;
   border-radius:50%;
   animation:girar 0.9s linear infinite;
@@ -75,7 +76,7 @@ header{
   letter-spacing:0.5px;
 }
 
-/* Bloco do documento */
+/* Documento */
 .doc{
   padding:1rem 0 0.5rem;
   color:#000000;
@@ -94,20 +95,9 @@ header{
 
 .doc-linha:last-child{border-bottom:none;}
 
-.doc-rotulo{
-  color:#000000;
-  opacity:0.65;
-  font-weight:400;
-}
+.doc-rotulo{color:#000000;opacity:0.65;font-weight:400;}
+.doc-valor{color:#000000;font-weight:600;text-align:right;word-break:break-word;}
 
-.doc-valor{
-  color:#000000;
-  font-weight:600;
-  text-align:right;
-  word-break:break-word;
-}
-
-/* NA borrado */
 .na-borrado{
   filter:blur(4px);
   user-select:none;
@@ -129,7 +119,6 @@ header{
   margin-bottom:0.6rem;
 }
 
-/* Termos */
 .termos{
   margin-top:2.5rem;
   padding-top:1.5rem;
@@ -142,7 +131,7 @@ header{
 
 .termos p{margin-bottom:0.5rem;}
 
-/* Selo oficial */
+/* Selo */
 .selo{
   text-align:center;
   padding:1.5rem 0 0.5rem;
@@ -211,7 +200,6 @@ header{
 
 .tabela tr:last-child td{border-bottom:none;}
 
-/* Total em destaque */
 .total-destaque{
   margin-top:1rem;
   padding:1rem 0;
@@ -222,60 +210,36 @@ header{
   border-top:2px solid #f0f0f0;
 }
 
-/* Botão flutuante largo verde */
-.btn-flutuante{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  width:100%;
-  background:#2E8B57;
-  color:#ffffff;
-  border:none;
-  cursor:pointer;
-  padding:18px 20px;
-  font-family:inherit;
-  font-size:16px;
-  font-weight:600;
-  letter-spacing:0.5px;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 -4px 14px rgba(0,0,0,0.12);
-  transition:background 0.15s;
-  z-index:100;
-}
-
-.btn-flutuante:hover{background:#25704A;}
-.btn-flutuante.visivel{display:flex;}
-
-/* Rodapé */
-.rodape-min{
-  width:100%;
-  max-width:900px;
-  text-align:center;
-  padding:1rem 0 5rem;
-  font-size:0.75rem;
-  color:#000000;
-  opacity:0.5;
-  letter-spacing:0.5px;
-}
-
-/* Consulta manual */
-.consulta-manual{
+/* Área de consulta / upload */
+.consulta-bloco{
   margin-top:2rem;
   padding-top:1.5rem;
   border-top:2px solid #f0f0f0;
 }
 
-.consulta-manual .campo-grupo{
+.consulta-bloco h3{
+  font-size:1rem;
+  font-weight:700;
+  color:#000000;
+  margin-bottom:0.6rem;
+}
+
+.consulta-bloco .desc{
+  font-size:0.9rem;
+  color:#000000;
+  opacity:0.7;
+  margin-bottom:1rem;
+  line-height:1.6;
+}
+
+.campo-grupo{
   display:flex;
   gap:10px;
   flex-wrap:wrap;
   align-items:flex-end;
 }
 
-.consulta-manual input{
+.campo-grupo input[type="text"]{
   flex:1;
   min-width:200px;
   padding:11px 14px;
@@ -287,12 +251,12 @@ header{
   background:#ffffff;
 }
 
-.consulta-manual input:focus{
+.campo-grupo input[type="text"]:focus{
   outline:none;
   border-color:#000000;
 }
 
-.consulta-manual button{
+.btn-padrao{
   padding:11px 22px;
   border-radius:6px;
   background:#000000;
@@ -302,10 +266,131 @@ header{
   font-family:inherit;
   font-size:14px;
   font-weight:600;
+  transition:background 0.15s;
 }
 
-.consulta-manual button:hover{
-  background:#333333;
+.btn-padrao:hover{background:#333333;}
+.btn-padrao:disabled{opacity:0.5;cursor:not-allowed;}
+
+.btn-secundario{
+  padding:11px 22px;
+  border-radius:6px;
+  background:#ffffff;
+  color:#000000;
+  border:1px solid #000000;
+  cursor:pointer;
+  font-family:inherit;
+  font-size:14px;
+  font-weight:600;
+}
+
+.btn-secundario:hover{background:#f5f5f5;}
+
+/* Área de upload */
+.upload-area{
+  border:2px dashed #d0d0d0;
+  border-radius:8px;
+  padding:2.5rem 1.5rem;
+  text-align:center;
+  cursor:pointer;
+  transition:all 0.15s;
+  background:#fafafa;
+}
+
+.upload-area:hover{
+  border-color:#000000;
+  background:#f0f0f0;
+}
+
+.upload-area.drag{
+  border-color:#000000;
+  background:#e8e8e8;
+}
+
+.upload-area .icone{
+  font-size:2.4rem;
+  color:#000000;
+  opacity:0.5;
+  margin-bottom:0.8rem;
+}
+
+.upload-area .titulo{
+  font-size:1rem;
+  font-weight:600;
+  color:#000000;
+  margin-bottom:0.4rem;
+}
+
+.upload-area .sub{
+  font-size:0.85rem;
+  color:#000000;
+  opacity:0.6;
+}
+
+.upload-area input[type="file"]{
+  display:none;
+}
+
+.preview-area{
+  margin-top:1.2rem;
+  display:none;
+}
+
+.preview-area.visivel{display:block;}
+
+.preview-img{
+  max-width:100%;
+  max-height:400px;
+  border-radius:6px;
+  border:1px solid #e5e5e5;
+  display:block;
+  margin:0 auto 1rem;
+}
+
+.preview-info{
+  font-size:0.85rem;
+  color:#000000;
+  opacity:0.7;
+  text-align:center;
+  margin-bottom:1rem;
+}
+
+.captcha-wrap{
+  margin:1.5rem 0;
+  display:flex;
+  justify-content:center;
+}
+
+.acoes-upload{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-top:1.5rem;
+}
+
+.aviso-box{
+  margin-top:1.2rem;
+  padding:1rem;
+  border-radius:6px;
+  font-size:0.9rem;
+  line-height:1.6;
+}
+
+.aviso-box.erro{background:#FFEAEA;color:#b3241c;}
+.aviso-box.ok{background:#E8F5EE;color:#1F6B3F;}
+.aviso-box.info{background:#F2F2F2;color:#000000;}
+
+/* Rodapé */
+.rodape-min{
+  width:100%;
+  max-width:900px;
+  text-align:center;
+  padding:1rem 0 2rem;
+  font-size:0.75rem;
+  color:#000000;
+  opacity:0.5;
+  letter-spacing:0.5px;
 }
 </style>
 </head>
@@ -323,8 +408,6 @@ header{
   </div>
 </div>
 
-<button class="btn-flutuante" id="btnVoltar" onclick="voltarIndex()">Voltar ao sistema</button>
-
 <div class="rodape-min">Academia DomusFit</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -341,7 +424,6 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 const conteudo = document.getElementById('conteudo');
-const btnVoltar = document.getElementById('btnVoltar');
 
 const params = new URLSearchParams(window.location.search);
 const serie = params.get('serie');
@@ -349,10 +431,6 @@ const mes = parseInt(params.get('mes'));
 const ano = parseInt(params.get('ano'));
 const check = params.get('check');
 const idParam = params.get('id');
-
-function voltarIndex(){
-  window.location.href = "index2.html";
-}
 
 function escapar(txt){
   if(txt === null || txt === undefined) return '--';
@@ -390,7 +468,7 @@ function renderErro(msg){
 }
 
 /* ============================================================
-   MODO 1: Consulta por ID (comprovante de finalização de ponto)
+   CONSULTA POR ID
    ============================================================ */
 function consultarPorId(id){
   db.ref("comprovantes/" + id).once("value").then(snap => {
@@ -398,8 +476,7 @@ function consultarPorId(id){
       renderErro('Comprovante não encontrado.<br>O ID informado não corresponde a nenhum registro válido.');
       return;
     }
-    const d = snap.val();
-    renderComprovantePonto(d);
+    renderComprovantePonto(snap.val());
   }).catch(err => {
     console.error(err);
     renderErro('Não foi possível carregar o comprovante.<br>Tente novamente em alguns instantes.');
@@ -407,9 +484,7 @@ function consultarPorId(id){
 }
 
 function renderComprovantePonto(d){
-  // NA borrado (mascarado visualmente)
   const naTexto = d.na ? String(d.na) : '--';
-
   conteudo.innerHTML = `
     <div class="selo">
       <div class="check">✓</div>
@@ -418,47 +493,24 @@ function renderComprovantePonto(d){
     </div>
 
     <div class="doc" style="margin-top:1.5rem;">
-      <div class="doc-linha">
-        <span class="doc-rotulo">Nome</span>
-        <span class="doc-valor">${escapar(d.nome)}</span>
-      </div>
-      <div class="doc-linha">
-        <span class="doc-rotulo">Número de acesso</span>
-        <span class="doc-valor na-borrado" title="Dado protegido">${escapar(naTexto)}</span>
-      </div>
-      <div class="doc-linha">
-        <span class="doc-rotulo">Data</span>
-        <span class="doc-valor">${escapar(d.data)}</span>
-      </div>
-      <div class="doc-linha">
-        <span class="doc-rotulo">Hora de finalização</span>
-        <span class="doc-valor">${escapar(d.hora)}</span>
-      </div>
-      <div class="doc-linha">
-        <span class="doc-rotulo">Cálculo de verificação</span>
-        <span class="doc-valor">${escapar(d.calculo)}</span>
-      </div>
-      <div class="doc-linha">
-        <span class="doc-rotulo">ID do documento</span>
-        <span class="doc-valor">${escapar(d.id)}</span>
-      </div>
-      <div class="doc-linha">
-        <span class="doc-rotulo">Status</span>
-        <span class="doc-valor">Autêntico</span>
-      </div>
+      <div class="doc-linha"><span class="doc-rotulo">Nome</span><span class="doc-valor">${escapar(d.nome)}</span></div>
+      <div class="doc-linha"><span class="doc-rotulo">Número de acesso</span><span class="doc-valor na-borrado" title="Dado protegido">${escapar(naTexto)}</span></div>
+      <div class="doc-linha"><span class="doc-rotulo">Data</span><span class="doc-valor">${escapar(d.data)}</span></div>
+      <div class="doc-linha"><span class="doc-rotulo">Hora de finalização</span><span class="doc-valor">${escapar(d.hora)}</span></div>
+      <div class="doc-linha"><span class="doc-rotulo">Cálculo de verificação</span><span class="doc-valor">${escapar(d.calculo)}</span></div>
+      <div class="doc-linha"><span class="doc-rotulo">ID do documento</span><span class="doc-valor">${escapar(d.id)}</span></div>
+      <div class="doc-linha"><span class="doc-rotulo">Status</span><span class="doc-valor">Autêntico</span></div>
     </div>
 
     <div class="termos">
       <p>Este documento foi verificado automaticamente pelo sistema DomusFit. A autenticidade é garantida pela consulta em banco de dados oficial.</p>
-      <p>O número de acesso do titular foi parcialmente mascarado por questões de privacidade, em conformidade com a Lei Geral de Proteção de Dados Pessoais.</p>
+      <p>O número de acesso do titular foi parcialmente mascarado por questões de privacidade.</p>
     </div>
   `;
-
-  btnVoltar.classList.add('visivel');
 }
 
 /* ============================================================
-   MODO 2: Consulta por série/mês/ano (documento de carga horária)
+   CONSULTA POR SÉRIE/MÊS/ANO (documento de carga horária)
    ============================================================ */
 function consultarPorSerie(){
   Promise.all([
@@ -470,11 +522,6 @@ function consultarPorSerie(){
       renderErro('Documento não localizado.<br>O identificador informado não corresponde a um funcionário cadastrado.');
       return;
     }
-
-    // Verifica integridade pelo check (opcional, apenas para validar coerência)
-    const checkEsperado = gerarCheck('COMPROVANTE-SERIE-' + serie + '-' + mes + '-' + ano, serie);
-    // Não bloqueia — apenas usa para confirmar que a URL veio do gerador
-    const checkOk = check && check.length >= 20;
 
     let totalDuracaoMs = 0;
     let linhas = '';
@@ -497,50 +544,34 @@ function consultarPorSerie(){
           totalDuracaoMs += diff;
           dur = `${Math.floor(diff/3600000)}h ${Math.floor((diff%3600000)/60000)}m`;
         }
-        linhas += `<tr><td>${dF}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td></tr>`;
+        linhas += `<tr><td>${dF}</td><td>${ini}</td><</td>${fim}</td><td>${dur}</td></tr>`;
       }
-    }
+   th }
 
     const totalH = Math.floor(totalDuracaoMs/3600000);
     const totalM = Math.floor((totalDuracaoMs%3600000)/60000);
-
-    const naTexto = dadosUsuario.na || serie;
+   >< const naTexto = dadosUsuario.na || serie;
 
     conteudo.innerHTML = `
       <div class="selo">
-        <div class="check">✓</div>
+        <div class="check">✓th</div>
         <div class="titulo">Documento oficial verificado</div>
-        <div class="desc">Este comprovante de carga horária é autêntico e foi emitido pelo sistema DomusFit.</div>
+        <div class="desc">Este comprov>ante de carga horária é autêntico e foi emitido pelo sistema DomusFit.</div>
       </div>
 
       <div class="doc" style="margin-top:1.5rem;">
-        <div class="doc-linha">
-          <span class="doc-rotulo">Nome</span>
-          <span class="doc-valor">${escapar(dadosUsuario.nome || '--')}</span>
-        </div>
-        <div class="doc-linha">
-          <span class="doc-rotulo">Número de acesso</span>
-          <span class="doc-valor na-borrado" title="Dado protegido">${escapar(naTexto)}</span>
-        </div>
-        <div class="doc-linha">
-          <span class="doc-rotulo">Período</span>
-          <span class="doc-valor">${dataFormatadaPorExtenso(mes, ano)}</span>
-        </div>
-        <div class="doc-linha">
-          <span class="doc-rotulo">Telefone</span>
-          <span class="doc-valor">${escapar(dadosUsuario.telefone || '--')}</span>
-        </div>
-        <div class="doc-linha">
-          <span class="doc-rotulo">Status</span>
-          <span class="doc-valor">Autêntico</span>
-        </div>
+        <div class="doc-linha"><span class="doc-rotulo">Nome</span><span class="doc-valor">${escapar(dadosUsuario.nome || '--')}</span></div>
+        <div class="doc-linha"><span class="doc-rotulo">Número de acesso</span><span class="doc-valor na-borrado" title="Dado protegido">${escapar(naTexto)}</span></div>
+        <div class="doc-linha"><span class="doc-rotulo">Período</span><span class="doc-valor">${dataFormatadaPorExtenso(mes, ano)}</span></div>
+        <div class="doc-linha"><span class="doc-rotulo">Telefone</span><span class="doc-valor">${escapar(dadosUsuario.telefone || '--')}</span></div>
+        <div class="doc-linha"><span class="doc-rotulo">Status</span><span class="doc-valor">Autêntico</span></div>
       </div>
 
       <div class="doc-secao">
         <div class="doc-secao-title">Registros do período</div>
         <table class="tabela">
           <thead>
-            <tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr>
+            <tr><th>DataEntrada</th><th>Saída</th><th>Duração</th></tr>
           </thead>
           <tbody>
             ${linhas || '<tr><td colspan="4" style="text-align:center;padding:20px;color:#888;">Nenhum registro no período</td></tr>'}
@@ -551,11 +582,9 @@ function consultarPorSerie(){
 
       <div class="termos">
         <p>Este documento foi verificado automaticamente pelo sistema DomusFit. A autenticidade é garantida pela consulta em banco de dados oficial.</p>
-        <p>O número de acesso do titular foi parcialmente mascarado por questões de privacidade, em conformidade com a Lei Geral de Proteção de Dados Pessoais.</p>
+        <p>O número de acesso do titular foi parcialmente mascarado por questões de privacidade.</p>
       </div>
     `;
-
-    btnVoltar.classList.add('visivel');
   }).catch(err => {
     console.error(err);
     renderErro('Não foi possível carregar o documento.<br>Tente novamente em alguns instantes.');
@@ -563,22 +592,30 @@ function consultarPorSerie(){
 }
 
 /* ============================================================
-   MODO 3: Sem parâmetros — mostra o consultor de ID
+   CONSULTA MANUAL (com ID ou upload de imagem)
    ============================================================ */
 function renderConsultaManual(){
   conteudo.innerHTML = `
     <div class="doc" style="text-align:center;padding:1.5rem 0 0.5rem;">
       <p style="font-size:0.95rem;color:#000000;opacity:0.75;line-height:1.7;">
-        Informe o ID do comprovante de ponto para verificar a autenticidade do documento emitido pelo sistema DomusFit.
+        Consulte a autenticidade de um comprovante DomusFit informando o ID do documento ou enviando uma imagem do comprovante para análise.
       </p>
     </div>
 
-    <div class="consulta-manual">
+    <div class="consulta-bloco">
+      <h3>Consulta por ID</h3>
+      <div class="desc">Digite o ID numérico presente no comprovante.</div>
       <div class="campo-grupo">
         <input type="text" id="inputIdConsulta" placeholder="Digite o ID do comprovante" inputmode="numeric" maxlength="8">
-        <button id="btnConsultar">Consultar</button>
+        <button class="btn-padrao" id="btnConsultar">Consultar</button>
       </div>
       <div id="consultaAviso" style="margin-top:12px;font-size:13px;color:#000000;opacity:0.7;"></div>
+    </div>
+
+    <div class="consulta-bloco">
+      <h3>Consulta por imagem</h3>
+      <div class="desc">Envie uma foto nítida do comprovante para verificação automática. É necessário resolver o desafio de segurança antes do envio.</div>
+      <button class="btn-padrao" id="btnAbrirUpload">Fazer upload de imagem</button>
     </div>
 
     <div class="termos">
@@ -604,26 +641,215 @@ function renderConsultaManual(){
     if(e.key === 'Enter') document.getElementById('btnConsultar').click();
   });
 
-  btnVoltar.classList.add('visivel');
+  document.getElementById('btnAbrirUpload').onclick = () => {
+    renderUpload();
+  };
+}
+
+/* ============================================================
+   TELA DE UPLOAD (tela exclusiva — tudo some, só fica o upload)
+   ============================================================ */
+function renderUpload(){
+  conteudo.innerHTML = `
+    <div class="consulta-bloco" style="margin-top:0;padding-top:0;border-top:none;">
+      <h3>Envio de imagem do comprovante</h3>
+      <div class="desc">Selecione ou arraste uma foto nítida do comprovante. Antes do envio é necessário resolver o desafio de segurança abaixo.</div>
+
+      <div class="upload-area" id="uploadArea">
+        <div class="icone">📷</div>
+        <div class="titulo">Clique para selecionar ou arraste a imagem</div>
+        <div class="sub">Formatos aceitos: JPG, PNG · Tamanho máximo 5 MB</div>
+        <input type="file" id="inputFile" accept="image/*">
+      </div>
+
+      <div class="preview-area" id="previewArea">
+        <img class="preview-img" id="previewImg" src="" alt="Pré-visualização">
+        <div class="preview-info" id="previewInfo"></div>
+      </div>
+
+      <div class="captcha-wrap" id="captchaWrap" style="display:none;">
+        <div class="g-recaptcha" data-sitekey="6LekcL8tAAAAAFAVuCmcZZIuJ7zlZl6HLhw_zn7a" data-callback="onCaptchaOk" data-expired-callback="onCaptchaExpired"></div>
+      </div>
+
+      <div class="aviso-box" id="avisoBox" style="display:none;"></div>
+
+      <div class="acoes-upload" id="acoesUpload" style="display:none;">
+        <button class="btn-secundario" id="btnCancelarUpload">Cancelar</button>
+        <button class="btn-padrao" id="btnEnviarUpload" disabled>Enviar para análise</button>
+      </div>
+
+      <div class="acoes-upload">
+        <button class="btn-secundario" id="btnVoltarConsulta">Voltar para a consulta</button>
+      </div>
+    </div>
+  `;
+
+  const uploadArea = document.getElementById('uploadArea');
+  const inputFile = document.getElementById('inputFile');
+  const previewArea = document.getElementById('previewArea');
+  const previewImg = document.getElementById('previewImg');
+  const previewInfo = document.getElementById('previewInfo');
+  const captchaWrap = document.getElementById('captchaWrap');
+  const avisoBox = document.getElementById('avisoBox');
+  const acoesUpload = document.getElementById('acoesUpload');
+  const btnEnviar = document.getElementById('btnEnviarUpload');
+
+  let arquivoSelecionado = null;
+  let captchaResolvido = false;
+
+  window.onCaptchaOk = () => {
+    captchaResolvido = true;
+    atualizarBotaoEnviar();
+  };
+  window.onCaptchaExpired = () => {
+    captchaResolvido = false;
+    atualizarBotaoEnviar();
+  };
+
+  function atualizarBotaoEnviar(){
+    btnEnviar.disabled = !(arquivoSelecionado && captchaResolvido);
+  }
+
+  uploadArea.addEventListener('click', () => inputFile.click());
+
+  uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('drag');
+  });
+  uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('drag');
+  });
+  uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('drag');
+    if(e.dataTransfer.files && e.dataTransfer.files[0]){
+      processarArquivo(e.dataTransfer.files[0]);
+    }
+  });
+
+  inputFile.addEventListener('change', (e) => {
+    if(e.target.files && e.target.files[0]) processarArquivo(e.target.files[0]);
+  });
+
+  function processarArquivo(file){
+    avisoBox.style.display = 'none';
+    if(!file.type.startsWith('image/')){
+      mostrarAviso('Arquivo inválido. Envie apenas imagens JPG ou PNG.', 'erro');
+      return;
+    }
+    if(file.size > 5 * 1024 * 1024){
+      mostrarAviso('Imagem muito grande. O tamanho máximo é 5 MB.', 'erro');
+      return;
+    }
+
+    arquivoSelecionado = file;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      previewImg.src = ev.target.result;
+      previewInfo.textContent = `${file.name} · ${(file.size/1024).toFixed(1)} KB`;
+      previewArea.classList.add('visivel');
+      captchaWrap.style.display = 'flex';
+      acoesUpload.style.display = 'flex';
+      atualizarBotaoEnviar();
+
+      // Recarrega o captcha se já estiver presente
+      if(typeof grecaptcha !== 'undefined'){
+        try { grecaptcha.reset(); } catch(e){}
+        captchaResolvido = false;
+        atualizarBotaoEnviar();
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function mostrarAviso(msg, tipo){
+    avisoBox.textContent = msg;
+    avisoBox.className = 'aviso-box ' + tipo;
+    avisoBox.style.display = 'block';
+  }
+
+  document.getElementById('btnCancelarUpload').onclick = () => {
+    arquivoSelecionado = null;
+    inputFile.value = '';
+    previewArea.classList.remove('visivel');
+    captchaWrap.style.display = 'none';
+    acoesUpload.style.display = 'none';
+    avisoBox.style.display = 'none';
+    if(typeof grecaptcha !== 'undefined'){
+      try { grecaptcha.reset(); } catch(e){}
+    }
+    captchaResolvido = false;
+    atualizarBotaoEnviar();
+  };
+
+  document.getElementById('btnVoltarConsulta').onclick = () => {
+    renderConsultaManual();
+  };
+
+  btnEnviar.onclick = async () => {
+    if(!arquivoSelecionado){
+      mostrarAviso('Selecione uma imagem antes de enviar.', 'erro');
+      return;
+    }
+    if(!captchaResolvido){
+      mostrarAviso('Resolva o desafio de segurança antes de enviar.', 'erro');
+      return;
+    }
+
+    btnEnviar.disabled = true;
+    btnEnviar.textContent = 'Enviando...';
+
+    try {
+      // Upload para o Cloudinary
+      const fd = new FormData();
+      fd.append('file', arquivoSelecionado);
+      fd.append('upload_preset', 'ml_default');
+      const resp = await fetch('https://api.cloudinary.com/v1_1/dzmjto17f/image/upload', {
+        method: 'POST',
+        body: fd
+      });
+      if(!resp.ok) throw new Error('Falha no upload');
+      const data = await resp.json();
+
+      // Registra a solicitação de análise no Firebase
+      const agora = Date.now();
+      const idAnalise = Math.floor(10000000 + Math.random() * 90000000).toString();
+      await db.ref('analises_imagem/' + idAnalise).set({
+        id: idAnalise,
+        url: data.secure_url,
+        public_id: data.public_id,
+        nome_original: arquivoSelecionado.name,
+        tamanho_bytes: arquivoSelecionadocha.size,
+        timestamp: agora,
+        data_hora: new Date(agora).toLocaleString('pt-BR'),
+        status: 'aguardando_analise'
+      });
+
+      mostrarAviso('Imagem enviada com sucesso. Protocolo de análise: ' + idAnalise + '. A verificação será concluída em instantes.', 'ok');
+      btnEnviar.textContent = 'Enviado';
+      btnEnviar.disabled = true;
+
+    } catch(err){
+      console.error(err);
+      mostrarAviso('Não foi possível enviar a imagem. Tente novamente.', 'erro');
+      btnEnviar.disabled = false;
+      btnEnviar.textContent = 'Enviar para análise';
+    }
+  };
 }
 
 /* ============================================================
    ROTEADOR
    ============================================================ */
 function iniciar(){
-  // Modo 1: veio com ID de comprovante de ponto
   if (idParam) {
     consultarPorId(idParam);
     return;
   }
-
-  // Modo 2: veio com série, mês, ano, check (documento de carga horária)
   if (serie && mes && ano) {
     consultarPorSerie();
     return;
   }
-
-  // Modo 3: sem parâmetros — mostra o consultor
   renderConsultaManual();
 }
 
