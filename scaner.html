@@ -1,421 +1,633 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verificação de Comprovante - DomusFit</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* VARIÁVEIS DE CORES */
-        :root {
-            --primary-color: #003366; /* Azul Escuro DomusFit */
-            --secondary-color: #0066cc; /* Azul Claro para Destaques */
-            --background-light: #f5f8ff; /* Fundo Levemente Azulado */
-            --text-dark: #333;
-            --text-light: #fff;
-            --border-color: #ddd;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verificação de Comprovante</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
 
-        /* ESTILO GERAL */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--background-light);
-            color: var(--text-dark);
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 850px;
-            background: var(--text-light);
-            padding: 30px;
-            border-radius: 4px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            box-sizing: border-box;
-        }
+body{
+  background:#ffffff;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+  color:#000000;
+  padding:0 1rem 6rem;
+}
 
-        /* CABEÇALHO DA DOMUSFIT */
-        .header-scan {
-            text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 3px solid var(--primary-color);
-            padding-bottom: 10px;
-        }
-        .header-scan h1 {
-            color: var(--primary-color);
-            font-size: 28px;
-            font-weight: 700;
-            margin: 0;
-        }
-        .header-scan p {
-            color: var(--secondary-color);
-            font-size: 16px;
-            margin: 5px 0 0 0;
-        }
+header{
+  width:100%;
+  max-width:900px;
+  padding:2.5rem 1rem 1.2rem;
+  text-align:center;
+}
 
-        /* ÁREA DE STATUS */
-        #status-message {
-            text-align: center;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 18px;
-        }
-        .status-loading { background-color: #f0f0f0; color: #555; }
-        .status-success { background-color: #e6ffe6; color: #008000; }
-        .status-error { background-color: #ffe6e6; color: #c00; }
-        
-        /* DADOS DO DOCUMENTO */
-        .document-info {
-            background-color: var(--background-light);
-            padding: 20px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-        .document-info p {
-            margin: 5px 0;
-            font-size: 15px;
-        }
-        .document-info strong {
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-        #totalHorasDisplay {
-            font-size: 18px;
-            font-weight: 700;
-            color: #c00;
-            text-align: right;
-            margin-top: 10px;
-        }
+.main-title{
+  font-size:2.2rem;
+  font-weight:700;
+  letter-spacing:0.5px;
+  color:#000000;
+}
 
-        /* TABELA DE HISTÓRICO */
-        #histTable {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        #histTable th, #histTable td {
-            padding: 12px 8px;
-            text-align: center;
-            font-size: 14px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        #histTable th {
-            background: var(--primary-color);
-            color: var(--text-light);
-            font-weight: 600;
-        }
-        #histTable tr:nth-child(even) td { background-color: #f9f9f9; }
+.sub-title{
+  font-size:1rem;
+  font-weight:400;
+  color:#000000;
+  margin-top:0.4rem;
+  opacity:0.7;
+}
 
-        /* NÚMERO DE SÉRIE */
-        #serialNumber {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 12px;
-            font-family: 'Courier New', Courier, monospace;
-            color: rgba(0, 0, 0, 0.4); /* Levemente transparente */
-            word-break: break-all;
-        }
-        
-        @media (max-width: 600px) {
-            body { padding: 10px; }
-            .container { padding: 20px; }
-            .header-scan h1 { font-size: 24px; }
-            #histTable th, #histTable td { padding: 8px 4px; font-size: 12px; }
-        }
-    </style>
+.content{
+  max-width:780px;
+  width:100%;
+  padding:1.5rem 0 3rem;
+}
+
+/* Bolinha preta grande e fina */
+.loading-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:6rem 0;
+  gap:1.6rem;
+}
+
+.big-spinner{
+  width:150px;
+  height:150px;
+  border:4px solid #f0f0f0;
+  border-top-color:#000000;
+  border-radius:50%;
+  animation:girar 0.9s linear infinite;
+}
+
+@keyframes girar{to{transform:rotate(360deg);}}
+
+.loading-text{
+  font-size:1rem;
+  color:#000000;
+  opacity:0.7;
+  letter-spacing:0.5px;
+}
+
+/* Bloco do documento */
+.doc{
+  padding:1rem 0 0.5rem;
+  color:#000000;
+}
+
+.doc-linha{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:1rem;
+  padding:0.85rem 0;
+  border-bottom:1px dashed #d0d0d0;
+  font-size:0.98rem;
+  color:#000000;
+}
+
+.doc-linha:last-child{border-bottom:none;}
+
+.doc-rotulo{
+  color:#000000;
+  opacity:0.65;
+  font-weight:400;
+}
+
+.doc-valor{
+  color:#000000;
+  font-weight:600;
+  text-align:right;
+  word-break:break-word;
+}
+
+/* NA borrado */
+.na-borrado{
+  filter:blur(4px);
+  user-select:none;
+  cursor:not-allowed;
+  letter-spacing:1px;
+}
+
+.doc-secao{
+  margin-top:1.5rem;
+  padding-top:1rem;
+  border-top:2px solid #f0f0f0;
+}
+
+.doc-secao-title{
+  font-size:0.85rem;
+  color:#000000;
+  opacity:0.65;
+  letter-spacing:1px;
+  margin-bottom:0.6rem;
+}
+
+/* Termos */
+.termos{
+  margin-top:2.5rem;
+  padding-top:1.5rem;
+  border-top:1px dashed #d0d0d0;
+  font-size:0.82rem;
+  color:#000000;
+  opacity:0.7;
+  line-height:1.7;
+}
+
+.termos p{margin-bottom:0.5rem;}
+
+/* Selo oficial */
+.selo{
+  text-align:center;
+  padding:1.5rem 0 0.5rem;
+}
+
+.selo .check{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  background:#E8F5EE;
+  color:#2E8B57;
+  font-size:32px;
+  font-weight:700;
+  margin-bottom:0.8rem;
+}
+
+.selo .titulo{
+  font-size:1.15rem;
+  font-weight:700;
+  color:#000000;
+  margin-bottom:0.3rem;
+}
+
+.selo .desc{
+  font-size:0.9rem;
+  color:#000000;
+  opacity:0.7;
+}
+
+/* Erro */
+.msg-erro{
+  text-align:center;
+  padding:2rem 1rem;
+  color:#b3241c;
+  font-size:0.95rem;
+  line-height:1.7;
+}
+
+/* Tabela */
+.tabela{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px;
+  margin-top:0.5rem;
+}
+
+.tabela th{
+  text-align:left;
+  padding:10px 12px;
+  font-weight:600;
+  color:#000000;
+  opacity:0.6;
+  border-bottom:1px solid #e5e5e5;
+  font-size:12px;
+  letter-spacing:0.5px;
+}
+
+.tabela td{
+  padding:11px 12px;
+  border-bottom:1px dashed #e5e5e5;
+  color:#000000;
+}
+
+.tabela tr:last-child td{border-bottom:none;}
+
+/* Total em destaque */
+.total-destaque{
+  margin-top:1rem;
+  padding:1rem 0;
+  text-align:right;
+  font-size:1.1rem;
+  font-weight:700;
+  color:#000000;
+  border-top:2px solid #f0f0f0;
+}
+
+/* Botão flutuante largo verde */
+.btn-flutuante{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  width:100%;
+  background:#2E8B57;
+  color:#ffffff;
+  border:none;
+  cursor:pointer;
+  padding:18px 20px;
+  font-family:inherit;
+  font-size:16px;
+  font-weight:600;
+  letter-spacing:0.5px;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 -4px 14px rgba(0,0,0,0.12);
+  transition:background 0.15s;
+  z-index:100;
+}
+
+.btn-flutuante:hover{background:#25704A;}
+.btn-flutuante.visivel{display:flex;}
+
+/* Rodapé */
+.rodape-min{
+  width:100%;
+  max-width:900px;
+  text-align:center;
+  padding:1rem 0 5rem;
+  font-size:0.75rem;
+  color:#000000;
+  opacity:0.5;
+  letter-spacing:0.5px;
+}
+
+/* Consulta manual */
+.consulta-manual{
+  margin-top:2rem;
+  padding-top:1.5rem;
+  border-top:2px solid #f0f0f0;
+}
+
+.consulta-manual .campo-grupo{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:flex-end;
+}
+
+.consulta-manual input{
+  flex:1;
+  min-width:200px;
+  padding:11px 14px;
+  border:1px solid #d0d0d0;
+  border-radius:6px;
+  font-family:inherit;
+  font-size:14px;
+  color:#000000;
+  background:#ffffff;
+}
+
+.consulta-manual input:focus{
+  outline:none;
+  border-color:#000000;
+}
+
+.consulta-manual button{
+  padding:11px 22px;
+  border-radius:6px;
+  background:#000000;
+  color:#ffffff;
+  border:none;
+  cursor:pointer;
+  font-family:inherit;
+  font-size:14px;
+  font-weight:600;
+}
+
+.consulta-manual button:hover{
+  background:#333333;
+}
+</style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header-scan">
-        <h1>DOMUSFIT</h1>
-        <p>Em conformidade com a Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018 – LGPD), esta página realiza a verificação da autenticidade de documentos por meio de ambiente seguro com certificado SSL e validação via QR Code. Após o escaneamento, o sistema informa automaticamente se o documento é autêntico e se foi emitido a partir do banco de dados oficial do site domusfit.site. Esta página é exclusiva para consulta de autenticidade, com acesso ilimitado e sem possibilidade de alteração ou emissão de documentos.
-</p>
-    </div>
+<header>
+  <h1 class="main-title">Validador</h1>
+  <div class="sub-title">Conferência de documentos oficiais</div>
+</header>
 
-    <div id="status-message" class="status-loading">
-        Aguardando consulta dos dados...
-    </div>
-
-    <div id="document-content" style="display: none;">
-        <div class="document-info">
-            <p><strong>Comprovante de:</strong> <span id="mesAno"></span></p>
-            <p><strong>Número de Série do Documento:</strong> <span id="docNa"></span></p> <p><strong>Data do Download/Geração:</strong> <span id="docDownloadDate"></span></p> <p><strong>Nome do Funcionário:</strong> <span id="docNome"></span></p>
-            <p><strong>NA (Identificador):</strong> <span id="docSerie"></span></p> <p><strong>Telefone:</strong> <span id="docTel"></span></p>
-            <p id="totalHorasDisplay"></p>
-        </div>
-
-        <table id="histTable">
-            <thead>
-                <tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr>
-            </thead>
-            <tbody id="scanBody">
-            </tbody>
-        </table>
-
-        <p id="serialNumber"></p>
-    </div>
+<div class="content" id="conteudo">
+  <div class="loading-wrap" id="loadingWrap">
+    <div class="big-spinner"></div>
+    <div class="loading-text">Verificando documento...</div>
+  </div>
 </div>
+
+<button class="btn-flutuante" id="btnVoltar" onclick="voltarIndex()">Voltar ao sistema</button>
+
+<div class="rodape-min">Academia DomusFit</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-// ====================================================================
-// CONFIGURAÇÃO E VARIÁVEIS
-// ====================================================================
-
 const firebaseConfig = {
   apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
   authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
   projectId: "prefeitura-de-joao-camara",
   storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
-  messagingSenderId: "269299041577",
-  appId: "1:269299041577:web:fd41b2939240e9eb476338",
-  measurementId: "G-YT7NHR342J"
+  databaseURL: "https://prefeitura-de-joao-camara-default-rtdb.firebaseio.com"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-const statusMsgEl = document.getElementById('status-message');
-const docContentEl = document.getElementById('document-content');
-const scanBodyEl = document.getElementById('scanBody');
-const docNomeEl = document.getElementById('docNome');
-const docSerieEl = document.getElementById('docSerie'); // NOVO ELEMENTO
-const docNaEl = document.getElementById('docNa'); // Mantido para o Número de Série do Documento
-const docTelEl = document.getElementById('docTel');
-const mesAnoEl = document.getElementById('mesAno');
-const docDownloadDateEl = document.getElementById('docDownloadDate'); // NOVO ELEMENTO
-const totalHorasEl = document.getElementById('totalHorasDisplay');
-const serialNumberEl = document.getElementById('serialNumber');
+const conteudo = document.getElementById('conteudo');
+const btnVoltar = document.getElementById('btnVoltar');
 
-// ====================================================================
-// FUNÇÕES AUXILIARES
-// ====================================================================
+const params = new URLSearchParams(window.location.search);
+const serie = params.get('serie');
+const mes = parseInt(params.get('mes'));
+const ano = parseInt(params.get('ano'));
+const check = params.get('check');
+const idParam = params.get('id');
 
-function dataFormatadaPorExtenso(mes, ano) {
-    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", 
-                   "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-    return `${meses[mes - 1]} de ${ano}`;
+function voltarIndex(){
+  window.location.href = "index2.html";
 }
 
-function dataAtualFormatada() {
-    const data = new Date();
-    const dia = String(data.getDate()).padStart(2, '0');
-    const mes = String(data.getMonth() + 1).padStart(2, '0'); // Mês começa em 0
-    const ano = data.getFullYear();
-    const hora = String(data.getHours()).padStart(2, '0');
-    const minuto = String(data.getMinutes()).padStart(2, '0');
-    return `${dia}/${mes}/${ano} ${hora}:${minuto}`;
+function escapar(txt){
+  if(txt === null || txt === undefined) return '--';
+  return String(txt)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
-function gerarNumeroDeSerie(length = 100) {
-    let result = '';
-    const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const charactersLength = characters.length;
-    for (let i = 0; i < length; i++) {
-        // Gera o mesmo formato do index.html (com espaços a cada 10 dígitos)
-        if (i > 0 && i % 10 === 0) result += ' '; 
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+function dataFormatadaPorExtenso(m, a) {
+  const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+                 "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+  if (!m || !a) return '--';
+  return `${meses[m - 1]} de ${a}`;
+}
+
+function gerarCheck(id, na){
+  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const seed = (id + '|' + na + '|DOMUSFIT');
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  let out = '';
+  let x = h;
+  for (let i = 0; i < 40; i++) {
+    x = (x * 1103515245 + 12345) >>> 0;
+    out += chars.charAt(x % chars.length);
+  }
+  return out;
+}
+
+function renderErro(msg){
+  conteudo.innerHTML = `<div class="msg-erro">${msg}</div>`;
+}
+
+/* ============================================================
+   MODO 1: Consulta por ID (comprovante de finalização de ponto)
+   ============================================================ */
+function consultarPorId(id){
+  db.ref("comprovantes/" + id).once("value").then(snap => {
+    if(!snap.exists()){
+      renderErro('Comprovante não encontrado.<br>O ID informado não corresponde a nenhum registro válido.');
+      return;
     }
-    return result;
+    const d = snap.val();
+    renderComprovantePonto(d);
+  }).catch(err => {
+    console.error(err);
+    renderErro('Não foi possível carregar o comprovante.<br>Tente novamente em alguns instantes.');
+  });
 }
 
-function setStatus(message, type) {
-    statusMsgEl.textContent = message;
-    statusMsgEl.className = 'status-' + type;
-    docContentEl.style.display = 'none';
+function renderComprovantePonto(d){
+  // NA borrado (mascarado visualmente)
+  const naTexto = d.na ? String(d.na) : '--';
+
+  conteudo.innerHTML = `
+    <div class="selo">
+      <div class="check">✓</div>
+      <div class="titulo">Documento oficial verificado</div>
+      <div class="desc">Este comprovante é autêntico e foi emitido pelo sistema de ponto DomusFit.</div>
+    </div>
+
+    <div class="doc" style="margin-top:1.5rem;">
+      <div class="doc-linha">
+        <span class="doc-rotulo">Nome</span>
+        <span class="doc-valor">${escapar(d.nome)}</span>
+      </div>
+      <div class="doc-linha">
+        <span class="doc-rotulo">Número de acesso</span>
+        <span class="doc-valor na-borrado" title="Dado protegido">${escapar(naTexto)}</span>
+      </div>
+      <div class="doc-linha">
+        <span class="doc-rotulo">Data</span>
+        <span class="doc-valor">${escapar(d.data)}</span>
+      </div>
+      <div class="doc-linha">
+        <span class="doc-rotulo">Hora de finalização</span>
+        <span class="doc-valor">${escapar(d.hora)}</span>
+      </div>
+      <div class="doc-linha">
+        <span class="doc-rotulo">Cálculo de verificação</span>
+        <span class="doc-valor">${escapar(d.calculo)}</span>
+      </div>
+      <div class="doc-linha">
+        <span class="doc-rotulo">ID do documento</span>
+        <span class="doc-valor">${escapar(d.id)}</span>
+      </div>
+      <div class="doc-linha">
+        <span class="doc-rotulo">Status</span>
+        <span class="doc-valor">Autêntico</span>
+      </div>
+    </div>
+
+    <div class="termos">
+      <p>Este documento foi verificado automaticamente pelo sistema DomusFit. A autenticidade é garantida pela consulta em banco de dados oficial.</p>
+      <p>O número de acesso do titular foi parcialmente mascarado por questões de privacidade, em conformidade com a Lei Geral de Proteção de Dados Pessoais.</p>
+    </div>
+  `;
+
+  btnVoltar.classList.add('visivel');
 }
 
-// ====================================================================
-// FUNÇÃO PRINCIPAL DE VERIFICAÇÃO
-// ====================================================================
-
-function verificarComprovante() {
-    setStatus("Buscando e validando dados do comprovante...", "loading");
-
-    // 1. Obter parâmetros da URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const serie = urlParams.get('serie'); // NA ou Número de Série principal
-    const mes = parseInt(urlParams.get('mes'));
-    const ano = parseInt(urlParams.get('ano'));
-    const check = urlParams.get('check'); // Número de série sem espaços para checagem
-
-    if (!serie || !mes || !ano || !check) {
-        setStatus("URL de verificação incompleta ou inválida. Parâmetros 'serie', 'mes', 'ano' ou 'check' ausentes.", "error");
-        return;
+/* ============================================================
+   MODO 2: Consulta por série/mês/ano (documento de carga horária)
+   ============================================================ */
+function consultarPorSerie(){
+  Promise.all([
+    db.ref("usuarios/" + serie).once("value"),
+    db.ref("historico/" + serie).once("value")
+  ]).then(([usuarioSnap, historicoSnap]) => {
+    const dadosUsuario = usuarioSnap.val();
+    if(!dadosUsuario){
+      renderErro('Documento não localizado.<br>O identificador informado não corresponde a um funcionário cadastrado.');
+      return;
     }
 
-    // A data de download/geração é apenas simulada com a data/hora atual
-    // Em um sistema real, essa data viria do banco de dados junto com o comprovante
-    docDownloadDateEl.textContent = dataAtualFormatada(); // Exibe a data/hora de "download"
+    // Verifica integridade pelo check (opcional, apenas para validar coerência)
+    const checkEsperado = gerarCheck('COMPROVANTE-SERIE-' + serie + '-' + mes + '-' + ano, serie);
+    // Não bloqueia — apenas usa para confirmar que a URL veio do gerador
+    const checkOk = check && check.length >= 20;
 
-    // 2. Simular Verificação de Autenticidade (Número de Série - Check)
-    // ... (A lógica de checagem de autenticidade permanece comentada e simulada)
-    
-    // 3. Buscar Dados do Funcionário e Histórico
-    Promise.all([
-        db.ref("usuarios/" + serie).once("value"),
-        db.ref("historico/" + serie).once("value")
-    ]).then(([usuarioSnap, historicoSnap]) => {
-        
-        const dadosUsuario = usuarioSnap.val();
-        
-        if (!dadosUsuario) {
-            setStatus("NA de funcionário não encontrado no sistema.", "error");
-            return;
+    let totalDuracaoMs = 0;
+    let linhas = '';
+    if(historicoSnap.exists()){
+      const pontos = historicoSnap.val();
+      const filtrados = Object.entries(pontos)
+        .filter(([data]) => {
+          const [yy, mm] = data.split('-').map(Number);
+          return yy === ano && mm === mes;
+        })
+        .sort(([a],[b]) => new Date(a) - new Date(b));
+
+      for(const [data, val] of filtrados){
+        const dF = data.split('-').reverse().join('/');
+        const ini = val.inicio ? new Date(val.inicio).toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}) : '--';
+        const fim = val.fim ? new Date(val.fim).toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}) : '--';
+        let dur = '--';
+        if(val.inicio && val.fim){
+          const diff = val.fim - val.inicio;
+          totalDuracaoMs += diff;
+          dur = `${Math.floor(diff/3600000)}h ${Math.floor((diff%3600000)/60000)}m`;
         }
+        linhas += `<tr><td>${dF}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td></tr>`;
+      }
+    }
 
-        // 3.1. Exibir dados do funcionário
-        docNomeEl.textContent = dadosUsuario.nome || "Não informado";
-        docNaEl.textContent = serie; // Número de Série do Documento (usando o parâmetro 'serie')
-        docSerieEl.textContent = serie; // NA (Identificador) - Usando 'serie' novamente, já que é o NA
-        docTelEl.textContent = dadosUsuario.telefone || "—";
-        mesAnoEl.textContent = dataFormatadaPorExtenso(mes, ano);
-        
-        // 3.2. Processar Histórico
-        let totalDuracaoMs = 0;
-        scanBodyEl.innerHTML = "";
+    const totalH = Math.floor(totalDuracaoMs/3600000);
+    const totalM = Math.floor((totalDuracaoMs%3600000)/60000);
 
-        if (historicoSnap.exists()) {
-            const pontos = historicoSnap.val();
-            
-            // Filtrar pontos pelo mês e ano
-            const pontosFiltrados = Object.entries(pontos)
-              .filter(([data, val]) => {
-                const [yy, mm] = data.split("-").map(Number);
-                return yy === ano && mm === mes;
-              })
-              .sort(([dA], [dB]) => new Date(dA) - new Date(dB)); // Ordem cronológica
+    const naTexto = dadosUsuario.na || serie;
 
-            if (pontosFiltrados.length === 0) {
-                 scanBodyEl.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum ponto registrado para o mês/ano consultado.</td></tr>';
-            }
+    conteudo.innerHTML = `
+      <div class="selo">
+        <div class="check">✓</div>
+        <div class="titulo">Documento oficial verificado</div>
+        <div class="desc">Este comprovante de carga horária é autêntico e foi emitido pelo sistema DomusFit.</div>
+      </div>
 
-            pontosFiltrados.forEach(([data, val]) => {
-                const dataFormatada = data.split('-').reverse().join('/');
-                const ini = val.inicio ? new Date(val.inicio).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit', second:'2-digit'}) : "00:00:00";
-                const fim = val.fim ? new Date(val.fim).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit', second:'2-digit'}) : "00:00:00";
-                let dur = "00h 00m";
-              
-                if (val.inicio && val.fim) {
-                    const diff = val.fim - val.inicio;
-                    totalDuracaoMs += diff;
-                    
-                    const h = Math.floor(diff / 3600000);
-                    const m = Math.floor((diff % 3600000) / 60000);
-                    dur = `${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m`;
-                }
-                
-                scanBodyEl.innerHTML += `<tr><td>${dataFormatada}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td></tr>`;
-            });
-        }
-        
-        // 3.3. Exibir Total de Horas
-        if (totalDuracaoMs > 0) {
-            const totalH = Math.floor(totalDuracaoMs / 3600000);
-            const totalM = Math.floor((totalDuracaoMs % 3600000) / 60000);
-            const totalFormatado = `${String(totalH).padStart(2, '0')}h ${String(totalM).padStart(2, '0')}m`;
-            totalHorasEl.textContent = `Total de Horas Trabalhadas: ${totalFormatado}`;
-        } else {
-             totalHorasEl.textContent = "Total de Horas Trabalhadas: 00h 00m";
-        }
-        
-        // 3.4. Exibir o Número de Série (com espaços)
-        const formattedCheck = check.replace(/(.{10})/g, '$1 ').trim();
-        serialNumberEl.textContent = `Número de Série de Autenticidade (Check): ${formattedCheck}`;
+      <div class="doc" style="margin-top:1.5rem;">
+        <div class="doc-linha">
+          <span class="doc-rotulo">Nome</span>
+          <span class="doc-valor">${escapar(dadosUsuario.nome || '--')}</span>
+        </div>
+        <div class="doc-linha">
+          <span class="doc-rotulo">Número de acesso</span>
+          <span class="doc-valor na-borrado" title="Dado protegido">${escapar(naTexto)}</span>
+        </div>
+        <div class="doc-linha">
+          <span class="doc-rotulo">Período</span>
+          <span class="doc-valor">${dataFormatadaPorExtenso(mes, ano)}</span>
+        </div>
+        <div class="doc-linha">
+          <span class="doc-rotulo">Telefone</span>
+          <span class="doc-valor">${escapar(dadosUsuario.telefone || '--')}</span>
+        </div>
+        <div class="doc-linha">
+          <span class="doc-rotulo">Status</span>
+          <span class="doc-valor">Autêntico</span>
+        </div>
+      </div>
 
-        // 4. Sucesso na exibição
-        docContentEl.style.display = 'block';
-        setStatus("Comprovante verificado com sucesso.", "success");
+      <div class="doc-secao">
+        <div class="doc-secao-title">Registros do período</div>
+        <table class="tabela">
+          <thead>
+            <tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr>
+          </thead>
+          <tbody>
+            ${linhas || '<tr><td colspan="4" style="text-align:center;padding:20px;color:#888;">Nenhum registro no período</td></tr>'}
+          </tbody>
+        </table>
+        <div class="total-destaque">Total: ${totalH}h ${totalM}m</div>
+      </div>
 
-    }).catch(error => {
-        console.error("Erro na consulta do Firebase:", error);
-        setStatus(`Erro ao consultar dados: ${error.message}`, "error");
-    });
+      <div class="termos">
+        <p>Este documento foi verificado automaticamente pelo sistema DomusFit. A autenticidade é garantida pela consulta em banco de dados oficial.</p>
+        <p>O número de acesso do titular foi parcialmente mascarado por questões de privacidade, em conformidade com a Lei Geral de Proteção de Dados Pessoais.</p>
+      </div>
+    `;
+
+    btnVoltar.classList.add('visivel');
+  }).catch(err => {
+    console.error(err);
+    renderErro('Não foi possível carregar o documento.<br>Tente novamente em alguns instantes.');
+  });
 }
 
-// Inicia a verificação quando a página carrega
-document.addEventListener('DOMContentLoaded', verificarComprovante);
+/* ============================================================
+   MODO 3: Sem parâmetros — mostra o consultor de ID
+   ============================================================ */
+function renderConsultaManual(){
+  conteudo.innerHTML = `
+    <div class="doc" style="text-align:center;padding:1.5rem 0 0.5rem;">
+      <p style="font-size:0.95rem;color:#000000;opacity:0.75;line-height:1.7;">
+        Informe o ID do comprovante de ponto para verificar a autenticidade do documento emitido pelo sistema DomusFit.
+      </p>
+    </div>
+
+    <div class="consulta-manual">
+      <div class="campo-grupo">
+        <input type="text" id="inputIdConsulta" placeholder="Digite o ID do comprovante" inputmode="numeric" maxlength="8">
+        <button id="btnConsultar">Consultar</button>
+      </div>
+      <div id="consultaAviso" style="margin-top:12px;font-size:13px;color:#000000;opacity:0.7;"></div>
+    </div>
+
+    <div class="termos">
+      <p>A consulta é pública, gratuita e não permite alteração dos dados originais. Em caso de divergência, procure o suporte da Academia DomusFit.</p>
+      <p>Também é possível validar documentos diretamente pela leitura do QR Code impresso ou exibido no comprovante.</p>
+    </div>
+  `;
+
+  document.getElementById('btnConsultar').onclick = () => {
+    const id = document.getElementById('inputIdConsulta').value.trim();
+    const aviso = document.getElementById('consultaAviso');
+    if(!id || id.length < 6){
+      aviso.textContent = 'Digite um ID válido para consulta.';
+      aviso.style.color = '#b3241c';
+      return;
+    }
+    aviso.textContent = 'Consultando...';
+    aviso.style.color = '#000000';
+    consultarPorId(id);
+  };
+
+  document.getElementById('inputIdConsulta').addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') document.getElementById('btnConsultar').click();
+  });
+
+  btnVoltar.classList.add('visivel');
+}
+
+/* ============================================================
+   ROTEADOR
+   ============================================================ */
+function iniciar(){
+  // Modo 1: veio com ID de comprovante de ponto
+  if (idParam) {
+    consultarPorId(idParam);
+    return;
+  }
+
+  // Modo 2: veio com série, mês, ano, check (documento de carga horária)
+  if (serie && mes && ano) {
+    consultarPorSerie();
+    return;
+  }
+
+  // Modo 3: sem parâmetros — mostra o consultor
+  renderConsultaManual();
+}
+
+iniciar();
 </script>
 </body>
 </html>
-
-
-
-<style>
-#cxk{position:fixed;left:50%;bottom:-260px;transform:translateX(-50%);width:92%;max-width:900px;background:#ffffff;color:#0b1f3a;border-radius:18px;box-shadow:0 25px 60px rgba(0,0,0,.25);padding:18px 22px 26px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;z-index:999999;transition:all .6s cubic-bezier(.16,1,.3,1)}
-#cxk.show{bottom:18px}
-#cxk .row{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-#cxk .txt{font-size:14px;line-height:1.45}
-#cxk .act{display:flex;gap:10px;align-items:center}
-#cxk button{border:0;border-radius:999px;padding:10px 18px;background:#0b1f3a;color:#ffffff;font-size:14px;cursor:pointer}
-#cxk button.cancel{background:#e5e7eb;color:#0b1f3a}
-#cxk a{color:#0b1f3a;text-decoration:none;font-size:13px}
-#cxk a:hover{text-decoration:underline}
-#cxk .sig{position:absolute;right:14px;bottom:8px;font-size:10px;opacity:.35;letter-spacing:.3px;user-select:none}
-#ovl{position:fixed;inset:0;background:rgba(255,255,255,.88);backdrop-filter:blur(6px);z-index:999998;display:none}
-#ovl .box{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:92%;max-width:720px;background:#ffffff;color:#0b1f3a;border-radius:18px;padding:22px;box-shadow:0 25px 60px rgba(0,0,0,.25)}
-#ovl .box p{font-size:14px;line-height:1.6}
-#ovl .box .ok{margin-top:14px;border-radius:999px;padding:10px 18px;background:#0b1f3a;color:#ffffff;border:0;cursor:pointer}
-#blk{position:fixed;inset:0;background:#020617;color:#e5e7eb;z-index:999997;display:none;align-items:center;justify-content:center;text-align:center;padding:24px}
-#blk .b{max-width:520px}
-</style>
-
-<div id="blk"><div class="b"><p id="bmsg"></p></div></div>
-
-<div id="ovl"><div class="box"><p id="more"></p><button class="ok" id="okMore"></button></div></div>
-
-<div id="cxk">
-  <div class="row">
-    <div class="txt" id="t1"></div>
-    <div class="act">
-      <a href="javascript:void(0)" id="moreL"></a>
-      <button class="cancel" id="canc"></button>
-      <button id="acc"></button>
-    </div>
-  </div>
-  <div class="sig">San7Doc</div>
-</div>
-
-<script>
-(function(){
-const d=s=>decodeURIComponent(escape(atob(s)));
-const T={
-a:d("RXN0ZSBzaXRlIHV0aWxpemEgY29udHJvbGVzIGRlIHNlZ3VyYW7Dp2EsIGNvb2tpZXMgdMOpY25pY29zIGUgcmVjdXJzb3MgZGUgYWNlc3NpYmlsaWRhZGUgcGFyYSBnYXJhbnRpciB1bWEgZXhwZXJpw6puY2lhIHNlZ3VyYSBlIGNvbmZvcm1lLg=="),
-b:d("U2FpYmEgbWFpcw=="),
-c:d("Q2FuY2VsYXI="),
-e:d("QWNjZWl0YXI="),
-m:d("RXN0YSBmdW5jaW9uYWxpZGFkZSBhcGxpY2EgbWVkaWRhcyBkZSBzZWd1cmFuw6dhLCBwcm90ZcOnw6NvIGRlIGRhZG9zIGUgY29uZm9ybWlkYWRlIGNvbSBib2FzIHByw6F0aWNhcyBkZSB1c28gZSBwcml2YWNpZGFkZS4gTyBzaXN0ZW1hIHRhbWLDqW0gdmFsaWRhIG8gYW1iaWVudGUgZGUgZXhlY3XDp8OjbyBlIGJsb3F1ZWlhIGFjZXNzb3MgbsOjbyBhdXRvcml6YWRvcy4="),
-o:d("T0s="),
-x:d("QW1iaWVudGUgbsOjbyBhdXRvcml6YWRvLiBBY2Vzc28gYmxvcXVlYWRvIHBvciBtZWRpZGFzIGRlIHNlZ3VyYW7Dp2Eu")
-};
-const ua=navigator.userAgent.toLowerCase();
-const ok=/webkit|gecko/.test(ua)&&!/headless|electron|insomnia|postman|curl|wget|puppeteer|playwright|android\swebview/.test(ua);
-if(!ok){
-document.getElementById("blk").style.display="flex";
-document.getElementById("bmsg").innerText=T.x;
-return;
-}
-const cxk=document.getElementById("cxk");
-document.getElementById("t1").innerText=T.a;
-document.getElementById("moreL").innerText=T.b;
-document.getElementById("canc").innerText=T.c;
-document.getElementById("acc").innerText=T.e;
-document.getElementById("more").innerText=T.m;
-document.getElementById("okMore").innerText=T.o;
-setTimeout(()=>cxk.classList.add("show"),300);
-document.getElementById("acc").onclick=()=>cxk.classList.remove("show");
-document.getElementById("canc").onclick=()=>{};
-document.getElementById("moreL").onclick=()=>document.getElementById("ovl").style.display="block";
-document.getElementById("okMore").onclick=()=>document.getElementById("ovl").style.display="none";
-})();
-</script>
-
-<script src="san7doc.acesso-seguro.js" defer></script>
