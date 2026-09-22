@@ -1,1385 +1,1244 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SAN7DOC · Gestão</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SAN7DOC · Gestão</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 
-        :root {
-            --primary: #1a73e8;
-            --primary-dark: #0d5bbf;
-            --primary-light: #e8f0fe;
-            --success: #34a853;
-            --success-light: #e6f4ea;
-            --danger: #ea4335;
-            --danger-light: #fce8e6;
-            --warning: #fbbc04;
-            --text-primary: #1f1f1f;
-            --text-secondary: #5f6368;
-            --text-tertiary: #9aa0a6;
-            --border-light: #e8eaed;
-            --border-medium: #dadce0;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.15);
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 20px;
-            --radius-xl: 28px;
-        }
+:root{
+  --ios-blue:#007aff;
+  --ios-blue-dark:#0051d5;
+  --ios-green:#34c759;
+  --ios-red:#ff3b30;
+  --ios-orange:#ff9500;
+  --ios-yellow:#ffcc00;
+  --ios-purple:#af52de;
+  --ios-pink:#ff2d55;
+  --ios-teal:#5ac8fa;
+  --ios-indigo:#5856d6;
+  --ios-gray:#8e8e93;
+  --ios-gray-light:#c7c7cc;
+  --ios-bg-light:#f2f2f7;
+  --ios-text:#000000;
+  --ios-text-secondary:#8e8e93;
+  --ios-separator:rgba(60,60,67,0.29);
+  --glass-bg:rgba(255,255,255,0.72);
+}
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            min-height: 100vh;
-            background: #f8f9fa;
-            -webkit-font-smoothing: antialiased;
-            color: var(--text-primary);
-        }
+/* ===== MODO CLARO ===== */
+body.light-mode .app-view-content{
+  background:rgba(242,242,247,0.95);
+  color:#000;
+}
+body.light-mode .app-view-header{
+  background:rgba(242,242,247,0.98);
+  border-bottom-color:rgba(0,0,0,0.08);
+}
+body.light-mode .app-view-header h2{color:#000;}
+body.light-mode .app-view-body{color:#000;}
+body.light-mode .ios-field input,
+body.light-mode .ios-field select,
+body.light-mode .ios-field textarea{
+  background:rgba(0,0,0,0.05);
+  border-color:rgba(0,0,0,0.1);
+  color:#000;
+}
+body.light-mode .ios-field input::placeholder,
+body.light-mode .ios-field textarea::placeholder{color:rgba(0,0,0,0.4);}
+body.light-mode .ios-field select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+}
+body.light-mode .ios-field select option{background:#fff;color:#000;}
+body.light-mode .ios-list{background:rgba(0,0,0,0.03);}
+body.light-mode .ios-list-item{border-bottom-color:rgba(0,0,0,0.06);color:#000;}
+body.light-mode .ios-list-item .info small{color:rgba(0,0,0,0.55);}
+body.light-mode .ios-list-item .chev{color:rgba(0,0,0,0.3);}
+body.light-mode .ios-list-item.clickable:hover{background:rgba(0,0,0,0.04);}
+body.light-mode .ios-btn-secondary{background:rgba(0,0,0,0.06);color:#000;border-color:rgba(0,0,0,0.1);}
+body.light-mode .ios-btn-secondary:hover{background:rgba(0,0,0,0.1);}
+body.light-mode .search-pill{background:rgba(0,0,0,0.1);color:#000;}
+body.light-mode .key-card{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1);color:#000;}
+body.light-mode .key-card strong{color:#000;}
+body.light-mode .key-card .key-user{color:rgba(0,0,0,0.8);}
+body.light-mode .key-card .key-date{color:rgba(0,0,0,0.5);}
+body.light-mode .video-item{background:rgba(0,0,0,0.05);}
+body.light-mode .video-item .vt{color:#000;}
+body.light-mode .btn-back{color:var(--ios-blue);}
 
-        /* ===== FUNDO ===== */
-        .bg-gif-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            pointer-events: none;
-        }
-        .bg-gif {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.06;
-        }
+html,body{height:100%;overflow:hidden;}
 
-        /* ===== LOADING ===== */
-        .loading-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(8px);
-            display: none;
-            place-items: center;
-            z-index: 10000;
-        }
-        .loading-overlay.active {
-            display: grid;
-        }
-        .loading-spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid var(--border-light);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Segoe UI',Roboto,sans-serif;
+  background:#000;
+  color:#fff;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  position:relative;
+}
 
-        /* ===== DEV OVERLAY ===== */
-        .dev-overlay {
-            position: fixed;
-            inset: 0;
-            display: none;
-            place-items: center;
-            z-index: 10001;
-            pointer-events: none;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(6px);
-        }
-        .dev-overlay.active {
-            display: grid;
-        }
-        .dev-name {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: var(--primary);
-            letter-spacing: -2px;
-            font-family: 'Inter', sans-serif;
-            animation: devFade 0.4s ease;
-            text-shadow: 0 2px 12px rgba(26, 115, 232, 0.2);
-        }
-        @keyframes devFade {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
+/* ============================================= */
+/* FUNDO - COLE AS 4 URLs DE IMAGEM 4K AQUI      */
+/* ============================================= */
+:root{
+  --bg-image-1:url('https://images.unsplash.com/photo-1519681393784-d120267933ba?w=2400&q=90');
+  --bg-image-2:url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=2400&q=90');
+  --bg-image-3:url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=2400&q=90');
+  --bg-image-4:url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=2400&q=90');
+}
 
-        /* ===== MENU LATERAL ===== */
-        .side-menu {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 280px;
-            height: 100vh;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid var(--border-light);
-            z-index: 2000;
-            transform: translateX(-100%);
-            transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-            display: flex;
-            flex-direction: column;
-            box-shadow: var(--shadow-lg);
-        }
-        .side-menu.open {
-            transform: translateX(0);
-        }
-        .menu-header {
-            padding: 24px 20px;
-            border-bottom: 1px solid var(--border-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .menu-header h3 {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--primary);
-            letter-spacing: -0.3px;
-        }
-        .menu-close {
-            width: 36px;
-            height: 36px;
-            border-radius: var(--radius-sm);
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
-            transition: background 0.2s;
-        }
-        .menu-close:hover {
-            background: var(--border-light);
-        }
-        .menu-items {
-            flex: 1;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            overflow-y: auto;
-        }
-        .menu-item {
-            padding: 14px 16px;
-            border-radius: var(--radius-md);
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            font-weight: 500;
-            font-size: 14px;
-            color: var(--text-primary);
-            transition: background 0.15s;
-            text-align: left;
-            width: 100%;
-        }
-        .menu-item:hover {
-            background: var(--primary-light);
-            color: var(--primary);
-        }
-        .menu-item svg {
-            flex-shrink: 0;
-            opacity: 0.7;
-        }
-        .menu-item:hover svg {
-            opacity: 1;
-        }
-        .menu-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.25);
-            backdrop-filter: blur(4px);
-            z-index: 1999;
-            display: none;
-        }
-        .menu-overlay.active {
-            display: block;
-        }
+.bg-layer{
+  position:fixed;
+  inset:0;
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  transition:opacity 1.2s ease-in-out;
+  z-index:0;
+}
+.bg-layer-1{background-image:var(--bg-image-1);opacity:1;}
+.bg-layer-2{background-image:var(--bg-image-2);opacity:0;}
+.bg-layer-3{background-image:var(--bg-image-3);opacity:0;}
+.bg-layer-4{background-image:var(--bg-image-4);opacity:0;}
+.bg-layer.active{opacity:1 !important;}
 
-        /* ===== HEADER ===== */
-        header {
-            position: sticky;
-            top: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-light);
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 100;
-        }
-        .menu-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-sm);
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-primary);
-            transition: background 0.2s;
-        }
-        .menu-icon:hover {
-            background: var(--border-light);
-        }
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--primary);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .logo-text {
-            font-weight: 700;
-            font-size: 15px;
-            color: var(--text-primary);
-            letter-spacing: -0.3px;
-        }
-        .header-spacer {
-            width: 40px;
-        }
+.bg-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.2);
+  z-index:1;
+  pointer-events:none;
+}
 
-        /* ===== CONTAINER ===== */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 24px 20px 60px;
-        }
+/* ============================================= */
+/* HOME SCREEN                                   */
+/* ============================================= */
+.home-screen{
+  position:relative;
+  z-index:2;
+  height:100vh;
+  padding:60px 20px 40px 20px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  transition:opacity 0.4s ease, transform 0.4s ease;
+}
+.home-screen::-webkit-scrollbar{display:none;}
+.home-screen.hidden{
+  opacity:0;
+  transform:scale(0.92);
+  pointer-events:none;
+}
 
-        /* ===== WELCOME ===== */
-        .welcome-card {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 28px 32px;
-            margin-bottom: 24px;
-            border: 1px solid var(--border-light);
-            box-shadow: var(--shadow-sm);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .welcome-title {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--text-primary);
-            letter-spacing: -0.5px;
-            outline: none;
-            border-bottom: 2px solid transparent;
-            transition: border-color 0.2s;
-            padding-bottom: 2px;
-        }
-        .welcome-title:focus {
-            border-bottom-color: var(--primary);
-        }
-        .welcome-sub {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-top: 4px;
-        }
+.apps-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:26px 14px;
+  max-width:520px;
+  margin:0 auto;
+  padding-top:14px;
+}
 
-        /* ===== VIDEO BOX ===== */
-        .video-box {
-            width: 200px;
-            height: 120px;
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            border: 1px solid var(--border-light);
-            box-shadow: var(--shadow-sm);
-            flex-shrink: 0;
-            background: #000;
-        }
-        .video-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+.app-icon{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  cursor:pointer;
+  transition:transform 0.15s;
+  user-select:none;
+  -webkit-user-select:none;
+}
+.app-icon:active{transform:scale(0.88);}
 
-        /* ===== ACTION BAR ===== */
-        .action-bar {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 24px;
-        }
-        .action-btn {
-            background: white;
-            border: 1px solid var(--border-light);
-            padding: 10px 18px;
-            border-radius: var(--radius-md);
-            font-weight: 500;
-            font-size: 13px;
-            color: var(--text-primary);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.15s ease;
-            box-shadow: var(--shadow-sm);
-        }
-        .action-btn:hover {
-            background: var(--primary-light);
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-        .action-btn.panic {
-            background: var(--danger);
-            color: white;
-            border-color: var(--danger);
-        }
-        .action-btn.panic:hover {
-            background: var(--danger);
-            border-color: var(--danger);
-            color: white;
-        }
+.app-icon .icon-box{
+  width:60px;
+  height:60px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 4px 12px rgba(0,0,0,0.28);
+  position:relative;
+  overflow:hidden;
+  background-size:cover;
+  background-position:center;
+  pointer-events:none;
+}
+.app-icon .icon-box svg{
+  width:32px;
+  height:32px;
+  stroke:#fff;
+  fill:none;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  pointer-events:none;
+}
 
-        /* ===== KEYS BUTTON ===== */
-        .keys-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: var(--radius-lg);
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: all 0.15s;
-            box-shadow: var(--shadow-sm);
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 24px;
-        }
-        .keys-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
+.app-icon .app-label{
+  margin-top:8px;
+  font-size:11px;
+  font-weight:500;
+  color:#fff;
+  text-align:center;
+  line-height:1.2;
+  text-shadow:0 1px 3px rgba(0,0,0,0.7);
+  max-width:70px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  pointer-events:none;
+}
 
-        /* ===== SEARCH & NEW ===== */
-        .search-area {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .search-box {
-            flex: 1;
-            min-width: 200px;
-            padding: 14px 18px;
-            background: white;
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-md);
-            font-size: 15px;
-            font-weight: 400;
-            transition: all 0.2s;
-            outline: none;
-            font-family: inherit;
-            color: var(--text-primary);
-        }
-        .search-box:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
-        }
-        .search-box.error {
-            border-color: var(--danger);
-            box-shadow: 0 0 0 3px rgba(234, 67, 53, 0.1);
-        }
-        .btn-new {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px 24px;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.15s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-        }
-        .btn-new:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
+.icon-cadastros{background:linear-gradient(135deg,#007aff,#0051d5);}
+.icon-chaves{background:linear-gradient(135deg,#ff9500,#ff6b00);}
+.icon-panico{background:linear-gradient(135deg,#ff3b30,#c41e14);}
+.icon-notas{background:linear-gradient(135deg,#ffcc00,#ff9500);}
+.icon-videos{background:linear-gradient(135deg,#af52de,#8a2fc0);}
+.icon-aulas{background:linear-gradient(135deg,#34c759,#1e9e42);}
+.icon-config{background:linear-gradient(135deg,#8e8e93,#636366);}
+.icon-sair{background:linear-gradient(135deg,#5856d6,#3a37a8);}
 
-        /* ===== TABLE ===== */
-        .table-container {
-            background: white;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-sm);
-            overflow-x: auto;
-            border: 1px solid var(--border-light);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 650px;
-        }
-        th {
-            padding: 16px 20px;
-            text-align: left;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            border-bottom: 1px solid var(--border-light);
-            background: #fafbfc;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        td {
-            padding: 14px 20px;
-            border-bottom: 1px solid var(--border-light);
-            cursor: pointer;
-            background: white;
-            font-size: 14px;
-        }
-        tr:last-child td {
-            border-bottom: none;
-        }
-        tr:hover td {
-            background: var(--primary-light);
-        }
-        .na-cell {
-            font-weight: 700;
-            font-family: 'Inter', monospace;
-            font-size: 15px;
-            color: var(--primary);
-        }
-        .badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            display: inline-block;
-            letter-spacing: 0.3px;
-        }
-        .badge-active {
-            background: var(--success-light);
-            color: var(--success);
-        }
-        .badge-expired {
-            background: var(--danger-light);
-            color: var(--danger);
-        }
-        .dias-restantes {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
+/* ============================================= */
+/* APP VIEW                                      */
+/* ============================================= */
+.app-view{
+  position:fixed;
+  inset:0;
+  z-index:10;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  opacity:0;
+  transition:opacity 0.3s ease;
+}
+.app-view.active{
+  display:flex;
+  opacity:1;
+}
 
-        /* ===== MODAIS ===== */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(6px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 3000;
-            padding: 20px;
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-        .modal {
-            background: white;
-            border-radius: var(--radius-xl);
-            width: 100%;
-            max-width: 560px;
-            max-height: 85vh;
-            overflow-y: auto;
-            box-shadow: var(--shadow-lg);
-            animation: modalFadeIn 0.2s ease;
-        }
-        .modal.large {
-            max-width: 900px;
-        }
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: scale(0.96) translateY(8px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        .modal-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--border-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            background: white;
-            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-            z-index: 1;
-        }
-        .modal-header h2 {
-            font-size: 17px;
-            font-weight: 700;
-            letter-spacing: -0.2px;
-        }
-        .modal-close {
-            width: 36px;
-            height: 36px;
-            border-radius: var(--radius-sm);
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
-            transition: background 0.15s;
-        }
-        .modal-close:hover {
-            background: var(--border-light);
-        }
-        .modal-content {
-            padding: 24px;
-        }
-        .field {
-            margin-bottom: 18px;
-        }
-        .field label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .field input, .field textarea, .field select {
-            width: 100%;
-            padding: 12px 16px;
-            background: white;
-            border: 1px solid var(--border-medium);
-            border-radius: var(--radius-md);
-            font-size: 15px;
-            font-weight: 400;
-            transition: all 0.2s;
-            outline: none;
-            font-family: inherit;
-            color: var(--text-primary);
-        }
-        .field input:focus, .field textarea:focus, .field select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
-        }
-        .field input.error, .field textarea.error, .field select.error {
-            border-color: var(--danger);
-            box-shadow: 0 0 0 3px rgba(234, 67, 53, 0.1);
-        }
-        .field textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-        .field-row {
-            display: flex;
-            gap: 12px;
-        }
-        .field-row .field {
-            flex: 1;
-        }
+.app-view-bg{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+  backdrop-filter:blur(40px) saturate(180%);
+  -webkit-backdrop-filter:blur(40px) saturate(180%);
+  z-index:0;
+}
 
-        /* ===== BUTTONS ===== */
-        .btn-save {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.15s;
-            width: 100%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .btn-save:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.15s;
-            width: 100%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .btn-danger:hover {
-            background: #d33426;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-        .btn-secondary {
-            background: var(--text-secondary);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.15s;
-            width: 100%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .btn-secondary:hover {
-            background: #4a4d52;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-        .btn-warning {
-            background: var(--warning);
-            color: #1f1f1f;
-            border: none;
-            padding: 14px 28px;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.15s;
-            width: 100%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .btn-warning:hover {
-            background: #e5a800;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
+.app-view-content{
+  position:relative;
+  z-index:1;
+  width:100%;
+  max-width:640px;
+  max-height:88vh;
+  background:rgba(28,28,30,0.85);
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  border:1px solid rgba(255,255,255,0.1);
+  display:flex;
+  flex-direction:column;
+  animation:appOpen 0.35s cubic-bezier(0.23,1,0.32,1);
+  color:#fff;
+}
+@keyframes appOpen{
+  from{opacity:0;transform:scale(0.92) translateY(20px);}
+  to{opacity:1;transform:scale(1) translateY(0);}
+}
 
-        /* ===== KEYS GRID ===== */
-        .keys-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 14px;
-        }
-        .key-card {
-            background: white;
-            border: 2px solid var(--border-light);
-            border-radius: var(--radius-md);
-            padding: 16px 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-        }
-        .key-card.available {
-            background: var(--success-light);
-            border-color: var(--success);
-        }
-        .key-card.occupied {
-            background: var(--danger-light);
-            border-color: var(--danger);
-        }
-        .key-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
-        }
-        .key-card .key-icon {
-            font-size: 24px;
-            margin-bottom: 6px;
-            display: block;
-        }
-        .key-card strong {
-            display: block;
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        .key-card .key-user {
-            font-size: 12px;
-            color: var(--text-secondary);
-            font-weight: 500;
-            word-break: break-word;
-        }
-        .key-card .key-date {
-            font-size: 10px;
-            color: var(--text-tertiary);
-            margin-top: 4px;
-        }
-        .key-card .key-status {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 6px;
-        }
-        .key-card.available .key-status {
-            color: var(--success);
-        }
-        .key-card.occupied .key-status {
-            color: var(--danger);
-        }
-        .btn-clear-key {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: var(--danger);
-            color: white;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 700;
-            transition: all 0.15s;
-            line-height: 1;
-        }
-        .btn-clear-key:hover {
-            transform: scale(1.15);
-            background: #d33426;
-        }
+.app-view-header{
+  padding:16px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  background:rgba(28,28,30,0.98);
+  flex-shrink:0;
+  gap:12px;
+}
+.app-view-header h2{
+  font-size:17px;
+  font-weight:600;
+  color:#fff;
+  letter-spacing:-0.3px;
+  flex:1;
+  text-align:center;
+}
+.btn-back{
+  background:transparent;
+  border:none;
+  color:var(--ios-blue);
+  font-size:15px;
+  font-weight:500;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:4px;
+  padding:6px 8px;
+  border-radius:8px;
+  transition:background 0.15s;
+  font-family:inherit;
+  flex-shrink:0;
+}
+.btn-back:hover{background:rgba(0,122,255,0.12);}
+.btn-back svg{
+  width:16px;
+  height:16px;
+  stroke:currentColor;
+  fill:none;
+  stroke-width:2.5;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.header-spacer{width:60px;flex-shrink:0;}
 
-        /* ===== LISTS ===== */
-        .items-list {
-            max-height: 380px;
-            overflow-y: auto;
-        }
-        .list-item {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--border-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
-            gap: 12px;
-        }
-        .list-item:last-child {
-            border-bottom: none;
-        }
-        .list-item .item-info {
-            flex: 1;
-            min-width: 0;
-        }
-        .list-item .item-info strong {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            word-break: break-word;
-        }
-        .list-item .item-info small {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-        .list-item .item-action {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.15s;
-            flex-shrink: 0;
-        }
-        .list-item .item-action:hover {
-            background: #d33426;
-            transform: scale(1.05);
-        }
+.app-view-body{
+  padding:20px;
+  overflow-y:auto;
+  flex:1;
+  color:#fff;
+}
+.app-view-body::-webkit-scrollbar{width:0;}
 
-        /* ===== VIDEO GRID ===== */
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 14px;
-        }
-        .video-card {
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            cursor: pointer;
-            border: 1px solid var(--border-light);
-            transition: all 0.2s;
-            background: white;
-        }
-        .video-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
-        }
-        .video-card img {
-            width: 100%;
-            aspect-ratio: 16/9;
-            object-fit: cover;
-            display: block;
-        }
-        .video-card p {
-            padding: 10px 12px;
-            font-size: 12px;
-            font-weight: 500;
-            line-height: 1.4;
-            color: var(--text-primary);
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
+/* ============================================= */
+/* FORMULÁRIOS iOS                              */
+/* ============================================= */
+.ios-field{margin-bottom:16px;}
+.ios-field label{
+  display:block;
+  font-size:12px;
+  font-weight:600;
+  color:var(--ios-text-secondary);
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  margin-bottom:6px;
+  padding-left:4px;
+}
+.ios-field input,
+.ios-field select,
+.ios-field textarea{
+  width:100%;
+  padding:14px 16px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:10px;
+  font-size:15px;
+  font-weight:400;
+  color:#fff;
+  outline:none;
+  font-family:inherit;
+  transition:border-color 0.2s, background 0.2s;
+  -webkit-appearance:none;
+  appearance:none;
+}
+.ios-field input::placeholder,
+.ios-field textarea::placeholder{color:rgba(255,255,255,0.4);}
+.ios-field input:focus,
+.ios-field select:focus,
+.ios-field textarea:focus{
+  border-color:var(--ios-blue);
+  background:rgba(0,122,255,0.1);
+}
+.ios-field input.error,
+.ios-field textarea.error{
+  border-color:var(--ios-red);
+  background:rgba(255,59,48,0.1);
+}
+.ios-field select{
+  color:#fff;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 16px center;
+  padding-right:40px;
+}
+.ios-field select option{background:#1c1c1e;color:#fff;}
+.ios-field textarea{resize:vertical;min-height:90px;}
+.field-row{display:flex;gap:12px;}
+.field-row .ios-field{flex:1;}
 
-        /* ===== NA ALERT ===== */
-        .na-alert {
-            display: none;
-            background: var(--primary-light);
-            padding: 20px;
-            border-radius: var(--radius-md);
-            margin-bottom: 18px;
-            text-align: center;
-            border: 1px solid var(--primary);
-        }
-        .na-alert.active {
-            display: block;
-        }
-        .na-number {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--primary);
-            letter-spacing: -1px;
-        }
-        .na-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+.ios-btn{
+  width:100%;
+  padding:14px 20px;
+  border:none;
+  border-radius:12px;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+  font-family:inherit;
+  transition:opacity 0.15s, transform 0.1s;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+.ios-btn:active{transform:scale(0.98);}
+.ios-btn-primary{background:var(--ios-blue);color:#fff;}
+.ios-btn-primary:hover{opacity:0.9;}
+.ios-btn-danger{background:var(--ios-red);color:#fff;}
+.ios-btn-danger:hover{opacity:0.9;}
+.ios-btn-success{background:var(--ios-green);color:#fff;}
+.ios-btn-success:hover{opacity:0.9;}
+.ios-btn-warning{background:var(--ios-orange);color:#fff;}
+.ios-btn-warning:hover{opacity:0.9;}
+.ios-btn-secondary{
+  background:rgba(255,255,255,0.1);
+  color:#fff;
+  border:1px solid rgba(255,255,255,0.15);
+}
+.ios-btn-secondary:hover{background:rgba(255,255,255,0.15);}
+.ios-btn + .ios-btn{margin-top:10px;}
 
-        /* ===== EDIT NA ===== */
-        .edit-na-display {
-            font-size: 36px;
-            font-weight: 800;
-            text-align: center;
-            margin-bottom: 20px;
-            color: var(--primary);
-            letter-spacing: -1px;
-        }
-        .dias-info {
-            margin: 16px 0;
-            text-align: center;
-            font-weight: 600;
-            font-size: 14px;
-            padding: 12px;
-            background: var(--primary-light);
-            border-radius: var(--radius-md);
-            color: var(--primary);
-        }
+.ios-list{
+  background:rgba(255,255,255,0.05);
+  border-radius:12px;
+  overflow:hidden;
+  margin-top:12px;
+}
+.ios-list-item{
+  padding:14px 16px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  font-size:14px;
+  color:#fff;
+  transition:background 0.15s;
+}
+.ios-list-item:last-child{border-bottom:none;}
+.ios-list-item.clickable{cursor:pointer;}
+.ios-list-item.clickable:hover{background:rgba(255,255,255,0.05);}
+.ios-list-item .info{flex:1;min-width:0;}
+.ios-list-item .info strong{
+  display:block;
+  font-weight:600;
+  font-size:15px;
+  margin-bottom:3px;
+  word-break:break-word;
+}
+.ios-list-item .info small{
+  font-size:12px;
+  color:rgba(255,255,255,0.6);
+  line-height:1.4;
+  display:block;
+}
+.ios-list-item .chev{
+  color:rgba(255,255,255,0.35);
+  font-size:18px;
+  flex-shrink:0;
+}
+.ios-list-item .action-btn{
+  background:var(--ios-red);
+  color:#fff;
+  border:none;
+  padding:6px 12px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+  flex-shrink:0;
+  font-family:inherit;
+  transition:opacity 0.15s;
+}
+.ios-list-item .action-btn:hover{opacity:0.85;}
 
-        /* ===== PLAYER ===== */
-        .player-frame {
-            width: 100%;
-            height: 500px;
-            border: none;
-            display: block;
-        }
+/* ============================================= */
+/* GRID DE CHAVES                                */
+/* ============================================= */
+.keys-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+  gap:12px;
+  margin-top:12px;
+}
+.key-card{
+  background:rgba(255,255,255,0.06);
+  border:1.5px solid rgba(255,255,255,0.1);
+  border-radius:14px;
+  padding:14px 10px;
+  text-align:center;
+  cursor:pointer;
+  transition:all 0.2s;
+  position:relative;
+}
+.key-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 20px rgba(0,0,0,0.3);
+}
+.key-card.available{
+  background:rgba(52,199,89,0.15);
+  border-color:var(--ios-green);
+}
+.key-card.occupied{
+  background:rgba(255,59,48,0.15);
+  border-color:var(--ios-red);
+}
+.key-card .key-emoji{
+  font-size:22px;
+  margin-bottom:6px;
+  display:block;
+}
+.key-card strong{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:4px;
+  color:#fff;
+}
+.key-card .key-user{
+  font-size:11px;
+  color:rgba(255,255,255,0.85);
+  font-weight:500;
+  word-break:break-word;
+  line-height:1.3;
+  margin-bottom:2px;
+}
+.key-card .key-date{
+  font-size:10px;
+  color:rgba(255,255,255,0.55);
+  margin-top:3px;
+}
+.key-card .key-status{
+  font-size:10px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  margin-top:6px;
+  display:inline-block;
+  padding:2px 8px;
+  border-radius:6px;
+}
+.key-card.available .key-status{
+  background:var(--ios-green);
+  color:#fff;
+}
+.key-card.occupied .key-status{
+  background:var(--ios-red);
+  color:#fff;
+}
+.btn-clear-key{
+  position:absolute;
+  top:-6px;
+  right:-6px;
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:var(--ios-red);
+  color:#fff;
+  border:2px solid rgba(28,28,30,0.9);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-weight:700;
+  line-height:1;
+  transition:transform 0.15s;
+}
+.btn-clear-key:hover{transform:scale(1.15);}
 
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .container {
-                padding: 16px 12px 40px;
-            }
-            .welcome-card {
-                padding: 20px;
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .welcome-title {
-                font-size: 20px;
-            }
-            .video-box {
-                width: 100%;
-                height: 160px;
-            }
-            .action-bar {
-                gap: 8px;
-            }
-            .action-btn {
-                padding: 8px 14px;
-                font-size: 12px;
-            }
-            .search-area {
-                flex-direction: column;
-            }
-            .btn-new {
-                width: 100%;
-                justify-content: center;
-            }
-            .keys-btn {
-                width: 100%;
-                justify-content: center;
-            }
-            .field-row {
-                flex-direction: column;
-                gap: 0;
-            }
-            .keys-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                gap: 10px;
-            }
-            .grid-3 {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                gap: 10px;
-            }
-            .modal {
-                max-width: 100%;
-                border-radius: var(--radius-lg);
-                max-height: 90vh;
-            }
-            .modal-header {
-                border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-            }
-            .dev-name {
-                font-size: 2.2rem;
-            }
-            .player-frame {
-                height: 260px;
-            }
-        }
+/* ============================================= */
+/* VIDEO GRID                                    */
+/* ============================================= */
+.video-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:16px;
+}
+.video-item{
+  border-radius:12px;
+  overflow:hidden;
+  cursor:pointer;
+  background:rgba(255,255,255,0.08);
+  transition:transform 0.2s;
+}
+.video-item:hover{transform:translateY(-2px);}
+.video-item img{
+  width:100%;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  display:block;
+}
+.video-item .vt{
+  padding:8px;
+  font-size:11px;
+  line-height:1.3;
+  color:#fff;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
 
-        @media (min-width: 769px) {
-            .side-menu {
-                transform: translateX(0);
-                box-shadow: none;
-                border-right: 1px solid var(--border-light);
-            }
-            .menu-overlay {
-                display: none !important;
-            }
-            .menu-icon {
-                display: none;
-            }
-            .header-spacer {
-                display: none;
-            }
-            main.container {
-                margin-left: 280px;
-                max-width: calc(1400px - 280px);
-            }
-            header {
-                padding-left: 300px;
-            }
-        }
-    </style>
+/* ============================================= */
+/* MODAL NA GERADO                               */
+/* ============================================= */
+.na-modal{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(0,0,0,0.55);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+}
+.na-modal.active{display:flex;}
+.na-modal-content{
+  background:#fff;
+  border-radius:22px;
+  padding:32px 28px;
+  max-width:400px;
+  width:100%;
+  text-align:center;
+  animation:naPop 0.45s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+@keyframes naPop{
+  from{opacity:0;transform:scale(0.7);}
+  to{opacity:1;transform:scale(1);}
+}
+.na-modal-content .na-icon{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  background:var(--ios-green);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 16px;
+}
+.na-modal-content .na-icon svg{
+  width:32px;
+  height:32px;
+  stroke:#fff;
+  fill:none;
+  stroke-width:3;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.na-modal-content h2{
+  font-size:20px;
+  font-weight:700;
+  color:#000;
+  margin-bottom:6px;
+}
+.na-modal-content .na-sub{
+  font-size:13px;
+  color:#8e8e93;
+  margin-bottom:20px;
+}
+.na-modal-content .na-code{
+  font-size:42px;
+  font-weight:800;
+  color:var(--ios-blue);
+  letter-spacing:2px;
+  padding:16px;
+  background:#f2f2f7;
+  border-radius:14px;
+  margin-bottom:16px;
+  font-family:'SF Mono',Menlo,monospace;
+}
+.na-modal-content .na-info{
+  font-size:13px;
+  color:#3c3c43;
+  line-height:1.6;
+  text-align:left;
+  padding:14px;
+  background:#f9f9fb;
+  border-radius:12px;
+  margin-bottom:20px;
+}
+.na-modal-content .na-info div{
+  display:flex;
+  justify-content:space-between;
+  padding:5px 0;
+  border-bottom:1px solid #ececf0;
+  gap:12px;
+}
+.na-modal-content .na-info div:last-child{border-bottom:none;}
+.na-modal-content .na-info span:first-child{color:#8e8e93;font-weight:500;flex-shrink:0;}
+.na-modal-content .na-info span:last-child{font-weight:600;color:#000;text-align:right;word-break:break-word;}
+.na-modal-content .btn-ok{
+  background:var(--ios-blue);
+  color:#fff;
+  border:none;
+  padding:14px;
+  border-radius:12px;
+  font-size:15px;
+  font-weight:600;
+  width:100%;
+  cursor:pointer;
+  font-family:inherit;
+  transition:opacity 0.15s;
+}
+.na-modal-content .btn-ok:hover{opacity:0.9;}
+
+.sub-view{display:none;animation:slideIn 0.25s ease;}
+.sub-view.active{display:block;}
+@keyframes slideIn{
+  from{opacity:0;transform:translateX(20px);}
+  to{opacity:1;transform:translateX(0);}
+}
+
+/* ============================================= */
+/* TOGGLE SWITCH (modo claro/escuro)             */
+/* ============================================= */
+.setting-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px;
+  background:rgba(255,255,255,0.05);
+  border-radius:12px;
+  margin-bottom:12px;
+}
+body.light-mode .setting-row{background:rgba(0,0,0,0.03);}
+.setting-row .setting-label{
+  font-size:15px;
+  font-weight:500;
+}
+.setting-row .setting-desc{
+  font-size:12px;
+  color:rgba(255,255,255,0.6);
+  margin-top:3px;
+}
+body.light-mode .setting-row .setting-desc{color:rgba(0,0,0,0.55);}
+.toggle-switch{
+  position:relative;
+  width:51px;
+  height:31px;
+  flex-shrink:0;
+}
+.toggle-switch input{
+  opacity:0;
+  width:0;
+  height:0;
+}
+.toggle-slider{
+  position:absolute;
+  cursor:pointer;
+  inset:0;
+  background:rgba(120,120,128,0.32);
+  border-radius:31px;
+  transition:0.3s;
+}
+.toggle-slider:before{
+  position:absolute;
+  content:"";
+  height:27px;
+  width:27px;
+  left:2px;
+  bottom:2px;
+  background:#fff;
+  border-radius:50%;
+  transition:0.3s;
+  box-shadow:0 2px 4px rgba(0,0,0,0.2);
+}
+.toggle-switch input:checked + .toggle-slider{background:var(--ios-green);}
+.toggle-switch input:checked + .toggle-slider:before{transform:translateX(20px);}
+
+/* ============================================= */
+/* LOADING / DEV OVERLAY / TOAST                 */
+/* ============================================= */
+.loading-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:200;
+}
+.loading-overlay.active{display:flex;}
+.spinner{
+  width:44px;
+  height:44px;
+  border:4px solid rgba(255,255,255,0.2);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.dev-overlay{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:300;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  pointer-events:none;
+}
+.dev-overlay.active{display:flex;}
+.dev-name{
+  font-size:3rem;
+  font-weight:800;
+  color:#fff;
+  letter-spacing:3px;
+  animation:devFade 0.4s ease;
+  text-shadow:0 4px 20px rgba(0,122,255,0.5);
+}
+@keyframes devFade{
+  from{opacity:0;transform:scale(0.85);}
+  to{opacity:1;transform:scale(1);}
+}
+
+.toast{
+  position:fixed;
+  bottom:110px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(28,28,30,0.95);
+  color:#fff;
+  padding:12px 24px;
+  border-radius:14px;
+  font-size:14px;
+  z-index:500;
+  backdrop-filter:blur(20px);
+  box-shadow:0 8px 30px rgba(0,0,0,0.4);
+  max-width:90%;
+  text-align:center;
+  display:none;
+}
+
+/* ============================================= */
+/* RESPONSIVO                                    */
+/* ============================================= */
+@media (max-width:480px){
+  .apps-grid{
+    grid-template-columns:repeat(4,1fr);
+    gap:22px 10px;
+  }
+  .app-icon .icon-box{width:56px;height:56px;border-radius:13px;}
+  .app-icon .icon-box svg{width:28px;height:28px;}
+  .app-icon .app-label{font-size:10px;max-width:64px;}
+  .home-screen{padding:20px 14px 40px 14px;}
+  .app-view-content{max-height:92vh;border-radius:20px;}
+  .dev-name{font-size:2rem;}
+  .keys-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;}
+  .field-row{flex-direction:column;gap:0;}
+  .na-modal-content{padding:24px 20px;}
+  .na-modal-content .na-code{font-size:34px;}
+  .app-view-header h2{font-size:15px;}
+  .header-spacer{width:50px;}
+}
+
+@media (min-width:769px){
+  .apps-grid{
+    grid-template-columns:repeat(6,1fr);
+    max-width:720px;
+    gap:26px 18px;
+  }
+  .app-icon .icon-box{width:68px;height:68px;border-radius:16px;}
+  .app-icon .icon-box svg{width:36px;height:36px;}
+  .app-icon .app-label{font-size:12px;max-width:80px;}
+  .home-screen{padding-top:60px;}
+}
+</style>
 </head>
 <body>
 
-<!-- Fundo GIF -->
-<div class="bg-gif-overlay">
-    <img class="bg-gif" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhntYLwluptcvGGk78e-_7GXQMRfj9UfwkDy7RUp9mSDxxZ-TD2O5DAtkUN_hyEk9I2fBA5N3IXbCVONiw9VIRaXDFAGuZI6KWASnt8pN8YP9s_7pwVoTOzzc1OPCbvI98qmzQLMsDblTpAe2TaUDwrYXYKGdCTdUFTFwGosrAQ4bFxLjsTn8VFkGUcV5pE/s400/BEE08ABC-CE1E-43AA-BFA4-E5FC30942A50.gif" alt="">
-</div>
+<!-- ===== FUNDO (4 camadas de imagem 4K) ===== -->
+<div class="bg-layer bg-layer-1"></div>
+<div class="bg-layer bg-layer-2"></div>
+<div class="bg-layer bg-layer-3"></div>
+<div class="bg-layer bg-layer-4"></div>
+<div class="bg-overlay"></div>
 
-<!-- Loading -->
-<div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-spinner"></div>
-</div>
+<!-- ===== HOME SCREEN ===== -->
+<div class="home-screen" id="homeScreen">
+  <div class="apps-grid" id="appsGrid">
 
-<!-- Dev Overlay -->
-<div class="dev-overlay" id="devOverlay">
-    <div class="dev-name">SAN7DOC</div>
-</div>
-
-<!-- Menu Lateral -->
-<div class="menu-overlay" id="menuOverlay"></div>
-<aside class="side-menu" id="sideMenu">
-    <div class="menu-header">
-        <h3>SAN7DOC TECNOLOGIA</h3>
-        <button class="menu-close" id="closeMenuBtn" aria-label="Fechar menu">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
+    <div class="app-icon" data-app="cadastros">
+      <div class="icon-box icon-cadastros">
+        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+      </div>
+      <div class="app-label">Cadastros</div>
     </div>
-    <nav class="menu-items">
-        <button class="menu-item" onclick="abrirModalCustom('modalKeys')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="16" r="2"/><path d="M12 8h.01M8 12h.01M16 8h.01M12 16h.01M21 12a9 9 0 1 0-9 9"/></svg>
-            Chaves
-        </button>
-        <button class="menu-item" onclick="abrirModalCustom('modalAulas')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-            Aulas Experimentais
-        </button>
-        <button class="menu-item" onclick="abrirModalCustom('modalNotas')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            Anotações
-        </button>
-        <button class="menu-item" onclick="abrirModalCustom('modalJogos'); buscarVideos();">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M9 12h6M12 9v6"/></svg>
-            Jogos e Vídeos
-        </button>
-        <button class="menu-item" onclick="abrirModalCustom('modalPanic')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            Botão do Pânico
-        </button>
-    </nav>
-</aside>
 
-<!-- Header -->
-<header>
-    <button class="menu-icon" id="menuIcon" aria-label="Abrir menu">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
-    <div class="logo-area">
-        <div class="logo-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    <div class="app-icon" data-app="chaves">
+      <div class="icon-box icon-chaves">
+        <svg viewBox="0 0 24 24"><circle cx="8" cy="16" r="2"/><path d="M12 8h.01M8 12h.01M16 8h.01M12 16h.01M21 12a9 9 0 1 0-9 9"/></svg>
+      </div>
+      <div class="app-label">Chaves</div>
+    </div>
+
+    <div class="app-icon" data-app="aulas">
+      <div class="icon-box icon-aulas">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      </div>
+      <div class="app-label">Aulas Exp</div>
+    </div>
+
+    <div class="app-icon" data-app="notas">
+      <div class="icon-box icon-notas">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </div>
+      <div class="app-label">Notas</div>
+    </div>
+
+    <div class="app-icon" data-app="videos">
+      <div class="icon-box icon-videos">
+        <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      </div>
+      <div class="app-label">Vídeos</div>
+    </div>
+
+    <div class="app-icon" data-app="panico">
+      <div class="icon-box icon-panico">
+        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div class="app-label">Pânico</div>
+    </div>
+
+    <div class="app-icon" data-app="config">
+      <div class="icon-box icon-config">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </div>
+      <div class="app-label">Ajustes</div>
+    </div>
+
+    <div class="app-icon" data-app="sair">
+      <div class="icon-box icon-sair">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </div>
+      <div class="app-label">Sair</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== APP VIEW: CADASTROS ===== -->
+<div class="app-view" id="app-cadastros">
+  <div class="app-view-bg" onclick="closeApp()"></div>
+  <div class="app-view-content">
+    <div class="app-view-header">
+      <button class="btn-back" onclick="closeApp()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Voltar
+      </button>
+      <h2>Cadastros</h2>
+      <div class="header-spacer"></div>
+    </div>
+    <div class="app-view-body">
+
+      <div class="sub-view active" id="sub-list-alunos">
+        <div style="position:relative;margin-bottom:14px;">
+          <input type="text" id="buscaAluno" placeholder="Pesquisar por aluno ou NA..." oninput="renderAlunos()" style="width:100%;padding:12px 16px 12px 42px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;font-size:15px;color:#fff;outline:none;font-family:inherit;">
+          <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:rgba(255,255,255,0.5);fill:none;stroke-width:2;pointer-events:none;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </div>
-        <span class="logo-text">SAN7DOC TECNOLOGIA</span>
-    </div>
-    <div class="header-spacer"></div>
-</header>
+        <button class="ios-btn ios-btn-primary" onclick="mostrarFormNovoAluno()">+ Novo Aluno</button>
+        <div class="ios-list" id="listaAlunos"></div>
+      </div>
 
-<!-- Main -->
-<main class="container">
-    <div class="welcome-card">
+      <div class="sub-view" id="sub-novo-aluno">
+        <button class="btn-back" style="color:var(--ios-blue);margin-bottom:14px;padding:0;" onclick="voltarSubView('sub-list-alunos')">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          Voltar para lista
+        </button>
+        <div class="ios-field">
+          <label>Nome Completo</label>
+          <input type="text" id="cadNome" placeholder="Nome completo do aluno">
+        </div>
+        <div class="ios-field">
+          <label>Celular</label>
+          <input type="tel" id="cadTelefone" placeholder="(00) 00000-0000" inputmode="tel">
+        </div>
+        <div class="ios-field">
+          <label>Plano</label>
+          <input type="text" id="cadPlano" placeholder="Ex: Mensal, Trimestral">
+        </div>
+        <div class="field-row">
+          <div class="ios-field">
+            <label>Início</label>
+            <input type="date" id="cadInicio">
+          </div>
+          <div class="ios-field">
+            <label>Término</label>
+            <input type="date" id="cadTermino">
+          </div>
+        </div>
+        <button class="ios-btn ios-btn-success" onclick="salvarNovoAluno()">Gerar NA e Cadastrar</button>
+      </div>
+
+      <div class="sub-view" id="sub-edit-aluno">
+        <button class="btn-back" style="color:var(--ios-blue);margin-bottom:14px;padding:0;" onclick="voltarSubView('sub-list-alunos')">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          Voltar para lista
+        </button>
+        <div style="text-align:center;margin-bottom:16px;">
+          <div style="font-size:12px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">NA</div>
+          <div id="edit-na-display" style="font-size:38px;font-weight:800;color:var(--ios-blue);letter-spacing:2px;font-family:'SF Mono',Menlo,monospace;"></div>
+        </div>
+        <input type="hidden" id="edit-na-val">
+        <div class="ios-field"><label>Nome Completo</label><input id="edit-name"></div>
+        <div class="ios-field"><label>Celular</label><input id="edit-phone" inputmode="tel"></div>
+        <div class="ios-field"><label>Plano</label><input id="edit-plan"></div>
+        <div class="field-row">
+          <div class="ios-field"><label>Início</label><input type="date" id="edit-start"></div>
+          <div class="ios-field"><label>Término</label><input type="date" id="edit-end"></div>
+        </div>
+        <div style="text-align:center;padding:12px;background:rgba(0,122,255,0.15);border-radius:12px;color:#5ac8fa;font-weight:600;margin:16px 0;" id="diasRestantes"></div>
+        <button class="ios-btn ios-btn-primary" style="margin-bottom:10px;" onclick="updateUser()">Salvar Alterações</button>
+        <button class="ios-btn ios-btn-warning" style="margin-bottom:10px;" onclick="renovatePlan()">Renovar +30 Dias</button>
+        <button class="ios-btn ios-btn-danger" onclick="deleteUser()">Excluir Aluno</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== APP VIEW: CHAVES ===== -->
+<div class="app-view" id="app-chaves">
+  <div class="app-view-bg" onclick="closeApp()"></div>
+  <div class="app-view-content">
+    <div class="app-view-header">
+      <button class="btn-back" onclick="closeApp()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Voltar
+      </button>
+      <h2>Gestão de Chaves</h2>
+      <div class="header-spacer"></div>
+    </div>
+    <div class="app-view-body">
+      <div class="keys-grid" id="keysContainer"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== APP VIEW: AULAS EXPERIMENTAIS ===== -->
+<div class="app-view" id="app-aulas">
+  <div class="app-view-bg" onclick="closeApp()"></div>
+  <div class="app-view-content">
+    <div class="app-view-header">
+      <button class="btn-back" onclick="closeApp()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Voltar
+      </button>
+      <h2>Aulas Experimentais</h2>
+      <div class="header-spacer"></div>
+    </div>
+    <div class="app-view-body">
+
+      <div class="sub-view active" id="sub-list-aulas">
+        <button class="ios-btn ios-btn-primary" onclick="voltarSubView('sub-nova-aula')">+ Nova Aula</button>
+        <div style="margin-top:14px;">
+          <input type="text" id="buscaAula" placeholder="Pesquisar..." oninput="renderAulas()" style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;font-size:15px;color:#fff;outline:none;font-family:inherit;">
+        </div>
+        <div class="ios-list" id="listaAulas"></div>
+      </div>
+
+      <div class="sub-view" id="sub-nova-aula">
+        <button class="btn-back" style="color:var(--ios-blue);margin-bottom:14px;padding:0;" onclick="voltarSubView('sub-list-aulas')">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          Voltar
+        </button>
+        <div class="ios-field">
+          <label>Nome Completo</label>
+          <input type="text" id="aulaNome" placeholder="Nome completo">
+        </div>
+        <div class="ios-field">
+          <label>Celular</label>
+          <input type="tel" id="aulaTel" placeholder="(00) 00000-0000" inputmode="tel">
+        </div>
+        <div class="ios-field">
+          <label>Sexo</label>
+          <select id="aulaSexo">
+            <option value="">Selecione</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Feminino">Feminino</option>
+          </select>
+        </div>
+        <button class="ios-btn ios-btn-success" onclick="salvarAulaExp()">Cadastrar Aula</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== APP VIEW: NOTAS ===== -->
+<div class="app-view" id="app-notas">
+  <div class="app-view-bg" onclick="closeApp()"></div>
+  <div class="app-view-content">
+    <div class="app-view-header">
+      <button class="btn-back" onclick="closeApp()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Voltar
+      </button>
+      <h2>Anotações</h2>
+      <div class="header-spacer"></div>
+    </div>
+    <div class="app-view-body">
+
+      <div class="sub-view active" id="sub-list-notas">
+        <button class="ios-btn ios-btn-primary" onclick="voltarSubView('sub-nova-nota')">+ Nova Anotação</button>
+        <div class="ios-list" id="listaNotas" style="margin-top:14px;"></div>
+      </div>
+
+      <div class="sub-view" id="sub-nova-nota">
+        <button class="btn-back" style="color:var(--ios-blue);margin-bottom:14px;padding:0;" onclick="voltarSubView('sub-list-notas')">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          Voltar
+        </button>
+        <div class="ios-field">
+          <label>Título</label>
+          <input type="text" id="notaTitulo" placeholder="Título da nota">
+        </div>
+        <div class="ios-field">
+          <label>Texto</label>
+          <textarea id="notaTexto" rows="6" placeholder="Escreva sua anotação..."></textarea>
+        </div>
+        <button class="ios-btn ios-btn-success" onclick="salvarNota()">Salvar</button>
+      </div>
+
+      <div class="sub-view" id="sub-ver-nota">
+        <button class="btn-back" style="color:var(--ios-blue);margin-bottom:14px;padding:0;" onclick="voltarSubView('sub-list-notas')">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          Voltar
+        </button>
+        <h3 id="verTitulo" style="font-size:20px;font-weight:700;margin-bottom:6px;"></h3>
+        <div id="verData" style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:16px;"></div>
+        <div style="padding:16px;background:rgba(255,255,255,0.08);border-radius:12px;font-size:14px;line-height:1.6;white-space:pre-wrap;min-height:100px;" id="verTexto"></div>
+        <button class="ios-btn ios-btn-secondary" style="margin-top:14px;margin-bottom:10px;" id="btnPdf">Baixar PDF</button>
+        <button class="ios-btn ios-btn-danger" id="btnExcluirNota">Excluir</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== APP VIEW: VÍDEOS ===== -->
+<div class="app-view" id="app-videos">
+  <div class="app-view-bg" onclick="closeApp()"></div>
+  <div class="app-view-content">
+    <div class="app-view-header">
+      <button class="btn-back" onclick="closeApp()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Voltar
+      </button>
+      <h2>Vídeos e Resumos</h2>
+      <div class="header-spacer"></div>
+    </div>
+    <div class="app-view-body">
+      <input type="text" id="buscaVideo" placeholder="Pesquisar vídeo..." onchange="buscarVideos(this.value)" style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;font-size:15px;color:#fff;outline:none;font-family:inherit;margin-bottom:6px;">
+      <div class="video-grid" id="listaVideos"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== APP VIEW: PÂNICO ===== -->
+<div class="app-view" id="app-panico">
+  <div class="app-view-bg" onclick="closeApp()"></div>
+  <div class="app-view-content">
+    <div class="app-view-header">
+      <button class="btn-back" onclick="closeApp()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Voltar
+      </button>
+      <h2>Botão do Pânico</h2>
+      <div class="header-spacer"></div>
+    </div>
+    <div class="app-view-body">
+      <button class="ios-btn ios-btn-danger" style="padding:20px;font-size:16px;" onclick="registrarPanico()">🚨 REGISTRAR OCORRÊNCIA</button>
+      <div class="ios-list" id="listaPanic" style="margin-top:18px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== APP VIEW: AJUSTES ===== -->
+<div class="app-view" id="app-config">
+  <div class="app-view-bg" onclick="closeApp()"></div>
+  <div class="app-view-content">
+    <div class="app-view-header">
+      <button class="btn-back" onclick="closeApp()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Voltar
+      </button>
+      <h2>Ajustes</h2>
+      <div class="header-spacer"></div>
+    </div>
+    <div class="app-view-body">
+
+      <!-- MODO CLARO / ESCURO -->
+      <div class="setting-row">
         <div>
-            <div class="welcome-title" id="editableTitle" contenteditable="true">ACADEMIA DOMUSFIT</div>
-            <div class="welcome-sub">Gerencie alunos, chaves, anotações e muito mais</div>
+          <div class="setting-label">Modo Escuro</div>
+          <div class="setting-desc">Ativa o tema escuro do sistema</div>
         </div>
-        <div class="video-box">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhntYLwluptcvGGk78e-_7GXQMRfj9UfwkDy7RUp9mSDxxZ-TD2O5DAtkUN_hyEk9I2fBA5N3IXbCVONiw9VIRaXDFAGuZI6KWASnt8pN8YP9s_7pwVoTOzzc1OPCbvI98qmzQLMsDblTpAe2TaUDwrYXYKGdCTdUFTFwGosrAQ4bFxLjsTn8VFkGUcV5pE/s400/BEE08ABC-CE1E-43AA-BFA4-E5FC30942A50.gif" alt="Video">
+        <label class="toggle-switch">
+          <input type="checkbox" id="darkModeToggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <!-- DESENVOLVEDOR -->
+      <div class="ios-list" style="margin-top:20px;">
+        <div class="ios-list-item">
+          <div class="info"><strong>Desenvolvedor</strong><small>SAN7DOC</small></div>
         </div>
-    </div>
-
-    <div class="action-bar">
-        <button class="action-btn" onclick="abrirModalCustom('modalKeys')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="16" r="2"/><path d="M12 8h.01M8 12h.01M16 8h.01M12 16h.01M21 12a9 9 0 1 0-9 9"/></svg>
-            Chaves
-        </button>
-        <button class="action-btn" onclick="abrirModalCustom('modalAulas')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-            Aulas Exp
-        </button>
-        <button class="action-btn" onclick="abrirModalCustom('modalNotas')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            Anotações
-        </button>
-        <button class="action-btn" onclick="abrirModalCustom('modalJogos'); buscarVideos();">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M9 12h6M12 9v6"/></svg>
-            Vídeos
-        </button>
-        <button class="action-btn panic" onclick="abrirModalCustom('modalPanic')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            Pânico
-        </button>
-    </div>
-
-    <button class="keys-btn" onclick="abrirModalCustom('modalKeys')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="16" r="2"/><path d="M12 8h.01M8 12h.01M16 8h.01M12 16h.01M21 12a9 9 0 1 0-9 9"/></svg>
-        GESTÃO DE CHAVES
-    </button>
-
-    <div class="search-area">
-        <input type="text" id="search" class="search-box" placeholder="Pesquisar por aluno ou NA..." oninput="renderTable()">
-        <button class="btn-new" onclick="openModal('modalAdd')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            NOVO ALUNO
-        </button>
-    </div>
-
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr><th>NA</th><th>NOME DO ALUNO</th><th>PLANO</th><th>STATUS / DIAS</th></tr>
-            </thead>
-            <tbody id="aluno-list"></tbody>
-        </table>
-    </div>
-</main>
-
-<!-- ===== MODAIS ===== -->
-
-<!-- Pânico -->
-<div id="modalPanic" class="modal-overlay" onclick="closeModalOnOut(event, 'modalPanic')">
-    <div class="modal">
-        <div class="modal-header">
-            <h2>REGISTROS DE PÂNICO</h2>
-            <button class="modal-close" onclick="closeModal('modalPanic')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
+        <div class="ios-list-item">
+          <div class="info"><strong>ID de Segurança</strong><small id="securityId">— — — — — —</small></div>
         </div>
-        <div class="modal-content">
-            <button class="btn-danger" style="margin-bottom:20px;" onclick="registrarPanico()">REGISTRAR OCORRÊNCIA</button>
-            <div class="items-list" id="listaPanic"></div>
-        </div>
+      </div>
+
     </div>
+  </div>
 </div>
 
-<!-- Aulas Experimentais -->
-<div id="modalAulas" class="modal-overlay" onclick="closeModalOnOut(event, 'modalAulas')">
-    <div class="modal large">
-        <div class="modal-header">
-            <h2>AULAS EXPERIMENTAIS</h2>
-            <button class="modal-close" onclick="closeModal('modalAulas')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-        </div>
-        <div class="modal-content">
-            <div class="field">
-                <label>Nome Completo</label>
-                <input id="nomeAluno" placeholder="Nome completo do aluno">
-            </div>
-            <div class="field-row">
-                <div class="field">
-                    <label>Telefone</label>
-                    <input id="telAluno" placeholder="(00) 00000-0000">
-                </div>
-                <div class="field">
-                    <label>Sexo</label>
-                    <select id="sexoAluno">
-                        <option value="">Selecione</option>
-                        <option value="Masculino">Masculino</option>
-                        <option value="Feminino">Feminino</option>
-                    </select>
-                </div>
-            </div>
-            <div class="field-row">
-                <div class="field">
-                    <label>Bairro</label>
-                    <input id="bairroAluno" placeholder="Bairro">
-                </div>
-                <div class="field">
-                    <label>Rua</label>
-                    <input id="ruaAluno" placeholder="Nome da rua">
-                </div>
-            </div>
-            <button class="btn-save" style="margin-bottom:20px;" onclick="cadastrarAulaExperimental()">CADASTRAR AULA</button>
-            <input id="buscaAluno" class="search-box" placeholder="Pesquisar aluno..." oninput="filtrarAulasExperimentais()" style="margin-bottom:16px;">
-            <div class="items-list" id="listaAlunos"></div>
-        </div>
+<!-- ===== MODAL NA GERADO (COMPROVANTE) ===== -->
+<div class="na-modal" id="naModal">
+  <div class="na-modal-content">
+    <div class="na-icon">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
     </div>
+    <h2>NA Gerado!</h2>
+    <div class="na-sub">Comprovante de cadastro</div>
+    <div class="na-code" id="naCode">00000</div>
+    <div class="na-info" id="naInfo">
+      <div><span>Nome:</span><span id="naNome">—</span></div>
+      <div><span>Celular:</span><span id="naTel">—</span></div>
+      <div><span>Plano:</span><span id="naPlano">—</span></div>
+      <div><span>Início:</span><span id="naInicio">—</span></div>
+      <div><span>Término:</span><span id="naTermino">—</span></div>
+    </div>
+    <button class="btn-ok" onclick="fecharNaModal()">Concluir</button>
+  </div>
 </div>
 
-<!-- Anotações -->
-<div id="modalNotas" class="modal-overlay" onclick="closeModalOnOut(event, 'modalNotas')">
-    <div class="modal">
-        <div class="modal-header">
-            <h2>ANOTAÇÕES</h2>
-            <button class="modal-close" onclick="closeModal('modalNotas')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-        </div>
-        <div class="modal-content">
-            <button class="btn-save" style="margin-bottom:20px;" onclick="abrirModalCustom('modalNovaNota')">NOVA ANOTAÇÃO</button>
-            <div class="items-list" id="listaNotas"></div>
-        </div>
-    </div>
+<!-- ===== LOADING / DEV OVERLAY / TOAST ===== -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
 </div>
-
-<!-- Nova Nota -->
-<div id="modalNovaNota" class="modal-overlay" onclick="closeModalOnOut(event, 'modalNovaNota')">
-    <div class="modal">
-        <div class="modal-header">
-            <h2>NOVA ANOTAÇÃO</h2>
-            <button class="modal-close" onclick="closeModal('modalNovaNota')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-        </div>
-        <div class="modal-content">
-            <div class="field"><label>TÍTULO</label><input id="notaTitulo"></div>
-            <div class="field"><label>TEXTO</label><textarea id="notaTexto" rows="6"></textarea></div>
-            <button class="btn-save" onclick="salvarNota()">SALVAR</button>
-        </div>
-    </div>
+<div class="dev-overlay" id="devOverlay">
+  <div class="dev-name">SAN7DOC</div>
 </div>
+<div class="toast" id="toast"></div>
 
-<!-- Ver Nota -->
-<div id="modalVerNota" class="modal-overlay" onclick="closeModalOnOut(event, 'modalVerNota')">
-    <div class="modal">
-        <div class="modal-header">
-            <h2 id="verTitulo"></h2>
-            <button class="modal-close" onclick="closeModal('modalVerNota')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-        </div>
-        <div class="modal-content">
-            <p id="verData" style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;"></p>
-            <div style="border:1px solid var(--border-light);padding:16px;border-radius:var(--radius-md);margin-bottom:16px;min-height:80px;white-space:pre-wrap;font-size:14px;line-height:1.6;">
-                <div id="verTexto"></div>
-            </div>
-            <button class="btn-secondary" id="btnPdf" style="margin-bottom:12px;">BAIXAR PDF</button>
-            <button class="btn-danger" id="btnExcluirNota">EXCLUIR</button>
-        </div>
-    </div>
-</div>
-
-<!-- Jogos e Vídeos -->
-<div id="modalJogos" class="modal-overlay" onclick="closeModalOnOut(event, 'modalJogos')">
-    <div class="modal large">
-        <div class="modal-header">
-            <h2>JOGOS E VÍDEOS</h2>
-            <button class="modal-close" onclick="closeModal('modalJogos')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-        </div>
-        <div class="modal-content">
-            <input id="buscaVideo" class="search-box" placeholder="Pesquisar jogo..." onchange="buscarVideos(this.value)" style="margin-bottom:20px;">
-            <div class="grid-3" id="listaVideos"></div>
-        </div>
-    </div>
-</div>
-
-<!-- Player -->
-<div id="modalPlayer" class="modal-overlay" onclick="fecharPlayer()">
-    <div class="modal large" style="background:#000;max-width:1000px;">
-        <div style="padding:12px;display:flex;justify-content:flex-end;">
-            <button class="btn-danger" style="width:auto;padding:8px 20px;" onclick="fecharPlayer()">FECHAR</button>
-        </div>
-        <iframe id="player" class="player-frame" allowfullscreen></iframe>
-    </div>
-</div>
-
-<!-- Gestão de Chaves -->
-<div id="modalKeys" class="modal-overlay" onclick="closeModalOnOut(event, 'modalKeys')">
-    <div class="modal large" style="max-width:900px;">
-        <div class="modal-header">
-            <h2>GESTÃO DE CHAVES</h2>
-            <button class="modal-close" onclick="closeModal('modalKeys')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-        </div>
-        <div class="modal-content">
-            <div class="keys-grid" id="keys-container"></div>
-        </div>
-    </div>
-</div>
-
-<!-- Atribuir Chave -->
-<div id="modalAssignKey" class="modal-overlay" onclick="closeModalOnOut(event, 'modalAssignKey')">
-    <div class="modal">
-        <div class="modal-header">
-            <h2 id="assign-title">ATRIBUIR CHAVE</h2>
-            <button class="modal-close" onclick="closeModal('modalAssignKey')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-        </div>
-        <div class="modal-content">
-            <input type="hidden" id="key-number-val">
-            <div class="field">
-                <label>Nome da Pessoa</label>
-                <input id="key-user-name" placeholder="Quem pegou a chave?">
-            </div>
-            <button class="btn-save" onclick="saveKeyAssignment()">CADASTRAR POSSE</button>
-        </div>
-    </div>
-</div>
-
-<!-- Novo Aluno -->
-<div id="modalAdd" class="modal-overlay" onclick="closeModalOnOut(event, 'modalAdd')">
-    <div class="modal">
-        <div class="modal-header">
-            <h2>CADASTRAR ALUNO</h2>
-            <button class="modal-close" onclick="closeModal('modalAdd')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-        </div>
-        <div class="modal-content">
-            <div class="na-alert" id="naAlert">
-                <div class="na-number" id="naNumber"></div>
-                <div class="na-label">NA GERADO</div>
-            </div>
-            <div class="field"><label>Nome Completo</label><input id="add-name" placeholder="Nome completo"></div>
-            <div class="field"><label>Telefone</label><input id="add-phone" placeholder="(00) 00000-0000"></div>
-            <div class="field-row">
-                <div class="field"><label>Bairro</label><input id="add-bairro" placeholder="Bairro"></div>
-                <div class="field"><label>Rua</label><input id="add-rua" placeholder="Nome da rua"></div>
-            </div>
-            <div class="field"><label>Plano</label><input id="add-plan" placeholder="Nome do plano"></div>
-            <div class="field-row">
-                <div class="field"><label>Início</label><input type="date" id="add-start"></div>
-                <div class="field"><label>Término</label><input type="date" id="add-end"></div>
-            </div>
-            <button class="btn-save" onclick="saveNewUser()">GERAR NA E CADASTRAR</button>
-        </div>
-    </div>
-</div>
-
-<!-- Editar Aluno -->
-<div id="modalEdit" class="modal-overlay" onclick="closeModalOnOut(event, 'modalEdit')">
-    <div class="modal">
-        <div class="modal-header">
-            <h2>EDITAR ALUNO</h2>
-            <button class="modal-close" onclick="closeModal('modalEdit')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-        </div>
-        <div class="modal-content">
-            <div class="edit-na-display" id="edit-na-display"></div>
-            <input type="hidden" id="edit-na-val">
-            <div class="field"><label>Nome Completo</label><input id="edit-name"></div>
-            <div class="field"><label>Telefone</label><input id="edit-phone"></div>
-            <div class="field-row">
-                <div class="field"><label>Bairro</label><input id="edit-bairro"></div>
-                <div class="field"><label>Rua</label><input id="edit-rua"></div>
-            </div>
-            <div class="field"><label>Plano</label><input id="edit-plan"></div>
-            <div class="field-row">
-                <div class="field"><label>Início</label><input type="date" id="edit-start"></div>
-                <div class="field"><label>Término</label><input type="date" id="edit-end"></div>
-            </div>
-            <div class="dias-info" id="diasRestantes"></div>
-            <button class="btn-save" style="margin-bottom:12px;" onclick="updateUser()">SALVAR</button>
-            <button class="btn-warning" style="margin-bottom:12px;" onclick="renovatePlan()">RENOVAR +30 DIAS</button>
-            <button class="btn-danger" onclick="deleteUser()">EXCLUIR ALUNO</button>
-        </div>
-    </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 // ===== FIREBASE =====
 const firebaseConfig = {
-    apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
-    authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
-    projectId: "prefeitura-de-joao-camara",
-    storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
-    messagingSenderId: "269299041577",
-    appId: "1:269299041577:web:fd41b2939240e9eb476338"
+  apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+  authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
+  projectId: "prefeitura-de-joao-camara",
+  storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
+  messagingSenderId: "269299041577",
+  appId: "1:269299041577:web:fd41b2939240e9eb476338"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
@@ -1390,496 +1249,626 @@ let AULAS_EXP_DATA = {};
 const YOUTUBE_API_KEY = "AIzaSyDS9f8LJEx1CFkDdmVF5AoK02hkNvxBCEE";
 
 // ===== HELPERS =====
-function showLoading() { document.getElementById('loadingOverlay').classList.add('active'); }
-function hideLoading() { document.getElementById('loadingOverlay').classList.remove('active'); }
-
-function showDevName() {
-    const overlay = document.getElementById('devOverlay');
-    overlay.classList.add('active');
-    setTimeout(() => { overlay.classList.remove('active'); }, 2000);
+function showLoading(){ document.getElementById('loadingOverlay').classList.add('active'); }
+function hideLoading(){ document.getElementById('loadingOverlay').classList.remove('active'); }
+function showDevName(){
+  const ov = document.getElementById('devOverlay');
+  ov.classList.add('active');
+  setTimeout(()=>ov.classList.remove('active'), 2000);
 }
-
-function openModal(id) { document.getElementById(id).classList.add('active'); }
-function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-function abrirModalCustom(id) { openModal(id); }
-function closeModalOnOut(e, id) {
-    if (e.target.classList.contains('modal-overlay')) closeModal(id);
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(t._tm);
+  t._tm = setTimeout(()=>{ t.style.display='none'; }, 2500);
 }
-function fecharPlayer() {
-    document.getElementById('player').src = "";
-    closeModal('modalPlayer');
+function validarInput(input){
+  if(!input.value.trim()){ input.classList.add('error'); return false; }
+  input.classList.remove('error'); return true;
 }
-
-// ===== MENU =====
-const menuIcon = document.getElementById('menuIcon');
-const sideMenu = document.getElementById('sideMenu');
-const menuOverlay = document.getElementById('menuOverlay');
-const closeMenuBtn = document.getElementById('closeMenuBtn');
-
-function closeMenu() {
-    sideMenu.classList.remove('open');
-    menuOverlay.classList.remove('active');
-}
-function openMenu() {
-    sideMenu.classList.add('open');
-    menuOverlay.classList.add('active');
-}
-menuIcon.onclick = openMenu;
-closeMenuBtn.onclick = closeMenu;
-menuOverlay.onclick = closeMenu;
-
-// ===== TÍTULO EDITÁVEL =====
-const editableTitle = document.getElementById('editableTitle');
-editableTitle.addEventListener('blur', function() {
-    localStorage.setItem('systemTitle', this.innerText);
+document.addEventListener('input', e=>{
+  if(e.target.matches('input,textarea,select')) e.target.classList.remove('error');
 });
-if (localStorage.getItem('systemTitle')) {
-    editableTitle.innerText = localStorage.getItem('systemTitle');
-}
 
-// ===== CALCULAR DIAS =====
-function calcularDiasRestantes(dataTermino) {
-    if (!dataTermino) return 'N/A';
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-    const termino = new Date(dataTermino + 'T00:00:00');
-    termino.setHours(0, 0, 0, 0);
-    const diff = Math.ceil((termino - hoje) / (1000 * 60 * 60 * 24));
-    if (diff < 0) return 'VENCIDO';
-    if (diff === 0) return 'VENCE HOJE';
-    if (diff === 1) return 'VENCE AMANHÃ';
-    return `${diff} DIAS`;
-}
-
-// ===== VALIDAÇÃO DE INPUT =====
-function validarInput(input) {
-    if (!input.value.trim()) {
-        input.classList.add('error');
-        return false;
+// ===== GERAR ID DE SEGURANÇA =====
+function gerarSecurityId(){
+  let sid = localStorage.getItem('securityId');
+  if(!sid){
+    const chars = '0123456789ABCDEF';
+    let s = '';
+    for(let i=0;i<12;i++){
+      s += chars[Math.floor(Math.random()*chars.length)];
+      if((i+1)%4===0 && i<11) s += '-';
     }
-    input.classList.remove('error');
-    return true;
+    sid = s;
+    localStorage.setItem('securityId', sid);
+  }
+  const el = document.getElementById('securityId');
+  if(el) el.textContent = sid;
 }
-function limparErro(input) {
-    input.classList.remove('error');
+
+// ===== MODO CLARO/ESCURO =====
+function aplicarTema(escuro){
+  if(escuro){
+    document.body.classList.remove('light-mode');
+    localStorage.setItem('darkMode','true');
+  } else {
+    document.body.classList.add('light-mode');
+    localStorage.setItem('darkMode','false');
+  }
 }
-document.querySelectorAll('input, textarea, select').forEach(el => {
-    el.addEventListener('input', () => limparErro(el));
+function initTema(){
+  const saved = localStorage.getItem('darkMode');
+  const darkToggle = document.getElementById('darkModeToggle');
+  if(saved==='false'){
+    document.body.classList.add('light-mode');
+    if(darkToggle) darkToggle.checked = false;
+  } else {
+    if(darkToggle) darkToggle.checked = true;
+  }
+}
+
+// ===== FUNDO ROTATIVO =====
+const bgLayers = [1,2,3,4].map(n=>document.querySelector('.bg-layer-'+n));
+let bgOrder = [];
+
+function shuffleBgOrder(){
+  bgOrder = [0,1,2,3];
+  for(let i=bgOrder.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [bgOrder[i],bgOrder[j]]=[bgOrder[j],bgOrder[i]];
+  }
+}
+function rotateBg(){
+  bgLayers.forEach(l=>l.classList.remove('active'));
+  if(bgOrder.length===0) shuffleBgOrder();
+  const next = bgOrder.pop();
+  bgLayers[next].classList.add('active');
+}
+bgLayers[0].classList.add('active');
+shuffleBgOrder();
+setInterval(rotateBg, 8000);
+
+// ===== NAVEGAÇÃO ENTRE APPS =====
+const homeScreen = document.getElementById('homeScreen');
+
+function openApp(appId){
+  if(appId==='sair'){
+    sairSistema();
+    return;
+  }
+  document.querySelectorAll('.app-view').forEach(v=>v.classList.remove('active'));
+  const appEl = document.getElementById('app-'+appId);
+  if(appEl){
+    appEl.classList.add('active');
+    homeScreen.classList.add('hidden');
+    rotateBg();
+    const firstSub = appEl.querySelector('.sub-view');
+    if(firstSub){
+      appEl.querySelectorAll('.sub-view').forEach(s=>s.classList.remove('active'));
+      firstSub.classList.add('active');
+    }
+    if(appId==='cadastros') renderAlunos();
+    if(appId==='chaves') renderKeys();
+    if(appId==='aulas') renderAulas();
+    if(appId==='notas') renderNotas();
+    if(appId==='videos' && !document.getElementById('listaVideos').children.length) buscarVideos();
+    if(appId==='panico') renderPanic();
+  }
+}
+
+function closeApp(){
+  document.querySelectorAll('.app-view').forEach(v=>v.classList.remove('active'));
+  homeScreen.classList.remove('hidden');
+}
+
+function voltarSubView(subId){
+  const parent = document.querySelector('.app-view.active');
+  if(!parent) return;
+  parent.querySelectorAll('.sub-view').forEach(s=>s.classList.remove('active'));
+  document.getElementById(subId).classList.add('active');
+}
+
+function sairSistema(){
+  if(confirm('Deseja realmente sair do sistema?')){
+    localStorage.removeItem('loggedUser');
+    window.location.href = 'cadastro.aluno.html';
+  }
+}
+
+// ===== LIGAR CLIQUES DOS APPS =====
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.querySelectorAll('.app-icon').forEach(icon=>{
+    icon.addEventListener('click', (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      const appId = icon.getAttribute('data-app');
+      if(appId) openApp(appId);
+    });
+  });
+
+  // Toggle modo escuro
+  const darkToggle = document.getElementById('darkModeToggle');
+  if(darkToggle){
+    darkToggle.addEventListener('change', ()=>{
+      aplicarTema(darkToggle.checked);
+    });
+  }
+
+  // Gera / mostra ID de segurança
+  gerarSecurityId();
+
+  // Aplica tema salvo
+  initTema();
 });
 
-// ===== PÂNICO =====
-async function registrarPanico() {
-    const agora = new Date();
-    showLoading();
-    await db.ref('panico_logs').push({
-        data: agora.toLocaleDateString('pt-BR'),
-        hora: agora.toLocaleTimeString('pt-BR')
+// ===== CADASTROS =====
+db.ref('users').on('value', snap=>{
+  USERS = snap.val() || {};
+  renderAlunos();
+});
+
+function calcularDias(dataTermino){
+  if(!dataTermino) return null;
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  const term = new Date(dataTermino+'T00:00:00'); term.setHours(0,0,0,0);
+  const diff = Math.ceil((term-hoje)/(1000*60*60*24));
+  return diff;
+}
+
+function renderAlunos(){
+  const tbody = document.getElementById('listaAlunos');
+  if(!tbody) return;
+  const buscaEl = document.getElementById('buscaAluno');
+  const search = (buscaEl?.value || '').toLowerCase();
+  tbody.innerHTML='';
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  const keys = Object.keys(USERS).sort();
+  if(keys.length===0){
+    tbody.innerHTML='<div class="ios-list-item"><div class="info"><small>Nenhum aluno cadastrado</small></div></div>';
+    return;
+  }
+  let encontrou = 0;
+  keys.forEach(na=>{
+    const u = USERS[na];
+    const nome = (u.name||'').toLowerCase();
+    if(search && !nome.includes(search) && !na.includes(search)) return;
+    encontrou++;
+    const expired = !u.endDate || new Date(u.endDate+'T00:00:00') < hoje;
+    const dias = calcularDias(u.endDate);
+    let diasTxt = '';
+    if(dias===null) diasTxt='Sem data';
+    else if(dias<0) diasTxt='Vencido';
+    else if(dias===0) diasTxt='Vence hoje';
+    else if(dias===1) diasTxt='1 dia restante';
+    else diasTxt = dias+' dias restantes';
+
+    const div = document.createElement('div');
+    div.className='ios-list-item clickable';
+    div.innerHTML = `
+      <div class="info">
+        <strong>${u.name||'—'} <span style="color:#5ac8fa;font-size:12px;">#${na}</span></strong>
+        <small>${u.phone||'sem telefone'} · ${u.planName||'Sem plano'}</small>
+        <small style="color:${expired?'#ff453a':'#32d74b'};font-weight:600;margin-top:2px;">${expired?'Inativo':'Ativo'} · ${diasTxt}</small>
+      </div>
+      <div class="chev">›</div>
+    `;
+    div.onclick = ()=>abrirEditarAluno(na);
+    tbody.appendChild(div);
+  });
+  if(encontrou===0){
+    tbody.innerHTML='<div class="ios-list-item"><div class="info"><small>Nenhum resultado encontrado</small></div></div>';
+  }
+}
+
+function mostrarFormNovoAluno(){
+  document.getElementById('cadNome').value='';
+  document.getElementById('cadTelefone').value='';
+  document.getElementById('cadPlano').value='';
+  document.getElementById('cadInicio').value='';
+  document.getElementById('cadTermino').value='';
+  voltarSubView('sub-novo-aluno');
+}
+
+async function salvarNovoAluno(){
+  const nome = document.getElementById('cadNome');
+  const tel = document.getElementById('cadTelefone');
+  const termino = document.getElementById('cadTermino');
+  if(!validarInput(nome) || !validarInput(tel) || !validarInput(termino)){
+    showToast('Preencha nome, celular e término');
+    return;
+  }
+  showLoading();
+  try{
+    let na;
+    let tentativas = 0;
+    do {
+      na = Math.floor(10000 + Math.random()*90000).toString();
+      tentativas++;
+      if(tentativas>50){ throw new Error('Não foi possível gerar NA único'); }
+    } while(USERS[na]);
+
+    const inicio = document.getElementById('cadInicio').value || new Date().toISOString().split('T')[0];
+    const plano = document.getElementById('cadPlano').value.trim() || 'Sem Plano';
+
+    await db.ref('users/'+na).set({
+      name: nome.value.trim(),
+      phone: tel.value.trim(),
+      planName: plano,
+      startDate: inicio,
+      endDate: termino.value,
+      active: true,
+      createdAt: new Date().toISOString().split('T')[0]
     });
+
     hideLoading();
     showDevName();
-}
-db.ref('panico_logs').on('value', snap => {
-    const lista = document.getElementById('listaPanic');
-    lista.innerHTML = '';
-    const data = snap.val();
-    if (data) {
-        Object.keys(data).reverse().forEach(id => {
-            const p = data[id];
-            const div = document.createElement('div');
-            div.className = 'list-item';
-            div.innerHTML = `<div class="item-info"><strong>${p.data} ${p.hora}</strong></div>
-                <button class="item-action" onclick="excluirPanico('${id}')">X</button>`;
-            lista.appendChild(div);
-        });
-    }
-});
-async function excluirPanico(id) {
-    if (confirm("Excluir registro?")) {
-        showLoading();
-        await db.ref('panico_logs/' + id).remove();
-        hideLoading();
-        showDevName();
-    }
+
+    document.getElementById('naCode').textContent = na;
+    document.getElementById('naNome').textContent = nome.value.trim();
+    document.getElementById('naTel').textContent = tel.value.trim();
+    document.getElementById('naPlano').textContent = plano;
+    document.getElementById('naInicio').textContent = inicio;
+    document.getElementById('naTermino').textContent = termino.value;
+    document.getElementById('naModal').classList.add('active');
+
+    voltarSubView('sub-list-alunos');
+  }catch(e){
+    hideLoading();
+    showToast('Erro: '+e.message);
+  }
 }
 
-// ===== ANOTAÇÕES =====
-async function salvarNota() {
-    const titulo = document.getElementById('notaTitulo');
-    const texto = document.getElementById('notaTexto');
-    if (!validarInput(titulo) || !validarInput(texto)) return;
+function fecharNaModal(){
+  document.getElementById('naModal').classList.remove('active');
+}
+
+function abrirEditarAluno(na){
+  const u = USERS[na];
+  if(!u) return;
+  document.getElementById('edit-na-val').value = na;
+  document.getElementById('edit-na-display').textContent = na;
+  document.getElementById('edit-name').value = u.name || '';
+  document.getElementById('edit-phone').value = u.phone || '';
+  document.getElementById('edit-plan').value = u.planName || '';
+  document.getElementById('edit-start').value = u.startDate || '';
+  document.getElementById('edit-end').value = u.endDate || '';
+  const dias = calcularDias(u.endDate);
+  document.getElementById('diasRestantes').textContent = dias===null?'Sem data':(dias<0?'Vencido':'Faltam '+dias+' dias');
+  voltarSubView('sub-edit-aluno');
+}
+
+async function updateUser(){
+  const na = document.getElementById('edit-na-val').value;
+  const name = document.getElementById('edit-name');
+  const phone = document.getElementById('edit-phone');
+  if(!validarInput(name) || !validarInput(phone)){
+    showToast('Preencha nome e celular');
+    return;
+  }
+  showLoading();
+  await db.ref('users/'+na).update({
+    name: name.value.trim(),
+    phone: phone.value.trim(),
+    planName: document.getElementById('edit-plan').value.trim(),
+    startDate: document.getElementById('edit-start').value,
+    endDate: document.getElementById('edit-end').value
+  });
+  hideLoading();
+  showDevName();
+  voltarSubView('sub-list-alunos');
+}
+
+async function renovatePlan(){
+  const na = document.getElementById('edit-na-val').value;
+  let base = new Date();
+  const currentEnd = document.getElementById('edit-end').value;
+  if(currentEnd){
+    const endDate = new Date(currentEnd+'T00:00:00');
+    if(endDate > base) base = endDate;
+  }
+  base.setDate(base.getDate()+30);
+  const newEnd = base.toISOString().split('T')[0];
+  showLoading();
+  await db.ref('users/'+na).update({ endDate: newEnd, active: true });
+  document.getElementById('edit-end').value = newEnd;
+  const dias = calcularDias(newEnd);
+  document.getElementById('diasRestantes').textContent = dias===null?'Sem data':(dias<0?'Vencido':'Faltam '+dias+' dias');
+  hideLoading();
+  showDevName();
+}
+
+async function deleteUser(){
+  const na = document.getElementById('edit-na-val').value;
+  const name = document.getElementById('edit-name').value;
+  if(confirm(`Excluir ${name}?`)){
     showLoading();
-    const agora = new Date();
-    await db.ref('anotacoes').push({
-        titulo: titulo.value,
-        texto: texto.value,
-        data: agora.toLocaleDateString('pt-BR'),
-        hora: agora.toLocaleTimeString('pt-BR')
-    });
-    titulo.value = "";
-    texto.value = "";
-    closeModal('modalNovaNota');
+    await db.ref('users/'+na).remove();
     hideLoading();
     showDevName();
-}
-db.ref('anotacoes').on('value', snap => {
-    const lista = document.getElementById('listaNotas');
-    lista.innerHTML = '';
-    const data = snap.val();
-    if (data) {
-        Object.keys(data).reverse().forEach(id => {
-            const n = data[id];
-            const div = document.createElement('div');
-            div.className = 'list-item';
-            div.style.cursor = 'pointer';
-            div.innerHTML = `<div class="item-info"><strong>${n.titulo}</strong><small>${n.data} ${n.hora}</small></div><span style="color:var(--text-tertiary);">→</span>`;
-            div.onclick = () => verNota(id, n);
-            lista.appendChild(div);
-        });
-    }
-});
-function verNota(id, n) {
-    document.getElementById('verTitulo').innerText = n.titulo;
-    document.getElementById('verData').innerText = `${n.data} ${n.hora}`;
-    document.getElementById('verTexto').innerText = n.texto;
-    document.getElementById('btnExcluirNota').onclick = async () => {
-        if (confirm("Excluir anotação?")) {
-            showLoading();
-            await db.ref('anotacoes/' + id).remove();
-            hideLoading();
-            showDevName();
-            closeModal('modalVerNota');
-        }
-    };
-    document.getElementById('btnPdf').onclick = () => {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.setFontSize(16);
-        doc.text(n.titulo, 20, 20);
-        doc.setFontSize(10);
-        doc.text(`${n.data} ${n.hora}`, 20, 30);
-        doc.setFontSize(12);
-        const lines = doc.splitTextToSize(n.texto, 170);
-        doc.text(lines, 20, 45);
-        doc.save(`anotacao-${n.titulo.replace(/\s+/g, '-')}.pdf`);
-    };
-    openModal('modalVerNota');
-}
-
-// ===== AULAS EXPERIMENTAIS =====
-async function cadastrarAulaExperimental() {
-    const nome = document.getElementById('nomeAluno');
-    const tel = document.getElementById('telAluno');
-    const sexo = document.getElementById('sexoAluno');
-    const bairro = document.getElementById('bairroAluno');
-    const rua = document.getElementById('ruaAluno');
-
-    if (!validarInput(nome) || !validarInput(tel) || !validarInput(sexo) || !validarInput(bairro) || !validarInput(rua)) return;
-
-    showLoading();
-    await db.ref('aulas_experimentais').push({
-        nome: nome.value.trim(),
-        tel: tel.value.trim(),
-        sexo: sexo.value,
-        bairro: bairro.value.trim(),
-        rua: rua.value.trim(),
-        data: Date.now()
-    });
-    nome.value = "";
-    tel.value = "";
-    sexo.value = "";
-    bairro.value = "";
-    rua.value = "";
-    hideLoading();
-    showDevName();
-}
-db.ref('aulas_experimentais').on('value', snap => {
-    AULAS_EXP_DATA = snap.val() || {};
-    renderAulasExperimentais();
-});
-function renderAulasExperimentais() {
-    const lista = document.getElementById('listaAlunos');
-    lista.innerHTML = '';
-    const data = AULAS_EXP_DATA;
-    if (data) {
-        Object.keys(data).reverse().forEach(id => {
-            const a = data[id];
-            const div = document.createElement('div');
-            div.className = 'list-item';
-            div.setAttribute('data-nome', (a.nome || '').toLowerCase());
-            div.innerHTML = `<div class="item-info">
-                <strong>${a.nome}</strong>
-                <small>${a.tel} · ${a.sexo || ''} · ${a.bairro || ''}, ${a.rua || ''}</small>
-            </div>
-            <button class="item-action" onclick="deletarAulaExp('${id}',event)">X</button>`;
-            lista.appendChild(div);
-        });
-    }
-}
-function filtrarAulasExperimentais() {
-    const filtro = document.getElementById('buscaAluno').value.toLowerCase();
-    document.querySelectorAll('#listaAlunos .list-item').forEach(item => {
-        const nome = item.getAttribute('data-nome');
-        item.style.display = nome.includes(filtro) || !filtro ? 'flex' : 'none';
-    });
-}
-async function deletarAulaExp(id, e) {
-    e.stopPropagation();
-    if (confirm("Excluir aula experimental?")) {
-        showLoading();
-        await db.ref('aulas_experimentais/' + id).remove();
-        hideLoading();
-        showDevName();
-    }
-}
-
-// ===== VÍDEOS =====
-async function buscarVideos(termo = "futebol ao vivo") {
-    const grid = document.getElementById('listaVideos');
-    showLoading();
-    try {
-        const r = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=12&q=${encodeURIComponent(termo)}&key=${YOUTUBE_API_KEY}`);
-        const data = await r.json();
-        grid.innerHTML = '';
-        if (data.items) {
-            data.items.forEach(v => {
-                const card = document.createElement('div');
-                card.className = 'video-card';
-                card.onclick = () => {
-                    document.getElementById('player').src = `https://www.youtube.com/embed/${v.id.videoId}?autoplay=1`;
-                    openModal('modalPlayer');
-                };
-                card.innerHTML = `<img src="${v.snippet.thumbnails.medium.url}" alt="${v.snippet.title}"><p>${v.snippet.title}</p>`;
-                grid.appendChild(card);
-            });
-        }
-    } catch (e) {
-        grid.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-secondary);">Erro ao carregar vídeos</div>';
-    }
-    hideLoading();
+    voltarSubView('sub-list-alunos');
+  }
 }
 
 // ===== CHAVES =====
-db.ref('chaves').on('value', snap => {
-    KEYS_DATA = snap.val() || {};
-    renderKeys();
-});
-function renderKeys() {
-    const container = document.getElementById('keys-container');
-    container.innerHTML = '';
-    for (let i = 1; i <= 24; i++) {
-        const keyInfo = KEYS_DATA[i];
-        const isOccupied = !!keyInfo;
-        const div = document.createElement('div');
-        div.className = `key-card ${isOccupied ? 'occupied' : 'available'}`;
-        div.onclick = () => {
-            if (isOccupied) {
-                // Já ocupada - não faz nada ou mostra info
-                return;
-            }
-            openAssignKey(i);
-        };
-        if (isOccupied) {
-            div.innerHTML = `
-                <button class="btn-clear-key" onclick="clearKey(event,${i})">X</button>
-                <span class="key-icon">🔑</span>
-                <strong>CHAVE ${String(i).padStart(2, '0')}</strong>
-                <div class="key-user">${keyInfo.user}</div>
-                <div class="key-date">${keyInfo.date} ${keyInfo.time || ''}</div>
-                <div class="key-status">EM USO</div>
-            `;
-        } else {
-            div.innerHTML = `
-                <span class="key-icon">🔑</span>
-                <strong>CHAVE ${String(i).padStart(2, '0')}</strong>
-                <div class="key-status">DISPONÍVEL</div>
-            `;
-        }
-        container.appendChild(div);
-    }
-}
-function openAssignKey(num) {
-    document.getElementById('key-number-val').value = num;
-    document.getElementById('assign-title').innerText = `CHAVE ${String(num).padStart(2, '0')}`;
-    document.getElementById('key-user-name').value = '';
-    openModal('modalAssignKey');
-}
-async function saveKeyAssignment() {
-    const num = document.getElementById('key-number-val').value;
-    const user = document.getElementById('key-user-name');
-    if (!validarInput(user)) return;
-    showLoading();
-    const now = new Date();
-    await db.ref('chaves/' + num).set({
-        user: user.value.trim(),
-        date: now.toLocaleDateString('pt-BR'),
-        time: now.toLocaleTimeString('pt-BR')
-    });
-    closeModal('modalAssignKey');
-    hideLoading();
-    showDevName();
-}
-async function clearKey(e, num) {
-    e.stopPropagation();
-    if (confirm(`Liberar chave ${num}?`)) {
-        showLoading();
-        await db.ref('chaves/' + num).remove();
-        hideLoading();
-        showDevName();
-    }
-}
-
-// ===== ALUNOS =====
-db.ref('users').on('value', snap => {
-    USERS = snap.val() || {};
-    renderTable();
+db.ref('chaves').on('value', snap=>{
+  KEYS_DATA = snap.val() || {};
+  renderKeys();
 });
 
-function renderTable() {
-    const tbody = document.getElementById('aluno-list');
-    const search = document.getElementById('search').value.toLowerCase();
-    tbody.innerHTML = '';
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    Object.keys(USERS).sort().forEach(na => {
-        const u = USERS[na];
-        const nome = (u.name || '').toLowerCase();
-        if (search && !nome.includes(search) && !na.includes(search)) return;
-
-        const expired = !u.endDate || new Date(u.endDate + 'T00:00:00') < today;
-        const dias = calcularDiasRestantes(u.endDate);
-        const tr = document.createElement('tr');
-        tr.onclick = () => openEdit(na, u);
-        tr.innerHTML = `
-            <td class="na-cell">${na}</td>
-            <td><strong>${u.name}</strong></td>
-            <td>${u.planName || '---'}</td>
-            <td>
-                <span class="badge ${expired ? 'badge-expired' : 'badge-active'}">${expired ? 'INATIVO' : 'ATIVO'}</span>
-                <div class="dias-restantes">${dias}</div>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-async function saveNewUser() {
-    const name = document.getElementById('add-name');
-    const phone = document.getElementById('add-phone');
-    const bairro = document.getElementById('add-bairro');
-    const rua = document.getElementById('add-rua');
-    const plan = document.getElementById('add-plan');
-    const start = document.getElementById('add-start');
-    const end = document.getElementById('add-end');
-
-    if (!validarInput(name) || !validarInput(phone) || !validarInput(bairro) || !validarInput(rua) || !validarInput(end)) return;
-
-    const na = Math.floor(10000 + Math.random() * 90000).toString();
-    showLoading();
-    await db.ref('users/' + na).set({
-        name: name.value.trim(),
-        phone: phone.value.trim(),
-        bairro: bairro.value.trim(),
-        rua: rua.value.trim(),
-        planName: plan.value.trim() || 'Sem Plano',
-        startDate: start.value || new Date().toISOString().split('T')[0],
-        endDate: end.value,
-        active: true,
-        createdAt: new Date().toISOString().split('T')[0]
-    });
-
-    document.getElementById('naNumber').innerText = na;
-    document.getElementById('naAlert').classList.add('active');
-
-    name.value = "";
-    phone.value = "";
-    bairro.value = "";
-    rua.value = "";
-    plan.value = "";
-    start.value = "";
-    end.value = "";
-
-    hideLoading();
-    showDevName();
-
-    setTimeout(() => {
-        closeModal('modalAdd');
-        document.getElementById('naAlert').classList.remove('active');
-    }, 3000);
-}
-
-function openEdit(na, u) {
-    document.getElementById('edit-na-val').value = na;
-    document.getElementById('edit-na-display').innerText = na;
-    document.getElementById('edit-name').value = u.name || '';
-    document.getElementById('edit-phone').value = u.phone || '';
-    document.getElementById('edit-bairro').value = u.bairro || '';
-    document.getElementById('edit-rua').value = u.rua || '';
-    document.getElementById('edit-plan').value = u.planName || '';
-    document.getElementById('edit-start').value = u.startDate || '';
-    document.getElementById('edit-end').value = u.endDate || '';
-    document.getElementById('diasRestantes').innerText = calcularDiasRestantes(u.endDate);
-    openModal('modalEdit');
-}
-
-async function updateUser() {
-    const na = document.getElementById('edit-na-val').value;
-    const name = document.getElementById('edit-name');
-    const phone = document.getElementById('edit-phone');
-    const bairro = document.getElementById('edit-bairro');
-    const rua = document.getElementById('edit-rua');
-
-    if (!validarInput(name) || !validarInput(phone) || !validarInput(bairro) || !validarInput(rua)) return;
-
-    showLoading();
-    await db.ref('users/' + na).update({
-        name: name.value.trim(),
-        phone: phone.value.trim(),
-        bairro: bairro.value.trim(),
-        rua: rua.value.trim(),
-        planName: document.getElementById('edit-plan').value.trim(),
-        startDate: document.getElementById('edit-start').value,
-        endDate: document.getElementById('edit-end').value
-    });
-    closeModal('modalEdit');
-    hideLoading();
-    showDevName();
-}
-
-async function renovatePlan() {
-    const na = document.getElementById('edit-na-val').value;
-    let base = new Date();
-    const currentEnd = document.getElementById('edit-end').value;
-    if (currentEnd) {
-        const endDate = new Date(currentEnd + 'T00:00:00');
-        if (endDate > base) base = endDate;
+function renderKeys(){
+  const c = document.getElementById('keysContainer');
+  if(!c) return;
+  c.innerHTML='';
+  for(let i=1;i<=24;i++){
+    const info = KEYS_DATA[i];
+    const occupied = !!info;
+    const div = document.createElement('div');
+    div.className='key-card '+(occupied?'occupied':'available');
+    div.onclick = ()=>{ if(!occupied) abrirAtribuirChave(i); };
+    if(occupied){
+      div.innerHTML = `
+        <button class="btn-clear-key" onclick="event.stopPropagation();liberarChave(${i})">×</button>
+        <span class="key-emoji">🔑</span>
+        <strong>CHAVE ${String(i).padStart(2,'0')}</strong>
+        <div class="key-user">${info.user||''}</div>
+        <div class="key-date">${info.date||''} ${info.time||''}</div>
+        <div class="key-status">Em uso</div>
+      `;
+    } else {
+      div.innerHTML = `
+        <span class="key-emoji">🔑</span>
+        <strong>CHAVE ${String(i).padStart(2,'0')}</strong>
+        <div class="key-status">Livre</div>
+      `;
     }
-    base.setDate(base.getDate() + 30);
-    const newEnd = base.toISOString().split('T')[0];
-    showLoading();
-    await db.ref('users/' + na).update({ endDate: newEnd, active: true });
-    document.getElementById('edit-end').value = newEnd;
-    document.getElementById('diasRestantes').innerText = calcularDiasRestantes(newEnd);
+    c.appendChild(div);
+  }
+}
+
+function abrirAtribuirChave(num){
+  const user = prompt('Quem pegou a chave '+String(num).padStart(2,'0')+'?');
+  if(!user || !user.trim()) return;
+  showLoading();
+  const now = new Date();
+  db.ref('chaves/'+num).set({
+    user: user.trim(),
+    date: now.toLocaleDateString('pt-BR'),
+    time: now.toLocaleTimeString('pt-BR')
+  }).then(()=>{
     hideLoading();
     showDevName();
+  }).catch(()=>{ hideLoading(); showToast('Erro ao salvar'); });
 }
 
-async function deleteUser() {
-    const na = document.getElementById('edit-na-val').value;
-    const name = document.getElementById('edit-name').value;
-    if (confirm(`Excluir ${name}?`)) {
-        showLoading();
-        await db.ref('users/' + na).remove();
-        closeModal('modalEdit');
-        hideLoading();
-        showDevName();
-    }
-}
-
-// ===== INICIALIZAÇÃO =====
-document.addEventListener('DOMContentLoaded', () => {
+function liberarChave(num){
+  if(!confirm('Liberar chave '+num+'?')) return;
+  showLoading();
+  db.ref('chaves/'+num).remove().then(()=>{
     hideLoading();
+    showDevName();
+  }).catch(()=>{ hideLoading(); showToast('Erro'); });
+}
+
+// ===== AULAS EXPERIMENTAIS =====
+db.ref('aulas_experimentais').on('value', snap=>{
+  AULAS_EXP_DATA = snap.val() || {};
+  renderAulas();
 });
+
+function renderAulas(){
+  const c = document.getElementById('listaAulas');
+  if(!c) return;
+  const filtro = (document.getElementById('buscaAula')?.value||'').toLowerCase();
+  c.innerHTML='';
+  const keys = Object.keys(AULAS_EXP_DATA).reverse();
+  if(keys.length===0){
+    c.innerHTML='<div class="ios-list-item"><div class="info"><small>Nenhuma aula cadastrada</small></div></div>';
+    return;
+  }
+  let encontrou = 0;
+  keys.forEach(id=>{
+    const a = AULAS_EXP_DATA[id];
+    if(filtro && !(a.nome||'').toLowerCase().includes(filtro)) return;
+    encontrou++;
+    const div = document.createElement('div');
+    div.className='ios-list-item';
+    div.innerHTML = `
+      <div class="info">
+        <strong>${a.nome}</strong>
+        <small>${a.tel} · ${a.sexo||''}</small>
+      </div>
+      <button class="action-btn" onclick="deletarAula('${id}')">×</button>
+    `;
+    c.appendChild(div);
+  });
+  if(encontrou===0){
+    c.innerHTML='<div class="ios-list-item"><div class="info"><small>Nenhum resultado</small></div></div>';
+  }
+}
+
+async function salvarAulaExp(){
+  const nome = document.getElementById('aulaNome');
+  const tel = document.getElementById('aulaTel');
+  if(!validarInput(nome) || !validarInput(tel)){
+    showToast('Preencha nome e celular');
+    return;
+  }
+  showLoading();
+  try{
+    await db.ref('aulas_experimentais').push({
+      nome: nome.value.trim(),
+      tel: tel.value.trim(),
+      sexo: document.getElementById('aulaSexo').value||'',
+      data: Date.now()
+    });
+    nome.value=''; tel.value=''; document.getElementById('aulaSexo').value='';
+    hideLoading();
+    showDevName();
+    voltarSubView('sub-list-aulas');
+  }catch(e){
+    hideLoading();
+    showToast('Erro ao salvar');
+  }
+}
+
+async function deletarAula(id){
+  if(!confirm('Excluir?')) return;
+  showLoading();
+  await db.ref('aulas_experimentais/'+id).remove();
+  hideLoading();
+  showDevName();
+}
+
+// ===== NOTAS =====
+db.ref('anotacoes').on('value', snap=>{
+  renderNotas(snap.val() || {});
+});
+
+function renderNotas(data){
+  const c = document.getElementById('listaNotas');
+  if(!c) return;
+  c.innerHTML='';
+  const keys = Object.keys(data).reverse();
+  if(keys.length===0){
+    c.innerHTML='<div class="ios-list-item"><div class="info"><small>Nenhuma anotação</small></div></div>';
+    return;
+  }
+  keys.forEach(id=>{
+    const n = data[id];
+    const div = document.createElement('div');
+    div.className='ios-list-item clickable';
+    div.innerHTML = `
+      <div class="info">
+        <strong>${n.titulo}</strong>
+        <small>${n.data} ${n.hora}</small>
+      </div>
+      <div class="chev">›</div>
+    `;
+    div.onclick = ()=>verNota(id,n);
+    c.appendChild(div);
+  });
+}
+
+async function salvarNota(){
+  const t = document.getElementById('notaTitulo');
+  const txt = document.getElementById('notaTexto');
+  if(!validarInput(t) || !validarInput(txt)){
+    showToast('Preencha título e texto');
+    return;
+  }
+  showLoading();
+  const now = new Date();
+  await db.ref('anotacoes').push({
+    titulo: t.value.trim(),
+    texto: txt.value,
+    data: now.toLocaleDateString('pt-BR'),
+    hora: now.toLocaleTimeString('pt-BR')
+  });
+  t.value=''; txt.value='';
+  hideLoading();
+  showDevName();
+  voltarSubView('sub-list-notas');
+}
+
+function verNota(id,n){
+  document.getElementById('verTitulo').textContent = n.titulo;
+  document.getElementById('verData').textContent = `${n.data} ${n.hora}`;
+  document.getElementById('verTexto').textContent = n.texto;
+  document.getElementById('btnExcluirNota').onclick = async ()=>{
+    if(!confirm('Excluir anotação?')) return;
+    showLoading();
+    await db.ref('anotacoes/'+id).remove();
+    hideLoading();
+    showDevName();
+    voltarSubView('sub-list-notas');
+  };
+  document.getElementById('btnPdf').onclick = ()=>{
+    const {jsPDF} = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text(n.titulo, 20, 20);
+    doc.setFontSize(10);
+    doc.text(`${n.data} ${n.hora}`, 20, 30);
+    doc.setFontSize(12);
+    const lines = doc.splitTextToSize(n.texto, 170);
+    doc.text(lines, 20, 45);
+    doc.save(`anotacao-${n.titulo.replace(/\s+/g,'-')}.pdf`);
+  };
+  voltarSubView('sub-ver-nota');
+}
+
+// ===== VÍDEOS =====
+async function buscarVideos(termo='futebol ao vivo'){
+  const c = document.getElementById('listaVideos');
+  if(!c) return;
+  showLoading();
+  try{
+    const r = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=12&q=${encodeURIComponent(termo)}&key=${YOUTUBE_API_KEY}`);
+    const data = await r.json();
+    c.innerHTML='';
+    if(data.items){
+      data.items.forEach(v=>{
+        const card = document.createElement('div');
+        card.className='video-item';
+        card.onclick = ()=>window.open('https://www.youtube.com/watch?v='+v.id.videoId,'_blank');
+        card.innerHTML = `<img src="${v.snippet.thumbnails.medium.url}" alt=""><div class="vt">${v.snippet.title}</div>`;
+        c.appendChild(card);
+      });
+    }
+  }catch(e){ c.innerHTML='<div style="padding:20px;text-align:center;color:#fff;">Erro ao carregar vídeos</div>'; }
+  hideLoading();
+}
+
+// ===== PÂNICO =====
+db.ref('panico_logs').on('value', snap=>{
+  renderPanic(snap.val() || {});
+});
+
+function renderPanic(data){
+  const c = document.getElementById('listaPanic');
+  if(!c) return;
+  c.innerHTML='';
+  const keys = Object.keys(data).reverse();
+  if(keys.length===0){
+    c.innerHTML='<div class="ios-list-item"><div class="info"><small>Nenhuma ocorrência</small></div></div>';
+    return;
+  }
+  keys.forEach(id=>{
+    const p = data[id];
+    const div = document.createElement('div');
+    div.className='ios-list-item';
+    div.innerHTML = `
+      <div class="info">
+        <strong>${p.data} ${p.hora}</strong>
+        <small>Ocorrência registrada</small>
+      </div>
+      <button class="action-btn" onclick="deletarPanic('${id}')">×</button>
+    `;
+    c.appendChild(div);
+  });
+}
+
+async function registrarPanico(){
+  if(!confirm('Registrar ocorrência de pânico?')) return;
+  showLoading();
+  const now = new Date();
+  await db.ref('panico_logs').push({
+    data: now.toLocaleDateString('pt-BR'),
+    hora: now.toLocaleTimeString('pt-BR')
+  });
+  hideLoading();
+  showDevName();
+}
+
+async function deletarPanic(id){
+  if(!confirm('Excluir?')) return;
+  showLoading();
+  await db.ref('panico_logs/'+id).remove();
+  hideLoading();
+  showDevName();
+}
 </script>
 </body>
 </html>
