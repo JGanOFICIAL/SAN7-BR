@@ -2,6 +2,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- Ícones via Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
 :root{
 --green:#9CCC65;
@@ -10,16 +12,22 @@
 --border:#ccc;
 --bg-url:url('https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000035-6240c6240e/700/24B77FF0-45F8-444B-9BF7-74B3B06B2E86.webp?ph=c2a6771173');
 --logo-url:url('https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp');
-/* Novas variáveis para modernização */
---primary-color: #4CAF50; /* Verde principal para botões */
---secondary-color: #2196F3; /* Azul para destaque secundário */
---danger-color: #F44336; /* Vermelho para exclusão */
+--primary-color: #4CAF50;
+--secondary-color: #2196F3;
+--danger-color: #F44336;
 --card-bg: rgba(255, 255, 255, 0.95);
-/* Cor Laranja Firebase para o estilo da tag/laminado de dia (fallback/dia único) */
---firebase-orange: #FF9100; 
+--firebase-orange: #FF9100;
+--shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+--shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+--shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
+--radius: 12px;
+--radius-sm: 8px;
+}
+* {
+  box-sizing: border-box;
 }
 body{
-font-family:Inter,Arial,sans-serif;
+font-family:Inter,'Segoe UI',Arial,sans-serif;
 margin:0;
 padding:0;
 background-image:var(--bg-url);
@@ -27,19 +35,21 @@ background-size:cover;
 background-position:center;
 background-attachment:fixed;
 color:var(--dark);
+-webkit-font-smoothing: antialiased;
 }
 header{
 position:fixed;
 top:0;
 left:0;
 right:0;
-height:60px;
+height:64px;
 background:#fff;
-border-bottom:2px solid #ccc;
+border-bottom:2px solid #e0e0e0;
 display:flex;
 align-items:center;
-padding:0 15px;
+padding:0 16px;
 z-index:10;
+box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 .logo{
 width:140px;
@@ -50,63 +60,111 @@ background-repeat:no-repeat;
 background-position:left;
 }
 header button {
-    border-radius: 0 !important; /* Retangular */
+  border-radius: var(--radius-sm) !important;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  border: none;
+  cursor: pointer;
+}
+header button i {
+  font-size: 15px;
+}
+header button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 main{
-padding:80px 15px 160px;
+padding:84px 16px 180px;
 max-width:800px;
 margin:auto;
 }
-/* Estilo Quadrado/Retangular: Área de seleção e pesquisa */
 .search-box{
 width:100%;
-padding:10px 12px;
-border:1px solid var(--border);
+padding:14px 16px;
+border:2px solid #e0e0e0;
 font-size:16px;
 outline:none;
-margin-bottom:15px;
-border-radius:0; /* Retangular */
+margin-bottom:20px;
+border-radius: var(--radius-sm);
+transition: border-color 0.3s ease, box-shadow 0.3s ease;
+background: #fff;
+}
+.search-box:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 4px rgba(156, 204, 101, 0.15);
 }
 .group{
-margin-bottom:15px;
-border:1px solid var(--border);
+margin-bottom:16px;
+border:1px solid #e8e8e8;
 background:var(--card-bg);
-backdrop-filter:blur(5px);
-box-shadow:0 4px 12px rgba(0,0,0,0.1); 
-border-radius: 8px; 
-overflow: hidden; 
+backdrop-filter:blur(8px);
+box-shadow:var(--shadow-sm);
+border-radius: var(--radius);
+overflow: hidden;
+transition: box-shadow 0.3s ease;
+}
+.group:hover {
+  box-shadow: var(--shadow-md);
 }
 .group-header{
-background:#f0f0f0;
-padding:12px;
+background:linear-gradient(135deg, #f8f8f8 0%, #f0f0f0 100%);
+padding:14px 16px;
 cursor:pointer;
-font-weight:bold;
+font-weight:700;
 display: flex;
 justify-content: space-between;
 align-items: center;
+font-size: 14px;
+color: #333;
+transition: background 0.3s ease;
+}
+.group-header:hover {
+  background:linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+}
+.group-header i {
+  color: var(--green);
+  transition: transform 0.3s ease;
+}
+.group-header.active i {
+  transform: rotate(180deg);
 }
 .exercise-list{
 display:none;
-padding:10px;
+padding:12px;
 }
 .exercise-item{
 display:flex;
-align-items:flex-start; 
+align-items:flex-start;
 justify-content:space-between;
-border-bottom:1px solid #eee;
-padding:12px 0; 
+border-bottom:1px solid #f0f0f0;
+padding:14px 0;
 flex-wrap:wrap;
-gap: 10px; 
+gap: 12px;
+transition: background 0.2s ease;
+}
+.exercise-item:last-child {
+  border-bottom: none;
 }
 .exercise-item > span {
-    font-weight: 500;
-    flex-grow: 1; 
+    font-weight: 600;
+    flex-grow: 1;
     max-width: 40%;
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 .exercise-item > div {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 8px;
     align-items: flex-end;
     flex-grow: 2;
     max-width: 55%;
@@ -114,68 +172,82 @@ gap: 10px;
 .checkbox-modern{
 width:24px;
 height:24px;
-border:2px solid #555;
-display:inline-block;
+border:2px solid #bbb;
+display:inline-flex;
+align-items:center;
+justify-content:center;
 cursor:pointer;
 position:relative;
-transition:.3s;
+transition:all 0.3s ease;
 box-sizing:border-box;
-border-radius: 0; /* Retangular */
+border-radius: 6px;
 min-width: 24px;
+background: #fff;
+}
+.checkbox-modern:hover {
+  border-color: var(--green);
+  background: rgba(156, 204, 101, 0.1);
 }
 .checkbox-modern.active{
 background:var(--green);
 border-color:var(--green);
 }
-.checkbox-modern::after{
-content:'';
-position:absolute;
-top:50%;
-left:50%;
-width:8px;
-height:8px;
-background:#fff;
-transform:translate(-50%,-50%) scale(0);
-border-radius: 0; /* Retangular */
-transition:.2s;
-}
 .checkbox-modern.active::after{
-transform:translate(-50%,-50%) scale(1);
+content:'\f00c';
+font-family: 'Font Awesome 6 Free';
+font-weight: 900;
+font-size: 12px;
+color: #fff;
+position: absolute;
 }
-/* INPUTS COM BORDA QUADRADA/RETANGULAR */
 input.reps,input.series,input.duration,
 .day-select,.intensity-select{
-padding:5px;
-border:1px solid:#ccc;
-font-size:14px;
+padding:8px 10px;
+border:2px solid #e0e0e0;
+font-size:13px;
 text-align:center;
 margin-left:0;
-border-radius:0; /* Retangular */
+border-radius: var(--radius-sm);
 outline:none;
 box-sizing: border-box;
 flex-grow: 1;
+transition: border-color 0.3s ease, box-shadow 0.3s ease;
+background: #fff;
+}
+input.reps:focus,input.series:focus,input.duration:focus,
+.day-select:focus,.intensity-select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(156, 204, 101, 0.15);
 }
 input.reps,input.series,input.duration {
-    max-width: 65px;
+    max-width: 68px;
 }
 .day-select,.intensity-select{
     max-width: 100%;
+    width: 100%;
 }
 .input-row {
     display: flex;
-    gap: 5px;
+    gap: 6px;
     width: 100%;
     justify-content: flex-end;
 }
 .obs{
 width:100%;
-margin-top:5px;
-padding:8px;
-border:1px solid #ccc;
-font-size:14px;
+margin-top:6px;
+padding:10px 12px;
+border:2px solid #e0e0e0;
+font-size:13px;
 outline:none;
-border-radius:0; /* Retangular */
+border-radius: var(--radius-sm);
 resize: vertical;
+transition: border-color 0.3s ease, box-shadow 0.3s ease;
+background: #fff;
+font-family: inherit;
+}
+.obs:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(156, 204, 101, 0.15);
 }
 footer{
 position:fixed;
@@ -184,151 +256,205 @@ left:50%;
 transform:translateX(-50%);
 display:flex;
 justify-content:center;
-gap:15px; 
-padding:0 10px;
+gap:12px;
+padding:0 16px;
 z-index:5;
-width: 90%;
-max-width: 400px;
+width: 95%;
+max-width: 500px;
 }
 .bottom-btn{
 background:var(--green);
 color:#fff;
 border:none;
-font-weight:bold;
-padding:12px 25px;
+font-weight:700;
+padding:14px 22px;
 cursor:pointer;
-font-size:16px;
-box-shadow:0 4px 15px rgba(0,0,0,0.2);
-width:50%; 
+font-size:14px;
+box-shadow:var(--shadow-md);
+width:50%;
 text-align:center;
-transition:.3s;
-border-radius: 0; /* Botão Retangular */
+transition:all 0.3s ease;
+border-radius: var(--radius-sm);
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+letter-spacing: 0.3px;
 }
-.bottom-btn:hover{background:#7cb342;}
+.bottom-btn i {
+  font-size: 16px;
+}
+.bottom-btn:hover{
+background:#7cb342;
+transform: translateY(-2px);
+box-shadow: var(--shadow-lg);
+}
+.bottom-btn:active {
+  transform: translateY(0);
+}
 
-/* --- INÍCIO DA MODERNIZAÇÃO: ÁREA MEUS TREINOS (OVERLAY) e PRÉVIA --- */
-
+/* --- OVERLAYS --- */
 .overlay{
 position:fixed;
 top:0;
 left:0;
 right:0;
 bottom:0;
-background:rgba(255,255,255,0.98); 
+background:rgba(255,255,255,0.98);
 display:none;
 overflow:auto;
-padding:20px 15px; 
+padding:24px 16px;
 color:var(--dark);
 z-index:20;
+backdrop-filter: blur(10px);
 }
 .overlay h2{
 text-align:center;
-margin: 40px 0 20px; 
-font-size: 24px;
+margin: 40px 0 24px;
+font-size: 26px;
 color: var(--dark);
+font-weight: 800;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
 }
-
-/* Botão EXCLUIR TUDO */
+.overlay h2 i {
+  color: var(--green);
+}
 #clearAll{
-display:block;
-margin:10px auto 30px; 
-padding:10px 20px;
+display:flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+margin:10px auto 30px;
+padding:12px 24px;
 background:var(--danger-color);
 color:#fff;
 border:none;
 cursor:pointer;
-font-weight:bold;
-border-radius: 0; /* Retangular */
-transition: background 0.3s;
-box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+font-weight:700;
+border-radius: var(--radius-sm);
+transition: all 0.3s ease;
+box-shadow: var(--shadow-sm);
+font-size: 14px;
+}
+#clearAll i {
+  font-size: 16px;
 }
 #clearAll:hover {
     background: #d32f2f;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
 }
 
 /* Container do Treino (Card) */
 .day-section{
-border:1px solid #ddd; /* Adiciona borda leve para separar */
-margin-bottom:15px;
+border:1px solid #e8e8e8;
+margin-bottom:16px;
 background:#fff;
-box-shadow:0 6px 16px rgba(0,0,0,0.15); 
-border-radius: 0; /* Retangular */
+box-shadow:var(--shadow-sm);
+border-radius: var(--radius);
 overflow: hidden;
+transition: box-shadow 0.3s ease;
+}
+.day-section:hover {
+  box-shadow: var(--shadow-md);
 }
 
-/* Título do Dia (Estilo Laminado/Tag) */
 .day-title{
-padding:10px 15px;
-font-weight:bold;
+padding:12px 18px;
+font-weight:700;
 color:#fff;
 text-transform: uppercase;
-font-size: 16px;
-/* Estilo laminado/tag */
-box-shadow: 0 2px 5px rgba(0,0,0,0.15); 
+font-size: 15px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.12);
 position: relative;
 z-index: 1;
+display: flex;
+align-items: center;
+gap: 8px;
+letter-spacing: 0.5px;
+}
+.day-title i {
+  font-size: 16px;
+  opacity: 0.9;
 }
 
-/* Item do Exercício */
 .exercise-entry{
-padding:15px; 
-border-top:1px solid #eee;
+padding:16px 18px;
+border-top:1px solid #f0f0f0;
 display:flex;
 justify-content:space-between;
-align-items:flex-start; /* Alinha o texto ao topo */
-position: relative; 
+align-items:flex-start;
+position: relative;
+transition: background 0.2s ease;
+}
+.exercise-entry:hover {
+  background: #fafafa;
 }
 .exercise-entry:last-child {
     border-bottom: none;
 }
 .exercise-entry div.details-container {
-    max-width: calc(100% - 70px); /* Espaço para botões de ordem e exclusão */
+    max-width: calc(100% - 80px);
 }
 .exercise-entry strong {
-    font-size: 16px;
+    font-size: 15px;
     color: var(--dark);
-    line-height: 1.4;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.exercise-entry strong i {
+  color: var(--green);
+  font-size: 13px;
 }
 .exercise-details {
-    font-size: 14px;
-    color: #555;
-    margin-top: 4px;
+    font-size: 13px;
+    color: #666;
+    margin-top: 6px;
+    line-height: 1.6;
 }
 .exercise-details strong {
-    font-weight: bold; /* Garante que 'OBS' seja bold */
-    color: #333;
+    font-weight: 700;
+    color: #444;
 }
 
-/* Botões de Reordenação e Exclusão */
 .action-buttons {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px; /* Espaço entre os botões */
+    gap: 6px;
     position: absolute;
-    right: 15px;
-    top: 10px;
+    right: 14px;
+    top: 12px;
 }
 .move-btn {
-    background: none;
+    background: #fff;
     color: var(--secondary-color);
-    border: 1px solid var(--secondary-color);
-    padding: 2px 5px;
-    font-size: 12px;
+    border: 2px solid var(--secondary-color);
+    padding: 4px 6px;
+    font-size: 11px;
     font-weight: bold;
     cursor: pointer;
-    transition: 0.3s;
-    width: 25px;
-    height: 25px;
+    transition: all 0.3s ease;
+    width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
     line-height: 1;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
+}
+.move-btn i {
+  font-size: 12px;
 }
 .move-btn:hover:not(:disabled) {
     background: var(--secondary-color);
     color: #fff;
+    transform: scale(1.05);
 }
 .move-btn:disabled {
     opacity: 0.3;
@@ -337,58 +463,69 @@ position: relative;
     color: #aaa;
 }
 .delete-btn{
-    background: none;
+    background: #fff;
     color: var(--danger-color);
-    border: none;
-    padding: 0;
+    border: 2px solid var(--danger-color);
+    padding: 4px;
     font-weight: normal;
     cursor:pointer;
-    transition:.3s;
-    font-size: 20px;
+    transition:all 0.3s ease;
+    font-size: 12px;
     width: 30px;
     height: 30px;
-    border-radius: 50%; 
+    border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
     line-height: 1;
-    margin-top: 5px;
+    margin-top: 4px;
 }
-.delete-btn::before {
-    content: '×'; 
-    font-weight: bold;
-    display: block;
-    transform: translateY(-1px);
+.delete-btn i {
+  font-size: 12px;
 }
 .delete-btn:hover{
-    background: rgba(244, 67, 54, 0.1); 
-    color: var(--danger-color);
+    background: var(--danger-color);
+    color: #fff;
+    transform: scale(1.05);
 }
 
 .close-btn{
 position:fixed;
-top:15px;
-right:15px;
-background:none;
-color:var(--dark); 
-font-size:32px; 
+top:16px;
+right:16px;
+background: rgba(0,0,0,0.05);
+color:var(--dark);
+font-size:20px;
 border:none;
-font-weight:100; 
+font-weight:400;
 cursor:pointer;
 z-index:25;
+width: 44px;
+height: 44px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.3s ease;
 }
-/* Estilo específico para o overlay de Prévia */
+.close-btn i {
+  font-size: 20px;
+}
+.close-btn:hover {
+  background: rgba(0,0,0,0.1);
+  transform: rotate(90deg);
+}
+
 #previewOverlay {
-    z-index: 30; /* Fica acima do overlay de MEUS TREINOS */
-    padding-top: 60px; /* Ajusta espaço para o botão X */
+    z-index: 30;
+    padding-top: 60px;
 }
 #previewOverlay h2 {
     margin-top: 0;
 }
 
-/* NOVO: Estilo para o Overlay de Consulta */
 #queryOverlay {
-    z-index: 50; /* Fica acima de tudo */
+    z-index: 50;
     padding-top: 60px;
 }
 #queryOverlay h2 {
@@ -396,27 +533,26 @@ z-index:25;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
 }
 #queryOverlay .consulted-na {
-    font-size: 18px;
-    color: #555;
-    font-weight: normal;
+    font-size: 16px;
+    color: #666;
+    font-weight: 500;
 }
 #queryOverlay .day-title {
-    background: var(--secondary-color) !important; /* Cor de destaque para o treino consultado */
+    background: var(--secondary-color) !important;
 }
 
-/* NOVO: Estilo do Spinner de Carregamento */
 .spinner {
-  display: none; /* Escondido por padrão */
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(0, 0, 0, 0.1);
+  display: none;
+  width: 48px;
+  height: 48px;
+  border: 5px solid rgba(0, 0, 0, 0.08);
   border-left-color: var(--secondary-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin: 30px auto;
+  margin: 40px auto;
 }
 
 @keyframes spin {
@@ -425,13 +561,17 @@ z-index:25;
   }
 }
 
-/* --- FIM DA MODERNIZAÇÃO: ÁREA MEUS TREINOS (OVERLAY) e PRÉVIA --- */
-
-
-/* Estilos Cardio (Mantidos) */
 #cardioBtn {
-    border-radius: 0; /* Retangular */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    background: #fff;
+    color: #333;
+    border: 2px solid #e0e0e0;
+}
+#cardioBtn:hover {
+  background: #f8f8f8;
+  border-color: var(--green);
+  color: var(--green);
 }
 #cardioOverlay {
     background: #fff;
@@ -441,7 +581,7 @@ z-index:25;
     color: var(--dark);
 }
 #newCardio, #saveCardio {
-    border-radius: 0; /* Retangular */
+    border-radius: var(--radius-sm);
     box-shadow: none;
     width: 100%;
 }
@@ -461,6 +601,16 @@ z-index:25;
     cursor: pointer;
     max-width: 135px;
     line-height: 17px;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.cardio_item_custom:hover {
+  opacity: 0.8;
+}
+.cardio_item_custom i {
+  font-size: 14px;
 }
 .cardio_divider_custom {
     opacity: 0.5;
@@ -498,39 +648,75 @@ z-index:25;
     cursor: pointer;
     user-select: none;
     color: black;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s ease;
 }
-/* Inputs e selects do Cardio com borda quadrada */
+.cardio_close_custom:hover {
+  background: rgba(0,0,0,0.05);
+}
 #diaCardio, .tempo, .quando, .obsC {
-    border-radius: 0 !important;
+    border-radius: var(--radius-sm) !important;
 }
 
-/* Novo estilo para o formulário de consulta NA */
 #queryNAForm {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid var(--border);
+    padding: 14px;
+    border: 2px solid #e0e0e0;
     background: var(--card-bg);
-    border-radius: 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    align-items: center;
 }
 #inputNA {
     flex-grow: 1;
-    border-radius: 0;
+    border-radius: var(--radius-sm);
+    border: 2px solid #e0e0e0;
+    padding: 12px 14px;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+#inputNA:focus {
+  border-color: var(--secondary-color);
 }
 #consultarBtn {
     background: var(--secondary-color);
     color: #fff;
     border: none;
-    padding: 10px 15px;
-    font-weight: bold;
+    padding: 12px 20px;
+    font-weight: 700;
     cursor: pointer;
-    border-radius: 0;
-    transition: background 0.3s;
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+}
+#consultarBtn i {
+  font-size: 15px;
 }
 #consultarBtn:hover {
     background: #1e88e5;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Ícones para itens de cardio */
+.cardio-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #f5f5f5;
+  padding: 4px;
 }
 </style>
 </head>
@@ -538,50 +724,50 @@ z-index:25;
 <body>
 <header>
   <div class="logo"></div>
-  <button onclick="document.getElementById('queryNAOverlay').style.display='block'; document.getElementById('inputNA').focus();" style="background-color:var(--secondary-color);color:#fff;border:none;width:120px;height:35px;position:absolute;top:50%;right:100px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">COPIAR TREINO DE ALGUEM</button>
-  <button onclick="window.location.href='index.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">Voltar</button>
+  <button onclick="document.getElementById('queryNAOverlay').style.display='block'; document.getElementById('inputNA').focus();" style="background-color:var(--secondary-color);color:#fff;width:auto;height:40px;position:absolute;top:50%;right:110px;transform:translateY(-50%);padding:0 16px;">
+    <i class="fas fa-copy"></i> COPIAR TREINO
+  </button>
+  <button onclick="window.location.href='index.html'" style="background-color:#8DC63F;color:#fff;width:auto;height:40px;position:absolute;top:50%;right:12px;transform:translateY(-50%);padding:0 16px;">
+    <i class="fas fa-arrow-left"></i> Voltar
+  </button>
 </header>
-
-
-
-
-
-
 
 <br><br><br><br><br>
 
-
-
-
-
-
-
-
-<button id="cardioBtn" class="bottom-btn" style="width:95%;margin:0 auto;display:block;background:#fff;color:#000;border:1px solid #ccc;">VER MEU CARDIO</button>
+<button id="cardioBtn" class="bottom-btn" style="width:95%;margin:0 auto;display:flex;background:#fff;color:#333;border:2px solid #e0e0e0;">
+  <i class="fas fa-heartbeat" style="color: var(--danger-color);"></i> VER MEU CARDIO
+</button>
 
 <div id="cardioOverlay" class="overlay" style="background:#fff;display:none;padding:80px 20px;z-index:40;">
-<button id="closeCardio" class="close-btn" style="color:#000;">×</button>
-<h2 style="text-align:center;margin-bottom:20px;">CARDIO</h2>
+<button id="closeCardio" class="close-btn" style="color:#000;"><i class="fas fa-times"></i></button>
+<h2 style="text-align:center;margin-bottom:20px;"><i class="fas fa-heartbeat" style="color: var(--danger-color);"></i> CARDIO</h2>
 
 <div id="cardioDias"></div>
 
-<button id="newCardio" class="bottom-btn" style="width:95%;margin:20px auto 0 auto;display:block;background:#fff;color:#000;border:1px solid #ccc;">CRIAR</button>
+<button id="newCardio" class="bottom-btn" style="width:95%;margin:20px auto 0 auto;display:flex;background:#fff;color:#333;border:2px solid #e0e0e0;">
+  <i class="fas fa-plus-circle"></i> CRIAR
+</button>
 
-<div id="cardioForm" style="display:none;margin-top:20px;border:1px solid #ccc;padding:15px;background:#fafafa;border-radius: 0;"> <select id="diaCardio" style="width:100%;padding:10px;font-size:16px;border:1px solid #ccc;border-radius: 0;"> <option>SEGUNDA</option><option>TERÇA</option><option>QUARTA</option>
-<option>QUINTA</option><option>SEXTA</option><option>SÁBADO</option><option>DOMINGO</option>
-</select>
+<div id="cardioForm" style="display:none;margin-top:20px;border:2px solid #e0e0e0;padding:18px;background:#fafafa;border-radius: var(--radius-sm);">
+  <select id="diaCardio" style="width:100%;padding:12px;font-size:16px;border:2px solid #e0e0e0;border-radius: var(--radius-sm);margin-bottom:12px;">
+    <option>SEGUNDA</option><option>TERÇA</option><option>QUARTA</option>
+    <option>QUINTA</option><option>SEXTA</option><option>SÁBADO</option><option>DOMINGO</option>
+  </select>
 
-<div style="margin-top:10px;width:100%;padding:10px;border:1px solid #ccc;border-radius: 0;"> <label style="font-weight:bold;">SELECIONAR MÁQUINAS</label>
-<div>
-<label><input type="checkbox" class="maq" value="Esteira"> ESTEIRA</label><br>
-<label><input type="checkbox" class="maq" value="Bicicleta"> BICICLETA</label><br>
-<label><input type="checkbox" class="maq" value="Elíptico"> ELÍPTICO</label>
-</div>
-</div>
+  <div style="margin-top:10px;width:100%;padding:14px;border:2px solid #e0e0e0;border-radius: var(--radius-sm);background:#fff;">
+    <label style="font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:10px;"><i class="fas fa-dumbbell" style="color: var(--green);"></i> SELECIONAR MÁQUINAS</label>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <label style="display:flex;align-items:center;gap:8px;font-size:14px;"><input type="checkbox" class="maq" value="Esteira"> <i class="fas fa-running" style="color:#666;"></i> ESTEIRA</label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:14px;"><input type="checkbox" class="maq" value="Bicicleta"> <i class="fas fa-bicycle" style="color:#666;"></i> BICICLETA</label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:14px;"><input type="checkbox" class="maq" value="Elíptico"> <i class="fas fa-spa" style="color:#666;"></i> ELÍPTICO</label>
+    </div>
+  </div>
 
-<div id="maqInputs"></div>
+  <div id="maqInputs"></div>
 
-<button id="saveCardio" class="bottom-btn" style="width:95%;margin:15px auto 0 auto;display:block;background:#000;color:#fff;border:1px solid #000;">SALVAR</button>
+  <button id="saveCardio" class="bottom-btn" style="width:95%;margin:18px auto 0 auto;display:flex;background:#000;color:#fff;border:1px solid #000;">
+    <i class="fas fa-save"></i> SALVAR
+  </button>
 </div>
 </div>
 
@@ -590,7 +776,6 @@ const IMG_ESTEIRA = "https://img.freepik.com/vetores-premium/icone-preto-de-bati
 const IMG_BICICLETA = "https://img.freepik.com/vetores-premium/icone-preto-de-batimento-cardiaco-sinal-de-cardio-simbolo-de-saude_53562-19766.jpg?w=360";
 const IMG_ELIPTICO = "https://img.freepik.com/vetores-premium/icone-preto-de-batimento-cardiaco-sinal-de-cardio-simbolo-de-saude_53562-19766.jpg?w=360";
 
-// CORES FIXAS POR DIA (Mantido como no seu código para o CARDIO)
 const coresCardio={
 "SEGUNDA":"#4caf50",
 "TERÇA":"#2196f3",
@@ -620,24 +805,25 @@ dias.forEach(d=>{
 let items=data.filter(x=>x.dia===d);
 let cor=coresCardio[d];
 let div=document.createElement("div");
-div.style.border="1px solid #ccc";
-div.style.marginBottom="10px";
-div.style.borderRadius="0"; 
-div.style.overflow="hidden"; 
-div.innerHTML=`<div style="padding:10px;background:${cor};color:#fff;font-weight:bold;">${d}</div>`;
+div.style.border="2px solid #e8e8e8";
+div.style.marginBottom="12px";
+div.style.borderRadius="var(--radius-sm)";
+div.style.overflow="hidden";
+div.style.boxShadow="var(--shadow-sm)";
+div.innerHTML=`<div style="padding:12px 16px;background:${cor};color:#fff;font-weight:700;display:flex;align-items:center;gap:8px;"><i class="fas fa-calendar-day"></i> ${d}</div>`;
 items.forEach((e,i)=>{
 div.innerHTML+=`
-<div style="padding:10px;border-top:1px solid #eee;display:flex;justify-content:space-between;">
-<div style="display:flex;gap:10px;align-items:center;">
-<img src="${e.img}" style="width:30px;height:30px;object-fit:contain;">
+<div style="padding:14px 16px;border-top:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center;gap:10px;">
+<div style="display:flex;gap:12px;align-items:center;flex:1;">
+<img src="${e.img}" class="cardio-icon">
 <div>
-<b>${e.maquina}</b><br>
-TEMPO: ${e.tempo} MIN<br>
-QUANDO FAZER: ${e.quando}
-${e.obs?`<br>OBS: ${e.obs}`:""}
+<b style="font-size:14px;">${e.maquina}</b><br>
+<span style="font-size:13px;color:#666;">TEMPO: ${e.tempo} MIN</span><br>
+<span style="font-size:13px;color:#666;">QUANDO: ${e.quando}</span>
+${e.obs?`<br><span style="font-size:12px;color:#888;">OBS: ${e.obs}</span>`:""}
 </div>
 </div>
-<button style="background:#f44336;color:#fff;border:none;padding:5px 10px;font-weight:bold;border-radius: 0;" onclick="delCardio('${d}',${i})">EXCLUIR</button>
+<button style="background:var(--danger-color);color:#fff;border:none;padding:8px 12px;font-weight:700;border-radius:var(--radius-sm);cursor:pointer;transition:all 0.3s ease;display:flex;align-items:center;gap:4px;font-size:12px;" onclick="delCardio('${d}',${i})"><i class="fas fa-trash"></i> EXCLUIR</button>
 </div>`;
 });
 box.appendChild(div);
@@ -657,10 +843,14 @@ let cont=document.getElementById("maqInputs");
 if(c.checked){
 let id="i_"+c.value;
 cont.innerHTML+=`
-<div id="${id}" style="margin-top:10px;border:1px solid #ddd;padding:10px;border-radius: 0;"> <b>${c.value}</b><br>
-<input placeholder="Tempo (min)" type="number" class="tempo" data-m="${c.value}" style="width:100%;padding:8px;border:1px solid:#ccc;margin-top:5px;border-radius: 0;"> <select class="quando" data-m="${c.value}" style="width:100%;padding:8px;border:1px solid:#ccc;margin-top:5px;border-radius: 0;"> <option>INÍCIO</option><option>MEIO</option><option>FIM</option>
+<div id="${id}" style="margin-top:12px;border:2px solid #e0e0e0;padding:14px;border-radius:var(--radius-sm);background:#fff;">
+<b style="display:flex;align-items:center;gap:6px;"><i class="fas fa-dumbbell" style="color:var(--green);"></i> ${c.value}</b><br>
+<input placeholder="Tempo (min)" type="number" class="tempo" data-m="${c.value}" style="width:100%;padding:10px;border:2px solid #e0e0e0;margin-top:8px;border-radius:var(--radius-sm);outline:none;">
+<select class="quando" data-m="${c.value}" style="width:100%;padding:10px;border:2px solid #e0e0e0;margin-top:8px;border-radius:var(--radius-sm);outline:none;">
+<option>INÍCIO</option><option>MEIO</option><option>FIM</option>
 </select>
-<textarea class="obsC" data-m="${c.value}" placeholder="Observação (opcional)" style="width:100%;padding:8px;border:1px solid:#ccc;margin-top:5px;border-radius: 0;"></textarea> </div>`;
+<textarea class="obsC" data-m="${c.value}" placeholder="Observação (opcional)" style="width:100%;padding:10px;border:2px solid #e0e0e0;margin-top:8px;border-radius:var(--radius-sm);outline:none;font-family:inherit;"></textarea>
+</div>`;
 }else{
 document.getElementById("i_"+c.value)?.remove();
 }
@@ -717,7 +907,6 @@ db.ref("cardio/"+na).set(data).then(()=>loadCardio());
 }
 </script>
 
-
 <style>
 .cardio_area_custom {
     display: flex;
@@ -735,6 +924,16 @@ db.ref("cardio/"+na).set(data).then(()=>loadCardio());
     cursor: pointer;
     max-width: 135px;
     line-height: 17px;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.cardio_item_custom:hover {
+  opacity: 0.8;
+}
+.cardio_item_custom i {
+  font-size: 14px;
 }
 .cardio_divider_custom {
     opacity: 0.5;
@@ -772,17 +971,31 @@ db.ref("cardio/"+na).set(data).then(()=>loadCardio());
     cursor: pointer;
     user-select: none;
     color: black;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+.cardio_close_custom:hover {
+  background: rgba(0,0,0,0.05);
 }
 </style>
 
 <div class="cardio_area_custom">
-    <div class="cardio_item_custom" onclick="openCardioCustom(1)">O que é intensidade?</div>
+    <div class="cardio_item_custom" onclick="openCardioCustom(1)">
+      <i class="fas fa-fire"></i> O que é intensidade?
+    </div>
     <div class="cardio_divider_custom">•</div>
-    <div class="cardio_item_custom" onclick="openCardioCustom(2)">Devo me alongar?</div>
+    <div class="cardio_item_custom" onclick="openCardioCustom(2)">
+      <i class="fas fa-stretch"></i> Devo me alongar?
+    </div>
 </div>
 
 <div id="cardioOverlayCustom" class="cardio_overlay_custom">
-    <div class="cardio_close_custom" onclick="closeCardioCustom()">X</div>
+    <div class="cardio_close_custom" onclick="closeCardioCustom()"><i class="fas fa-times"></i></div>
     <div id="cardioContentCustom" class="cardio_box_custom"></div>
 </div>
 
@@ -801,8 +1014,8 @@ const cardioDataCustom = {
 function openCardioCustom(id) {
     const data = cardioDataCustom[id];
     document.getElementById("cardioContentCustom").innerHTML = `
-        <h2 style='margin-bottom:6px; font-size:17px;'>${data.titulo}</h2>
-        <p>${data.descricao}</p>
+        <h2 style='margin-bottom:12px; font-size:18px; display:flex; align-items:center; gap:8px;'><i class="fas fa-info-circle" style="color:var(--green);"></i> ${data.titulo}</h2>
+        <p style="line-height:1.7;">${data.descricao}</p>
     `;
     document.getElementById("cardioOverlayCustom").style.display = "flex";
 }
@@ -812,59 +1025,52 @@ function closeCardioCustom() {
 }
 </script>
 
-
-
-
-
-
-
-
-
 <main>
   
   <div id="queryNAOverlay" class="overlay" style="z-index: 50; padding-top: 20px;">
-    <button class="close-btn" onclick="document.getElementById('queryNAOverlay').style.display='none';">×</button>
+    <button class="close-btn" onclick="document.getElementById('queryNAOverlay').style.display='none';"><i class="fas fa-times"></i></button>
     
-    <div style="max-width: 400px; margin: 40px auto 20px;">
+    <div style="max-width: 420px; margin: 40px auto 20px;">
         <div id="queryNAForm">
-            <input type="number" id="inputNA" class="search-box" placeholder="NA DA OUTRA PESSOA">
-            <button id="consultarBtn" onclick="consultarNA()">CONSULTAR</button>
+            <input type="number" id="inputNA" class="search-box" placeholder="NA DA OUTRA PESSOA" style="margin-bottom:0;">
+            <button id="consultarBtn" onclick="consultarNA()"><i class="fas fa-search"></i> CONSULTAR</button>
         </div>
         
-        <h2>Treinos de NA: <span id="consultedNAHeader" class="consulted-na">...</span></h2>
+        <h2 style="text-align:center;margin:20px 0 16px;font-size:20px;">
+          <i class="fas fa-user-friends" style="color:var(--secondary-color);"></i> 
+          Treinos de <span id="consultedNAHeader" class="consulted-na">...</span>
+        </h2>
         
         <div id="queryContent">
             <div id="loadingSpinner" class="spinner"></div>
             <p id="initialMessage" style="text-align:center; padding: 20px 0; color: #777;">Aguardando consulta...</p>
             
-            <button id="pegarTreinoBtn" class="bottom-btn" style="width:100%; margin-top: 0; background: var(--green); display: none;" onclick="pegarTreino()">PEGAR TREINO</button>
+            <button id="pegarTreinoBtn" class="bottom-btn" style="width:100%; margin-top: 0; background: var(--green); display: none;" onclick="pegarTreino()">
+              <i class="fas fa-copy"></i> PEGAR TREINO
+            </button>
         </div>
     </div>
   </div>
-  <input type="text" id="search" class="search-box" placeholder="PESQUISAR...">
+  <input type="text" id="search" class="search-box" placeholder="PESQUISAR EXERCÍCIO...">
   <div id="groups"></div>
 </main>
 
-
-
-
-
 <footer>
-  <button id="createBtn" class="bottom-btn">CRIAR TREINO</button>
-  <button id="viewCardBtn" class="bottom-btn" style="display:none; background: var(--firebase-orange); width: 45%;">VER PRÉVIA</button>
-  <button id="viewBtn" class="bottom-btn" style="width: 45%;">MEUS TREINOS</button>
+  <button id="createBtn" class="bottom-btn"><i class="fas fa-plus-circle"></i> CRIAR TREINO</button>
+  <button id="viewCardBtn" class="bottom-btn" style="display:none; background: var(--firebase-orange); width: 45%;"><i class="fas fa-eye"></i> VER PRÉVIA</button>
+  <button id="viewBtn" class="bottom-btn" style="width: 45%;"><i class="fas fa-list"></i> MEUS TREINOS</button>
 </footer>
 
 <div class="overlay" id="overlay">
-  <button class="close-btn" onclick="closeOverlay()">×</button>
-  <h2>MEUS TREINOS</h2>
-  <button id="clearAll">EXCLUIR TUDO</button>
+  <button class="close-btn" onclick="closeOverlay()"><i class="fas fa-times"></i></button>
+  <h2><i class="fas fa-list"></i> MEUS TREINOS</h2>
+  <button id="clearAll"><i class="fas fa-trash-alt"></i> EXCLUIR TUDO</button>
   <div id="trainings"></div>
 </div>
 
 <div class="overlay" id="previewOverlay">
-  <button class="close-btn" onclick="closePreview()">×</button>
-  <h2>PRÉVIA DO CARD</h2>
+  <button class="close-btn" onclick="closePreview()"><i class="fas fa-times"></i></button>
+  <h2><i class="fas fa-eye"></i> PRÉVIA DO CARD</h2>
   <div id="previewContent"></div>
 </div>
 
@@ -876,23 +1082,21 @@ const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomai
 firebase.initializeApp(firebaseConfig);
 
 const db=firebase.database();
-const na=localStorage.getItem('loggedUser')||'0000'; // NA do usuário LOGADO
-let consultedNA = null; // NA do aluno CONSULTADO
+const na=localStorage.getItem('loggedUser')||'0000';
+let consultedNA = null;
 
-// NOVO: MAPA DE CORES FIXAS POR DIA DA SEMANA
 const dayColorMap = {
-    "SEGUNDA": "#4CAF50", // Verde
-    "TERÇA": "#2196F3", // Azul
-    "QUARTA": "#FF9800", // Laranja
-    "QUINTA": "#9C27B0", // Roxo
-    "SEXTA": "#F44336", // Vermelho
-    "SÁBADO": "#009688", // Ciano/Verde Água
-    "DOMINGO": "#607D8B" // Cinza/Azul Escuro
+    "SEGUNDA": "#4CAF50",
+    "TERÇA": "#2196F3",
+    "QUARTA": "#FF9800",
+    "QUINTA": "#9C27B0",
+    "SEXTA": "#F44336",
+    "SÁBADO": "#009688",
+    "DOMINGO": "#607D8B"
 };
 
-// Array de cores original (Mantido, mas menos usado agora para a cor do dia)
 const cores=["#4caf50","#2196f3","#ff9800","#9c27b0","#f44336","#009688","#607d8b","#8bc34a","#3f51b5","#ff5722"];
-let corIndex=0; // Mantido para a lógica de "pegar treino"
+let corIndex=0;
 
 const groupsData={
 "MEMBROS INFERIORES – GLÚTEOS / PERNAS / PANTURRILHAS":[
@@ -948,7 +1152,7 @@ Object.keys(groupsData).forEach(g=>{
   group.className='group';
   const header=document.createElement('div');
   header.className='group-header';
-  header.textContent=g;
+  header.innerHTML = `<span><i class="fas fa-dumbbell" style="margin-right:8px;"></i>${g}</span><i class="fas fa-chevron-down"></i>`;
 
   const list=document.createElement('div');
   list.className='exercise-list';
@@ -957,9 +1161,9 @@ Object.keys(groupsData).forEach(g=>{
     const item=document.createElement('div');
     item.className='exercise-item';
     item.innerHTML=`
-      <div style="display: flex; gap: 8px; align-items: flex-start;">
+      <div style="display: flex; gap: 10px; align-items: flex-start;">
         <div class="checkbox-modern"></div>
-        <span>${ex}</span>
+        <span><i class="fas fa-circle" style="font-size:6px;color:#ccc;margin-right:4px;"></i>${ex}</span>
       </div>
       <div>
         <div class="input-row">
@@ -979,13 +1183,15 @@ Object.keys(groupsData).forEach(g=>{
     list.appendChild(item);
   });
 
-  header.onclick=()=>list.style.display=list.style.display==='block'?'none':'block';
+  header.onclick=()=>{
+    list.style.display=list.style.display==='block'?'none':'block';
+    header.classList.toggle('active');
+  };
   group.appendChild(header);
   group.appendChild(list);
   groupsContainer.appendChild(group);
 });
 
-// NOVO: Atualiza a visibilidade do botão de prévia e adiciona listener
 document.addEventListener('click',e=>{
   if(e.target.classList.contains('checkbox-modern')){
     e.target.classList.toggle('active');
@@ -995,24 +1201,22 @@ document.addEventListener('click',e=>{
 
 function updatePreviewButtonVisibility() {
     const anySelected = document.querySelector('.checkbox-modern.active');
-    viewCardBtn.style.display = anySelected ? 'block' : 'none';
+    viewCardBtn.style.display = anySelected ? 'flex' : 'none';
     
     const createBtn = document.getElementById('createBtn');
     const viewBtn = document.getElementById('viewBtn');
     
-    // Ajusta a largura dos botões 'CRIAR' e 'MEUS TREINOS' se o VER PRÉVIA estiver visível
     if (anySelected) {
         createBtn.style.width = '45%';
         viewBtn.style.width = '45%';
-        createBtn.style.marginRight = '0'; // Ajuste de margem se necessário
+        createBtn.style.marginRight = '0';
     } else {
         createBtn.style.width = '50%';
         viewBtn.style.width = '50%';
-        createBtn.style.marginRight = '15px'; // Volta à margem padrão do flex
+        createBtn.style.marginRight = '15px';
     }
 }
 
-// Inicializa a visibilidade do botão de prévia
 updatePreviewButtonVisibility(); 
 
 document.getElementById('search').addEventListener('input',e=>{
@@ -1027,7 +1231,7 @@ document.getElementById('createBtn').onclick=async()=>{
   document.querySelectorAll('.exercise-item').forEach(i=>{
     if(i.querySelector('.checkbox-modern').classList.contains('active')){
         const diaSelecionado = i.querySelector('.day-select').value;
-        const corFixa = dayColorMap[diaSelecionado] || cores[0]; // Pega a cor fixa do dia
+        const corFixa = dayColorMap[diaSelecionado] || cores[0];
         
       selected.push({
         exercicio:i.querySelector('span').innerText,
@@ -1037,7 +1241,7 @@ document.getElementById('createBtn').onclick=async()=>{
         dia:diaSelecionado,
         intensidade:i.querySelector('.intensity-select').value,
         observacao:i.querySelector('.obs').value || "",
-        cor:corFixa // Usa a cor fixa do dia
+        cor:corFixa
       });
     }
   });
@@ -1051,16 +1255,14 @@ document.getElementById('createBtn').onclick=async()=>{
   let data=snap.exists()?snap.val():[];
 
   selected.forEach(sel=>{
-    // Garante que a cor seja a cor fixa do dia para novos treinos
     const existe=data.some(x=>x.exercicio===sel.exercicio && x.dia===sel.dia);
     if(!existe) data.push(sel);
   });
 
   await db.ref('treinos/'+na).set(data);
-  corIndex++; // Mantido, mas só afeta a cor de cópia/próximo PT
+  corIndex++;
   alert('Treino criado com sucesso!');
   
-  // Limpa as seleções e esconde o botão de prévia após criar
   document.querySelectorAll('.checkbox-modern.active').forEach(c => c.classList.remove('active'));
   updatePreviewButtonVisibility(); 
 };
@@ -1072,7 +1274,6 @@ document.getElementById('viewBtn').onclick=async()=>{
   loadTrainings();
 };
 
-// NOVO: Ação do botão de prévia
 document.getElementById('viewCardBtn').onclick=()=>{
     previewOverlay.style.display='block';
     loadPreview();
@@ -1093,14 +1294,13 @@ function closePreview(){
     previewOverlay.style.display='none';
 }
 
-// ATUALIZADO: Função para carregar a prévia do treino com cores distintas por dia
 function loadPreview() {
     previewContent.innerHTML = '';
     const selected = [];
     document.querySelectorAll('.exercise-item').forEach(i => {
         if (i.querySelector('.checkbox-modern').classList.contains('active')) {
             const diaSelecionado = i.querySelector('.day-select').value;
-            const corFixa = dayColorMap[diaSelecionado] || 'var(--firebase-orange)'; // Cor fixa ou fallback
+            const corFixa = dayColorMap[diaSelecionado] || 'var(--firebase-orange)';
             
             selected.push({
                 exercicio: i.querySelector('span').innerText,
@@ -1110,7 +1310,7 @@ function loadPreview() {
                 dia: diaSelecionado,
                 intensidade: i.querySelector('.intensity-select').value,
                 observacao: i.querySelector('.obs').value || "",
-                cor: corFixa // Usa a cor fixa do dia
+                cor: corFixa
             });
         }
     });
@@ -1128,9 +1328,8 @@ function loadPreview() {
             const sec = document.createElement('div');
             sec.className = 'day-section';
             
-            // Atribui a cor fixa do dia (ou a cor do primeiro item se estiver faltando)
             const dayColor = dayColorMap[d] || items[0].cor || 'var(--firebase-orange)'; 
-            sec.innerHTML = `<div class='day-title' style="background:${dayColor}">${d} (PRÉVIA)</div>`;
+            sec.innerHTML = `<div class='day-title' style="background:${dayColor}"><i class="fas fa-calendar-day"></i> ${d} (PRÉVIA)</div>`;
 
             items.forEach((e) => {
                 const div = document.createElement('div');
@@ -1138,7 +1337,7 @@ function loadPreview() {
                 
                 div.innerHTML = `
                     <div class="details-container" style="max-width: 100%;">
-                      <strong>${e.exercicio}</strong>
+                      <strong><i class="fas fa-dumbbell"></i> ${e.exercicio}</strong>
                       <div class="exercise-details">
                           SÉRIES: ${e.series} | REPETIÇÕES: ${e.reps} | DURAÇÃO: ${e.duracao} MÊS(ES)
                           <br>INTENSIDADE: ${e.intensidade}
@@ -1153,8 +1352,6 @@ function loadPreview() {
     });
 }
 
-
-// ATUALIZADO: Função para carregar os treinos salvos com cores distintas por dia
 async function loadTrainings(){
     const tDiv=document.getElementById('trainings');
     tDiv.innerHTML='';
@@ -1174,9 +1371,8 @@ async function loadTrainings(){
         const sec=document.createElement('div');
         sec.className='day-section';
         
-        // Usa a cor fixa do dia ou a cor salva no primeiro item como fallback
         const dayColor = dayColorMap[d] || items[0].cor || cores[0];
-        sec.innerHTML=`<div class='day-title' style="background:${dayColor}">${d}</div>`;
+        sec.innerHTML=`<div class='day-title' style="background:${dayColor}"><i class="fas fa-calendar-day"></i> ${d}</div>`;
 
         items.forEach((e,i)=>{
           const div=document.createElement('div');
@@ -1187,7 +1383,7 @@ async function loadTrainings(){
           
           div.innerHTML=`
             <div class="details-container">
-              <strong>${e.exercicio}</strong>
+              <strong><i class="fas fa-dumbbell"></i> ${e.exercicio}</strong>
               <div class="exercise-details">
                   SÉRIES: ${e.series} | REPETIÇÕES: ${e.reps} | DURAÇÃO: ${e.duracao} MÊS(ES)
                   <br>INTENSIDADE: ${e.intensidade}
@@ -1195,9 +1391,9 @@ async function loadTrainings(){
               </div>
             </div>
             <div class="action-buttons">
-                <button class="move-btn" onclick="moveUp('${d}',${i})" ${isFirst ? 'disabled' : ''}>▲</button>
-                <button class="move-btn" onclick="moveDown('${d}',${i})" ${isLast ? 'disabled' : ''}>▼</button>
-                <button class="delete-btn" onclick="deleteExercise('${d}',${i})"></button>
+                <button class="move-btn" onclick="moveUp('${d}',${i})" ${isFirst ? 'disabled' : ''}><i class="fas fa-chevron-up"></i></button>
+                <button class="move-btn" onclick="moveDown('${d}',${i})" ${isLast ? 'disabled' : ''}><i class="fas fa-chevron-down"></i></button>
+                <button class="delete-btn" onclick="deleteExercise('${d}',${i})"><i class="fas fa-trash"></i></button>
             </div>`;
           sec.appendChild(div);
         });
@@ -1216,7 +1412,6 @@ async function deleteExercise(dia,index){
   let data=snap.val();
   let count=0;
 
-  // Filtra o treino a ser removido (usando o índice dentro do dia)
   data=data.filter(x=>{
     if(x.dia===dia){
       if(count===index){count++;return false;}
@@ -1238,13 +1433,11 @@ async function reorderExercise(dia, index, direction){
     
     const newIndex = index + direction;
 
-    if (newIndex < 0 || newIndex >= currentDayData.length) return; // Limite
+    if (newIndex < 0 || newIndex >= currentDayData.length) return;
 
-    // Encontra o item a ser movido no array do dia
     const [movedItem] = currentDayData.splice(index, 1);
     currentDayData.splice(newIndex, 0, movedItem);
 
-    // Constrói o novo array de dados completo
     let newData = [];
     allData.forEach(item => {
         if (item.dia !== dia) {
@@ -1253,7 +1446,6 @@ async function reorderExercise(dia, index, direction){
     });
     newData.push(...currentDayData);
 
-    // Salva no Firebase
     await db.ref('treinos/' + na).set(newData);
     loadTrainings();
 }
@@ -1266,10 +1458,6 @@ function moveDown(dia, index) {
     reorderExercise(dia, index, 1);
 }
 
-// ==========================================================
-// FUNÇÕES DE CONSULTA NA E COPIAR TREINO (ATUALIZADAS)
-// ==========================================================
-
 async function consultarNA() {
     const inputNA = document.getElementById('inputNA').value.trim();
     const queryContent = document.getElementById('queryContent');
@@ -1278,7 +1466,6 @@ async function consultarNA() {
     const loadingSpinner = document.getElementById('loadingSpinner');
     const initialMessage = document.getElementById('initialMessage');
     
-    // 1. Limpa o conteúdo anterior e mostra o spinner
     queryContent.innerHTML = '';
     queryContent.appendChild(loadingSpinner);
     loadingSpinner.style.display = 'block';
@@ -1298,39 +1485,32 @@ async function consultarNA() {
         return;
     }
     
-    // Mostra o NA de quem está logado/consultando no topo do overlay
-    document.getElementById('queryNAOverlay').querySelector('h2').innerHTML = `Treinos de ${consultedNA} <span class="consulted-na">(Consultado por NA: ${na})</span>`;
+    document.getElementById('queryNAOverlay').querySelector('h2').innerHTML = `<i class="fas fa-user-friends" style="color:var(--secondary-color);"></i> Treinos de ${consultedNA} <span class="consulted-na">(Consultado por NA: ${na})</span>`;
 
-    // 2. Realiza a consulta (simula um tempo de espera para ver o spinner)
     const snap = await db.ref('treinos/' + inputNA).get();
 
-    // 3. Esconde o spinner
     loadingSpinner.style.display = 'none';
 
     if (!snap.exists() || snap.val().length === 0) {
-        queryContent.innerHTML = `<p style="text-align:center; padding: 20px 0; color: #777;">O aluno **${inputNA}** não possui treinos cadastrados.</p>`;
+        queryContent.innerHTML = `<p style="text-align:center; padding: 20px 0; color: #777;">O aluno <strong>${inputNA}</strong> não possui treinos cadastrados.</p>`;
         return;
     }
 
     const allData = snap.val();
     const dias = ['SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA', 'SÁBADO', 'DOMINGO'];
     
-    // 4. Cria um novo container para os treinos
     const trainingsContainer = document.createElement('div');
     
-    // 5. Adiciona o botão de cópia NO TOPO do container de treinos
-    pegarTreinoBtn.style.display = 'block';
+    pegarTreinoBtn.style.display = 'flex';
     trainingsContainer.appendChild(pegarTreinoBtn);
     
-    // 6. Renderiza os treinos do NA consultado
     dias.forEach(d => {
         const items = allData.filter(x => x.dia === d);
         if (items.length > 0) {
             const sec = document.createElement('div');
             sec.className = 'day-section';
             
-            // Cor de destaque (secondary-color) para indicar que é um treino consultado
-            sec.innerHTML = `<div class='day-title' style="background:var(--secondary-color)">${d} (NA: ${inputNA})</div>`;
+            sec.innerHTML = `<div class='day-title' style="background:var(--secondary-color)"><i class="fas fa-calendar-day"></i> ${d} (NA: ${inputNA})</div>`;
 
             items.forEach((e) => {
                 const div = document.createElement('div');
@@ -1338,7 +1518,7 @@ async function consultarNA() {
                 
                 div.innerHTML = `
                     <div class="details-container" style="max-width: 100%;">
-                      <strong>${e.exercicio}</strong>
+                      <strong><i class="fas fa-dumbbell"></i> ${e.exercicio}</strong>
                       <div class="exercise-details">
                           SÉRIES: ${e.series} | REPETIÇÕES: ${e.reps} | DURAÇÃO: ${e.duracao} MÊS(ES)
                           <br>INTENSIDADE: ${e.intensidade}
@@ -1352,7 +1532,6 @@ async function consultarNA() {
         }
     });
     
-    // 7. Substitui o conteúdo da queryContent pelo novo container
     queryContent.innerHTML = '';
     queryContent.appendChild(trainingsContainer);
 }
@@ -1380,11 +1559,9 @@ async function pegarTreino() {
     
     const treinosParaAdicionar = treinosConsultado.map(treino => ({
         ...treino,
-        // Garante que a cor seja a cor fixa do dia para o aluno que está copiando
         cor: dayColorMap[treino.dia] || cores[0] 
     }));
 
-    // Filtra para não adicionar treinos duplicados (mesmo exercício no mesmo dia)
     treinosParaAdicionar.forEach(novoTreino => {
         const existe = treinosLogado.some(
             t => t.exercicio === novoTreino.exercicio && t.dia === novoTreino.dia
@@ -1394,11 +1571,10 @@ async function pegarTreino() {
         }
     });
 
-    // Salva os treinos atualizados para o usuário logado
     await db.ref('treinos/' + na).set(treinosLogado);
     
-    corIndex++; // Mantido
-    document.getElementById('queryNAOverlay').style.display='none'; // Fecha o overlay
+    corIndex++;
+    document.getElementById('queryNAOverlay').style.display='none';
     
     alert(`Treino do NA: ${consultedNA} copiado com sucesso para o seu NA: ${na}!`);
 }
@@ -1406,9 +1582,3 @@ async function pegarTreino() {
 
 </body>
 </html>
-
-
-
-
-
-
