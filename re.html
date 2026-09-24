@@ -3,274 +3,582 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Relatar</title>
+<title>DomusFit - Relatar / Feedback</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#fff;
-  --dark:#000;
-  --light:#f5f5f5;
-  --accent:#f0f0f0;
-  --green:#32CD32;
+  --bg:#f8fafc;
+  --dark:#111;
+  --border:#e2e8f0;
+  --green:#8DC63F;
+  --green-dark:#6fa32b;
+  --green-light:#f0f9e0;
+  --logo-url:url('https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp');
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.08);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg:0 10px 28px rgba(0,0,0,0.12);
 }
-*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
-body{background:var(--bg);color:var(--dark);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:100px}
-header{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #eee;z-index:10}
-.logo-canto-esquerdo{height:38px;width:auto}
-.menu-container{position:relative}
-.menu-btn{width:32px;height:24px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between}
-.menu-btn div{width:100%;height:3px;background:#000;border-radius:2px;transition:all .3s}
-.menu-btn.active div:nth-child(1){transform:rotate(45deg) translateY(9px)}
-.menu-btn.active div:nth-child(2){opacity:0}
-.menu-btn.active div:nth-child(3){transform:rotate(-45deg) translateY(-9px)}
-.menu{position:absolute;top:40px;right:0;background:#fff;box-shadow:0 4px 15px rgba(0,0,0,.1);border-radius:6px;display:none;flex-direction:column;width:200px;overflow:hidden}
-.menu.active{display:flex}
-.menu a{text-decoration:none;color:#000;padding:12px 15px;transition:.3s}
-.menu a:hover{background:#f5f5f5}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 
-main{width:100%;max-width:400px;padding:20px}
-.container{margin-top:20px}
-h2{font-size:22px;font-weight:600;margin-bottom:25px}
-label{display:block;font-size:14px;color:#444;margin-bottom:8px}
-input[type="text"]{
-  width:100%;padding:14px;border:none;border-bottom:1px solid #ccc;font-size:17px;color:#000;background:transparent;outline:none;
-}
-input::placeholder{color:#aaa}
-.btn{margin-top:25px;width:100%;padding:14px;border-radius:8px;border:none;background:#e6e6e6;color:#999;font-weight:600;font-size:16px;cursor:pointer;transition:.3s}
-.btn:hover{background:#ddd}
-.btn.active{background:var(--green);color:#fff}
-.info{margin-top:20px;font-size:13px;color:#555}
-footer{margin-top:60px;font-size:12px;color:#888;text-align:center}
-</style>
-</head>
-<body>
-<header>
-  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-canto-esquerdo">
-  
-<button onclick="window.location.href='index.html'" style="background-color:#8DC63F;color:#fff;border:none;width:70px;height:35px;position:absolute;top:50%;right:10px;transform:translateY(-50%);font-weight:bold;cursor:pointer;">Voltar</button>
-
-
-
-
-
-
-</header>
-
-<br><br>
-
-
-<style>
-body {
-  margin: 0;
-  padding: 0;
+body{
+  font-family:'Inter', system-ui, -apple-system, sans-serif;
+  background:var(--bg);
+  color:var(--dark);
+  min-height:100vh;
+  padding-top:64px;
+  overflow-x:hidden;
 }
 
-.fale-conosco-container {
-  width: 100%;
-  max-width: 450px;
-  margin: 40px auto 0;
-  color: #000;
-  font-family: "Segoe UI", Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  padding: 0 15px;
+/* HEADER BRANCO */
+header{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:64px;
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  z-index:10;
+  box-shadow:var(--shadow-sm);
+}
+.logo-canto-esquerdo{
+  height:38px;
+  width:auto;
+}
+.header-btn {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:var(--green);
+  color:#fff;
+  border:none;
+  padding:10px 16px;
+  font-weight:700;
+  font-size:13px;
+  cursor:pointer;
+  border-radius:8px;
+  transition:all .2s;
+  font-family:inherit;
+  box-shadow:var(--shadow-sm);
+}
+.header-btn svg {
+  width:16px;
+  height:16px;
+  stroke:#fff;
+  fill:none;
+  flex-shrink:0;
+}
+.header-btn:hover {
+  background:var(--green-dark);
+  transform:translateY(-1px);
+  box-shadow:var(--shadow-md);
 }
 
-.fale-conosco-step {
-  display: none;
-  flex-direction: column;
-  width: 100%;
-  padding: 0;
-  box-sizing: border-box;
+/* PAGE TITLE */
+.page-title{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin:24px auto 20px;
+  max-width:500px;
+  padding:18px 20px;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:var(--shadow-md);
+  width:calc(100% - 32px);
+}
+.page-title .title-icon{
+  width:50px;
+  height:50px;
+  flex-shrink:0;
+  background:linear-gradient(135deg, var(--green), var(--green-dark));
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 4px 12px rgba(141,198,63,0.35);
+}
+.page-title .title-icon svg{
+  width:24px;
+  height:24px;
+  stroke:#fff;
+  fill:none;
+}
+.page-title h1{
+  font-size:20px;
+  font-weight:800;
+  color:#1e293b;
+  letter-spacing:-0.3px;
+  line-height:1.2;
+}
+.page-title .subtitle{
+  font-size:13px;
+  color:#64748b;
+  font-weight:500;
+  margin-top:3px;
 }
 
-.fale-conosco-step.active {
-  display: flex;
+/* FORM */
+.fale-conosco-container{
+  width:100%;
+  max-width:500px;
+  margin:0 auto;
+  color:#1e293b;
+  display:flex;
+  flex-direction:column;
+  padding:0 16px 40px;
+}
+
+.fale-conosco-step{
+  display:none;
+  flex-direction:column;
+  width:100%;
+  padding:22px 20px;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:var(--shadow-md);
+  border:1px solid var(--border);
+  animation:fadeIn .3s;
+}
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(6px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.fale-conosco-step.active{
+  display:flex;
+}
+
+.step-label{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:15px;
+  font-weight:700;
+  color:#1e293b;
+  margin-bottom:14px;
+}
+.step-label .label-num{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:24px;
+  height:24px;
+  background:var(--green-light);
+  color:var(--green-dark);
+  border-radius:50%;
+  font-size:12px;
+  font-weight:800;
+  flex-shrink:0;
+}
+.step-label svg{
+  width:20px;
+  height:20px;
+  stroke:var(--green-dark);
+  fill:none;
+  flex-shrink:0;
 }
 
 .fale-conosco-input,
-.fale-conosco-textarea {
-  width: 100%;
-  padding: 14px;
-  border: 2px solid #dcdcdc;
-  background: #fff;
-  color: #000;
-  outline: none;
-  margin-bottom: 18px;
-  font-size: 15px;
-  transition: 0.25s;
-  border-radius: 0;
+.fale-conosco-textarea{
+  width:100%;
+  padding:14px 16px;
+  border:2px solid var(--border);
+  background:#fff;
+  color:#1e293b;
+  outline:none;
+  margin-bottom:16px;
+  font-size:15px;
+  transition:.25s;
+  border-radius:10px;
+  font-family:inherit;
 }
-
+.fale-conosco-textarea{
+  resize:vertical;
+  min-height:100px;
+}
 .fale-conosco-input:focus,
-.fale-conosco-textarea:focus {
-  border-color: #8DC63F;
+.fale-conosco-textarea:focus{
+  border-color:var(--green);
+  box-shadow:0 0 0 4px rgba(141,198,63,0.12);
+}
+.fale-conosco-input::placeholder,
+.fale-conosco-textarea::placeholder{
+  color:#94a3b8;
 }
 
-.fale-conosco-buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 5px;
+.fale-conosco-buttons{
+  display:flex;
+  gap:10px;
+  margin-top:6px;
 }
 
-.fale-conosco-button {
-  background: #8DC63F;
-  border: none;
-  padding: 13px;
-  cursor: pointer;
-  color: #000;
-  font-weight: 700;
-  width: 100%;
-  border-radius: 0;
-  transition: 0.2s;
+.fale-conosco-button{
+  background:var(--green);
+  border:none;
+  padding:14px 18px;
+  cursor:pointer;
+  color:#fff;
+  font-weight:700;
+  width:100%;
+  border-radius:10px;
+  transition:all .2s;
+  font-family:inherit;
+  font-size:14px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  box-shadow:0 4px 12px rgba(141,198,63,0.28);
+}
+.fale-conosco-button svg{
+  width:16px;
+  height:16px;
+  stroke:#fff;
+  fill:none;
+}
+.fale-conosco-button:hover:not(:disabled){
+  background:var(--green-dark);
+  transform:translateY(-1px);
+  box-shadow:0 6px 18px rgba(141,198,63,0.35);
+}
+.fale-conosco-button:active:not(:disabled){
+  transform:translateY(0);
+}
+.fale-conosco-button:disabled{
+  opacity:0.4;
+  cursor:not-allowed;
+  box-shadow:none;
+}
+.fale-conosco-button.outline{
+  background:#fff;
+  color:#475569;
+  border:1.5px solid var(--border);
+  box-shadow:var(--shadow-sm);
+}
+.fale-conosco-button.outline svg{stroke:#475569;}
+.fale-conosco-button.outline:hover:not(:disabled){
+  background:#f8fafc;
+  color:#1e293b;
 }
 
-.fale-conosco-button:hover {
-  filter: brightness(0.9);
+/* STARS */
+.stars{
+  display:flex;
+  gap:8px;
+  cursor:pointer;
+  font-size:38px;
+  margin:6px 0 16px;
+  justify-content:center;
+  user-select:none;
+}
+.star{
+  color:#cbd5e1;
+  transition:all .2s;
+  line-height:1;
+}
+.star.selected{
+  color:var(--green);
+  transform:scale(1.15);
+  text-shadow:0 3px 8px rgba(141,198,63,0.4);
+}
+.star:hover{
+  transform:scale(1.2);
 }
 
-.fale-conosco-button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+/* HAMBURGER SELECT (CUSTOM DROPDOWN) */
+.hamburger-menu{
+  position:relative;
+  width:100%;
+  margin-bottom:16px;
+}
+.hamburger-button{
+  background:#fff;
+  color:#1e293b;
+  padding:14px 16px;
+  cursor:pointer;
+  border:2px solid var(--border);
+  width:100%;
+  text-align:left;
+  font-weight:600;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font-family:inherit;
+  font-size:15px;
+  transition:border-color .2s;
+}
+.hamburger-button:hover{
+  border-color:var(--green);
+}
+.hamburger-button svg{
+  width:16px;
+  height:16px;
+  stroke:#64748b;
+  fill:none;
+  transition:transform .2s;
+}
+.hamburger-menu.open .hamburger-button{
+  border-color:var(--green);
+  box-shadow:0 0 0 4px rgba(141,198,63,0.12);
+}
+.hamburger-menu.open .hamburger-button svg{
+  transform:rotate(180deg);
+}
+.hamburger-options{
+  display:none;
+  flex-direction:column;
+  background:#fff;
+  border:2px solid var(--green);
+  border-top:none;
+  border-radius:0 0 10px 10px;
+  margin-top:-2px;
+  overflow:hidden;
+  position:absolute;
+  left:0;
+  right:0;
+  z-index:5;
+  box-shadow:var(--shadow-md);
+}
+.hamburger-menu.open .hamburger-options{
+  display:flex;
+}
+.hamburger-options button{
+  background:transparent;
+  border:none;
+  color:#1e293b;
+  padding:13px 16px;
+  text-align:left;
+  cursor:pointer;
+  font-size:14.5px;
+  font-family:inherit;
+  transition:background .15s;
+  font-weight:500;
+}
+.hamburger-options button:hover{
+  background:var(--green-light);
+  color:var(--green-dark);
+  font-weight:600;
 }
 
-.stars {
-  display: flex;
-  gap: 8px;
-  cursor: pointer;
-  font-size: 34px;
-  margin-top: 6px;
+/* LOADING */
+.loading{
+  border:3px solid rgba(141,198,63,0.2);
+  border-top:3px solid var(--green);
+  width:28px;
+  height:28px;
+  animation:spin 1s linear infinite;
+  margin:20px auto 0;
+  display:none;
+  border-radius:50%;
+}
+@keyframes spin{
+  100%{transform:rotate(360deg);}
 }
 
-.star {
-  color: #999;
-  transition: 0.2s;
+/* CHECKBOX */
+.checkbox-container{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  margin-bottom:16px;
+  padding:14px;
+  background:var(--green-light);
+  border-radius:10px;
+  border:1.5px solid rgba(141,198,63,0.3);
+}
+.checkbox-container input[type="checkbox"]{
+  appearance:none;
+  -webkit-appearance:none;
+  width:22px;
+  height:22px;
+  min-width:22px;
+  border:2px solid var(--green);
+  background:#fff;
+  cursor:pointer;
+  border-radius:6px;
+  position:relative;
+  transition:all .2s;
+  margin-top:1px;
+}
+.checkbox-container input[type="checkbox"]:checked{
+  background:var(--green);
+}
+.checkbox-container input[type="checkbox"]:checked::before{
+  content:"";
+  position:absolute;
+  left:6px;
+  top:2px;
+  width:5px;
+  height:10px;
+  border:solid #fff;
+  border-width:0 2.5px 2.5px 0;
+  transform:rotate(45deg);
+}
+.checkbox-container label{
+  font-size:14px;
+  color:#334155;
+  line-height:1.5;
+  cursor:pointer;
+  font-weight:500;
 }
 
-.star.selected {
-  color: #8DC63F;
-  transform: scale(1.15);
+/* PREVIEW */
+.preview-box{
+  background:#fff;
+  padding:18px;
+  margin-bottom:16px;
+  font-size:14px;
+  color:#1e293b;
+  display:none;
+  border:2px solid var(--border);
+  border-radius:12px;
+  animation:fadeIn .3s;
+}
+.preview-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:15px;
+  font-weight:800;
+  color:#1e293b;
+  margin-bottom:14px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+.preview-title svg{
+  width:18px;
+  height:18px;
+  stroke:var(--green-dark);
+  fill:none;
+}
+.preview-table{
+  width:100%;
+  border-collapse:collapse;
+}
+.preview-table td{
+  border-bottom:1px dashed #e2e8f0;
+  padding:9px 4px;
+  font-size:13.5px;
+  vertical-align:top;
+  color:#334155;
+}
+.preview-table td:first-child{
+  width:38%;
+  color:#64748b;
+  font-weight:600;
+}
+.preview-table tr:last-child td{
+  border-bottom:none;
 }
 
-.hamburger-menu {
-  position: relative;
-  width: 100%;
+/* FOOTER LOGO */
+.footer-logo{
+  display:flex;
+  justify-content:center;
+  padding:24px 16px 40px;
+}
+.footer-logo img{
+  height:60px;
+  width:auto;
+  opacity:0.9;
+  transition:opacity .2s;
+}
+.footer-logo img:hover{
+  opacity:1;
 }
 
-.hamburger-button {
-  background: #8DC63F;
-  color: #000;
-  padding: 13px;
-  cursor: pointer;
-  border: none;
-  width: 100%;
-  text-align: left;
-  font-weight: 700;
-  border-radius: 0;
-}
-
-.hamburger-options {
-  display: none;
-  flex-direction: column;
-  background: #fff;
-  border: 2px solid #8DC63F;
-  border-top: none;
-}
-
-.hamburger-options button {
-  background: transparent;
-  border: none;
-  color: #000;
-  padding: 12px;
-  text-align: left;
-  cursor: pointer;
-  font-size: 15px;
-}
-
-.hamburger-options button:hover {
-  background: rgba(0,0,0,0.06);
-}
-
-.loading {
-  border: 3px solid #ccc;
-  border-top: 3px solid #8DC63F;
-  width: 22px;
-  height: 22px;
-  animation: spin 1s linear infinite;
-  margin: 18px auto;
-  display: none;
-}
-
-@keyframes spin {
-  100% { transform: rotate(360deg); }
-}
-
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.checkbox-container input[type="checkbox"] {
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #8DC63F;
-  background: transparent;
-  cursor: pointer;
-}
-
-.checkbox-container input[type="checkbox"]:checked::before {
-  content: "✔";
-  position: absolute;
-  color: #8DC63F;
-  font-size: 17px;
-  margin-left: 2px;
-  margin-top: -1px;
-}
-
-.preview-box {
-  background: #fff;
-  padding: 18px;
-  margin-bottom: 15px;
-  font-size: 15px;
-  color: #000;
-  display: none;
-  border: 2px solid #e5e5e5;
-}
-
-.preview-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.preview-table td {
-  border-bottom: 1px dashed #999;
-  padding: 7px 4px;
+/* RESPONSIVE */
+@media(max-width:600px){
+  .page-title{ padding:16px; }
+  .page-title h1{ font-size:18px; }
+  .page-title .title-icon{ width:44px; height:44px; }
+  .page-title .title-icon svg{ width:20px; height:20px; }
+  .fale-conosco-step{ padding:18px 16px; }
+  .stars{ font-size:34px; gap:6px; }
 }
 </style>
+</head>
+<body>
 
+<header>
+  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000005-62d7c62d7e/700/9A9000A9-FCA5-4306-876F-28C2D3211763.webp" class="logo-canto-esquerdo" alt="DomusFit">
+  <button class="header-btn" onclick="window.location.href='index.html'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+    Voltar
+  </button>
+</header>
+
+<!-- PAGE TITLE -->
+<div class="page-title">
+  <div class="title-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  </div>
+  <div>
+    <h1>Feedback / Relatar</h1>
+    <div class="subtitle">Sua opinião é muito importante para nós</div>
+  </div>
+</div>
+
+<!-- FORMULÁRIO -->
 <div class="fale-conosco-container">
+
+  <!-- STEP 1 - NOME -->
   <div class="fale-conosco-step active" data-step="1">
-    <label>Nome completo</label>
-    <input type="text" class="fale-conosco-input" id="nome">
+    <div class="step-label">
+      <span class="label-num">1</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Nome completo
+    </div>
+    <input type="text" class="fale-conosco-input" id="nome" placeholder="Digite seu nome completo">
     <div class="fale-conosco-buttons">
-      <button class="fale-conosco-button" id="next1">Próximo</button>
+      <button class="fale-conosco-button" id="next1">
+        Próximo
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
     </div>
   </div>
 
+  <!-- STEP 2 - IDADE -->
   <div class="fale-conosco-step" data-step="2">
-    <label>Idade</label>
-    <input type="number" class="fale-conosco-input" id="idade">
+    <div class="step-label">
+      <span class="label-num">2</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Idade
+    </div>
+    <input type="number" class="fale-conosco-input" id="idade" placeholder="Digite sua idade">
     <div class="fale-conosco-buttons">
-      <button class="fale-conosco-button" id="prev2">Anterior</button>
-      <button class="fale-conosco-button" id="next2">Próximo</button>
+      <button class="fale-conosco-button outline" id="prev2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Anterior
+      </button>
+      <button class="fale-conosco-button" id="next2">
+        Próximo
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
     </div>
   </div>
 
+  <!-- STEP 3 - GÊNERO -->
   <div class="fale-conosco-step" data-step="3">
-    <label>Gênero</label>
-    <div class="hamburger-menu">
-      <button class="hamburger-button" id="generoButton">Selecionar gênero</button>
+    <div class="step-label">
+      <span class="label-num">3</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      Gênero
+    </div>
+    <div class="hamburger-menu" id="generoMenu">
+      <button class="hamburger-button" id="generoButton">
+        <span>Selecionar gênero</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
       <div class="hamburger-options" id="generoOptions">
         <button data-genero="Masculino">Masculino</button>
         <button data-genero="Feminino">Feminino</button>
@@ -278,13 +586,24 @@ body {
       </div>
     </div>
     <div class="fale-conosco-buttons">
-      <button class="fale-conosco-button" id="prev3">Anterior</button>
-      <button class="fale-conosco-button" id="next3" disabled>Próximo</button>
+      <button class="fale-conosco-button outline" id="prev3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Anterior
+      </button>
+      <button class="fale-conosco-button" id="next3" disabled>
+        Próximo
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
     </div>
   </div>
 
+  <!-- STEP 4 - ESTRELAS -->
   <div class="fale-conosco-step" data-step="4">
-    <label>Avaliação (1 a 5 estrelas)</label>
+    <div class="step-label">
+      <span class="label-num">4</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Avaliação (1 a 5 estrelas)
+    </div>
     <div class="stars" id="stars">
       <span class="star" data-value="1">★</span>
       <span class="star" data-value="2">★</span>
@@ -293,48 +612,106 @@ body {
       <span class="star" data-value="5">★</span>
     </div>
     <div class="fale-conosco-buttons">
-      <button class="fale-conosco-button" id="prev4">Anterior</button>
-      <button class="fale-conosco-button" id="next4" disabled>Próximo</button>
+      <button class="fale-conosco-button outline" id="prev4">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Anterior
+      </button>
+      <button class="fale-conosco-button" id="next4" disabled>
+        Próximo
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
     </div>
   </div>
 
+  <!-- STEP 5 - MOTIVAÇÃO -->
   <div class="fale-conosco-step" data-step="5">
-    <label>Motivação</label>
-    <textarea id="motivacao" class="fale-conosco-textarea" rows="4"></textarea>
+    <div class="step-label">
+      <span class="label-num">5</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Motivação
+    </div>
+    <textarea id="motivacao" class="fale-conosco-textarea" rows="4" placeholder="Conte-nos o que te motivou a treinar conosco..."></textarea>
     <div class="fale-conosco-buttons">
-      <button class="fale-conosco-button" id="prev5">Anterior</button>
-      <button class="fale-conosco-button" id="next5">Próximo</button>
+      <button class="fale-conosco-button outline" id="prev5">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Anterior
+      </button>
+      <button class="fale-conosco-button" id="next5">
+        Próximo
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
     </div>
   </div>
 
+  <!-- STEP 6 - TELEFONE -->
   <div class="fale-conosco-step" data-step="6">
-    <label>Número de telefone reserva (opcional)</label>
-    <input type="text" class="fale-conosco-input" id="telefone">
+    <div class="step-label">
+      <span class="label-num">6</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      Número de telefone reserva (opcional)
+    </div>
+    <input type="text" class="fale-conosco-input" id="telefone" placeholder="(00) 00000-0000">
     <div class="fale-conosco-buttons">
-      <button class="fale-conosco-button" id="prev6">Anterior</button>
-      <button class="fale-conosco-button" id="next6">Próximo</button>
+      <button class="fale-conosco-button outline" id="prev6">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Anterior
+      </button>
+      <button class="fale-conosco-button" id="next6">
+        Próximo
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
     </div>
   </div>
 
+  <!-- STEP 7 - CONFIRMAÇÃO -->
   <div class="fale-conosco-step" data-step="7">
+    <div class="step-label">
+      <span class="label-num">7</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Confirmação
+    </div>
     <div class="checkbox-container">
       <input type="checkbox" id="confirmacao">
       <label for="confirmacao">Tenho noção do que escrevi e assumo responsabilidades futuras.</label>
     </div>
     <div class="fale-conosco-buttons">
-      <button class="fale-conosco-button" id="prev7">Anterior</button>
-      <button class="fale-conosco-button" id="next7" disabled>Próximo</button>
+      <button class="fale-conosco-button outline" id="prev7">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Anterior
+      </button>
+      <button class="fale-conosco-button" id="next7" disabled>
+        Próximo
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
     </div>
   </div>
 
+  <!-- STEP 8 - PREVIEW + ENVIAR -->
   <div class="fale-conosco-step" data-step="8">
+    <div class="step-label">
+      <span class="label-num">8</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      Revisão e envio
+    </div>
     <div class="preview-box" id="previewBox"></div>
     <div class="fale-conosco-buttons">
-      <button class="fale-conosco-button" id="prev8">Anterior</button>
-      <button class="fale-conosco-button" id="concluir">Acessar</button>
+      <button class="fale-conosco-button outline" id="prev8">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Anterior
+      </button>
+      <button class="fale-conosco-button" id="concluir">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Enviar
+      </button>
     </div>
     <div class="loading" id="loading"></div>
   </div>
+
+</div>
+
+<!-- FOOTER LOGO -->
+<div class="footer-logo">
+  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000101-d211ad211b/700/A849B870-6992-4175-839F-852EB1F10326.webp" alt="DomusFit">
 </div>
 
 <script>
@@ -342,6 +719,7 @@ const steps = document.querySelectorAll(".fale-conosco-step");
 let currentStep = 0;
 const nextBtns = document.querySelectorAll("[id^='next']");
 const prevBtns = document.querySelectorAll("[id^='prev']");
+const generoMenu = document.getElementById("generoMenu");
 const generoButton = document.getElementById("generoButton");
 const generoOptions = document.getElementById("generoOptions");
 const next3 = document.getElementById("next3");
@@ -353,7 +731,7 @@ const concluir = document.getElementById("concluir");
 const loading = document.getElementById("loading");
 const previewBox = document.getElementById("previewBox");
 
-function showStep(i) {
+function showStep(i){
   steps.forEach((step, idx) => step.classList.toggle("active", idx === i));
 }
 
@@ -363,6 +741,7 @@ nextBtns.forEach(btn => {
       if (btn.id === "next7") gerarPreview();
       currentStep++;
       showStep(currentStep);
+      window.scrollTo({top:0, behavior:'smooth'});
     }
   });
 });
@@ -372,20 +751,28 @@ prevBtns.forEach(btn => {
     if (currentStep > 0) {
       currentStep--;
       showStep(currentStep);
+      window.scrollTo({top:0, behavior:'smooth'});
     }
   });
 });
 
 generoButton.addEventListener("click", () => {
-  generoOptions.style.display = generoOptions.style.display === "flex" ? "none" : "flex";
+  generoMenu.classList.toggle("open");
 });
 
 generoOptions.querySelectorAll("button").forEach(option => {
   option.addEventListener("click", () => {
-    generoButton.textContent = option.dataset.genero;
+    generoButton.querySelector("span").textContent = option.dataset.genero;
     generoOptions.style.display = "none";
+    generoMenu.classList.remove("open");
     next3.disabled = false;
   });
+});
+
+document.addEventListener("click", (e) => {
+  if (!generoMenu.contains(e.target)) {
+    generoMenu.classList.remove("open");
+  }
 });
 
 stars.forEach(star => {
@@ -400,22 +787,26 @@ confirmacao.addEventListener("change", () => {
   next7.disabled = !confirmacao.checked;
 });
 
-function gerarPreview() {
+function gerarPreview(){
   const nome = document.getElementById("nome").value;
   const idade = document.getElementById("idade").value;
-  const genero = generoButton.textContent;
+  const genero = generoButton.querySelector("span").textContent;
   const estrelas = document.querySelectorAll(".star.selected").length;
   const motivacao = document.getElementById("motivacao").value;
   const telefone = document.getElementById("telefone").value;
   previewBox.innerHTML = `
+    <div class="preview-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Confira seus dados
+    </div>
     <table class="preview-table">
-      <tr><td><strong>Nome</strong></td><td>${nome}</td></tr>
-      <tr><td><strong>Idade</strong></td><td>${idade}</td></tr>
-      <tr><td><strong>Gênero</strong></td><td>${genero}</td></tr>
-      <tr><td><strong>Avaliação</strong></td><td>${estrelas} estrelas</td></tr>
-      <tr><td><strong>Motivação</strong></td><td>${motivacao}</td></tr>
-      <tr><td><strong>Telefone reserva</strong></td><td>${telefone || "Não informado"}</td></tr>
-      <tr><td><strong>Mensagem</strong></td><td>SUPPORT DOMUSFIT</td></tr>
+      <tr><td>Nome</td><td>${nome || "-"}</td></tr>
+      <tr><td>Idade</td><td>${idade || "-"}</td></tr>
+      <tr><td>Gênero</td><td>${genero}</td></tr>
+      <tr><td>Avaliação</td><td>${estrelas} estrela${estrelas !== 1 ? 's' : ''}</td></tr>
+      <tr><td>Motivação</td><td>${motivacao || "-"}</td></tr>
+      <tr><td>Telefone reserva</td><td>${telefone || "Não informado"}</td></tr>
+      <tr><td>Destino</td><td>SUPPORT DOMUSFIT</td></tr>
     </table>
   `;
   previewBox.style.display = "block";
@@ -426,7 +817,7 @@ concluir.addEventListener("click", () => {
   concluir.disabled = true;
   const nome = document.getElementById("nome").value;
   const idade = document.getElementById("idade").value;
-  const genero = generoButton.textContent;
+  const genero = generoButton.querySelector("span").textContent;
   const estrelas = document.querySelectorAll(".star.selected").length;
   const motivacao = document.getElementById("motivacao").value;
   const telefone = document.getElementById("telefone").value;
@@ -437,11 +828,6 @@ concluir.addEventListener("click", () => {
 });
 </script>
 
-<br><br>
-
-<div style="display:flex;justify-content:center;">
-  <img src="https://c2a6771173.cbaul-cdnwnd.com/4f0c8b93cda84ae8665e2b589652cf30/200000101-d211ad211b/700/A849B870-6992-4175-839F-852EB1F10326.webp" style="width:TAMANHO_WIDTHpx;height:80px;">
-</div>
-
-
 <script src="san7doc.acesso-seguro.js" defer></script>
+</body>
+</html>
