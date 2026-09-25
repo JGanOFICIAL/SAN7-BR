@@ -24,11 +24,13 @@
   --cinza-900:#111111;
   --branco:#FFFFFF;
   --radius:6px;
+  --amarelo-notif:#FFF9E6;
+  --amarelo-borda:#F5E6B8;
 }
 
 html,body{height:100%;}
 body{
-  background:var(--cinza-50);
+  background:var(--branco);
   font-family:'Inter','Segoe UI',Arial,sans-serif;
   color:var(--cinza-900);
   min-height:100vh;
@@ -38,6 +40,7 @@ body{
   line-height:1.5;
 }
 
+/* ===== HEADER ===== */
 .header{
   background:var(--azul);
   color:var(--branco);
@@ -112,110 +115,125 @@ body{
 }
 
 .menu-btn{
-  background:rgba(255,255,255,0.15);
+  background:transparent;
   border:none;
   color:var(--branco);
-  width:38px;
-  height:38px;
+  width:40px;
+  height:40px;
   border-radius:var(--radius);
   cursor:pointer;
-  font-size:20px;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-family:inherit;
-  font-weight:700;
-  line-height:0;
-  padding-bottom:8px;
   transition:background 0.15s;
+  padding:0;
 }
 
-.menu-btn:hover{background:rgba(255,255,255,0.28);}
+.menu-btn:hover{background:rgba(255,255,255,0.15);}
+
+.menu-btn .hamburger{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  width:22px;
+}
+
+.menu-btn .hamburger span{
+  display:block;
+  width:100%;
+  height:2px;
+  background:var(--branco);
+  border-radius:2px;
+  transition:0.2s;
+}
 
 .menu-dots{position:relative;}
 
 .menu-dropdown{
   position:absolute;
-  top:46px;
+  top:48px;
   right:0;
   background:var(--branco);
-  min-width:220px;
+  min-width:240px;
   display:none;
   z-index:200;
-  box-shadow:0 6px 20px rgba(0,0,0,0.18);
-  border-radius:var(--radius);
+  box-shadow:0 6px 24px rgba(0,0,0,0.18);
+  border-radius:8px;
   overflow:hidden;
 }
 
-.menu-dropdown.aberto{display:block;}
+.menu-dropdown.aberto{display:block;animation:slideDown 0.15s ease;}
+
+@keyframes slideDown{
+  from{opacity:0;transform:translateY(-8px);}
+  to{opacity:1;transform:translateY(0);}
+}
 
 .menu-dropdown .item{
-  padding:12px 18px;
+  padding:13px 18px;
   cursor:pointer;
   font-size:14px;
   color:var(--cinza-900);
+  transition:background 0.12s;
 }
 
 .menu-dropdown .item:hover{background:var(--azul-suave);color:var(--azul);}
 
 .menu-dropdown .divider{height:1px;background:var(--cinza-200);}
 
+/* ===== MAIN ===== */
 .main{
   flex:1;
   display:flex;
+  flex-direction:column;
   width:100%;
-  max-width:1200px;
+  max-width:760px;
   margin:0 auto;
-  padding:24px;
-  gap:24px;
-  align-items:flex-start;
+  padding:0 20px 40px;
+  align-items:stretch;
 }
 
-.sidebar{
-  width:220px;
-  flex-shrink:0;
+/* ===== BARRA DE PESQUISA ===== */
+.search-wrap{
+  margin-top:20px;
+  margin-bottom:24px;
+  width:100%;
+}
+
+.search-box{
+  display:flex;
+  align-items:center;
+  background:var(--cinza-100);
+  border-radius:24px;
+  padding:12px 20px;
+  gap:12px;
+  transition:background 0.15s, box-shadow 0.15s;
+}
+
+.search-box:focus-within{
   background:var(--branco);
-  border-radius:var(--radius);
-  overflow:hidden;
-  box-shadow:0 1px 3px rgba(0,0,0,0.06);
+  box-shadow:0 0 0 2px var(--azul);
 }
 
-.sidebar-header{
-  background:var(--azul-escuro);
-  color:var(--branco);
-  padding:14px 18px;
-  font-size:12px;
-  font-weight:600;
-  text-transform:uppercase;
-  letter-spacing:0.6px;
+.search-box .search-icon{
+  color:var(--cinza-500);
+  font-size:16px;
+  flex-shrink:0;
 }
 
-.menu{padding:6px 0;}
-
-.menu-item{
-  padding:12px 18px;
-  color:var(--cinza-700);
-  cursor:pointer;
-  font-size:14px;
-  font-weight:500;
-  border-left:3px solid transparent;
-  transition:all 0.12s;
-}
-
-.menu-item:hover{background:var(--cinza-100);color:var(--azul);}
-
-.menu-item.active{
-  background:var(--azul-suave);
-  color:var(--azul);
-  border-left-color:var(--azul);
-  font-weight:600;
-}
-
-.content{
+.search-box input{
   flex:1;
-  min-width:0;
+  border:none;
+  background:transparent;
+  font-family:inherit;
+  font-size:15px;
+  color:var(--cinza-900);
+  outline:none;
 }
 
+.search-box input::placeholder{color:var(--cinza-500);}
+
+/* ===== MENU PRINCIPAL ===== */
 .page-header{
   margin-bottom:20px;
 }
@@ -233,12 +251,106 @@ body{
   margin-top:4px;
 }
 
+.funcoes-lista{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.funcao-item{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  background:var(--branco);
+  border:1px solid var(--cinza-200);
+  border-radius:14px;
+  padding:18px 20px;
+  cursor:pointer;
+  transition:all 0.18s;
+}
+
+.funcao-item:hover{
+  border-color:var(--azul);
+  box-shadow:0 4px 16px rgba(19,81,180,0.1);
+  transform:translateX(3px);
+}
+
+.funcao-item .funcao-icon{
+  width:46px;
+  height:46px;
+  border-radius:12px;
+  background:var(--azul-suave);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+
+.funcao-item .funcao-icon svg{
+  width:24px;
+  height:24px;
+  fill:var(--azul);
+}
+
+.funcao-item .funcao-info{
+  flex:1;
+  min-width:0;
+}
+
+.funcao-item .funcao-titulo{
+  font-size:15px;
+  font-weight:600;
+  color:var(--cinza-900);
+  margin-bottom:2px;
+}
+
+.funcao-item .funcao-desc{
+  font-size:13px;
+  color:var(--cinza-500);
+}
+
+.funcao-item .funcao-seta{
+  color:var(--cinza-300);
+  font-size:18px;
+  flex-shrink:0;
+}
+
+/* ===== DOCUMENTOS / TERMOS ===== */
+.divisor-pontilhado{
+  border:none;
+  border-top:1.5px dashed var(--cinza-300);
+  margin:28px 0 20px;
+}
+
+.termos-secao{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+
+.termos-secao a{
+  display:block;
+  padding:10px 0;
+  font-size:14px;
+  color:var(--cinza-500);
+  text-decoration:none;
+  cursor:pointer;
+  transition:color 0.15s;
+}
+
+.termos-secao a:hover{color:var(--azul);}
+
+/* ===== CARDS GENÉRICOS ===== */
+.content{
+  width:100%;
+}
+
 .card{
   background:var(--branco);
-  border-radius:var(--radius);
+  border:1px solid var(--cinza-200);
+  border-radius:14px;
   padding:22px;
   margin-bottom:16px;
-  box-shadow:0 1px 3px rgba(0,0,0,0.06);
 }
 
 .card-title{
@@ -257,15 +369,16 @@ body{
 
 .card-click{
   background:var(--branco);
-  border-radius:var(--radius);
+  border:1px solid var(--cinza-200);
+  border-radius:14px;
   padding:24px 22px;
   cursor:pointer;
   transition:all 0.15s;
-  box-shadow:0 1px 3px rgba(0,0,0,0.06);
 }
 
 .card-click:hover{
-  box-shadow:0 6px 18px rgba(19,81,180,0.15);
+  box-shadow:0 6px 18px rgba(19,81,180,0.12);
+  border-color:var(--azul);
   transform:translateY(-2px);
 }
 
@@ -282,16 +395,17 @@ body{
   line-height:1.5;
 }
 
+/* ===== BOTÕES ===== */
 .btn{
   display:inline-block;
   padding:11px 22px;
-  border-radius:var(--radius);
+  border-radius:8px;
   font-family:inherit;
   font-size:14px;
   font-weight:600;
   cursor:pointer;
   border:1px solid transparent;
-  transition:background 0.15s;
+  transition:background 0.15s, box-shadow 0.15s;
   text-align:center;
 }
 
@@ -323,55 +437,14 @@ body{
 
 .btn:disabled{opacity:0.5;cursor:not-allowed;}
 
-.login-wrap{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:40px 20px;
-  width:100%;
-}
-
-.login-card{
-  background:var(--branco);
-  border-radius:var(--radius);
-  padding:36px 32px;
-  max-width:400px;
-  width:100%;
-  text-align:center;
-  box-shadow:0 2px 10px rgba(0,0,0,0.08);
-}
-
-.login-card h2{
-  font-size:20px;
-  font-weight:700;
-  color:var(--azul-escuro);
-  margin-bottom:6px;
-}
-
-.login-card .sub{
-  font-size:14px;
-  color:var(--cinza-500);
-  margin-bottom:24px;
-}
-
-.login-card .avatar-circle{
-  width:110px;
-  height:110px;
-  border-radius:50%;
-  object-fit:cover;
-  margin:0 auto 14px;
-  background:var(--cinza-200);
-  display:block;
-}
-
+/* ===== CRONÔMETRO ===== */
 .cronometro-card{
   background:var(--branco);
-  border-radius:var(--radius);
+  border:1px solid var(--cinza-200);
+  border-radius:14px;
   padding:32px 24px;
   text-align:center;
   margin-bottom:16px;
-  box-shadow:0 1px 3px rgba(0,0,0,0.06);
 }
 
 .cronometro-label{
@@ -401,22 +474,23 @@ body{
 
 .acoes-ponto .btn{min-width:180px;}
 
+/* ===== STATS ===== */
 .stats-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:16px;
-  margin-bottom:20px;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:12px;
+  margin-bottom:0;
 }
 
 .stat-card{
   background:var(--branco);
-  border-radius:var(--radius);
-  padding:20px;
-  box-shadow:0 1px 3px rgba(0,0,0,0.06);
+  border:1px solid var(--cinza-200);
+  border-radius:12px;
+  padding:18px;
 }
 
 .stat-label{
-  font-size:12px;
+  font-size:11px;
   font-weight:600;
   color:var(--cinza-500);
   text-transform:uppercase;
@@ -425,7 +499,7 @@ body{
 }
 
 .stat-value{
-  font-size:26px;
+  font-size:24px;
   font-weight:700;
   color:var(--azul-escuro);
   letter-spacing:-0.3px;
@@ -437,12 +511,13 @@ body{
   margin-top:4px;
 }
 
+/* ===== GRÁFICO ===== */
 .chart-card{
   background:var(--branco);
-  border-radius:var(--radius);
+  border:1px solid var(--cinza-200);
+  border-radius:14px;
   padding:22px;
   margin-bottom:16px;
-  box-shadow:0 1px 3px rgba(0,0,0,0.06);
 }
 
 .chart-bars{
@@ -468,7 +543,7 @@ body{
   width:100%;
   max-width:38px;
   background:linear-gradient(180deg,var(--azul) 0%,var(--azul-escuro) 100%);
-  border-radius:var(--radius) var(--radius) 0 0;
+  border-radius:6px 6px 0 0;
   transition:height 0.4s ease;
   min-height:4px;
 }
@@ -490,6 +565,7 @@ body{
   margin-bottom:4px;
 }
 
+/* ===== TABELA ===== */
 .tabela{
   width:100%;
   border-collapse:collapse;
@@ -516,6 +592,7 @@ body{
 .tabela tr:last-child td{border-bottom:none;}
 .tabela tr:hover td{background:var(--cinza-50);}
 
+/* ===== CAMPOS ===== */
 .campo{margin-bottom:16px;}
 
 .campo label{
@@ -532,18 +609,19 @@ body{
   width:100%;
   padding:11px 14px;
   border:1px solid var(--cinza-300);
-  border-radius:var(--radius);
+  border-radius:8px;
   font-family:inherit;
   font-size:14px;
   color:var(--cinza-900);
   background:var(--branco);
-  transition:border-color 0.15s;
+  transition:border-color 0.15s, box-shadow 0.15s;
 }
 
 .campo input:focus,
 .campo textarea:focus{
   outline:none;
   border-color:var(--azul);
+  box-shadow:0 0 0 3px rgba(19,81,180,0.12);
 }
 
 .campo textarea{
@@ -560,9 +638,10 @@ body{
 
 .filtro-row .campo{flex:1;min-width:160px;margin-bottom:0;}
 
+/* ===== INFO BOX ===== */
 .info-box{
   background:var(--cinza-100);
-  border-radius:var(--radius);
+  border-radius:10px;
   padding:16px 18px;
   margin-bottom:16px;
   font-size:14px;
@@ -579,7 +658,7 @@ body{
 
 .termo-box{
   background:var(--cinza-100);
-  border-radius:var(--radius);
+  border-radius:10px;
   padding:16px;
   margin-bottom:16px;
   font-size:13px;
@@ -611,6 +690,172 @@ body{
   line-height:1.5;
 }
 
+/* ===== RODAPÉ ===== */
+.rodape{
+  background:#F0F0F0;
+  border-top:1px solid var(--cinza-200);
+  padding:24px 20px;
+  margin-top:auto;
+  width:100%;
+}
+
+.rodape-inner{
+  max-width:760px;
+  margin:0 auto;
+  text-align:center;
+}
+
+.rodape-links{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:8px 24px;
+  margin-bottom:12px;
+}
+
+.rodape-links a{
+  font-size:13px;
+  color:var(--cinza-500);
+  text-decoration:none;
+  cursor:pointer;
+  transition:color 0.15s;
+}
+
+.rodape-links a:hover{color:var(--azul);}
+
+.rodape-copy{
+  font-size:12px;
+  color:var(--cinza-500);
+}
+
+/* ===== ALERTA PONTO ABERTO ===== */
+.alerta-ponto{
+  position:fixed;
+  bottom:80px;
+  left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:var(--amarelo-notif);
+  border:1px solid var(--amarelo-borda);
+  border-radius:12px;
+  padding:14px 20px;
+  display:none;
+  align-items:center;
+  gap:12px;
+  z-index:900;
+  box-shadow:0 6px 24px rgba(0,0,0,0.12);
+  max-width:90%;
+  cursor:pointer;
+  transition:transform 0.25s ease, opacity 0.25s ease;
+  opacity:0;
+}
+
+.alerta-ponto.visivel{
+  display:flex;
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+.alerta-ponto .alerta-icon{
+  font-size:20px;
+  flex-shrink:0;
+}
+
+.alerta-ponto .alerta-texto{
+  font-size:13px;
+  font-weight:600;
+  color:#8A6D1D;
+}
+
+.alerta-ponto .alerta-seta{
+  font-size:16px;
+  color:#8A6D1D;
+  flex-shrink:0;
+}
+
+/* ===== NOTIFICAÇÃO BANCÁRIA ===== */
+.notif-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.4);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:1200;
+  padding:20px;
+}
+
+.notif-overlay.aberto{display:flex;}
+
+.notif-card{
+  background:var(--branco);
+  border-radius:18px;
+  padding:32px 28px 24px;
+  max-width:380px;
+  width:100%;
+  text-align:center;
+  box-shadow:0 20px 50px rgba(0,0,0,0.25);
+  animation:notifPop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+@keyframes notifPop{
+  0%{opacity:0;transform:scale(0.85) translateY(20px);}
+  100%{opacity:1;transform:scale(1) translateY(0);}
+}
+
+.notif-icon{
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  background:var(--azul-suave);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 18px;
+  animation:notifPulse 1.5s ease infinite;
+}
+
+@keyframes notifPulse{
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.08);}
+}
+
+.notif-icon svg{
+  width:32px;
+  height:32px;
+  fill:var(--azul);
+}
+
+.notif-titulo{
+  font-size:17px;
+  font-weight:700;
+  color:var(--cinza-900);
+  margin-bottom:10px;
+}
+
+.notif-msg{
+  font-size:14px;
+  color:var(--cinza-500);
+  line-height:1.6;
+  margin-bottom:24px;
+}
+
+.notif-btn{
+  background:var(--azul);
+  color:var(--branco);
+  border:none;
+  border-radius:10px;
+  padding:13px 40px;
+  font-family:inherit;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  transition:background 0.15s;
+  min-width:140px;
+}
+
+.notif-btn:hover{background:var(--azul-escuro);}
+
+/* ===== OVERLAYS / MODAIS ===== */
 .overlay{
   position:fixed;
   inset:0;
@@ -626,7 +871,7 @@ body{
 
 .modal{
   background:var(--branco);
-  border-radius:var(--radius);
+  border-radius:14px;
   padding:26px;
   max-width:440px;
   width:100%;
@@ -658,7 +903,7 @@ body{
 
 .calculo{
   background:var(--cinza-100);
-  border-radius:var(--radius);
+  border-radius:10px;
   padding:20px;
   text-align:center;
   font-size:26px;
@@ -672,7 +917,7 @@ body{
   width:100%;
   padding:12px 16px;
   border:1px solid var(--cinza-300);
-  border-radius:var(--radius);
+  border-radius:8px;
   font-family:inherit;
   font-size:16px;
   text-align:center;
@@ -681,11 +926,12 @@ body{
 
 .modal-input:focus{outline:none;border-color:var(--azul);}
 
+/* ===== CÂMERA ===== */
 .camera-box{
   width:320px;
   height:420px;
   background:#000;
-  border-radius:var(--radius);
+  border-radius:14px;
   position:relative;
   overflow:hidden;
   box-shadow:0 0 0 3px var(--azul),0 20px 60px rgba(0,0,0,0.5);
@@ -726,7 +972,7 @@ body{
   background:rgba(0,0,0,0.7);
   border:none;
   padding:9px 22px;
-  border-radius:var(--radius);
+  border-radius:8px;
   color:var(--branco);
   font-family:inherit;
   font-weight:600;
@@ -738,6 +984,7 @@ body{
 
 .camera-cancel:hover{background:rgba(0,0,0,0.9);}
 
+/* ===== TOAST ===== */
 .toast{
   position:fixed;
   bottom:24px;
@@ -746,12 +993,19 @@ body{
   background:var(--cinza-900);
   color:var(--branco);
   padding:12px 24px;
-  border-radius:var(--radius);
+  border-radius:8px;
   font-size:14px;
   z-index:2000;
   box-shadow:0 6px 20px rgba(0,0,0,0.25);
+  animation:toastIn 0.25s ease;
 }
 
+@keyframes toastIn{
+  from{opacity:0;transform:translateX(-50%) translateY(10px);}
+  to{opacity:1;transform:translateX(-50%) translateY(0);}
+}
+
+/* ===== LOADER ===== */
 .loader{
   position:fixed;
   inset:0;
@@ -779,9 +1033,52 @@ body{
 
 .hidden{display:none!important;}
 
+/* ===== LOGIN ===== */
+.login-wrap{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+  width:100%;
+}
+
+.login-card{
+  background:var(--branco);
+  border:1px solid var(--cinza-200);
+  border-radius:14px;
+  padding:36px 32px;
+  max-width:400px;
+  width:100%;
+  text-align:center;
+}
+
+.login-card h2{
+  font-size:20px;
+  font-weight:700;
+  color:var(--azul-escuro);
+  margin-bottom:6px;
+}
+
+.login-card .sub{
+  font-size:14px;
+  color:var(--cinza-500);
+  margin-bottom:24px;
+}
+
+.login-card .avatar-circle{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  object-fit:cover;
+  margin:0 auto 14px;
+  background:var(--cinza-200);
+  display:block;
+}
+
+/* ===== RESPONSIVO ===== */
 @media(max-width:800px){
-  .main{flex-direction:column;padding:16px;}
-  .sidebar{width:100%;}
+  .main{padding:0 16px 40px;}
   .header{padding:0 14px;}
   .header-brand .sub{display:none;}
   .camera-box{width:280px;height:360px;}
@@ -794,6 +1091,8 @@ body{
   .user-btn{padding:6px 10px;}
   .cards-grid{grid-template-columns:1fr;}
   .stats-grid{grid-template-columns:1fr 1fr;}
+  .funcao-item{padding:15px 16px;gap:12px;}
+  .funcao-item .funcao-icon{width:40px;height:40px;}
 }
 </style>
 </head>
@@ -802,7 +1101,7 @@ body{
 <header class="header">
   <div class="header-brand" id="headerBrand">
     <button class="back-btn" id="btnVoltar">Voltar</button>
-    <span onclick="goHome()">DomusFit <span class="sub" style="font-weight:400;font-size:12px;color:rgba(255,255,255,0.9);margin-left:10px;">Sistema de Ponto</span></span>
+    <span onclick="goHome()">DomusFit</span>
   </div>
   <div class="header-right">
     <button class="user-btn hidden" id="btnUsuario" onclick="abrirPerfil()">
@@ -810,11 +1109,18 @@ body{
       <span class="nome" id="nomeHeader">Usuário</span>
     </button>
     <div class="menu-dots">
-      <button class="menu-btn" id="btnDots">...</button>
+      <button class="menu-btn" id="btnDots" aria-label="Menu">
+        <span class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
       <div class="menu-dropdown" id="dotsMenu">
         <div class="item" onclick="menuAction('perfil')">Meu Perfil</div>
         <div class="divider"></div>
         <div class="item" onclick="menuAction('menu')">Menu Inicial</div>
+        <div class="item" onclick="menuAction('ponto')">Batida de Ponto</div>
         <div class="item" onclick="menuAction('carga')">Carga Horária</div>
         <div class="item" onclick="menuAction('chamado')">Abrir Chamado</div>
         <div class="divider"></div>
@@ -829,6 +1135,24 @@ body{
 </header>
 
 <main class="main" id="mainArea"></main>
+
+<div class="alerta-ponto" id="alertaPonto" onclick="renderTela('ponto')">
+  <span class="alerta-icon">⚠️</span>
+  <span class="alerta-texto">Atenção: você está com um ponto em aberto</span>
+  <span class="alerta-seta">›</span>
+</div>
+
+<!-- Notificação bancária -->
+<div class="notif-overlay" id="notifOverlay">
+  <div class="notif-card">
+    <div class="notif-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+    </div>
+    <div class="notif-titulo" id="notifTitulo">Atenção</div>
+    <div class="notif-msg" id="notifMsg">Não esqueça de finalizar o ponto ao terminar o expediente.</div>
+    <button class="notif-btn" id="notifBtn">OK</button>
+  </div>
+</div>
 
 <div class="overlay" id="overlayPerfil">
   <div class="modal">
@@ -881,7 +1205,7 @@ body{
   <div class="modal" style="max-width:560px;">
     <h3 id="docTituloModal">Documento</h3>
     <div class="sub" id="docSubModal">Documento institucional</div>
-    <div id="docCorpoModal" style="max-height:50vh;overflow-y:auto;font-size:14px;line-height:1.8;color:var(--cinza-700);white-space:pre-wrap;padding:14px;background:var(--cinza-100);border-radius:var(--radius);"></div>
+    <div id="docCorpoModal" style="max-height:50vh;overflow-y:auto;font-size:14px;line-height:1.8;color:var(--cinza-700);white-space:pre-wrap;padding:14px;background:var(--cinza-100);border-radius:10px;"></div>
     <div class="modal-buttons">
       <button class="btn btn-secondary" onclick="fecharOverlay('overlayDocumento')">Fechar</button>
       <button class="btn btn-primary" onclick="baixarDocumento()">Baixar PDF</button>
@@ -936,6 +1260,8 @@ const dotsMenu = document.getElementById("dotsMenu");
 const btnVoltar = document.getElementById("btnVoltar");
 const loader = document.getElementById("loader");
 const loaderTexto = document.getElementById("loaderTexto");
+const alertaPonto = document.getElementById("alertaPonto");
+const notifOverlay = document.getElementById("notifOverlay");
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -1075,6 +1401,21 @@ function playNotificationSound(){
   } catch(e){}
 }
 
+function mostrarNotificacao(titulo, msg){
+  document.getElementById('notifTitulo').textContent = titulo || 'Atenção';
+  document.getElementById('notifMsg').textContent = msg || 'Não esqueça de finalizar o ponto quando terminar o expediente.';
+  notifOverlay.classList.add('aberto');
+  playNotificationSound();
+}
+
+document.getElementById('notifBtn').onclick = () => {
+  notifOverlay.classList.remove('aberto');
+};
+
+notifOverlay.addEventListener('click', (e) => {
+  if(e.target === notifOverlay) notifOverlay.classList.remove('aberto');
+});
+
 function atualizarHeader(){
   if(telaAtual === 'login' || telaAtual === 'menu'){
     btnVoltar.classList.remove('visivel');
@@ -1087,6 +1428,12 @@ function atualizarHeader(){
     btnUsuario.classList.remove('hidden');
     avatarMini.src = userData.foto || `https://ui-avatars.com/api/?background=1351B4&color=fff&name=${encodeURIComponent(userData.nome||'')}`;
     nomeHeader.textContent = userData.nome ? userData.nome.split(' ')[0] : 'Usuário';
+  }
+  // Alerta de ponto aberto no rodapé (visível em todas as telas exceto ponto)
+  if(pontoAtivo && telaAtual !== 'ponto'){
+    alertaPonto.classList.add('visivel');
+  } else {
+    alertaPonto.classList.remove('visivel');
   }
 }
 
@@ -1107,6 +1454,7 @@ function menuAction(action){
   dotsMenu.classList.remove('aberto');
   if(action === 'perfil'){ abrirPerfil(); return; }
   if(action === 'menu'){ renderTela('menu'); return; }
+  if(action === 'ponto'){ renderTela('ponto'); return; }
   if(action === 'carga'){ renderTela('carga'); return; }
   if(action === 'chamado'){ renderTela('chamado'); return; }
   if(action === 'sair'){ sair(); return; }
@@ -1190,65 +1538,74 @@ function renderLogin(){
       </div>
     </div>
   `;
-  document.getElementById('btnAcessar').addEventListener('click', () => renderTela('menu'));
+  document.getElementById('btnAcessar').addEventListener('click', () => {
+    renderTela('menu');
+    setTimeout(() => mostrarNotificacao('Lembrete', 'Não esqueça de finalizar o ponto quando terminar o expediente.'), 600);
+  });
 }
 
 function renderMenu(){
   mainArea.innerHTML = `
+    <div class="search-wrap">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="pesquisaInput" placeholder="Pesquisar funcionalidade...">
+      </div>
+    </div>
+
     <section class="content">
       <div class="page-header">
-        <h1>Bem-vindo(a), ${(userData.nome||'').split(' ')[0] || 'Colaborador(a)'}</h1>
-        <div class="desc">Selecione uma opção para começar</div>
+        <h1>Olá, ${(userData.nome||'').split(' ')[0] || 'Colaborador(a)'}</h1>
+        <div class="desc">O que você deseja fazer?</div>
       </div>
 
-      <div class="cards-grid">
-        <div class="card-click" onclick="renderTela('ponto')">
-          <div class="card-title">Batida de Ponto</div>
-          <div class="card-desc">Registre sua entrada e saída com confirmação facial e acompanhe seu tempo em tempo real.</div>
+      <div class="funcoes-lista" id="funcoesLista">
+        <div class="funcao-item" data-nome="batida de ponto registrar entrada saida" onclick="renderTela('ponto')">
+          <div class="funcao-icon">
+            <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+          </div>
+          <div class="funcao-info">
+            <div class="funcao-titulo">Batida de Ponto</div>
+            <div class="funcao-desc">Registre sua entrada e saída com confirmação facial</div>
+          </div>
+          <div class="funcao-seta">›</div>
         </div>
-        <div class="card-click" onclick="renderTela('carga')">
-          <div class="card-title">Carga Horária</div>
-          <div class="card-desc">Consulte seus registros por mês e ano, com dashboard de horas trabalhadas.</div>
-        </div>
-        <div class="card-click" onclick="renderTela('chamado')">
-          <div class="card-title">Abrir Chamado</div>
-          <div class="card-desc">Solicite suporte técnico, correção de ponto ou tire dúvidas com a equipe.</div>
-        </div>
-      </div>
 
-      <div class="card">
-        <div class="card-title">Documentos</div>
-        <table class="tabela">
-          <tbody>
-            <tr>
-              <td>Política de Privacidade</td>
-              <td style="text-align:right;">
-                <button class="btn btn-secondary" style="padding:6px 14px;font-size:13px;" onclick="verDocumento('privacidade')">Ver</button>
-                <button class="btn btn-secondary" style="padding:6px 14px;font-size:13px;margin-left:6px;" onclick="baixarDocumentoEspecifico('privacidade')">Baixar</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Termos de Uso</td>
-              <td style="text-align:right;">
-                <button class="btn btn-secondary" style="padding:6px 14px;font-size:13px;" onclick="verDocumento('termos')">Ver</button>
-                <button class="btn btn-secondary" style="padding:6px 14px;font-size:13px;margin-left:6px;" onclick="baixarDocumentoEspecifico('termos')">Baixar</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Manual do Usuário</td>
-              <td style="text-align:right;">
-                <button class="btn btn-secondary" style="padding:6px 14px;font-size:13px;" onclick="verDocumento('manual')">Ver</button>
-                <button class="btn btn-secondary" style="padding:6px 14px;font-size:13px;margin-left:6px;" onclick="baixarDocumentoEspecifico('manual')">Baixar</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="funcao-item" data-nome="carga horaria consultar horas registros" onclick="renderTela('carga')">
+          <div class="funcao-icon">
+            <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+          </div>
+          <div class="funcao-info">
+            <div class="funcao-titulo">Carga Horária</div>
+            <div class="funcao-desc">Consulte seus registros por mês e ano</div>
+          </div>
+          <div class="funcao-seta">›</div>
+        </div>
+
+        <div class="funcao-item" data-nome="abrir chamado suporte ajuda" onclick="renderTela('chamado')">
+          <div class="funcao-icon">
+            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>
+          </div>
+          <div class="funcao-info">
+            <div class="funcao-titulo">Abrir Chamado</div>
+            <div class="funcao-desc">Solicite suporte técnico ou tire dúvidas</div>
+          </div>
+          <div class="funcao-seta">›</div>
+        </div>
       </div>
     </section>
   `;
-  if(pontoAtivo){
-    setTimeout(() => toast('Você possui um ponto em andamento'), 300);
-  }
+
+  document.getElementById('pesquisaInput').addEventListener('input', function(e){
+    const termo = e.target.value.toLowerCase().trim();
+    document.querySelectorAll('#funcoesLista .funcao-item').forEach(item => {
+      const nome = item.getAttribute('data-nome') || '';
+      const titulo = item.querySelector('.funcao-titulo').textContent.toLowerCase();
+      const desc = item.querySelector('.funcao-desc').textContent.toLowerCase();
+      const match = !termo || nome.includes(termo) || titulo.includes(termo) || desc.includes(termo);
+      item.style.display = match ? 'flex' : 'none';
+    });
+  });
 }
 
 function renderPonto(){
@@ -1270,7 +1627,7 @@ function renderPonto(){
 
       <div class="card">
         <div class="card-title">Seu resumo do dia</div>
-        <div class="stats-grid" id="statsHoje" style="margin-bottom:0;">
+        <div class="stats-grid" id="statsHoje">
           <div class="stat-card">
             <div class="stat-label">Status</div>
             <div class="stat-value" id="statStatus" style="font-size:18px;">--</div>
@@ -1788,7 +2145,7 @@ async function iniciarPontoComSeguranca(fotoUrl){
   if(fotoUrl) update.foto_inicio = fotoUrl;
 
   await db.ref("historico/"+currentUser+"/"+dataChave).update(update);
-  await db.ref("pontos/"+currentUser+"/ativo").set({ inicio: agora });
+T  await db.ref("pontos/"+currentUser+"/ativo").set({ inicio: agora });
 
   playNotificationSound();
   hideLoader();
@@ -1835,12 +2192,51 @@ async function finalizarPontoComSeguranca(fotoUrl){
   window.location.href = "validador2v.html?id=" + idValidador;
 }
 
-document.getElementById('anoAtual');
+// Rodapé dinâmico: injeta em todas as telas
+function renderRodape(){
+  // Remove rodapé anterior se existir
+  const antigo = document.getElementById('rodapeGlobal');
+  if(antigo) antigo.remove();
+
+  const rodape = document.createElement('footer');
+  rodape.className = 'rodape';
+  rodape.id = 'rodapeGlobal';
+  rodape.innerHTML = `
+    <div class="rodape-inner">
+      <div class="rodape-links">
+        <a onclick="verDocumento('termos')">Termos de Uso</a>
+        <a onclick="verDocumento('privacidade')">Política de Privacidade</a>
+        <a onclick="verDocumento('manual')">Manual do Usuário</a>
+        <a onclick="renderela('chamado')">Suporte</a>
+      </div>
+      <div class="rodape-copy">&copy; ${new Date().getFullYear()} Academia DomusFit &mdash; Sistema de Ponto</div>
+    </div>
+  `;
+  document.body.appendChild(rodape);
+}
+
+// Atualiza rodapé em cada render
+const _renderTelaOriginal = renderTela;
+renderTela = function(tela){
+  _renderTelaOriginal.call(this, tela);
+  renderRodape();
+};
+
+// Também no carregamento inicial
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(renderRodape, 100);
+});
+
 db.ref("usuarios/"+currentUser).once("value").then(snap => {
   if(snap.exists()){
     userData = snap.val();
   }
   renderTela('login');
+  setTimeout(() => {
+    renderRodape();
+    // Notificação bancária ao iniciar
+    setTimeout(() => mostrarNotificacao('Lembrete', 'Não esqueça de finalizar o ponto quando terminar o expediente.'), 1200);
+  }, 200);
 });
 </script>
 </body>
