@@ -16,17 +16,17 @@
   --vermelho:#D6392A;
   --amarelo:#E8A33D;
   --amarelo-bg:#FFF9E6;
-  --amarelo-borda:#F2E2A8;
-  --cinza-50:#FFFFFF;
-  --cinza-100:#F7F7F7;
-  --cinza-200:#EEEEEE;
-  --cinza-300:#D9D9D9;
+  --amarelo-borda:#F0D68A;
+  --cinza-50:#FAFAFA;
+  --cinza-100:#F2F2F2;
+  --cinza-200:#E5E5E5;
+  --cinza-300:#CCCCCC;
   --cinza-500:#666666;
   --cinza-700:#333333;
   --cinza-900:#111111;
   --branco:#FFFFFF;
-  --rodape-bg:#F2F2F2;
-  --radius:10px;
+  --rodape-bg:#F4F4F4;
+  --radius:6px;
 }
 
 html,body{height:100%;}
@@ -41,12 +41,12 @@ body{
   line-height:1.5;
 }
 
-/* ============ HEADER ============ */
+/* ====== HEADER ====== */
 .header{
   background:var(--azul);
   color:var(--branco);
-  padding:0 20px;
-  height:58px;
+  padding:0 24px;
+  height:60px;
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -57,13 +57,13 @@ body{
 
 .header-brand{
   font-weight:700;
-  font-size:17px;
+  font-size:18px;
   letter-spacing:-0.2px;
   color:var(--branco);
   cursor:pointer;
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:14px;
 }
 
 .header-brand .back-btn{
@@ -79,20 +79,21 @@ body{
   display:none;
   transition:background 0.15s;
 }
+
 .header-brand .back-btn:hover{background:rgba(255,255,255,0.28);}
 .header-brand .back-btn.visivel{display:inline-block;}
 
 .header-right{
   display:flex;
   align-items:center;
-  gap:8px;
+  gap:10px;
 }
 
 .user-btn{
   background:rgba(255,255,255,0.15);
   border:none;
   color:var(--branco);
-  padding:6px 12px;
+  padding:6px 14px;
   border-radius:var(--radius);
   display:flex;
   align-items:center;
@@ -103,33 +104,37 @@ body{
   font-weight:500;
   transition:background 0.15s;
 }
+
 .user-btn:hover{background:rgba(255,255,255,0.28);}
+
 .user-btn .avatar-mini{
-  width:26px;height:26px;border-radius:50%;
-  object-fit:cover;background:var(--azul-suave);
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  object-fit:cover;
+  background:var(--azul-suave);
 }
 
 .menu-btn{
-  background:transparent;
+  background:rgba(255,255,255,0.15);
   border:none;
   color:var(--branco);
-  width:38px;height:38px;
+  width:38px;
+  height:38px;
   border-radius:var(--radius);
   cursor:pointer;
+  font-size:20px;
   display:flex;
-  flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:4px;
+  font-family:inherit;
+  font-weight:700;
+  line-height:0;
+  padding-bottom:8px;
   transition:background 0.15s;
 }
-.menu-btn:hover{background:rgba(255,255,255,0.15);}
-.menu-btn span{
-  display:block;
-  width:20px;height:2px;
-  background:var(--branco);
-  border-radius:2px;
-}
+
+.menu-btn:hover{background:rgba(255,255,255,0.28);}
 
 .menu-dots{position:relative;}
 
@@ -144,191 +149,2116 @@ body{
   box-shadow:0 6px 20px rgba(0,0,0,0.18);
   border-radius:var(--radius);
   overflow:hidden;
-  border:1px solid var(--cinza-200);
 }
-.menu-dropdown.aberto{display:block;}
-.menu-dropdown .item{
-  padding:12px 18px;cursor:pointer;font-size:14px;color:var(--cinza-900);
-}
-.menu-dropdown .item:hover{background:var(--azul-suave);color:var(--azul);}
-.menu-dropdown .divider{height:1px;background:var(--cinza-200);}
 
-/* ============ BARRA DE PESQUISA ============ */
-.search-wrap{
-  background:var(--branco);
-  padding:14px 20px 4px;
-  max-width:900px;
-  margin:0 auto;
-  width:100%;
-}
-.search-box{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  background:var(--cinza-100);
-  border:1px solid var(--cinza-200);
-  border-radius:999px;
-  padding:10px 16px;
-  transition:border-color 0.15s, background 0.15s;
-}
-.search-box:focus-within{
-  border-color:var(--azul);
-  background:var(--branco);
-}
-.search-box svg{flex-shrink:0;opacity:0.5;}
-.search-box input{
-  border:none;
-  outline:none;
-  background:transparent;
-  font-family:inherit;
+.menu-dropdown.aberto{display:block;}
+
+.menu-dropdown .item{
+  padding:12px 18px;
+  cursor:pointer;
   font-size:14px;
   color:var(--cinza-900);
-  width:100%;
 }
-.search-box input::placeholder{color:var(--cinza-500);}
 
-/* ============ MAIN ============ */
+.menu-dropdown .item:hover{background:var(--azul-suave);color:var(--azul);}
+
+.menu-dropdown .divider{height:1px;background:var(--cinza-200);}
+
+/* ====== MAIN ====== */
 .main{
   flex:1;
+  display:flex;
   width:100%;
-  max-width:900px;
+  max-width:760px;
   margin:0 auto;
-  padding:10px 20px 24px;
+  padding:20px 20px 30px;
+  gap:20px;
+  align-items:flex-start;
+  flex-direction:column;
 }
 
-/* ============ CARDS DE FUNÇÕES ============ */
-.funcoes-lista{
+.content{width:100%;}
+
+/* ====== BARRA DE PESQUISA ====== */
+.search-bar{
+  width:100%;
+  margin-bottom:22px;
+  position:relative;
+  animation:slideDown 0.35s ease;
+}
+
+.search-bar input{
+  width:100%;
+  padding:13px 16px 13px 44px;
+  border:1.5px solid var(--cinza-200);
+  border-radius:8px;
+  font-family:inherit;
+  font-size:15px;
+  color:var(--cinza-900);
+  background:var(--branco);
+  transition:border-color 0.15s, box-shadow 0.15s;
+}
+
+.search-bar input:focus{
+  outline:none;
+  border-color:var(--azul);
+  box-shadow:0 0 0 3px rgba(19,81,180,0.1);
+}
+
+.search-bar .search-icon{
+  position:absolute;
+  left:15px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--cinza-500);
+  font-size:16px;
+  pointer-events:none;
+}
+
+@keyframes slideDown{
+  from{opacity:0;transform:translateY(-8px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ====== MENU CARDS (nova estrutura) ====== */
+.menu-cards{
   display:flex;
   flex-direction:column;
   gap:12px;
-  margin-top:8px;
+  width:100%;
+  animation:slideUp 0.4s ease;
 }
 
-.funcao-card{
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(12px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.menu-card-item{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:22px 18px;
   background:var(--branco);
-  border:1px solid var(--cinza-200);
-  border-radius:var(--radius);
-  padding:18px 20px;
+  border:1.5px solid var(--cinza-200);
+  border-radius:14px;
   cursor:pointer;
-  transition:all 0.15s;
+  transition:all 0.18s ease;
+  text-align:center;
+}
+
+.menu-card-item:hover{
+  border-color:var(--azul);
+  box-shadow:0 4px 16px rgba(19,81,180,0.12);
+  transform:translateY(-2px);
+}
+
+.menu-card-item:active{transform:translateY(0);}
+
+.menu-card-item .icon-circle{
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  background:var(--azul-suave);
   display:flex;
   align-items:center;
-  gap:16px;
-}
-.funcao-card:hover{
-  border-color:var(--azul);
-  box-shadow:0 4px 14px rgba(19,81,180,0.10);
-  transform:translateY(-1px);
-}
-.funcao-card:active{transform:translateY(0);}
-
-.funcao-icon{
-  width:46px;height:46px;
-  border-radius:12px;
-  background:var(--azul-suave);
+  justify-content:center;
   color:var(--azul);
+  transition:background 0.18s;
+}
+
+.menu-card-item:hover .icon-circle{
+  background:var(--azul);
+  color:var(--branco);
+}
+
+.menu-card-item .icon-circle svg{
+  width:26px;
+  height:26px;
+  stroke:currentColor;
+  fill:none;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.menu-card-item .card-label{
+  font-size:15px;
+  font-weight:600;
+  color:var(--cinza-900);
+  letter-spacing:-0.2px;
+}
+
+.menu-card-item .card-hint{
+  font-size:12.5px;
+  color:var(--cinza-500);
+  line-height:1.4;
+  max-width:280px;
+}
+
+/* ====== RODAPÉ ====== */
+.rodape{
+  background:var(--rodape-bg);
+  padding:22px 20px 90px;
+  margin-top:auto;
+  width:100%;
+}
+
+.rodape-inner{
+  max-width:760px;
+  margin:0 auto;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 22px;
+  justify-content:center;
+  align-items:center;
+}
+
+.rodape-divider{
+  width:100%;
+  border:none;
+  border-top:1px dashed var(--cinza-300);
+  margin:0 0 14px;
+}
+
+.rodape a, .rodape .link-termo{
+  font-size:12.5px;
+  color:var(--cinza-500);
+  text-decoration:none;
+  cursor:pointer;
+  transition:color 0.15s;
+  font-weight:500;
+}
+
+.rodape a:hover, .rodape .link-termo:hover{color:var(--azul);}
+
+.rodape .copy{
+  width:100%;
+  text-align:center;
+  font-size:11.5px;
+  color:var(--cinza-500);
+  margin-top:10px;
+  opacity:0.8;
+}
+
+/* ====== ALERTA PONTO ABERTO (fixo) ====== */
+.alerta-ponto-aberto{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:var(--amarelo-bg);
+  border-top:1.5px solid var(--amarelo-borda);
+  padding:14px 20px;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  cursor:pointer;
+  z-index:500;
+  animation:slideUpAlert 0.35s ease;
+  box-shadow:0 -4px 16px rgba(0,0,0,0.06);
+}
+
+.alerta-ponto-aberto.visivel{display:flex;}
+
+@keyframes slideUpAlert{
+  from{transform:translateY(100%);}
+  to{transform:translateY(0);}
+}
+
+.alerta-ponto-aberto .alerta-icon{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:var(--amarelo);
+  color:#fff;
   display:flex;
   align-items:center;
   justify-content:center;
   flex-shrink:0;
+  font-weight:700;
+  font-size:16px;
 }
-.funcao-icon svg{width:24px;height:24px;}
 
-.funcao-info{flex:1;min-width:0;}
-.funcao-titulo{
+.alerta-ponto-aberto .alerta-texto{
+  font-size:14px;
+  font-weight:600;
+  color:#7A5C00;
+  text-align:center;
+}
+
+.alerta-ponto-aberto .alerta-texto span{
+  display:block;
+  font-size:12px;
+  font-weight:400;
+  color:#9A7A1A;
+  margin-top:2px;
+}
+
+.alerta-ponto-aberto .alerta-seta{
+  color:#B8860B;
+  font-size:18px;
+  flex-shrink:0;
+}
+
+/* ====== NOTIFICAÇÃO INICIAL (modal animado) ====== */
+.notif-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:1500;
+  padding:20px;
+  animation:fadeIn 0.3s ease;
+}
+
+.notif-overlay.aberto{display:flex;}
+
+@keyframes fadeIn{
+  from{opacity:0;}
+  to{opacity:1;}
+}
+
+.notif-card{
+  background:var(--branco);
+  border-radius:16px;
+  padding:30px 26px 22px;
+  max-width:360px;
+  width:100%;
+  text-align:center;
+  box-shadow:0 20px 50px rgba(0,0,0,0.22);
+  animation:notifPop 0.45s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+@keyframes notifPop{
+  0%{opacity:0;transform:scale(0.7) translateY(30px);}
+  60%{opacity:1;transform:scale(1.03) translateY(-4px);}
+  100%{opacity:1;transform:scale(1) translateY(0);}
+}
+
+.notif-icon{
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  background:var(--azul-suave);
+  margin:0 auto 18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--azul);
+  animation:notifPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes notifPulse{
+  0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(19,81,180,0.25);}
+  50%{transform:scale(1.06);box-shadow:0 0 0 12px rgba(19,81,180,0);}
+}
+
+.notif-icon svg{
+  width:32px;
+  height:32px;
+  stroke:currentColor;
+  fill:none;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.notif-titulo{
+  font-size:17px;
+  font-weight:700;
+  color:var(--azul-escuro);
+  margin-bottom:8px;
+  letter-spacing:-0.2px;
+}
+
+.notif-texto{
+  font-size:14px;
+  color:var(--cinza-700);
+  line-height:1.6;
+  margin-bottom:22px;
+}
+
+.notif-btn{
+  background:var(--azul);
+  color:var(--branco);
+  border:none;
+  padding:12px 40px;
+  border-radius:8px;
+  font-family:inherit;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  transition:background 0.15s;
+  letter-spacing:0.2px;
+}
+
+.notif-btn:hover{background:var(--azul-escuro);}
+
+/* ====== CARDS PADRÃO (telas internas) ====== */
+.card{
+  background:var(--branco);
+  border-radius:var(--radius);
+  padding:22px;
+  margin-bottom:16px;
+  border:1px solid var(--cinza-200);
+}
+
+.card-title{
   font-size:15px;
   font-weight:700;
   color:var(--cinza-900);
-  margin-bottom:2px;
-}
-.funcao-desc{
-  font-size:13px;
-  color:var(--cinza-500);
-  line-height:1.4;
-}
-.funcao-arrow{
-  color:var(--cinza-300);
-  flex-shrink:0;
+  margin-bottom:14px;
 }
 
-/* ============ RODAPÉ ============ */
-.footer{
-  background:var(--rodape-bg);
-  padding:20px;
-  margin-top:auto;
-  border-top:1px solid var(--cinza-200);
+.cards-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:16px;
+  margin-bottom:20px;
 }
-.footer-inner{
-  max-width:900px;
-  margin:0 auto;
-  display:flex;
-  flex-direction:column;
-  gap:14px;
+
+.card-click{
+  background:var(--branco);
+  border-radius:var(--radius);
+  padding:24px 22px;
+  cursor:pointer;
+  transition:all 0.15s;
+  border:1px solid var(--cinza-200);
 }
-.footer-brand{
-  font-size:13px;
+
+.card-click:hover{
+  box-shadow:0 6px 18px rgba(19,81,180,0.15);
+  transform:translateY(-2px);
+  border-color:var(--azul);
+}
+
+.card-click .card-title{
+  font-size:16px;
   font-weight:700;
   color:var(--azul-escuro);
-  letter-spacing:0.3px;
-}
-.footer-divider{
-  border:none;
-  border-top:1px dashed var(--cinza-300);
-  margin:2px 0;
-}
-.footer-links{
-  display:flex;
-  flex-wrap:wrap;
-  gap:16px;
-  font-size:12px;
-  color:var(--cinza-500);
-}
-.footer-links span{
-  cursor:pointer;
-  transition:color 0.15s;
-}
-.footer-links span:hover{color:var(--azul);text-decoration:underline;}
-.footer-copy{
-  font-size:11px;
-  color:var(--cinza-500);
+  margin-bottom:6px;
 }
 
-/* ============ AVISO PONTO ABERTO (overlay) ============ */
-.aviso-ponto{
-  position:fixed;
-  left:50%;
-  bottom:16px;
-  transform:translateX(-50%) translateY(120%);
-  background:var(--amarelo-bg);
-  border:1px solid var(--amarelo-borda);
-  color:#7A5B00;
-  border-radius:var(--radius);
-  padding:14px 18px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  max-width:calc(100% - 32px);
-  width:420px;
-  box-shadow:0 8px 24px rgba(0,0,0,0.12);
-  z-index:900;
-  cursor:pointer;
-  transition:transform 0.4s cubic-bezier(.2,.9,.3,1.2);
+.card-click .card-desc{
   font-size:13px;
-  font-weight:500;
+  color:var(--cinza-500);
+  line-height:1.5;
 }
-.aviso-ponto.visivel{
-  transform:translateX(-50%) translateY(0);
+
+.page-header{
+  margin-bottom:20px;
 }
-.aviso-ponto .ico{
-  width:34px;height:34px;
-  border-radius:50%;
-  background:#FFE9A8;
-  color:#8A6A00;
+
+.page-header h1{
+  font-size:24px;
+  font-weight:700;
+  color:var(--cinza-900);
+  letter-spacing:-0.4px;
+}
+
+.page-header .desc{
+  font-size:14px;
+  color:var(--cinza-500);
+  margin-top:4px;
+}
+
+/* ====== BOTÕES ====== */
+.btn{
+  display:inline-block;
+  padding:11px 22px;
+  border-radius:var(--radius);
+  font-family:inherit;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  border:1px solid transparent;
+  transition:background 0.15s;
+  text-align:center;
+}
+
+.btn-primary{
+  background:var(--azul);
+  color:var(--branco);
+  border-color:var(--azul);
+}
+
+.btn-primary:hover{background:var(--azul-escuro);border-color:var(--azul-escuro);}
+
+.btn-secondary{
+  background:var(--branco);
+  color:var(--azul);
+  border-color:var(--azul);
+}
+
+.btn-secondary:hover{background:var(--azul-suave);}
+
+.btn-danger{
+  background:var(--vermelho);
+  color:var(--branco);
+  border-color:var(--vermelho);
+}
+
+.btn-danger:hover{background:#B32D20;border-color:#B32D20;}
+
+.btn-block{width:100%;display:block;}
+
+.btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+/* ====== LOGIN ====== */
+.login-wrap{
+  flex:1;
   display:flex;
   align-items:center;
   justify-content:center;
-  flex-shrink:0;
-  font-size:18px;
-  font-weight:700;
+  padding:40px 20px;
+  width:100%;
 }
-.aviso-ponto .
+
+.login-card{
+  background:var(--branco);
+  border-radius:var(--radius);
+  padding:36px 32px;
+  max-width:400px;
+  width:100%;
+  text-align:center;
+  box-shadow:0 2px 10px rgba(0,0,0,0.08);
+  border:1px solid var(--cinza-200);
+}
+
+.login-card h2{
+  font-size:20px;
+  font-weight:700;
+  color:var(--azul-escuro);
+  margin-bottom:6px;
+}
+
+.login-card .sub{
+  font-size:14px;
+  color:var(--cinza-500);
+  margin-bottom:24px;
+}
+
+.login-card .avatar-circle{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  object-fit:cover;
+  margin:0 auto 14px;
+  background:var(--cinza-200);
+  display:block;
+}
+
+/* ====== CRONÔMETRO ====== */
+.cronometro-card{
+  background:var(--branco);
+  border-radius:var(--radius);
+  padding:32px 24px;
+  text-align:center;
+  margin-bottom:16px;
+  border:1px solid var(--cinza-200);
+}
+
+.cronometro-label{
+  font-size:12px;
+  font-weight:600;
+  color:var(--cinza-500);
+  text-transform:uppercase;
+  letter-spacing:0.6px;
+  margin-bottom:10px;
+}
+
+.cronometro-valor{
+  font-size:54px;
+  font-weight:700;
+  font-family:'Courier New',monospace;
+  color:var(--azul-escuro);
+  letter-spacing:3px;
+  padding:8px 0 20px;
+}
+
+.acoes-ponto{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+.acoes-ponto .btn{min-width:180px;}
+
+/* ====== STATS ====== */
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.stat-card{
+  background:var(--branco);
+  border-radius:var(--radius);
+  padding:20px;
+  border:1px solid var(--cinza-200);
+}
+
+.stat-label{
+  font-size:12px;
+  font-weight:600;
+  color:var(--cinza-500);
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  margin-bottom:8px;
+}
+
+.stat-value{
+  font-size:26px;
+  font-weight:700;
+  color:var(--azul-escuro);
+  letter-spacing:-0.3px;
+}
+
+.stat-hint{
+  font-size:12px;
+  color:var(--cinza-500);
+  margin-top:4px;
+}
+
+/* ====== CHART ====== */
+.chart-card{
+  background:var(--branco);
+  border-radius:var(--radius);
+  padding:22px;
+  margin-bottom:16px;
+  border:1px solid var(--cinza-200);
+}
+
+.chart-bars{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:10px;
+  height:180px;
+  padding:12px 0 0;
+  margin-top:8px;
+}
+
+.chart-bar-item{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  height:100%;
+  justify-content:flex-end;
+}
+
+.chart-bar{
+  width:100%;
+  max-width:38px;
+  background:linear-gradient(180deg,var(--azul) 0%,var(--azul-escuro) 100%);
+  border-radius:var(--radius) var(--radius) 0 0;
+  transition:height 0.4s ease;
+  min-height:4px;
+}
+
+.chart-bar.hoje{background:linear-gradient(180deg,var(--verde) 0%,#0F5C17 100%);}
+
+.chart-label{
+  font-size:11px;
+  font-weight:600;
+  color:var(--cinza-500);
+  margin-top:8px;
+  text-transform:uppercase;
+}
+
+.chart-value{
+  font-size:11px;
+  color:var(--azul-escuro);
+  font-weight:700;
+  margin-bottom:4px;
+}
+
+/* ====== TABELA ====== */
+.tabela{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px;
+}
+
+.tabela th{
+  text-align:left;
+  padding:10px 12px;
+  font-weight:600;
+  color:var(--cinza-500);
+  border-bottom:2px solid var(--cinza-200);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:0.4px;
+}
+
+.tabela td{
+  padding:11px 12px;
+  border-bottom:1px solid var(--cinza-200);
+  color:var(--cinza-900);
+}
+
+.tabela tr:last-child td{border-bottom:none;}
+.tabela tr:hover td{background:var(--cinza-50);}
+
+/* ====== CAMPOS ====== */
+.campo{margin-bottom:16px;}
+
+.campo label{
+  display:block;
+  font-size:13px;
+  font-weight:600;
+  color:var(--cinza-700);
+  margin-bottom:6px;
+}
+
+.campo input,
+.campo textarea,
+.campo select{
+  width:100%;
+  padding:11px 14px;
+  border:1px solid var(--cinza-300);
+  border-radius:var(--radius);
+  font-family:inherit;
+  font-size:14px;
+  color:var(--cinza-900);
+  background:var(--branco);
+  transition:border-color 0.15s;
+}
+
+.campo input:focus,
+.campo textarea:focus{
+  outline:none;
+  border-color:var(--azul);
+}
+
+.campo textarea{
+  resize:vertical;
+  min-height:100px;
+}
+
+.filtro-row{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  align-items:flex-end;
+}
+
+.filtro-row .campo{flex:1;min-width:160px;margin-bottom:0;}
+
+.info-box{
+  background:var(--cinza-100);
+  border-radius:var(--radius);
+  padding:16px 18px;
+  margin-bottom:16px;
+  font-size:14px;
+  color:var(--cinza-700);
+}
+
+.info-box .linha{padding:3px 0;}
+
+.info-box .linha strong{
+  color:var(--cinza-900);
+  display:inline-block;
+  min-width:100px;
+}
+
+.termo-box{
+  background:var(--cinza-100);
+  border-radius:var(--radius);
+  padding:16px;
+  margin-bottom:16px;
+  font-size:13px;
+  color:var(--cinza-700);
+  line-height:1.6;
+}
+
+.termo-check{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid var(--cinza-200);
+}
+
+.termo-check input[type="checkbox"]{
+  width:16px;
+  height:16px;
+  margin-top:2px;
+  accent-color:var(--azul);
+  cursor:pointer;
+}
+
+.termo-check label{
+  font-size:13px;
+  color:var(--cinza-900);
+  cursor:pointer;
+  line-height:1.5;
+}
+
+/* ====== OVERLAYS / MODAIS ====== */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:1000;
+  padding:20px;
+}
+
+.overlay.aberto{display:flex;}
+
+.modal{
+  background:var(--branco);
+  border-radius:var(--radius);
+  padding:26px;
+  max-width:440px;
+  width:100%;
+  max-height:90vh;
+  overflow-y:auto;
+  box-shadow:0 20px 40px rgba(0,0,0,0.25);
+}
+
+.modal h3{
+  font-size:17px;
+  font-weight:700;
+  color:var(--azul-escuro);
+  margin-bottom:8px;
+}
+
+.modal .sub{
+  font-size:13px;
+  color:var(--cinza-500);
+  margin-bottom:18px;
+}
+
+.modal-buttons{
+  display:flex;
+  gap:10px;
+  margin-top:20px;
+}
+
+.modal-buttons .btn{flex:1;}
+
+.calculo{
+  background:var(--cinza-100);
+  border-radius:var(--radius);
+  padding:20px;
+  text-align:center;
+  font-size:26px;
+  font-weight:700;
+  font-family:'Courier New',monospace;
+  color:var(--azul-escuro);
+  margin:12px 0;
+}
+
+.modal-input{
+  width:100%;
+  padding:12px 16px;
+  border:1px solid var(--cinza-300);
+  border-radius:var(--radius);
+  font-family:inherit;
+  font-size:16px;
+  text-align:center;
+  color:var(--cinza-900);
+}
+
+.modal-input:focus{outline:none;border-color:var(--azul);}
+
+/* ====== CÂMERA ====== */
+.camera-box{
+  width:320px;
+  height:420px;
+  background:#000;
+  border-radius:var(--radius);
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 0 0 3px var(--azul),0 20px 60px rgba(0,0,0,0.5);
+}
+
+.camera-box video{
+  position:absolute;
+  top:0;left:0;
+  width:100%;height:100%;
+  object-fit:cover;
+}
+
+.camera-spinner{
+  position:absolute;
+  inset:0;
+  background:rgba(12,50,111,0.7);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:5;
+}
+
+.spinner{
+  width:50px;height:50px;
+  border:4px solid rgba(255,255,255,0.25);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:spin 0.85s linear infinite;
+}
+
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.camera-cancel{
+  position:absolute;
+  bottom:14px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,0.7);
+  border:none;
+  padding:9px 22px;
+  border-radius:var(--radius);
+  color:var(--branco);
+  font-family:inherit;
+  font-weight:600;
+  font-size:13px;
+  cursor:pointer;
+  z-index:10;
+  transition:background 0.15s;
+}
+
+.camera-cancel:hover{background:rgba(0,0,0,0.9);}
+
+/* ====== TOAST / LOADER ====== */
+.toast{
+  position:fixed;
+  bottom:90px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--cinza-900);
+  color:var(--branco);
+  padding:12px 24px;
+  border-radius:var(--radius);
+  font-size:14px;
+  z-index:2000;
+  box-shadow:0 6px 20px rgba(0,0,0,0.25);
+}
+
+.loader{
+  position:fixed;
+  inset:0;
+  background:rgba(255,255,255,0.9);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  z-index:1500;
+}
+
+.loader.aberto{display:flex;}
+
+.loader .spinner{
+  border-color:var(--cinza-300);
+  border-top-color:var(--azul);
+}
+
+.loader .texto{
+  margin-top:16px;
+  font-size:14px;
+  color:var(--cinza-700);
+  font-weight:500;
+}
+
+.hidden{display:none!important;}
+
+/* ====== RESPONSIVO ====== */
+@media(max-width:800px){
+  .main{padding:16px 16px 30px;}
+  .header{padding:0 14px;}
+  .header-brand .sub{display:none;}
+  .camera-box{width:280px;height:360px;}
+  .cronometro-valor{font-size:38px;}
+  .stat-value{font-size:22px;}
+}
+
+@media(max-width:520px){
+  .user-btn .nome{display:none;}
+  .user-btn{padding:6px 10px;}
+  .cards-grid{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .cronometro-valor{font-size:32px;}
+  .menu-card-item{padding:18px 14px;}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-brand" id="headerBrand">
+    <button class="back-btn" id="btnVoltar">← Voltar</button>
+    <span onclick="goHome()">DomusFit <span class="sub" style="font-weight:400;font-size:12px;color:rgba(255,255,255,0.9);margin-left:10px;">Sistema de Ponto</span></span>
+  </div>
+  <div class="header-right">
+    <button class="user-btn hidden" id="btnUsuario" onclick="abrirPerfil()">
+      <img class="avatar-mini" id="avatarMini" src="" alt="Perfil">
+      <span class="nome" id="nomeHeader">Usuário</span>
+    </button>
+    <div class="menu-dots">
+      <button class="menu-btn" id="btnDots">···</button>
+      <div class="menu-dropdown" id="dotsMenu">
+        <div class="item" onclick="menuAction('perfil')">Meu Perfil</div>
+        <div class="divider"></div>
+        <div class="item" onclick="menuAction('menu')">Menu Inicial</div>
+        <div class="item" onclick="menuAction('carga')">Carga Horária</div>
+        <div class="item" onclick="menuAction('chamado')">Abrir Chamado</div>
+        <div class="divider"></div>
+        <div class="item" onclick="menuAction('privacidade')">Política de Privacidade</div>
+        <div class="item" onclick="menuAction('termos')">Termos de Uso</div>
+        <div class="item" onclick="menuAction('manual')">Manual do Usuário</div>
+        <div class="divider"></div>
+        <div class="item" onclick="menuAction('sair')" style="color:var(--vermelho);font-weight:600;">Sair</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="main" id="mainArea"></main>
+
+<!-- Alerta de ponto aberto (fixo no rodapé) -->
+<div class="alerta-ponto-aberto" id="alertaPontoAberto" onclick="irParaPonto()">
+  <div class="alerta-icon">!</div>
+  <div class="alerta-texto">
+    Atenção: você está com um ponto em aberto
+    <span>Toque para finalizar agora</span>
+  </div>
+  <div class="alerta-seta">›</div>
+</div>
+
+<!-- Notificação inicial animada -->
+<div class="notif-overlay" id="notifOverlay">
+  <div class="notif-card">
+    <div class="notif-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+    </div>
+    <div class="notif-titulo">Atenção!</div>
+    <div class="notif-texto">Não esqueça de finalizar o ponto quando terminar o expediente.</div>
+    <button class="notif-btn" id="btnNotifOk">OK</button>
+  </div>
+</div>
+
+<!-- Overlays -->
+<div class="overlay" id="overlayPerfil">
+  <div class="modal">
+    <h3>Meu Perfil</h3>
+    <div class="sub">Dados cadastrais</div>
+    <div class="info-box">
+      <div class="linha"><strong>Nome:</strong> <span id="perfilNomeValor">--</span></div>
+      <div class="linha"><strong>NA:</strong> <span id="perfilNaValor">--</span></div>
+      <div class="linha"><strong>Telefone:</strong> <span id="perfilTelefone">--</span></div>
+    </div>
+    <div class="modal-buttons">
+      <button class="btn btn-secondary" onclick="fecharOverlay('overlayPerfil')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlaySeguranca">
+  <div class="modal">
+    <h3 id="segTitulo">Verificação de Segurança</h3>
+    <div class="sub" id="segSubtitulo">Resolva o cálculo para continuar</div>
+    <div class="calculo" id="campoCalculo">10 + 10 = ?</div>
+    <input type="number" class="modal-input" id="inputResultado" placeholder="Digite o resultado" inputmode="numeric">
+    <div class="modal-buttons">
+      <button class="btn btn-secondary" onclick="fecharOverlay('overlaySeguranca'); segCallback=null;">Cancelar</button>
+      <button class="btn btn-primary" id="btnConfirmarSeg" disabled>Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlayCamera">
+  <div class="camera-box">
+    <video id="videoCam" autoplay playsinline muted></video>
+    <div class="camera-spinner hidden" id="spinnerCamera"><div class="spinner"></div></div>
+    <button class="camera-cancel" id="btnCancelarCamera">Cancelar</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlaySemCamera">
+  <div class="modal">
+    <h3>Problemas com a câmera?</h3>
+    <div class="sub">Se você não está conseguindo usar a câmera, prossiga sem confirmação facial.</div>
+    <div class="modal-buttons">
+      <button class="btn btn-secondary" onclick="fecharOverlay('overlaySemCamera')">Cancelar</button>
+      <button class="btn btn-primary" id="btnContinuarSem">Prosseguir</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlayDocumento">
+  <div class="modal" style="max-width:560px;">
+    <h3 id="docTituloModal">Documento</h3>
+    <div class="sub" id="docSubModal">Documento institucional</div>
+    <div id="docCorpoModal" style="max-height:50vh;overflow-y:auto;font-size:14px;line-height:1.8;color:var(--cinza-700);white-space:pre-wrap;padding:14px;background:var(--cinza-100);border-radius:var(--radius);"></div>
+    <div class="modal-buttons">
+      <button class="btn btn-secondary" onclick="fecharOverlay('overlayDocumento')">Fechar</button>
+      <button class="btn btn-primary" onclick="baixarDocumento()">Baixar PDF</button>
+    </div>
+  </div>
+</div>
+
+<div class="loader" id="loader">
+  <div class="spinner"></div>
+  <div class="texto" id="loaderTexto">Carregando...</div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+  authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
+  projectId: "prefeitura-de-joao-camara",
+  storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
+  databaseURL: "https://prefeitura-de-joao-camara-default-rtdb.firebaseio.com"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+let currentUser = localStorage.getItem("usuarioAtual");
+if(!currentUser) window.location.href = "login2.html";
+let userData = {};
+let pontoAtivo = false;
+let pontoStart = null;
+let cronInterval = null;
+let telaAtual = 'login';
+
+let segCallback = null;
+let segResultadoCorreto = 0;
+let segOperacaoRealizada = '';
+let cameraStreamActive = null;
+let documentoAtual = '';
+let acaoPontoAtual = '';
+
+const CLOUD_NAME = "dzmjto17f";
+const UPLOAD_PRESET = "ml_default";
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+
+const mainArea = document.getElementById("mainArea");
+const btnUsuario = document.getElementById("btnUsuario");
+const avatarMini = document.getElementById("avatarMini");
+const nomeHeader = document.getElementById("nomeHeader");
+const btnDots = document.getElementById("btnDots");
+const dotsMenu = document.getElementById("dotsMenu");
+const btnVoltar = document.getElementById("btnVoltar");
+const loader = document.getElementById("loader");
+const loaderTexto = document.getElementById("loaderTexto");
+const alertaPontoAberto = document.getElementById("alertaPontoAberto");
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+const documentos = {
+  privacidade: {
+    titulo: 'Política de Privacidade',
+    conteudo: `POLÍTICA DE PRIVACIDADE - DOMUSFIT
+
+A Academia DomusFit respeita a privacidade dos seus colaboradores e está comprometida em proteger os dados pessoais tratados no âmbito do Sistema de Ponto.
+
+1. COLETA DE DADOS
+Coletamos nome, Número de Acesso (NA), telefone e registros de ponto (data, hora de entrada e saída, imagem de confirmação).
+
+2. FINALIDADE DO TRATAMENTO
+Os dados são utilizados exclusivamente para controle de frequência, cumprimento de obrigações trabalhistas e gestão interna.
+
+3. ARMAZENAMENTO E SEGURANÇA
+Os dados são armazenados em servidores seguros, com criptografia e controle de acesso restrito, pelo prazo legal aplicável.
+
+4. COMPARTILHAMENTO
+Não compartilhamos dados com terceiros, exceto quando exigido por lei ou ordem judicial.
+
+5. DIREITOS DO TITULAR
+Você pode solicitar acesso, correção, anonimização, portabilidade ou exclusão dos seus dados pessoais.
+
+6. CONTATO
+Solicitações devem ser encaminhadas ao suporte da Academia DomusFit.
+
+Este documento integra o Sistema de Ponto DomusFit.`
+  },
+  termos: {
+    titulo: 'Termos de Uso',
+    conteudo: `TERMOS DE USO - SISTEMA DE PONTO DOMUSFIT
+
+1. ACEITAÇÃO
+Ao utilizar o Sistema de Ponto DomusFit, o usuário declara ter lido, compreendido e aceito integralmente estes Termos.
+
+2. RESPONSABILIDADE DO USUÁRIO
+O usuário é responsável pela veracidade das informações fornecidas no registro do ponto.
+
+3. NATUREZA DOS REGISTROS
+Os registros de ponto constituem documentos oficiais e podem ser utilizados para fins trabalhistas, fiscais e legais.
+
+4. USO ADEQUADO
+O sistema deve ser utilizado exclusivamente para fins de controle de frequência da Academia DomusFit.
+
+5. VEDAÇÕES
+É vedado compartilhar credenciais, manipular registros ou utilizar o sistema para fins não autorizados.
+
+6. ALTERAÇÕES
+A Academia DomusFit poderá alterar estes Termos, mediante comunicação prévia aos usuários.
+
+7. VIGÊNCIA
+Estes Termos vigoram a partir do primeiro uso do sistema e enquanto o usuário estiver ativo.
+
+8. FORO
+Fica eleito o foro da Comarca de João Câmara/RN para dirimir eventuais controvérsias.`
+  },
+  manual: {
+    titulo: 'Manual do Usuário',
+    conteudo: `MANUAL DO USUÁRIO - SISTEMA DE PONTO DOMUSFIT
+
+1. ACESSO
+Realize login com seu Número de Acesso (NA) e senha fornecidos pela Academia.
+
+2. REGISTRAR ENTRADA
+- Acesse o menu "Batida de Ponto"
+- Clique em "Iniciar Ponto"
+- Resolva o cálculo de verificação
+- Permita o acesso à câmera
+- Aguarde a captura da imagem de confirmação
+- O registro será salvo automaticamente
+
+3. REGISTRAR SAÍDA
+- Clique em "Finalizar Dia"
+- Repita o procedimento de verificação
+- Ao final, um comprovante será exibido
+
+4. CONSULTAR CARGA HORÁRIA
+- Acesse "Carga Horária" no menu
+- Informe o mês e o ano desejados (MM/AAAA)
+- Visualize os registros e o total de horas
+
+5. ABRIR CHAMADO
+- Utilize a Central de Atendimento para dúvidas ou problemas técnicos
+- Preencha o formulário e aceite os termos
+- Envie pelo WhatsApp
+
+6. DOCUMENTOS
+Acesse os documentos institucionais no rodapé do sistema.
+
+7. PERFIL
+Clique no seu nome no topo para visualizar os dados cadastrais.`
+  }
+};
+
+function toast(msg){
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerText = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2800);
+}
+
+function showLoader(msg){
+  loaderTexto.textContent = msg || 'Carregando...';
+  loader.classList.add('aberto');
+}
+function hideLoader(){ loader.classList.remove('aberto'); }
+
+function abrirOverlay(id){ document.getElementById(id).classList.add('aberto'); }
+function fecharOverlay(id){ document.getElementById(id).classList.remove('aberto'); }
+
+function formatDuration(ms){
+  const h = Math.floor(ms/3600000);
+  const m = Math.floor((ms%3600000)/60000);
+  const s = Math.floor((ms%60000)/1000);
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function getDataChave(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function playNotificationSound(){
+  try {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.3);
+  } catch(e){}
+}
+
+function atualizarHeader(){
+  if(telaAtual === 'login' || telaAtual === 'menu'){
+    btnVoltar.classList.remove('visivel');
+  } else {
+    btnVoltar.classList.add('visivel');
+  }
+  if(telaAtual === 'login'){
+    btnUsuario.classList.add('hidden');
+  } else {
+    btnUsuario.classList.remove('hidden');
+    avatarMini.src = userData.foto || `https://ui-avatars.com/api/?background=1351B4&color=fff&name=${encodeURIComponent(userData.nome||'')}`;
+    nomeHeader.textContent = userData.nome ? userData.nome.split(' ')[0] : 'Usuário';
+  }
+}
+
+btnDots.addEventListener('click', function(e){
+  e.stopPropagation();
+  dotsMenu.classList.toggle('aberto');
+});
+
+document.addEventListener('click', function(e){
+  if(!dotsMenu.contains(e.target) && e.target !== btnDots){
+    dotsMenu.classList.remove('aberto');
+  }
+});
+
+btnVoltar.addEventListener('click', goHome);
+
+function menuAction(action){
+  dotsMenu.classList.remove('aberto');
+  if(action === 'perfil'){ abrirPerfil(); return; }
+  if(action === 'menu'){ renderTela('menu'); return; }
+  if(action === 'carga'){ renderTela('carga'); return; }
+  if(action === 'chamado'){ renderTela('chamado'); return; }
+  if(action === 'sair'){ sair(); return; }
+  if(action === 'privacidade' || action === 'termos' || action === 'manual'){
+    verDocumento(action);
+    return;
+  }
+}
+
+function abrirPerfil(){
+  document.getElementById('perfilNomeValor').textContent = userData.nome || '--';
+  document.getElementById('perfilNaValor').textContent = currentUser || '--';
+  document.getElementById('perfilTelefone').textContent = userData.telefone || '--';
+  abrirOverlay('overlayPerfil');
+}
+
+function sair(){
+  if(!confirm('Deseja realmente sair do sistema?')) return;
+  localStorage.removeItem('usuarioAtual');
+  window.location.href = 'login2.html';
+}
+
+function goHome(){
+  if(telaAtual === 'login') return;
+  renderTela('menu');
+}
+
+function irParaPonto(){
+  renderTela('ponto');
+}
+
+db.ref("usuarios/"+currentUser).on("value", snap => {
+  if(snap.exists()){
+    userData = snap.val();
+    atualizarHeader();
+  }
+});
+
+db.ref("pontos/"+currentUser+"/ativo/inicio").on("value", snap => {
+  const inicio = snap.val();
+  if(inicio){
+    pontoAtivo = true;
+    pontoStart = inicio;
+    startCronometroLocal();
+    alertaPontoAberto.classList.add('visivel');
+  } else {
+    pontoAtivo = false;
+    pontoStart = null;
+    if(cronInterval) clearInterval(cronInterval);
+    alertaPontoAberto.classList.remove('visivel');
+  }
+  atualizarHeader();
+  // Atualiza tela do ponto se estiver visível
+  if(telaAtual === 'ponto'){
+    const btnIni = document.getElementById('btnIniciar');
+    const btnFin = document.getElementById('btnFinalizar');
+    if(btnIni && btnFin){
+      if(pontoAtivo){
+        btnIni.classList.add('hidden');
+        btnFin.classList.remove('hidden');
+      } else {
+        btnIni.classList.remove('hidden');
+        btnFin.classList.add('hidden');
+      }
+    }
+  }
+});
+
+function startCronometroLocal(){
+  if(cronInterval) clearInterval(cronInterval);
+  cronInterval = setInterval(() => {
+    if(pontoAtivo && pontoStart){
+      const el = document.getElementById('cronodisplay');
+      if(el) el.innerText = formatDuration(Date.now() - pontoStart);
+    }
+  }, 1000);
+}
+
+function renderTela(tela){
+  telaAtual = tela;
+  atualizarHeader();
+  dotsMenu.classList.remove('aberto');
+
+  mainArea.innerHTML = '';
+
+  if(tela === 'menu') renderMenu();
+  else if(tela === 'ponto') renderPonto();
+  else if(tela === 'carga') renderCarga();
+  else if(tela === 'chamado') renderChamado();
+  else if(tela === 'login') renderLogin();
+}
+
+/* ====== RENDER LOGIN ====== */
+function renderLogin(){
+  mainArea.innerHTML = `
+    <div class="login-wrap">
+      <div class="login-card">
+        <h2>${userData.nome || 'Carregando...'}</h2>
+        <div class="sub">Sistema de Ponto DomusFit</div>
+        <img class="avatar-circle" id="loginAvatar" src="${userData.foto || ''}" onerror="this.src='https://ui-avatars.com/api/?background=1351B4&color=fff&name=${encodeURIComponent(userData.nome||'U')}'">
+        <button class="btn btn-primary btn-block" id="btnAcessar" style="margin-top:16px;">Acessar o Sistema</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('btnAcessar').addEventListener('click', () => renderTela('menu'));
+}
+
+/* ====== RENDER MENU (novo layout com cards de ícone) ====== */
+function renderMenu(){
+  mainArea.innerHTML = `
+    <section class="content">
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Pesquisar funcionalidade...">
+      </div>
+
+      <div class="menu-cards" id="menuCards">
+        <!-- Batida de Ponto -->
+        <div class="menu-card-item" data-nome="batida de ponto" onclick="renderTela('ponto')">
+          <div class="icon-circle">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          </div>
+          <div class="card-label">Batida de Ponto</div>
+          <div class="card-hint">Registre entrada e saída</div>
+        </div>
+
+        <!-- Carga Horária -->
+        <div class="menu-card-item" data-nome="carga horária" onclick="renderTela('carga')">
+          <div class="icon-circle">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+          </div>
+          <div class="card-label">Carga Horária</div>
+          <div class="card-hint">Consulte seus registros</div>
+        </div>
+
+        <!-- Abrir Chamado -->
+        <div class="menu-card-item" data-nome="abrir chamado" onclick="renderTela('chamado')">
+          <div class="icon-circle">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="card-label">Abrir Chamado</div>
+          <div class="card-hint">Suporte técnico e dúvidas</div>
+        </div>
+
+        <!-- Meu Perfil -->
+        <div class="menu-card-item" data-nome="meu perfil" onclick="abrirPerfil()">
+          <div class="icon-circle">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="card-label">Meu Perfil</div>
+          <div class="card-hint">Dados cadastrais</div>
+        </div>
+
+        <!-- Documentos -->
+        <div class="menu-card-item" data-nome="documentos" onclick="verDocumento('manual')">
+          <div class="icon-circle">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+          </div>
+          <div class="card-label">Documentos</div>
+          <div class="card-hint">Termos e manual</div>
+        </div>
+      </div>
+
+      <!-- Rodapé específico da tela -->
+      <div class="rodape" style="margin-top:30px;padding-left:0;padding-right:0;background:transparent;">
+        <hr class="rodape-divider">
+        <div class="rodape-inner">
+          <span class="link-termo" onclick="verDocumento('privacidade')">Política de Privacidade</span>
+          <span class="link-termo" onclick="verDocumento('termos')">Termos de Uso</span>
+          <span class="link-termo" onclick="verDocumento('manual')">Manual do Usuário</span>
+          <div class="copy">© ${new Date().getFullYear()} DomusFit — Sistema de Ponto</div>
+        </div>
+      </div>
+    </section>
+  `;
+
+  // Busca
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', function(){
+    const termo = this.value.toLowerCase().trim();
+    document.querySelectorAll('.menu-card-item').forEach(card => {
+      const nome = card.getAttribute('data-nome') || '';
+      card.style.display = nome.includes(termo) ? '' : 'none';
+    });
+  });
+
+  // Notificação inicial animada (mostra a cada acesso ao menu)
+  setTimeout(() => {
+    document.getElementById('notifOverlay').classList.add('aberto');
+  }, 400);
+}
+
+// Fechar notificação
+document.getElementById('btnNotifOk').addEventListener('click', () => {
+  document.getElementById('notifOverlay').classList.remove('aberto');
+});
+
+/* ====== RENDER PONTO ====== */
+function renderPonto(){
+  mainArea.innerHTML = `
+    <section class="content">
+      <div class="page-header">
+        <h1>Batida de Ponto</h1>
+        <div class="desc">Registre sua entrada ou saída do expediente</div>
+      </div>
+
+      <div class="cronometro-card">
+        <div class="cronometro-label">Tempo decorrido</div>
+        <div class="cronometro-valor" id="cronodisplay">00:00:00</div>
+        <div class="acoes-ponto">
+          <button class="btn btn-primary ${pontoAtivo ? 'hidden' : ''}" id="btnIniciar">Iniciar Ponto</button>
+          <button class="btn btn-danger ${pontoAtivo ? '' : 'hidden'}" id="btnFinalizar">Finalizar Dia</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Seu resumo do dia</div>
+        <div class="stats-grid" id="statsHoje" style="margin-bottom:0;">
+          <div class="stat-card">
+            <div class="stat-label">Status</div>
+            <div class="stat-value" id="statStatus" style="font-size:18px;">--</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Entrada de hoje</div>
+            <div class="stat-value" id="statEntrada" style="font-size:18px;">--</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Saída de hoje</div>
+            <div class="stat-value" id="statSaida" style="font-size:18px;">--</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total de hoje</div>
+            <div class="stat-value" id="statTotalHoje" style="font-size:18px;">--</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Últimos 7 dias</div>
+        <div class="chart-bars" id="chartSemana"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Registros recentes</div>
+        <div id="miniResumo"></div>
+      </div>
+
+      <!-- Rodapé -->
+      <div class="rodape" style="margin-top:30px;padding-left:0;padding-right:0;background:transparent;">
+        <hr class="rodape-divider">
+        <div class="rodape-inner">
+          <span class="link-termo" onclick="verDocumento('privacidade')">Política de Privacidade</span>
+          <span class="link-termo" onclick="verDocumento('termos')">Termos de Uso</span>
+          <span class="link-termo" onclick="verDocumento('manual')">Manual do Usuário</span>
+          <div class="copy">© ${new Date().getFullYear()} DomusFit — Sistema de Ponto</div>
+        </div>
+      </div>
+    </section>
+  `;
+
+  if(pontoAtivo && pontoStart){
+    document.getElementById('cronodisplay').innerText = formatDuration(Date.now() - pontoStart);
+  }
+  startCronometroLocal();
+
+  document.getElementById('btnIniciar').onclick = () => {
+    if(pontoAtivo){ toast('Ponto já iniciado'); return; }
+    abrirModalSeguranca('iniciar');
+  };
+  document.getElementById('btnFinalizar').onclick = () => {
+    if(!pontoAtivo){ toast('Nenhum ponto ativo'); return; }
+    abrirModalSeguranca('finalizar');
+  };
+
+  carregarResumoHoje();
+  carregarChartSemana();
+  carregarMiniHistorico();
+}
+
+async function carregarResumoHoje(){
+  const snap = await db.ref("historico/"+currentUser).once("value");
+  const hist = snap.val() || {};
+  const hoje = getDataChave();
+  const reg = hist[hoje];
+
+  const entradaEl = document.getElementById('statEntrada');
+  const saidaEl = document.getElementById('statSaida');
+  const totalEl = document.getElementById('statTotalHoje');
+  const statusEl = document.getElementById('statStatus');
+  if(!entradaEl) return;
+
+  if(!reg){
+    entradaEl.textContent = '--';
+    saidaEl.textContent = '--';
+    totalEl.textContent = '--';
+    statusEl.textContent = 'Não iniciado';
+    statusEl.style.color = 'var(--cinza-500)';
+    return;
+  }
+
+  const ini = reg.inicio ? new Date(reg.inicio).toLocaleTimeString().slice(0,5) : '--';
+  const fim = reg.fim ? new Date(reg.fim).toLocaleTimeString().slice(0,5) : '--';
+  entradaEl.textContent = ini;
+  saidaEl.textContent = fim;
+
+  if(reg.inicio && reg.fim){
+    const diff = reg.fim - reg.inicio;
+    totalEl.textContent = Math.floor(diff/3600000) + 'h ' + Math.floor((diff%3600000)/60000) + 'm';
+    statusEl.textContent = 'Finalizado';
+    statusEl.style.color = 'var(--verde)';
+  } else if(reg.inicio){
+    const diff = Date.now() - reg.inicio;
+    totalEl.textContent = Math.floor(diff/3600000) + 'h ' + Math.floor((diff%3600000)/60000) + 'm';
+    statusEl.textContent = 'Em andamento';
+    statusEl.style.color = 'var(--amarelo)';
+  }
+}
+
+async function carregarChartSemana(){
+  const snap = await db.ref("historico/"+currentUser).once("value");
+  const hist = snap.val() || {};
+  const dias = [];
+
+  const diasSemana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  for(let i = 6; i >= 0; i--){
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const chave = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const reg = hist[chave];
+    let ms = 0;
+    if(reg && reg.inicio && reg.fim) ms = reg.fim - reg.inicio;
+    dias.push({
+      data: d,
+      chave,
+      ms,
+      label: diasSemana[d.getDay()],
+      hoje: i === 0
+    });
+  }
+
+  const maxMs = Math.max(...dias.map(d => d.ms), 1);
+  const el = document.getElementById('chartSemana');
+  if(!el) return;
+
+  el.innerHTML = dias.map(d => {
+    const alturaPct = (d.ms / maxMs) * 100;
+    const horas = Math.floor(d.ms/3600000);
+    const mins = Math.floor((d.ms%3600000)/60000);
+    const valor = d.ms > 0 ? `${horas}h${mins > 0 ? mins : ''}` : '';
+    return `
+      <div class="chart-bar-item">
+        <div class="chart-value">${valor}</div>
+        <div class="chart-bar ${d.hoje ? 'hoje' : ''}" style="height:${alturaPct}%;"></div>
+        <div class="chart-label">${d.label}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function carregarMiniHistorico(){
+  const snap = await db.ref("historico/"+currentUser).once("value");
+  const hist = snap.val() || {};
+  const entradas = Object.entries(hist).slice(-7).reverse();
+  let rows = '';
+  for(const [data, val] of entradas){
+    const ini = val.inicio ? new Date(val.inicio).toLocaleTimeString().slice(0,5) : '--';
+    const fim = val.fim ? new Date(val.fim).toLocaleTimeString().slice(0,5) : '--';
+    let dur = '--';
+    if(val.inicio && val.fim){
+      const diff = val.fim - val.inicio;
+      dur = Math.floor(diff/3600000) + 'h ' + Math.floor((diff%3600000)/60000) + 'm';
+    }
+    rows += `<tr><td>${data}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td></tr>`;
+  }
+  const el = document.getElementById('miniResumo');
+  if(!el) return;
+  el.innerHTML = `
+    <table class="tabela">
+      <thead><tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="4" style="text-align:center;color:var(--cinza-500);padding:20px;">Nenhum registro encontrado</td></tr>'}</tbody>
+    </table>
+  `;
+}
+
+/* ====== RENDER CARGA ====== */
+function renderCarga(){
+  mainArea.innerHTML = `
+    <section class="content">
+      <div class="page-header">
+        <h1>Carga Horária</h1>
+        <div class="desc">Consulte seus registros por período</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Selecionar período</div>
+        <div class="filtro-row">
+          <div class="campo">
+            <label>Mês e ano (MM/AAAA)</label>
+            <input type="text" id="mesAnoInput" placeholder="MM/AAAA" maxlength="7">
+          </div>
+          <button class="btn btn-primary" id="btnBuscar">Buscar</button>
+        </div>
+      </div>
+
+      <div class="rodape" style="margin-top:30px;padding-left:0;padding-right:0;background:transparent;">
+        <hr class="rodape-divider">
+        <div class="rodape-inner">
+          <span class="link-termo" onclick="verDocumento('privacidade')">Política de Privacidade</span>
+          <span class="link-termo" onclick="verDocumento('termos')">Termos de Uso</span>
+          <span class="link-termo" onclick="verDocumento('manual')">Manual do Usuário</span>
+          <div class="copy">© ${new Date().getFullYear()} DomusFit — Sistema de Ponto</div>
+        </div>
+      </div>
+    </section>
+  `;
+
+  const input = document.getElementById('mesAnoInput');
+  input.addEventListener('input', function(e){
+    let val = e.target.value.replace(/\D/g,'');
+    if(val.length >= 2) val = val.slice(0,2)+'/'+val.slice(2,6);
+    e.target.value = val;
+  });
+
+  document.getElementById('btnBuscar').onclick = async () => {
+    const raw = input.value.trim();
+    if(!raw.match(/^\d{2}\/\d{4}$/)){ toast('Formato inválido. Use MM/AAAA'); return; }
+    const [mm, yyyy] = raw.split('/');
+    const mes = parseInt(mm), ano = parseInt(yyyy);
+    if(mes < 1 || mes > 12 || ano < 2000){ toast('Mês ou ano inválido'); return; }
+
+    showLoader('Buscando registros...');
+    const snap = await db.ref("historico/"+currentUser).once("value");
+    const pontos = snap.val() || {};
+    let totalMs = 0, linhas = '', registrosDia = [];
+    const registros = Object.entries(pontos)
+      .filter(([data]) => { const [y,m] = data.split('-').map(Number); return y===ano && m===mes; })
+      .sort((a,b) => b[0].localeCompare(a[0]));
+
+    for(const [data, val] of registros){
+      const ini = val.inicio ? new Date(val.inicio).toLocaleTimeString().slice(0,5) : '--';
+      const fim = val.fim ? new Date(val.fim).toLocaleTimeString().slice(0,5) : '--';
+      let durMs = 0;
+      let dur = '--';
+      if(val.inicio && val.fim){
+        durMs = val.fim - val.inicio;
+        totalMs += durMs;
+        dur = `${Math.floor(durMs/3600000)}h ${Math.floor((durMs%3600000)/60000)}m`;
+      }
+      registrosDia.push({data, durMs});
+      linhas += `<tr><td>${data}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td></tr>`;
+    }
+
+    const totalH = Math.floor(totalMs/3600000);
+    const totalM = Math.floor((totalMs%3600000)/60000);
+    const maxMs = Math.max(...registrosDia.map(r => r.durMs), 1);
+    const mediaMs = registrosDia.length ? totalMs / registrosDia.length : 0;
+    const mediaH = Math.floor(mediaMs/3600000);
+    const mediaM = Math.floor((mediaMs%3600000)/60000);
+
+    const chartHTML = registrosDia.slice().reverse().map(r => {
+      const pct = (r.durMs / maxMs) * 100;
+      const horas = Math.floor(r.durMs/3600000);
+      const mins = Math.floor((r.durMs%3600000)/60000);
+      const valor = r.durMs > 0 ? `${horas}h${mins > 0 ? mins : ''}` : '';
+      const dia = r.data.split('-')[2];
+      return `
+        <div class="chart-bar-item">
+          <div class="chart-value">${valor}</div>
+          <div class="chart-bar" style="height:${pct}%;"></div>
+          <div class="chart-label">${dia}</div>
+        </div>
+      `;
+    }).join('');
+
+    hideLoader();
+    mainArea.innerHTML = `
+      <section class="content">
+        <div class="page-header">
+          <h1>Carga Horária</h1>
+          <div class="desc">Período consultado: ${mm}/${yyyy}</div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total de horas</div>
+            <div class="stat-value">${totalH}h ${totalM}m</div>
+            <div class="stat-hint">${registros.length} registros</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Média diária</div>
+            <div class="stat-value">${mediaH}h ${mediaM}m</div>
+            <div class="stat-hint">Considerando dias com registro</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Dias trabalhados</div>
+            <div class="stat-value">${registros.length}</div>
+            <div class="stat-hint">No período consultado</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Distribuição diária</div>
+          <div class="chart-bars">${chartHTML || '<div style="text-align:center;width:100%;color:var(--cinza-500);padding:20px;">Nenhum registro no período</div>'}</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Registros do período</div>
+          <table class="tabela">
+            <thead><tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr></thead>
+            <tbody>${linhas || '<tr><td colspan="4" style="text-align:center;color:var(--cinza-500);padding:20px;">Nenhum registro encontrado</td></tr>'}</tbody>
+          </table>
+        </div>
+
+        <button class="btn btn-secondary" onclick="renderTela('carga')">Nova consulta</button>
+
+        <div class="rodape" style="margin-top:30px;padding-left:0;padding-right:0;background:transparent;">
+          <hr class="rodape-divider">
+          <div class="rodape-inner">
+            <span class="link-termo" onclick="verDocumento('privacidade')">Política de Privacidade</span>
+            <span class="link-termo" onclick="verDocumento('termos')">Termos de Uso</span>
+            <span class="link-termo" onclick="verDocumento('manual')">Manual do Usuário</span>
+            <div class="copy">© ${new Date().getFullYear()} DomusFit — Sistema de Ponto</div>
+          </div>
+        </div>
+      </section>
+    `;
+  };
+}
+
+/* ====== RENDER CHAMADO ====== */
+function renderChamado(){
+  mainArea.innerHTML = `
+    <section class="content">
+      <div class="page-header">
+        <h1>Abrir Chamado</h1>
+        <div class="desc">Entre em contato com o suporte</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Dados do solicitante</div>
+        <div class="info-box">
+          <div class="linha"><strong>Nome:</strong> ${userData.nome || '--'}</div>
+          <div class="linha"><strong>NA:</strong> ${currentUser}</div>
+          <div class="linha"><strong>Telefone:</strong> ${userData.telefone || '--'}</div>
+        </div>
+
+        <div class="campo">
+          <label>Motivo do chamado</label>
+          <textarea id="motivacaoTexto" placeholder="Descreva detalhadamente o motivo do seu chamado..."></textarea>
+        </div>
+
+        <div class="termo-box">
+          <p>Declaro que sou portador(a) do NA <strong>${currentUser}</strong>, responsável pelas informações prestadas, e autorizo a Academia DomusFit a tratar meus dados para fins de suporte.</p>
+          <div class="termo-check">
+            <input type="checkbox" id="termoCheck">
+            <label for="termoCheck">Li e concordo com os Termos de Uso e autorizo o tratamento dos meus dados.</label>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="btnEnviarChamado">Enviar para o Suporte</button>
+        <div id="protocoloAviso" style="margin-top:16px;text-align:center;font-size:13px;color:var(--cinza-700);"></div>
+      </div>
+
+      <div class="rodape" style="margin-top:30px;padding-left:0;padding-right:0;background:transparent;">
+        <hr class="rodape-divider">
+        <div class="rodape-inner">
+          <span class="link-termo" onclick="verDocumento('privacidade')">Política de Privacidade</span>
+          <span class="link-termo" onclick="verDocumento('termos')">Termos de Uso</span>
+          <span class="link-termo" onclick="verDocumento('manual')">Manual do Usuário</span>
+          <div class="copy">© ${new Date().getFullYear()} DomusFit — Sistema de Ponto</div>
+        </div>
+      </div>
+    </section>
+  `;
+
+  document.getElementById('btnEnviarChamado').onclick = async () => {
+    const motiv = document.getElementById('motivacaoTexto').value.trim();
+    const termo = document.getElementById('termoCheck').checked;
+    if(motiv.length < 5){ toast('Descreva o motivo com pelo menos 5 caracteres'); return; }
+    if(!termo){ toast('É necessário concordar com os termos'); return; }
+
+    showLoader('Enviando chamado...');
+    const protocolo = Math.random().toString(36).substring(2,10).toUpperCase() + Date.now().toString(36).toUpperCase();
+    const dataHora = new Date().toLocaleString("pt-BR");
+    const chamadoData = {
+      nome: userData.nome, na: currentUser, telefone: userData.telefone || "",
+      motivacao: motiv, dataHoraEnvio: dataHora, protocolo, timestamp: Date.now(), termos_aceitos: true
+    };
+    await db.ref("chamadosEdicao/"+currentUser).push(chamadoData);
+    const msg = `CHAMADO DOMUSFIT\n\nNome: ${userData.nome||''}\nNA: ${currentUser}\nTelefone: ${userData.telefone||''}\nProtocolo: ${protocolo}\nData: ${dataHora}\n\n${motiv}`;
+    window.open(`https://wa.me/5584991778690?text=${encodeURIComponent(msg)}`, '_blank');
+    playNotificationSound();
+    hideLoader();
+    document.getElementById('protocoloAviso').innerHTML = `Protocolo: <strong>${protocolo}</strong> enviado com sucesso.`;
+    document.getElementById('motivacaoTexto').value = '';
+    document.getElementById('termoCheck').checked = false;
+    toast('Chamado enviado com sucesso');
+  };
+}
+
+/* ====== DOCUMENTOS ====== */
+function verDocumento(chave){
+  const doc = documentos[chave];
+  if(!doc) return;
+  documentoAtual = chave;
+  document.getElementById('docTituloModal').textContent = doc.titulo;
+  document.getElementById('docSubModal').textContent = 'Documento institucional';
+  document.getElementById('docCorpoModal').textContent = doc.conteudo;
+  abrirOverlay('overlayDocumento');
+}
+
+function gerarPDFDocumento(chave){
+  const doc = documentos[chave];
+  if(!doc) return;
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  let y = 20;
+
+  pdf.setFontSize(14);
+  pdf.setTextColor(12, 50, 111);
+  pdf.text(doc.titulo, pageWidth/2, y, { align: 'center' });
+  y += 10;
+
+  pdf.setFontSize(9);
+  pdf.setTextColor(100, 100, 100);
+  pdf.text('Gerado em ' + new Date().toLocaleString('pt-BR'), pageWidth/2, y, { align: 'center' });
+  y += 12;
+
+  pdf.setTextColor(28, 39, 51);
+  pdf.setFontSize(10.5);
+  const lines = pdf.splitTextToSize(doc.conteudo, pageWidth - 30);
+  pdf.text(lines, 15, y);
+
+  return pdf;
+}
+
+function baixarDocumento(){
+  if(!documentoAtual) return;
+  const pdf = gerarPDFDocumento(documentoAtual);
+  pdf.save(documentos[documentoAtual].titulo.replace(/ /g,'_') + '.pdf');
+}
+
+function baixarDocumentoEspecifico(chave){
+  const pdf = gerarPDFDocumento(chave);
+  pdf.save(documentos[chave].titulo.replace(/ /g,'_') + '.pdf');
+}
+
+/* ====== VERIFICAÇÃO / CÂMERA / PONTO ====== */
+function abrirModalSeguranca(acao){
+  acaoPontoAtual = acao;
+  const ops = [
+    {a:10,b:10,t:'10 + 10'},{a:2,b:2,tvideo:'2 + 2'},{a:4,b:4Cam,t:'4 + 4'},{a:40,b:');
+40,t:'40 + 40'},
+    {a:  const spinner = document.getElementById('sp5,b:3,t:'5 + 3'},{a:8,b:2,t:'8 + 2'},{a:15,b:5,t:'15 + 5'},{a:20,b:10,t:'20 + 10'},
+    {a:6,b:6,t:'6 + 6'},{a:25,b:25,t:'25 + 25'}
+  ];
+  const op = ops[Math.floor(Math.random()*ops.length)];
+  segResultadoCorreto = op.a + op.b;
+  segOperacaoRealizada = op.t + ' = ' + segResultadoCorreto;
+  document.getElementById('campoCalculo').innerHTML = op.t + ' = ?';
+  document.getElementById('inputResultado').value = '';
+  document.getElementById('btnConfirmarSeg').disabled = true;
+  document.getElementById('segTitulo').textContent = acao === 'iniciar' ? 'Iniciar Ponto' : 'Finalizar Ponto';
+  document.getElementById('segSubtitulo').textContent = `Resolva o cálculo para ${acao === 'iniciar' ? 'iniciar' : 'finalizar'} o ponto`;
+  document.getElementById('inputResultado').focus();
+
+  document.getElementById('inputResultado').oninput = function(){
+    const val = parseInt(this.value);
+    document.getElementById('btnConfirmarSeg').disabled = (val !== segResultadoCorreto);
+  };
+
+  segCallback = () => abrirModalCamera();
+  abrirOverlay('overlaySeguranca');
+}
+
+document.getElementById('btnConfirmarSeg').addEventListener('click', () => {
+  if(segCallback) segCallback();
+  fecharOverlay('overlaySeguranca');
+});
+
+function abrirModalCamera(){
+  const video = document.getElementById('innerCamera');
+  spinner.classList.add('hidden');
+
+  abrirOverlay('overlayCamera');
+
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    fecharOverlay('overlayCamera');
+    abrirOverlay('overlaySemCamera');
+    return;
+  }
+
+  navigator.mediaDevices.getUserMedia({
+    video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 640 } },
+    audio: false
+  })
+  .then(stream => {
+    cameraStreamActive = stream;
+    video.srcObject = stream;
+    video.play().catch(e=>console.log('play error:', e));
+
+    setTimeout(() => {
+      if(!cameraStreamActive) return;
+      spinner.classList.remove('hidden');
+      setTimeout(() => {
+        if(!cameraStreamActive) return;
+        capturarFoto();
+      }, 2000);
+    }, 3000);
+  })
+  .catch(err => {
+    console.error('camera:', err);
+    fecharOverlay('overlayCamera');
+    abrirOverlay('overlaySemCamera');
+  });
+}
+
+function capturarFoto(){
+  const video = document.getElementById('videoCam');
+  const canvas = document.createElement('canvas');
+  canvas.width = 640;
+  canvas.height = 640;
+  try { canvas.getContext('2d').drawImage(video, 0, 0, 640, 640); } catch(e){}
+
+  const blob = new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.9));
+  if(cameraStreamActive){
+    cameraStreamActive.getTracks().forEach(t=>t.stop());
+    cameraStreamActive = null;
+  }
+  fecharOverlay('overlayCamera');
+
+  blob.then(b => uploadCloudinary(b))
+    .then(url => {
+      if(acaoPontoAtual === 'iniciar') iniciarPontoComSeguranca(url);
+      else finalizarPontoComSeguranca(url);
+    })
+    .catch(err => {
+      console.error('upload:', err);
+      if(acaoPontoAtual === 'iniciar') iniciarPontoComSeguranca(null);
+      else finalizarPontoComSeguranca(null);
+    });
+}
+
+function uploadCloudinary(blob){
+  const fd = new FormData();
+  fd.append('file', blob);
+  fd.append('upload_preset', UPLOAD_PRESET);
+  return fetch(CLOUDINARY_URL, { method: 'POST', body: fd })
+    .then(r => { if(!r.ok) throw new Error('Upload falhou'); return r.json(); })
+    .then(d => d.secure_url);
+}
+
+document.getElementById('btnCancelarCamera').addEventListener('click', () => {
+  if(cameraStreamActive){
+    cameraStreamActive.getTracks().forEach(t=>t.stop());
+    cameraStreamActive = null;
+  }
+  fecharOverlay('overlayCamera');
+});
+
+document.getElementById('btnContinuarSem').addEventListener('click', () => {
+  fecharOverlay('overlaySemCamera');
+  if(acaoPontoAtual === 'iniciar') iniciarPontoComSeguranca(null);
+  else finalizarPontoComSeguranca(null);
+});
+
+async function iniciarPontoComSeguranca(fotoUrl){
+  showLoader('Registrando entrada...');
+  const agora = Date.now();
+  const dataChave = getDataChave();
+  const update = { inicio: agora, calculo: segOperacaoRealizada, timestamp_inicio: agora };
+  if(fotoUrl) update.foto_inicio = fotoUrl;
+
+  await db.ref("historico/"+currentUser+"/"+dataChave).update(update);
+  await db.ref("pontos/"+currentUser+"/ativo").set({ inicio: agora });
+
+  playNotificationSound();
+  hideLoader();
+  toast('Ponto iniciado com sucesso');
+  renderTela('ponto');
+}
+
+async function finalizarPontoComSeguranca(fotoUrl){
+  showLoader('Finalizando ponto...');
+  const fim = Date.now();
+  const dataChave = getDataChave();
+  const update = { fim, calculo_fim: segOperacaoRealizada, timestamp_fim: fim };
+  if(fotoUrl) update.foto_fim = fotoUrl;
+
+  await db.ref("historico/"+currentUser+"/"+dataChave).update(update);
+  await db.ref("pontos/"+currentUser+"/ativo").remove();
+
+  playNotificationSound();
+  hideLoader();
+
+  // Gera ID de 8 dígitos para o validador (anti-fraude)
+  const idValidador = Math.floor(10000000 + Math.random() * 90000000).toString();
+
+  // Salva o registro no nó de comprovantes para o validador consultar
+  const comprovante = {
+    id: idValidador,
+    nome: userData.nome || '--',
+    na: currentUser,
+    telefone: userData.telefone || '--',
+    data: new Date().toLocaleDateString('pt-BR'),
+    hora: new Date().toLocaleTimeString('pt-BR'),
+    timestamp: fim,
+    calculo: segOperacaoRealizada,
+    foto: fotoUrl || null
+  };
+
+  try {
+    await db.ref("comprovantes/"+idValidador).set(comprovante);
+  } catch(e){
+    console.error('erro ao salvar comprovante', e);
+  }
+
+  // Redireciona para o validador passando o ID
+  window.location.href = "validador2v.html?id=" + idValidador;
+}
+
+document.getElementById('anoAtual');
+db.ref("usuarios/"+currentUser).once("value").then(snap => {
+  if(snap.exists()){
+    userData = snap.val();
+  }
+  renderTela('login');
+});
+</script>
+</body>
+</html>
