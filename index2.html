@@ -4,9 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Ponto DomusFit</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
 
 :root{
   --azul:#1351B4;
@@ -15,6 +23,7 @@
   --verde:#168821;
   --vermelho:#D6392A;
   --amarelo:#E8A33D;
+  --amarelo-claro:#FFF9E8;
   --cinza-50:#FAFAFA;
   --cinza-100:#F2F2F2;
   --cinza-200:#E5E5E5;
@@ -23,12 +32,16 @@
   --cinza-700:#333333;
   --cinza-900:#111111;
   --branco:#FFFFFF;
-  --radius:6px;
+  --rodape:#F5F6F7;
+  --radius:7px;
 }
 
-html,body{height:100%;}
+html,body{
+  min-height:100%;
+}
+
 body{
-  background:var(--cinza-50);
+  background:#fff;
   font-family:'Inter','Segoe UI',Arial,sans-serif;
   color:var(--cinza-900);
   min-height:100vh;
@@ -38,207 +51,280 @@ body{
   line-height:1.5;
 }
 
+button,
+input,
+textarea,
+select{
+  font-family:inherit;
+}
+
+/* =========================
+   CABEÇALHO
+========================= */
+
 .header{
   background:var(--azul);
-  color:var(--branco);
-  padding:0 24px;
-  height:60px;
+  color:#fff;
+  height:62px;
+  padding:0 20px;
   display:flex;
   align-items:center;
   justify-content:space-between;
   position:sticky;
   top:0;
-  z-index:100;
+  z-index:500;
+  box-shadow:0 2px 8px rgba(0,0,0,.12);
 }
 
 .header-brand{
-  font-weight:700;
+  color:#fff;
   font-size:18px;
-  letter-spacing:-0.2px;
-  color:var(--branco);
-  cursor:pointer;
+  font-weight:700;
   display:flex;
   align-items:center;
-  gap:14px;
-}
-
-.header-brand .back-btn{
-  background:rgba(255,255,255,0.15);
-  border:none;
-  color:var(--branco);
-  padding:6px 14px;
-  border-radius:var(--radius);
-  font-family:inherit;
-  font-size:13px;
-  font-weight:600;
+  gap:10px;
   cursor:pointer;
-  display:none;
-  transition:background 0.15s;
+  white-space:nowrap;
 }
 
-.header-brand .back-btn:hover{background:rgba(255,255,255,0.28);}
-.header-brand .back-btn.visivel{display:inline-block;}
+.header-brand .sub{
+  font-size:11px;
+  font-weight:400;
+  opacity:.85;
+  margin-left:5px;
+}
 
 .header-right{
   display:flex;
   align-items:center;
-  gap:10px;
 }
 
-.user-btn{
-  background:rgba(255,255,255,0.15);
-  border:none;
-  color:var(--branco);
-  padding:6px 14px;
-  border-radius:var(--radius);
-  display:flex;
-  align-items:center;
-  gap:8px;
-  cursor:pointer;
-  font-family:inherit;
-  font-size:13px;
-  font-weight:500;
-  transition:background 0.15s;
-}
-
-.user-btn:hover{background:rgba(255,255,255,0.28);}
-
-.user-btn .avatar-mini{
-  width:26px;
-  height:26px;
-  border-radius:50%;
-  object-fit:cover;
-  background:var(--azul-suave);
+.menu-dots{
+  position:relative;
 }
 
 .menu-btn{
-  background:rgba(255,255,255,0.15);
-  border:none;
-  color:var(--branco);
-  width:38px;
-  height:38px;
-  border-radius:var(--radius);
+  width:40px;
+  height:40px;
+  border:0;
+  background:transparent;
+  color:#fff;
   cursor:pointer;
-  font-size:20px;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-family:inherit;
-  font-weight:700;
-  line-height:0;
-  padding-bottom:8px;
-  transition:background 0.15s;
+  font-size:21px;
+  transition:background .2s;
 }
 
-.menu-btn:hover{background:rgba(255,255,255,0.28);}
+.menu-btn:hover{
+  background:rgba(255,255,255,.12);
+}
 
-.menu-dots{position:relative;}
+.menu-btn i{
+  font-size:21px;
+}
 
 .menu-dropdown{
   position:absolute;
-  top:46px;
+  top:48px;
   right:0;
-  background:var(--branco);
-  min-width:220px;
+  width:245px;
+  background:#fff;
   display:none;
-  z-index:200;
-  box-shadow:0 6px 20px rgba(0,0,0,0.18);
-  border-radius:var(--radius);
+  z-index:900;
+  box-shadow:0 10px 30px rgba(0,0,0,.18);
   overflow:hidden;
 }
 
-.menu-dropdown.aberto{display:block;}
+.menu-dropdown.aberto{
+  display:block;
+  animation:menuIn .18s ease;
+}
+
+@keyframes menuIn{
+  from{
+    opacity:0;
+    transform:translateY(-5px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
 
 .menu-dropdown .item{
-  padding:12px 18px;
-  cursor:pointer;
-  font-size:14px;
-  color:var(--cinza-900);
-}
-
-.menu-dropdown .item:hover{background:var(--azul-suave);color:var(--azul);}
-
-.menu-dropdown .divider{height:1px;background:var(--cinza-200);}
-
-.main{
-  flex:1;
-  display:flex;
-  width:100%;
-  max-width:1200px;
-  margin:0 auto;
-  padding:24px;
-  gap:24px;
-  align-items:flex-start;
-}
-
-.sidebar{
-  width:220px;
-  flex-shrink:0;
-  background:var(--branco);
-  border-radius:var(--radius);
-  overflow:hidden;
-  box-shadow:0 1px 3px rgba(0,0,0,0.06);
-}
-
-.sidebar-header{
-  background:var(--azul-escuro);
-  color:var(--branco);
   padding:14px 18px;
-  font-size:12px;
-  font-weight:600;
-  text-transform:uppercase;
-  letter-spacing:0.6px;
-}
-
-.menu{padding:6px 0;}
-
-.menu-item{
-  padding:12px 18px;
-  color:var(--cinza-700);
-  cursor:pointer;
+  color:var(--cinza-900);
   font-size:14px;
-  font-weight:500;
-  border-left:3px solid transparent;
-  transition:all 0.12s;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:12px;
 }
 
-.menu-item:hover{background:var(--cinza-100);color:var(--azul);}
+.menu-dropdown .item i{
+  width:20px;
+  color:var(--azul);
+  text-align:center;
+}
 
-.menu-item.active{
+.menu-dropdown .item:hover{
   background:var(--azul-suave);
   color:var(--azul);
-  border-left-color:var(--azul);
-  font-weight:600;
+}
+
+.menu-dropdown .divider{
+  height:1px;
+  background:var(--cinza-200);
+}
+
+/* =========================
+   ÁREA PRINCIPAL
+========================= */
+
+.main{
+  width:100%;
+  max-width:850px;
+  margin:0 auto;
+  padding:22px 18px 110px;
+  flex:1;
 }
 
 .content{
-  flex:1;
-  min-width:0;
+  width:100%;
 }
 
 .page-header{
-  margin-bottom:20px;
+  margin-bottom:18px;
 }
 
 .page-header h1{
   font-size:24px;
   font-weight:700;
   color:var(--cinza-900);
-  letter-spacing:-0.4px;
+  letter-spacing:-.4px;
 }
 
 .page-header .desc{
-  font-size:14px;
+  font-size:13px;
   color:var(--cinza-500);
-  margin-top:4px;
+  margin-top:3px;
 }
 
+/* =========================
+   PESQUISA
+========================= */
+
+.search-area{
+  margin-bottom:22px;
+}
+
+.search-box{
+  width:100%;
+  background:#fff;
+  border:1px solid var(--cinza-200);
+  height:48px;
+  display:flex;
+  align-items:center;
+  padding:0 15px;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+
+.search-box i{
+  color:var(--cinza-500);
+  font-size:15px;
+  margin-right:11px;
+}
+
+.search-box input{
+  flex:1;
+  border:0;
+  outline:none;
+  background:transparent;
+  font-size:14px;
+  color:var(--cinza-900);
+}
+
+.search-box input::placeholder{
+  color:#888;
+}
+
+/* =========================
+   MENU PRINCIPAL
+========================= */
+
+.function-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.function-item{
+  width:100%;
+  min-height:92px;
+  border:1px solid var(--cinza-200);
+  border-radius:12px;
+  background:#fff;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  padding:17px 18px;
+  text-align:left;
+  transition:background .18s,transform .18s,border-color .18s;
+}
+
+.function-item:hover{
+  background:#FAFCFF;
+  border-color:#BFD0E9;
+  transform:translateY(-1px);
+}
+
+.function-icon{
+  width:56px;
+  height:56px;
+  border-radius:12px;
+  background:var(--azul-suave);
+  color:var(--azul);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  flex-shrink:0;
+}
+
+.function-info{
+  padding-left:16px;
+  flex:1;
+}
+
+.function-title{
+  color:var(--cinza-900);
+  font-weight:700;
+  font-size:15px;
+  margin-bottom:2px;
+}
+
+.function-desc{
+  color:var(--cinza-500);
+  font-size:12px;
+  line-height:1.4;
+}
+
+.function-arrow{
+  color:#999;
+  font-size:14px;
+  margin-left:10px;
+}
+
+/* =========================
+   CARDS
+========================= */
+
 .card{
-  background:var(--branco);
-  border-radius:var(--radius);
-  padding:22px;
-  margin-bottom:16px;
-  box-shadow:0 1px 3px rgba(0,0,0,0.06);
+  background:#fff;
+  padding:20px 0;
+  margin-bottom:15px;
 }
 
 .card-title{
@@ -250,209 +336,183 @@ body{
 
 .cards-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:16px;
-  margin-bottom:20px;
+  grid-template-columns:1fr;
+  gap:10px;
 }
 
 .card-click{
-  background:var(--branco);
-  border-radius:var(--radius);
-  padding:24px 22px;
+  background:#fff;
+  border:1px solid var(--cinza-200);
+  border-radius:10px;
+  padding:18px;
   cursor:pointer;
-  transition:all 0.15s;
-  box-shadow:0 1px 3px rgba(0,0,0,0.06);
 }
 
 .card-click:hover{
-  box-shadow:0 6px 18px rgba(19,81,180,0.15);
-  transform:translateY(-2px);
+  border-color:#BFD0E9;
 }
 
 .card-click .card-title{
-  font-size:16px;
-  font-weight:700;
   color:var(--azul-escuro);
-  margin-bottom:6px;
+  margin-bottom:5px;
 }
 
 .card-click .card-desc{
-  font-size:13px;
   color:var(--cinza-500);
-  line-height:1.5;
+  font-size:13px;
 }
+
+/* =========================
+   BOTÕES
+========================= */
 
 .btn{
   display:inline-block;
-  padding:11px 22px;
-  border-radius:var(--radius);
-  font-family:inherit;
+  padding:11px 20px;
+  border-radius:6px;
   font-size:14px;
   font-weight:600;
   cursor:pointer;
   border:1px solid transparent;
-  transition:background 0.15s;
+  transition:.15s;
   text-align:center;
 }
 
 .btn-primary{
   background:var(--azul);
-  color:var(--branco);
+  color:#fff;
   border-color:var(--azul);
 }
 
-.btn-primary:hover{background:var(--azul-escuro);border-color:var(--azul-escuro);}
+.btn-primary:hover{
+  background:var(--azul-escuro);
+  border-color:var(--azul-escuro);
+}
 
 .btn-secondary{
-  background:var(--branco);
+  background:#fff;
   color:var(--azul);
   border-color:var(--azul);
 }
 
-.btn-secondary:hover{background:var(--azul-suave);}
+.btn-secondary:hover{
+  background:var(--azul-suave);
+}
 
 .btn-danger{
   background:var(--vermelho);
-  color:var(--branco);
+  color:#fff;
   border-color:var(--vermelho);
 }
 
-.btn-danger:hover{background:#B32D20;border-color:#B32D20;}
+.btn-danger:hover{
+  background:#B32D20;
+}
 
-.btn-block{width:100%;display:block;}
-
-.btn:disabled{opacity:0.5;cursor:not-allowed;}
-
-.login-wrap{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:40px 20px;
+.btn-block{
   width:100%;
-}
-
-.login-card{
-  background:var(--branco);
-  border-radius:var(--radius);
-  padding:36px 32px;
-  max-width:400px;
-  width:100%;
-  text-align:center;
-  box-shadow:0 2px 10px rgba(0,0,0,0.08);
-}
-
-.login-card h2{
-  font-size:20px;
-  font-weight:700;
-  color:var(--azul-escuro);
-  margin-bottom:6px;
-}
-
-.login-card .sub{
-  font-size:14px;
-  color:var(--cinza-500);
-  margin-bottom:24px;
-}
-
-.login-card .avatar-circle{
-  width:110px;
-  height:110px;
-  border-radius:50%;
-  object-fit:cover;
-  margin:0 auto 14px;
-  background:var(--cinza-200);
   display:block;
 }
 
-.cronometro-card{
-  background:var(--branco);
-  border-radius:var(--radius);
-  padding:32px 24px;
-  text-align:center;
-  margin-bottom:16px;
-  box-shadow:0 1px 3px rgba(0,0,0,0.06);
+.btn:disabled{
+  opacity:.5;
+  cursor:not-allowed;
 }
 
-.cronometro-label{
-  font-size:12px;
-  font-weight:600;
-  color:var(--cinza-500);
-  text-transform:uppercase;
-  letter-spacing:0.6px;
+/* =========================
+   PONTO
+========================= */
+
+.cronometro-card{
+  background:#fff;
+  padding:25px 0;
+  text-align:center;
   margin-bottom:10px;
 }
 
+.cronometro-label{
+  font-size:11px;
+  font-weight:600;
+  color:var(--cinza-500);
+  text-transform:uppercase;
+  letter-spacing:.7px;
+}
+
 .cronometro-valor{
-  font-size:54px;
+  font-size:52px;
   font-weight:700;
   font-family:'Courier New',monospace;
   color:var(--azul-escuro);
-  letter-spacing:3px;
-  padding:8px 0 20px;
+  letter-spacing:2px;
+  padding:10px 0 20px;
 }
 
 .acoes-ponto{
   display:flex;
-  gap:12px;
   justify-content:center;
+  gap:10px;
   flex-wrap:wrap;
 }
 
-.acoes-ponto .btn{min-width:180px;}
+.acoes-ponto .btn{
+  min-width:190px;
+}
+
+/* =========================
+   ESTATÍSTICAS
+========================= */
 
 .stats-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:16px;
-  margin-bottom:20px;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-bottom:18px;
 }
 
 .stat-card{
-  background:var(--branco);
-  border-radius:var(--radius);
-  padding:20px;
-  box-shadow:0 1px 3px rgba(0,0,0,0.06);
+  background:#fff;
+  border:1px solid var(--cinza-200);
+  padding:16px;
 }
 
 .stat-label{
-  font-size:12px;
+  font-size:10px;
   font-weight:600;
   color:var(--cinza-500);
   text-transform:uppercase;
-  letter-spacing:0.5px;
-  margin-bottom:8px;
+  letter-spacing:.5px;
+  margin-bottom:7px;
 }
 
 .stat-value{
-  font-size:26px;
+  font-size:22px;
   font-weight:700;
   color:var(--azul-escuro);
-  letter-spacing:-0.3px;
 }
 
 .stat-hint{
-  font-size:12px;
+  font-size:11px;
   color:var(--cinza-500);
-  margin-top:4px;
+  margin-top:3px;
 }
 
+/* =========================
+   GRÁFICO
+========================= */
+
 .chart-card{
-  background:var(--branco);
-  border-radius:var(--radius);
-  padding:22px;
-  margin-bottom:16px;
-  box-shadow:0 1px 3px rgba(0,0,0,0.06);
+  background:#fff;
+  padding:20px 0;
+  margin-bottom:12px;
 }
 
 .chart-bars{
   display:flex;
   align-items:flex-end;
   justify-content:space-between;
-  gap:10px;
+  gap:8px;
   height:180px;
-  padding:12px 0 0;
-  margin-top:8px;
+  padding:10px 0 0;
 }
 
 .chart-bar-item{
@@ -466,57 +526,68 @@ body{
 
 .chart-bar{
   width:100%;
-  max-width:38px;
-  background:linear-gradient(180deg,var(--azul) 0%,var(--azul-escuro) 100%);
-  border-radius:var(--radius) var(--radius) 0 0;
-  transition:height 0.4s ease;
+  max-width:34px;
+  background:linear-gradient(180deg,var(--azul),var(--azul-escuro));
+  border-radius:5px 5px 0 0;
   min-height:4px;
 }
 
-.chart-bar.hoje{background:linear-gradient(180deg,var(--verde) 0%,#0F5C17 100%);}
+.chart-bar.hoje{
+  background:linear-gradient(180deg,var(--verde),#0F5C17);
+}
 
 .chart-label{
-  font-size:11px;
+  font-size:10px;
   font-weight:600;
   color:var(--cinza-500);
-  margin-top:8px;
+  margin-top:7px;
   text-transform:uppercase;
 }
 
 .chart-value{
-  font-size:11px;
+  font-size:10px;
   color:var(--azul-escuro);
   font-weight:700;
   margin-bottom:4px;
 }
 
+/* =========================
+   TABELAS
+========================= */
+
 .tabela{
   width:100%;
   border-collapse:collapse;
-  font-size:14px;
+  font-size:13px;
 }
 
 .tabela th{
   text-align:left;
-  padding:10px 12px;
+  padding:10px;
   font-weight:600;
   color:var(--cinza-500);
   border-bottom:2px solid var(--cinza-200);
-  font-size:12px;
+  font-size:10px;
   text-transform:uppercase;
-  letter-spacing:0.4px;
 }
 
 .tabela td{
-  padding:11px 12px;
+  padding:11px 10px;
   border-bottom:1px solid var(--cinza-200);
   color:var(--cinza-900);
 }
 
-.tabela tr:last-child td{border-bottom:none;}
-.tabela tr:hover td{background:var(--cinza-50);}
+.tabela tr:last-child td{
+  border-bottom:0;
+}
 
-.campo{margin-bottom:16px;}
+/* =========================
+   FORMULÁRIOS
+========================= */
+
+.campo{
+  margin-bottom:16px;
+}
 
 .campo label{
   display:block;
@@ -530,18 +601,17 @@ body{
 .campo textarea,
 .campo select{
   width:100%;
-  padding:11px 14px;
+  padding:11px 13px;
   border:1px solid var(--cinza-300);
-  border-radius:var(--radius);
-  font-family:inherit;
+  border-radius:6px;
   font-size:14px;
   color:var(--cinza-900);
-  background:var(--branco);
-  transition:border-color 0.15s;
+  background:#fff;
 }
 
 .campo input:focus,
-.campo textarea:focus{
+.campo textarea:focus,
+.campo select:focus{
   outline:none;
   border-color:var(--azul);
 }
@@ -558,18 +628,26 @@ body{
   align-items:flex-end;
 }
 
-.filtro-row .campo{flex:1;min-width:160px;margin-bottom:0;}
+.filtro-row .campo{
+  flex:1;
+  min-width:160px;
+  margin-bottom:0;
+}
+
+/* =========================
+   INFO
+========================= */
 
 .info-box{
   background:var(--cinza-100);
-  border-radius:var(--radius);
-  padding:16px 18px;
+  padding:15px 17px;
   margin-bottom:16px;
   font-size:14px;
-  color:var(--cinza-700);
 }
 
-.info-box .linha{padding:3px 0;}
+.info-box .linha{
+  padding:3px 0;
+}
 
 .info-box .linha strong{
   color:var(--cinza-900);
@@ -579,72 +657,119 @@ body{
 
 .termo-box{
   background:var(--cinza-100);
-  border-radius:var(--radius);
-  padding:16px;
+  padding:15px;
   margin-bottom:16px;
   font-size:13px;
   color:var(--cinza-700);
-  line-height:1.6;
 }
 
 .termo-check{
   display:flex;
   align-items:flex-start;
-  gap:10px;
+  gap:9px;
   margin-top:12px;
   padding-top:12px;
   border-top:1px solid var(--cinza-200);
 }
 
-.termo-check input[type="checkbox"]{
+.termo-check input{
   width:16px;
   height:16px;
-  margin-top:2px;
   accent-color:var(--azul);
-  cursor:pointer;
+  margin-top:2px;
 }
 
-.termo-check label{
-  font-size:13px;
-  color:var(--cinza-900);
-  cursor:pointer;
-  line-height:1.5;
+/* =========================
+   LOGIN
+========================= */
+
+.login-wrap{
+  min-height:calc(100vh - 170px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
+
+.login-card{
+  background:#fff;
+  width:100%;
+  max-width:400px;
+  padding:35px 25px;
+  text-align:center;
+}
+
+.login-card h2{
+  font-size:20px;
+  color:var(--azul-escuro);
+  margin-bottom:5px;
+}
+
+.login-card .sub{
+  color:var(--cinza-500);
+  font-size:13px;
+  margin-bottom:22px;
+}
+
+.login-card .avatar-circle{
+  width:105px;
+  height:105px;
+  object-fit:cover;
+  border-radius:50%;
+  display:block;
+  margin:0 auto 15px;
+  background:var(--cinza-200);
+}
+
+/* =========================
+   OVERLAYS
+========================= */
 
 .overlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.55);
+  background:rgba(0,0,0,.56);
   display:none;
   align-items:center;
   justify-content:center;
-  z-index:1000;
+  z-index:1500;
   padding:20px;
 }
 
-.overlay.aberto{display:flex;}
+.overlay.aberto{
+  display:flex;
+}
 
 .modal{
-  background:var(--branco);
-  border-radius:var(--radius);
-  padding:26px;
-  max-width:440px;
+  background:#fff;
   width:100%;
+  max-width:440px;
   max-height:90vh;
   overflow-y:auto;
-  box-shadow:0 20px 40px rgba(0,0,0,0.25);
+  padding:27px;
+  box-shadow:0 20px 50px rgba(0,0,0,.24);
+  animation:modalIn .22s ease;
+}
+
+@keyframes modalIn{
+  from{
+    opacity:0;
+    transform:translateY(15px) scale(.98);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
 }
 
 .modal h3{
-  font-size:17px;
-  font-weight:700;
   color:var(--azul-escuro);
-  margin-bottom:8px;
+  font-size:18px;
+  margin-bottom:7px;
 }
 
 .modal .sub{
-  font-size:13px;
   color:var(--cinza-500);
+  font-size:13px;
   margin-bottom:18px;
 }
 
@@ -654,11 +779,12 @@ body{
   margin-top:20px;
 }
 
-.modal-buttons .btn{flex:1;}
+.modal-buttons .btn{
+  flex:1;
+}
 
 .calculo{
   background:var(--cinza-100);
-  border-radius:var(--radius);
   padding:20px;
   text-align:center;
   font-size:26px;
@@ -672,157 +798,475 @@ body{
   width:100%;
   padding:12px 16px;
   border:1px solid var(--cinza-300);
-  border-radius:var(--radius);
-  font-family:inherit;
   font-size:16px;
   text-align:center;
-  color:var(--cinza-900);
 }
 
-.modal-input:focus{outline:none;border-color:var(--azul);}
+.modal-input:focus{
+  outline:none;
+  border-color:var(--azul);
+}
+
+/* =========================
+   NOTIFICAÇÃO DE INÍCIO
+========================= */
+
+.ponto-alerta{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.38);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+  z-index:1800;
+}
+
+.ponto-alerta.aberto{
+  display:flex;
+}
+
+.ponto-alerta-card{
+  width:100%;
+  max-width:390px;
+  background:#fff;
+  padding:30px 25px 25px;
+  text-align:center;
+  box-shadow:0 18px 50px rgba(0,0,0,.22);
+  animation:alertaEntrada .28s ease;
+}
+
+@keyframes alertaEntrada{
+  0%{
+    opacity:0;
+    transform:translateY(25px) scale(.96);
+  }
+  100%{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
+.ponto-alerta-icone{
+  width:68px;
+  height:68px;
+  margin:0 auto 18px;
+  background:var(--azul-suave);
+  color:var(--azul);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  animation:pulseIcon .9s ease;
+}
+
+@keyframes pulseIcon{
+  0%{transform:scale(.75);opacity:.3}
+  70%{transform:scale(1.08);opacity:1}
+  100%{transform:scale(1)}
+}
+
+.ponto-alerta-card h3{
+  color:var(--cinza-900);
+  font-size:18px;
+  margin-bottom:9px;
+}
+
+.ponto-alerta-card p{
+  color:var(--cinza-500);
+  font-size:13px;
+  line-height:1.6;
+  margin-bottom:23px;
+}
+
+.ponto-alerta-card .btn{
+  width:120px;
+}
+
+/* =========================
+   ALERTA DE PONTO ABERTO
+========================= */
+
+.ponto-aberto-bar{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  background:var(--amarelo-claro);
+  border-top:1px solid #E9DDAF;
+  z-index:800;
+  min-height:66px;
+  display:none;
+  cursor:pointer;
+  box-shadow:0 -4px 15px rgba(0,0,0,.06);
+}
+
+.ponto-aberto-bar.visivel{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.ponto-aberto-inner{
+  width:100%;
+  max-width:850px;
+  padding:10px 18px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.ponto-aberto-icone{
+  color:#9B7411;
+  font-size:20px;
+  flex-shrink:0;
+}
+
+.ponto-aberto-texto{
+  flex:1;
+}
+
+.ponto-aberto-texto strong{
+  display:block;
+  color:#6D5716;
+  font-size:13px;
+}
+
+.ponto-aberto-texto span{
+  display:block;
+  color:#806F38;
+  font-size:11px;
+}
+
+.ponto-aberto-seta{
+  color:#8B751D;
+}
+
+/* =========================
+   RODAPÉ
+========================= */
+
+.footer{
+  background:var(--rodape);
+  border-top:1px dotted #C9CDD2;
+  padding:24px 18px 30px;
+  color:var(--cinza-500);
+  margin-top:auto;
+}
+
+.footer-inner{
+  width:100%;
+  max-width:850px;
+  margin:0 auto;
+}
+
+.footer-links{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:7px 18px;
+  margin-bottom:12px;
+}
+
+.footer-link{
+  color:var(--cinza-500);
+  font-size:11px;
+  cursor:pointer;
+}
+
+.footer-link:hover{
+  color:var(--azul);
+}
+
+.footer-copy{
+  text-align:center;
+  font-size:10px;
+  color:#888;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:82px;
+  transform:translateX(-50%);
+  background:#202124;
+  color:#fff;
+  padding:11px 20px;
+  font-size:13px;
+  z-index:2500;
+  box-shadow:0 5px 18px rgba(0,0,0,.22);
+  animation:toastIn .2s ease;
+}
+
+@keyframes toastIn{
+  from{
+    opacity:0;
+    transform:translate(-50%,10px);
+  }
+  to{
+    opacity:1;
+    transform:translate(-50%,0);
+  }
+}
+
+/* =========================
+   LOADER
+========================= */
+
+.loader{
+  position:fixed;
+  inset:0;
+  background:rgba(255,255,255,.92);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  z-index:2200;
+}
+
+.loader.aberto{
+  display:flex;
+}
+
+.spinner{
+  width:46px;
+  height:46px;
+  border:4px solid var(--cinza-200);
+  border-top-color:var(--azul);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+.loader .texto{
+  margin-top:15px;
+  color:var(--cinza-700);
+  font-size:13px;
+  font-weight:500;
+}
+
+/* =========================
+   CÂMERA
+========================= */
 
 .camera-box{
   width:320px;
   height:420px;
   background:#000;
-  border-radius:var(--radius);
   position:relative;
   overflow:hidden;
-  box-shadow:0 0 0 3px var(--azul),0 20px 60px rgba(0,0,0,0.5);
+  box-shadow:0 0 0 3px var(--azul),0 20px 60px rgba(0,0,0,.5);
 }
 
 .camera-box video{
   position:absolute;
-  top:0;left:0;
-  width:100%;height:100%;
+  inset:0;
+  width:100%;
+  height:100%;
   object-fit:cover;
 }
 
 .camera-spinner{
   position:absolute;
   inset:0;
-  background:rgba(12,50,111,0.7);
+  background:rgba(12,50,111,.7);
   display:flex;
   align-items:center;
   justify-content:center;
   z-index:5;
 }
 
-.spinner{
-  width:50px;height:50px;
-  border:4px solid rgba(255,255,255,0.25);
-  border-top-color:#fff;
-  border-radius:50%;
-  animation:spin 0.85s linear infinite;
-}
-
-@keyframes spin{to{transform:rotate(360deg);}}
-
 .camera-cancel{
   position:absolute;
   bottom:14px;
   left:50%;
   transform:translateX(-50%);
-  background:rgba(0,0,0,0.7);
-  border:none;
+  background:rgba(0,0,0,.7);
+  border:0;
   padding:9px 22px;
-  border-radius:var(--radius);
-  color:var(--branco);
-  font-family:inherit;
+  color:#fff;
   font-weight:600;
   font-size:13px;
   cursor:pointer;
   z-index:10;
-  transition:background 0.15s;
 }
 
-.camera-cancel:hover{background:rgba(0,0,0,0.9);}
+/* =========================
+   DOCUMENTOS
+========================= */
 
-.toast{
-  position:fixed;
-  bottom:24px;
-  left:50%;
-  transform:translateX(-50%);
-  background:var(--cinza-900);
-  color:var(--branco);
-  padding:12px 24px;
-  border-radius:var(--radius);
+.document-body{
+  max-height:50vh;
+  overflow-y:auto;
   font-size:14px;
-  z-index:2000;
-  box-shadow:0 6px 20px rgba(0,0,0,0.25);
-}
-
-.loader{
-  position:fixed;
-  inset:0;
-  background:rgba(255,255,255,0.9);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  z-index:1500;
-}
-
-.loader.aberto{display:flex;}
-
-.loader .spinner{
-  border-color:var(--cinza-300);
-  border-top-color:var(--azul);
-}
-
-.loader .texto{
-  margin-top:16px;
-  font-size:14px;
+  line-height:1.8;
   color:var(--cinza-700);
-  font-weight:500;
+  white-space:pre-wrap;
+  padding:14px;
+  background:var(--cinza-100);
 }
 
-.hidden{display:none!important;}
+/* =========================
+   UTILITÁRIOS
+========================= */
 
-@media(max-width:800px){
-  .main{flex-direction:column;padding:16px;}
-  .sidebar{width:100%;}
-  .header{padding:0 14px;}
-  .header-brand .sub{display:none;}
-  .camera-box{width:280px;height:360px;}
-  .cronometro-valor{font-size:38px;}
-  .stat-value{font-size:22px;}
+.hidden{
+  display:none!important;
 }
 
-@media(max-width:520px){
-  .user-btn .nome{display:none;}
-  .user-btn{padding:6px 10px;}
-  .cards-grid{grid-template-columns:1fr;}
-  .stats-grid{grid-template-columns:1fr 1fr;}
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media(max-width:600px){
+
+  .header{
+    height:58px;
+    padding:0 15px;
+  }
+
+  .header-brand{
+    font-size:16px;
+  }
+
+  .header-brand .sub{
+    display:none;
+  }
+
+  .main{
+    padding:18px 14px 105px;
+  }
+
+  .page-header h1{
+    font-size:21px;
+  }
+
+  .function-item{
+    min-height:86px;
+  }
+
+  .function-icon{
+    width:50px;
+    height:50px;
+    font-size:20px;
+  }
+
+  .cronometro-valor{
+    font-size:38px;
+  }
+
+  .acoes-ponto .btn{
+    width:100%;
+  }
+
+  .stats-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .modal{
+    padding:23px 19px;
+  }
+
+  .camera-box{
+    width:280px;
+    height:360px;
+  }
+
+  .ponto-aberto-inner{
+    padding:9px 14px;
+  }
+}
+
+@media(max-width:380px){
+  .stats-grid{
+    grid-template-columns:1fr;
+  }
+
+  .function-info{
+    padding-left:12px;
+  }
+
+  .function-title{
+    font-size:14px;
+  }
 }
 </style>
 </head>
+
 <body>
 
 <header class="header">
-  <div class="header-brand" id="headerBrand">
-    <button class="back-btn" id="btnVoltar">Voltar</button>
-    <span onclick="goHome()">DomusFit <span class="sub" style="font-weight:400;font-size:12px;color:rgba(255,255,255,0.9);margin-left:10px;">Sistema de Ponto</span></span>
+  <div class="header-brand" onclick="goHome()">
+    <span>DomusFit</span>
+    <span class="sub">Sistema de Ponto</span>
   </div>
+
   <div class="header-right">
-    <button class="user-btn hidden" id="btnUsuario" onclick="abrirPerfil()">
-      <img class="avatar-mini" id="avatarMini" src="" alt="Perfil">
-      <span class="nome" id="nomeHeader">Usuário</span>
-    </button>
     <div class="menu-dots">
-      <button class="menu-btn" id="btnDots">...</button>
+      <button class="menu-btn" id="btnDots" aria-label="Abrir menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
       <div class="menu-dropdown" id="dotsMenu">
-        <div class="item" onclick="menuAction('perfil')">Meu Perfil</div>
+
+        <div class="item" onclick="menuAction('perfil')">
+          <i class="fa-regular fa-user"></i>
+          <span>Meu Perfil</span>
+        </div>
+
         <div class="divider"></div>
-        <div class="item" onclick="menuAction('menu')">Menu Inicial</div>
-        <div class="item" onclick="menuAction('carga')">Carga Horária</div>
-        <div class="item" onclick="menuAction('chamado')">Abrir Chamado</div>
+
+        <div class="item" onclick="menuAction('menu')">
+          <i class="fa-solid fa-house"></i>
+          <span>Menu Inicial</span>
+        </div>
+
+        <div class="item" onclick="menuAction('ponto')">
+          <i class="fa-solid fa-clock"></i>
+          <span>Batida de Ponto</span>
+        </div>
+
+        <div class="item" onclick="menuAction('carga')">
+          <i class="fa-solid fa-chart-column"></i>
+          <span>Carga Horária</span>
+        </div>
+
+        <div class="item" onclick="menuAction('chamado')">
+          <i class="fa-solid fa-headset"></i>
+          <span>Abrir Chamado</span>
+        </div>
+
         <div class="divider"></div>
-        <div class="item" onclick="menuAction('privacidade')">Política de Privacidade</div>
-        <div class="item" onclick="menuAction('termos')">Termos de Uso</div>
-        <div class="item" onclick="menuAction('manual')">Manual do Usuário</div>
+
+        <div class="item" onclick="menuAction('privacidade')">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Política de Privacidade</span>
+        </div>
+
+        <div class="item" onclick="menuAction('termos')">
+          <i class="fa-solid fa-file-contract"></i>
+          <span>Termos de Uso</span>
+        </div>
+
+        <div class="item" onclick="menuAction('manual')">
+          <i class="fa-solid fa-book"></i>
+          <span>Manual do Usuário</span>
+        </div>
+
         <div class="divider"></div>
-        <div class="item" onclick="menuAction('sair')" style="color:var(--vermelho);font-weight:600;">Sair</div>
+
+        <div class="item" onclick="menuAction('sair')" style="color:var(--vermelho);">
+          <i class="fa-solid fa-right-from-bracket" style="color:var(--vermelho);"></i>
+          <span>Sair</span>
+        </div>
+
       </div>
     </div>
   </div>
@@ -830,68 +1274,259 @@ body{
 
 <main class="main" id="mainArea"></main>
 
+<footer class="footer">
+  <div class="footer-inner">
+
+    <div class="footer-links">
+
+      <span class="footer-link" onclick="verDocumento('privacidade')">
+        Política de Privacidade
+      </span>
+
+      <span class="footer-link" onclick="verDocumento('termos')">
+        Termos de Uso
+      </span>
+
+      <span class="footer-link" onclick="verDocumento('manual')">
+        Manual do Usuário
+      </span>
+
+      <span class="footer-link" onclick="renderTela('chamado')">
+        Atendimento
+      </span>
+
+    </div>
+
+    <div class="footer-copy">
+      Sistema de Ponto DomusFit
+    </div>
+
+  </div>
+</footer>
+
+<!-- ALERTA DE PONTO ABERTO -->
+<div class="ponto-aberto-bar" id="pontoAbertoBar" onclick="irParaPonto()">
+  <div class="ponto-aberto-inner">
+
+    <div class="ponto-aberto-icone">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+    </div>
+
+    <div class="ponto-aberto-texto">
+      <strong>Atenção: você está com um ponto em aberto.</strong>
+      <span>Toque aqui para acessar o ponto e finalizar o expediente.</span>
+    </div>
+
+    <div class="ponto-aberto-seta">
+      <i class="fa-solid fa-chevron-right"></i>
+    </div>
+
+  </div>
+</div>
+
+<!-- NOTIFICAÇÃO ANTES DO PONTO -->
+<div class="ponto-alerta" id="pontoAlerta">
+
+  <div class="ponto-alerta-card">
+
+    <div class="ponto-alerta-icone">
+      <i class="fa-solid fa-clock"></i>
+    </div>
+
+    <h3>Atenção antes de iniciar</h3>
+
+    <p>
+      Não esqueça de finalizar o ponto quando terminar o expediente.
+      O encerramento correto do registro é importante para manter sua
+      jornada registrada corretamente.
+    </p>
+
+    <button class="btn btn-primary" id="btnOkPonto">
+      OK
+    </button>
+
+  </div>
+
+</div>
+
+<!-- PERFIL -->
 <div class="overlay" id="overlayPerfil">
   <div class="modal">
+
     <h3>Meu Perfil</h3>
     <div class="sub">Dados cadastrais</div>
+
     <div class="info-box">
-      <div class="linha"><strong>Nome:</strong> <span id="perfilNomeValor">--</span></div>
-      <div class="linha"><strong>NA:</strong> <span id="perfilNaValor">--</span></div>
-      <div class="linha"><strong>Telefone:</strong> <span id="perfilTelefone">--</span></div>
+      <div class="linha">
+        <strong>Nome:</strong>
+        <span id="perfilNomeValor">--</span>
+      </div>
+
+      <div class="linha">
+        <strong>NA:</strong>
+        <span id="perfilNaValor">--</span>
+      </div>
+
+      <div class="linha">
+        <strong>Telefone:</strong>
+        <span id="perfilTelefone">--</span>
+      </div>
     </div>
+
     <div class="modal-buttons">
-      <button class="btn btn-secondary" onclick="fecharOverlay('overlayPerfil')">Fechar</button>
+      <button class="btn btn-secondary" onclick="fecharOverlay('overlayPerfil')">
+        Fechar
+      </button>
     </div>
+
   </div>
 </div>
 
+<!-- SEGURANÇA -->
 <div class="overlay" id="overlaySeguranca">
   <div class="modal">
+
     <h3 id="segTitulo">Verificação de Segurança</h3>
-    <div class="sub" id="segSubtitulo">Resolva o cálculo para continuar</div>
-    <div class="calculo" id="campoCalculo">10 + 10 = ?</div>
-    <input type="number" class="modal-input" id="inputResultado" placeholder="Digite o resultado" inputmode="numeric">
-    <div class="modal-buttons">
-      <button class="btn btn-secondary" onclick="fecharOverlay('overlaySeguranca'); segCallback=null;">Cancelar</button>
-      <button class="btn btn-primary" id="btnConfirmarSeg" disabled>Confirmar</button>
+
+    <div class="sub" id="segSubtitulo">
+      Resolva o cálculo para continuar
     </div>
+
+    <div class="calculo" id="campoCalculo">
+      10 + 10 = ?
+    </div>
+
+    <input
+      type="number"
+      class="modal-input"
+      id="inputResultado"
+      placeholder="Digite o resultado"
+      inputmode="numeric"
+    >
+
+    <div class="modal-buttons">
+
+      <button
+        class="btn btn-secondary"
+        onclick="fecharOverlay('overlaySeguranca'); segCallback=null;"
+      >
+        Cancelar
+      </button>
+
+      <button
+        class="btn btn-primary"
+        id="btnConfirmarSeg"
+        disabled
+      >
+        Confirmar
+      </button>
+
+    </div>
+
   </div>
 </div>
 
+<!-- CÂMERA -->
 <div class="overlay" id="overlayCamera">
+
   <div class="camera-box">
-    <video id="videoCam" autoplay playsinline muted></video>
-    <div class="camera-spinner hidden" id="spinnerCamera"><div class="spinner"></div></div>
-    <button class="camera-cancel" id="btnCancelarCamera">Cancelar</button>
+
+    <video
+      id="videoCam"
+      autoplay
+      playsinline
+      muted
+    ></video>
+
+    <div class="camera-spinner hidden" id="spinnerCamera">
+      <div class="spinner"></div>
+    </div>
+
+    <button class="camera-cancel" id="btnCancelarCamera">
+      Cancelar
+    </button>
+
   </div>
+
 </div>
 
+<!-- SEM CÂMERA -->
 <div class="overlay" id="overlaySemCamera">
+
   <div class="modal">
+
     <h3>Problemas com a câmera?</h3>
-    <div class="sub">Se você não está conseguindo usar a câmera, prossiga sem confirmação facial.</div>
-    <div class="modal-buttons">
-      <button class="btn btn-secondary" onclick="fecharOverlay('overlaySemCamera')">Cancelar</button>
-      <button class="btn btn-primary" id="btnContinuarSem">Prosseguir</button>
+
+    <div class="sub">
+      Se você não está conseguindo usar a câmera, prossiga sem confirmação facial.
     </div>
+
+    <div class="modal-buttons">
+
+      <button
+        class="btn btn-secondary"
+        onclick="fecharOverlay('overlaySemCamera')"
+      >
+        Cancelar
+      </button>
+
+      <button
+        class="btn btn-primary"
+        id="btnContinuarSem"
+      >
+        Prosseguir
+      </button>
+
+    </div>
+
   </div>
+
 </div>
 
+<!-- DOCUMENTO -->
 <div class="overlay" id="overlayDocumento">
+
   <div class="modal" style="max-width:560px;">
+
     <h3 id="docTituloModal">Documento</h3>
-    <div class="sub" id="docSubModal">Documento institucional</div>
-    <div id="docCorpoModal" style="max-height:50vh;overflow-y:auto;font-size:14px;line-height:1.8;color:var(--cinza-700);white-space:pre-wrap;padding:14px;background:var(--cinza-100);border-radius:var(--radius);"></div>
-    <div class="modal-buttons">
-      <button class="btn btn-secondary" onclick="fecharOverlay('overlayDocumento')">Fechar</button>
-      <button class="btn btn-primary" onclick="baixarDocumento()">Baixar PDF</button>
+
+    <div class="sub" id="docSubModal">
+      Documento institucional
     </div>
+
+    <div class="document-body" id="docCorpoModal"></div>
+
+    <div class="modal-buttons">
+
+      <button
+        class="btn btn-secondary"
+        onclick="fecharOverlay('overlayDocumento')"
+      >
+        Fechar
+      </button>
+
+      <button
+        class="btn btn-primary"
+        onclick="baixarDocumento()"
+      >
+        Baixar PDF
+      </button>
+
+    </div>
+
   </div>
+
 </div>
 
+<!-- LOADER -->
 <div class="loader" id="loader">
+
   <div class="spinner"></div>
-  <div class="texto" id="loaderTexto">Carregando...</div>
+
+  <div class="texto" id="loaderTexto">
+    Carregando...
+  </div>
+
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -899,6 +1534,10 @@ body{
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
+/* =========================================================
+   FIREBASE
+========================================================= */
+
 const firebaseConfig = {
   apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
   authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
@@ -906,43 +1545,57 @@ const firebaseConfig = {
   storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
   databaseURL: "https://prefeitura-de-joao-camara-default-rtdb.firebaseio.com"
 };
+
 firebase.initializeApp(firebaseConfig);
+
 const db = firebase.database();
+
 let currentUser = localStorage.getItem("usuarioAtual");
-if(!currentUser) window.location.href = "login2.html";
+
+if(!currentUser){
+  window.location.href = "login2.html";
+}
+
 let userData = {};
 let pontoAtivo = false;
 let pontoStart = null;
 let cronInterval = null;
-let telaAtual = 'login';
+let telaAtual = "login";
 
 let segCallback = null;
 let segResultadoCorreto = 0;
-let segOperacaoRealizada = '';
+let segOperacaoRealizada = "";
 let cameraStreamActive = null;
-let documentoAtual = '';
-let acaoPontoAtual = '';
+let documentoAtual = "";
+let acaoPontoAtual = "";
+let alertaPontoExibido = false;
 
 const CLOUD_NAME = "dzmjto17f";
 const UPLOAD_PRESET = "ml_default";
-const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+const CLOUDINARY_URL =
+  `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
 const mainArea = document.getElementById("mainArea");
-const btnUsuario = document.getElementById("btnUsuario");
-const avatarMini = document.getElementById("avatarMini");
-const nomeHeader = document.getElementById("nomeHeader");
 const btnDots = document.getElementById("btnDots");
 const dotsMenu = document.getElementById("dotsMenu");
-const btnVoltar = document.getElementById("btnVoltar");
 const loader = document.getElementById("loader");
 const loaderTexto = document.getElementById("loaderTexto");
+const pontoAbertoBar = document.getElementById("pontoAbertoBar");
+const pontoAlerta = document.getElementById("pontoAlerta");
+const btnOkPonto = document.getElementById("btnOkPonto");
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
+/* =========================================================
+   DOCUMENTOS
+========================================================= */
+
 const documentos = {
-  privacidade: {
-    titulo: 'Política de Privacidade',
-    conteudo: `POLÍTICA DE PRIVACIDADE - DOMUSFIT
+
+  privacidade:{
+    titulo:"Política de Privacidade",
+
+    conteudo:`POLÍTICA DE PRIVACIDADE - DOMUSFIT
 
 A Academia DomusFit respeita a privacidade dos seus colaboradores e está comprometida em proteger os dados pessoais tratados no âmbito do Sistema de Ponto.
 
@@ -966,9 +1619,11 @@ Solicitações devem ser encaminhadas ao suporte da Academia DomusFit.
 
 Este documento integra o Sistema de Ponto DomusFit.`
   },
-  termos: {
-    titulo: 'Termos de Uso',
-    conteudo: `TERMOS DE USO - SISTEMA DE PONTO DOMUSFIT
+
+  termos:{
+    titulo:"Termos de Uso",
+
+    conteudo:`TERMOS DE USO - SISTEMA DE PONTO DOMUSFIT
 
 1. ACEITAÇÃO
 Ao utilizar o Sistema de Ponto DomusFit, o usuário declara ter lido, compreendido e aceito integralmente estes Termos.
@@ -994,9 +1649,11 @@ Estes Termos vigoram a partir do primeiro uso do sistema e enquanto o usuário e
 8. FORO
 Fica eleito o foro da Comarca de João Câmara/RN para dirimir eventuais controvérsias.`
   },
-  manual: {
-    titulo: 'Manual do Usuário',
-    conteudo: `MANUAL DO USUÁRIO - SISTEMA DE PONTO DOMUSFIT
+
+  manual:{
+    titulo:"Manual do Usuário",
+
+    conteudo:`MANUAL DO USUÁRIO - SISTEMA DE PONTO DOMUSFIT
 
 1. ACESSO
 Realize login com seu Número de Acesso (NA) e senha fornecidos pela Academia.
@@ -1015,310 +1672,840 @@ Realize login com seu Número de Acesso (NA) e senha fornecidos pela Academia.
 - Ao final, um comprovante será exibido
 
 4. CONSULTAR CARGA HORÁRIA
-- Acesse "Carga Horária" no menu
-- Informe o mês e o ano desejados (MM/AAAA)
+- Acesse "Carga Horária"
+- Informe o mês e o ano desejados
 - Visualize os registros e o total de horas
 
 5. ABRIR CHAMADO
-- Utilize a Central de Atendimento para dúvidas ou problemas técnicos
-- Preencha o formulário e aceite os termos
+- Utilize a Central de Atendimento
+- Preencha o formulário
+- Aceite os termos
 - Envie pelo WhatsApp
 
 6. DOCUMENTOS
 Acesse os documentos institucionais no rodapé do sistema.
 
 7. PERFIL
-Clique no seu nome no topo para visualizar os dados cadastrais.`
+Acesse "Meu Perfil" pelo menu superior.`
   }
+
 };
 
+/* =========================================================
+   FUNÇÕES GERAIS
+========================================================= */
+
 function toast(msg){
-  const t = document.createElement('div');
-  t.className = 'toast';
+
+  const t = document.createElement("div");
+
+  t.className = "toast";
   t.innerText = msg;
+
   document.body.appendChild(t);
-  setTimeout(()=>t.remove(),2800);
+
+  setTimeout(() => {
+    t.remove();
+  },2800);
 }
 
 function showLoader(msg){
-  loaderTexto.textContent = msg || 'Carregando...';
-  loader.classList.add('aberto');
-}
-function hideLoader(){ loader.classList.remove('aberto'); }
 
-function abrirOverlay(id){ document.getElementById(id).classList.add('aberto'); }
-function fecharOverlay(id){ document.getElementById(id).classList.remove('aberto'); }
+  loaderTexto.textContent = msg || "Carregando...";
+  loader.classList.add("aberto");
+}
+
+function hideLoader(){
+  loader.classList.remove("aberto");
+}
+
+function abrirOverlay(id){
+  const el = document.getElementById(id);
+  if(el) el.classList.add("aberto");
+}
+
+function fecharOverlay(id){
+  const el = document.getElementById(id);
+  if(el) el.classList.remove("aberto");
+}
 
 function formatDuration(ms){
-  const h = Math.floor(ms/3600000);
-  const m = Math.floor((ms%3600000)/60000);
-  const s = Math.floor((ms%60000)/1000);
-  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+  const h = Math.floor(ms / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  const s = Math.floor((ms % 60000) / 1000);
+
+  return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
 }
 
 function getDataChave(){
+
   const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 }
 
 function playNotificationSound(){
-  try {
+
+  try{
+
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
+
     osc.connect(gain);
     gain.connect(audioCtx.destination);
+
     osc.frequency.value = 880;
-    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+
+    gain.gain.setValueAtTime(.2,audioCtx.currentTime);
+
+    gain.gain.exponentialRampToValueAtTime(
+      .01,
+      audioCtx.currentTime + .3
+    );
+
     osc.start();
-    osc.stop(audioCtx.currentTime + 0.3);
-  } catch(e){}
+    osc.stop(audioCtx.currentTime + .3);
+
+  }catch(e){}
 }
 
-function atualizarHeader(){
-  if(telaAtual === 'login' || telaAtual === 'menu'){
-    btnVoltar.classList.remove('visivel');
-  } else {
-    btnVoltar.classList.add('visivel');
-  }
-  if(telaAtual === 'login'){
-    btnUsuario.classList.add('hidden');
-  } else {
-    btnUsuario.classList.remove('hidden');
-    avatarMini.src = userData.foto || `https://ui-avatars.com/api/?background=1351B4&color=fff&name=${encodeURIComponent(userData.nome||'')}`;
-    nomeHeader.textContent = userData.nome ? userData.nome.split(' ')[0] : 'Usuário';
-  }
-}
+/* =========================================================
+   MENU
+========================================================= */
 
-btnDots.addEventListener('click', function(e){
+btnDots.addEventListener("click",function(e){
+
   e.stopPropagation();
-  dotsMenu.classList.toggle('aberto');
+
+  dotsMenu.classList.toggle("aberto");
 });
 
-document.addEventListener('click', function(e){
+document.addEventListener("click",function(e){
+
   if(!dotsMenu.contains(e.target) && e.target !== btnDots){
-    dotsMenu.classList.remove('aberto');
+    dotsMenu.classList.remove("aberto");
   }
-});
 
-btnVoltar.addEventListener('click', goHome);
+});
 
 function menuAction(action){
-  dotsMenu.classList.remove('aberto');
-  if(action === 'perfil'){ abrirPerfil(); return; }
-  if(action === 'menu'){ renderTela('menu'); return; }
-  if(action === 'carga'){ renderTela('carga'); return; }
-  if(action === 'chamado'){ renderTela('chamado'); return; }
-  if(action === 'sair'){ sair(); return; }
-  if(action === 'privacidade' || action === 'termos' || action === 'manual'){
+
+  dotsMenu.classList.remove("aberto");
+
+  if(action === "perfil"){
+    abrirPerfil();
+    return;
+  }
+
+  if(action === "menu"){
+    renderTela("menu");
+    return;
+  }
+
+  if(action === "ponto"){
+    renderTela("ponto");
+    return;
+  }
+
+  if(action === "carga"){
+    renderTela("carga");
+    return;
+  }
+
+  if(action === "chamado"){
+    renderTela("chamado");
+    return;
+  }
+
+  if(action === "privacidade" ||
+     action === "termos" ||
+     action === "manual"){
+
     verDocumento(action);
     return;
+  }
+
+  if(action === "sair"){
+    sair();
   }
 }
 
 function abrirPerfil(){
-  document.getElementById('perfilNomeValor').textContent = userData.nome || '--';
-  document.getElementById('perfilNaValor').textContent = currentUser || '--';
-  document.getElementById('perfilTelefone').textContent = userData.telefone || '--';
-  abrirOverlay('overlayPerfil');
+
+  document.getElementById("perfilNomeValor").textContent =
+    userData.nome || "--";
+
+  document.getElementById("perfilNaValor").textContent =
+    currentUser || "--";
+
+  document.getElementById("perfilTelefone").textContent =
+    userData.telefone || "--";
+
+  abrirOverlay("overlayPerfil");
 }
 
 function sair(){
-  if(!confirm('Deseja realmente sair do sistema?')) return;
-  localStorage.removeItem('usuarioAtual');
-  window.location.href = 'login2.html';
+
+  if(!confirm("Deseja realmente sair do sistema?")) return;
+
+  localStorage.removeItem("usuarioAtual");
+
+  window.location.href = "login2.html";
 }
 
 function goHome(){
-  if(telaAtual === 'login') return;
-  renderTela('menu');
+
+  renderTela("menu");
 }
 
-db.ref("usuarios/"+currentUser).on("value", snap => {
-  if(snap.exists()){
-    userData = snap.val();
-    atualizarHeader();
+/* =========================================================
+   PONTO ABERTO
+========================================================= */
+
+function atualizarAvisoPonto(){
+
+  if(pontoAtivo){
+
+    pontoAbertoBar.classList.add("visivel");
+
+  }else{
+
+    pontoAbertoBar.classList.remove("visivel");
+
   }
+}
+
+function irParaPonto(){
+
+  renderTela("ponto");
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+/* =========================================================
+   FIREBASE - USUÁRIO
+========================================================= */
+
+db.ref("usuarios/"+currentUser).on("value",snap => {
+
+  if(snap.exists()){
+
+    userData = snap.val();
+
+    if(telaAtual === "login"){
+      renderTela("login");
+    }
+  }
+
 });
 
-db.ref("pontos/"+currentUser+"/ativo/inicio").on("value", snap => {
+/* =========================================================
+   FIREBASE - PONTO ATIVO
+========================================================= */
+
+db.ref("pontos/"+currentUser+"/ativo/inicio")
+.on("value",snap => {
+
   const inicio = snap.val();
+
   if(inicio){
+
     pontoAtivo = true;
     pontoStart = inicio;
+
     startCronometroLocal();
-  } else {
+
+  }else{
+
     pontoAtivo = false;
     pontoStart = null;
-    if(cronInterval) clearInterval(cronInterval);
+
+    if(cronInterval){
+      clearInterval(cronInterval);
+      cronInterval = null;
+    }
   }
-  atualizarHeader();
+
+  atualizarAvisoPonto();
+
 });
 
+/* =========================================================
+   CRONÔMETRO
+========================================================= */
+
 function startCronometroLocal(){
-  if(cronInterval) clearInterval(cronInterval);
+
+  if(cronInterval){
+    clearInterval(cronInterval);
+  }
+
   cronInterval = setInterval(() => {
+
     if(pontoAtivo && pontoStart){
-      const el = document.getElementById('cronodisplay');
-      if(el) el.innerText = formatDuration(Date.now() - pontoStart);
+
+      const el = document.getElementById("cronodisplay");
+
+      if(el){
+
+        el.innerText =
+          formatDuration(Date.now() - pontoStart);
+      }
     }
-  }, 1000);
+
+  },1000);
 }
+
+/* =========================================================
+   RENDER
+========================================================= */
 
 function renderTela(tela){
+
   telaAtual = tela;
-  atualizarHeader();
-  dotsMenu.classList.remove('aberto');
 
-  mainArea.innerHTML = '';
+  dotsMenu.classList.remove("aberto");
 
-  if(tela === 'menu') renderMenu();
-  else if(tela === 'ponto') renderPonto();
-  else if(tela === 'carga') renderCarga();
-  else if(tela === 'chamado') renderChamado();
-  else if(tela === 'login') renderLogin();
+  mainArea.innerHTML = "";
+
+  if(tela === "menu"){
+    renderMenu();
+  }
+
+  else if(tela === "ponto"){
+    renderPonto();
+  }
+
+  else if(tela === "carga"){
+    renderCarga();
+  }
+
+  else if(tela === "chamado"){
+    renderChamado();
+  }
+
+  else if(tela === "login"){
+    renderLogin();
+  }
+
+  atualizarAvisoPonto();
 }
+
+/* =========================================================
+   LOGIN
+========================================================= */
 
 function renderLogin(){
+
   mainArea.innerHTML = `
+
     <div class="login-wrap">
+
       <div class="login-card">
-        <h2>${userData.nome || 'Carregando...'}</h2>
-        <div class="sub">Sistema de Ponto DomusFit</div>
-        <img class="avatar-circle" id="loginAvatar" src="${userData.foto || ''}" onerror="this.src='https://ui-avatars.com/api/?background=1351B4&color=fff&name=${encodeURIComponent(userData.nome||'U')}'">
-        <button class="btn btn-primary btn-block" id="btnAcessar" style="margin-top:16px;">Acessar o Sistema</button>
+
+        <h2>${userData.nome || "Carregando..."}</h2>
+
+        <div class="sub">
+          Sistema de Ponto DomusFit
+        </div>
+
+        <img
+          class="avatar-circle"
+          id="loginAvatar"
+          src="${userData.foto || ""}"
+          onerror="this.src='https://ui-avatars.com/api/?background=1351B4&color=fff&name=${encodeURIComponent(userData.nome || "U")}'"
+        >
+
+        <button
+          class="btn btn-primary btn-block"
+          id="btnAcessar"
+        >
+          Acessar o Sistema
+        </button>
+
       </div>
+
     </div>
   `;
-  document.getElementById('btnAcessar').addEventListener('click', () => renderTela('menu'));
+
+  document.getElementById("btnAcessar").onclick =
+    () => renderTela("menu");
 }
+
+/* =========================================================
+   MENU PRINCIPAL
+========================================================= */
 
 function renderMenu(){
+
   mainArea.innerHTML = `
+
     <section class="content">
+
       <div class="page-header">
-        <h1>Bem-vindo(a), ${(userData.nome||'').split(' ')[0] || 'Colaborador(a)'}</h1>
-        <div class="desc">Selecione uma opção para começar</div>
+
+        <h1>
+          Bem-vindo(a), ${(userData.nome || "")
+          .split(" ")[0] || "Colaborador(a)"}
+        </h1>
+
+        <div class="desc">
+          Acesse os serviços do Sistema de Ponto
+        </div>
+
       </div>
 
-      <div class="cards-grid">
-        <div class="card-click" onclick="renderTela('ponto')">
-          <div class="card-title">Batida de Ponto</div>
-          <div class="card-desc">Registre sua entrada e saída com confirmação facial e acompanhe seu tempo em tempo real.</div>
+      <div class="search-area">
+
+        <div class="search-box">
+
+          <i class="fa-solid fa-magnifying-glass"></i>
+
+          <input
+            type="search"
+            id="menuPesquisa"
+            placeholder="Pesquisar função..."
+            autocomplete="off"
+          >
+
         </div>
-        <div class="card-click" onclick="renderTela('carga')">
-          <div class="card-title">Carga Horária</div>
-          <div class="card-desc">Consulte seus registros por mês e ano, com dashboard de horas trabalhadas.</div>
-        </div>
-        <div class="card-click" onclick="renderTela('chamado')">
-          <div class="card-title">Abrir Chamado</div>
-          <div class="card-desc">Solicite suporte técnico, correção de ponto ou tire dúvidas com a equipe.</div>
-        </div>
+
       </div>
 
-      <div class="card">
-        <div class="card-title">Documentos</div>
+      <div class="function-list" id="functionList">
+
+        <div
+          class="function-item"
+          data-search="batida ponto entrada saída iniciar finalizar"
+          onclick="renderTela('ponto')"
+        >
+
+          <div class="function-icon">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+
+          <div class="function-info">
+
+            <div class="function-title">
+              Batida de Ponto
+            </div>
+
+            <div class="function-desc">
+              Registre sua entrada e saída do expediente.
+            </div>
+
+          </div>
+
+          <div class="function-arrow">
+            <i class="fa-solid fa-chevron-right"></i>
+          </div>
+
+        </div>
+
+        <div
+          class="function-item"
+          data-search="carga horária horas registros jornada frequência"
+          onclick="renderTela('carga')"
+        >
+
+          <div class="function-icon">
+            <i class="fa-solid fa-chart-column"></i>
+          </div>
+
+          <div class="function-info">
+
+            <div class="function-title">
+              Carga Horária
+            </div>
+
+            <div class="function-desc">
+              Consulte suas horas trabalhadas e registros.
+            </div>
+
+          </div>
+
+          <div class="function-arrow">
+            <i class="fa-solid fa-chevron-right"></i>
+          </div>
+
+        </div>
+
+        <div
+          class="function-item"
+          data-search="chamado suporte atendimento ajuda correção"
+          onclick="renderTela('chamado')"
+        >
+
+          <div class="function-icon">
+            <i class="fa-solid fa-headset"></i>
+          </div>
+
+          <div class="function-info">
+
+            <div class="function-title">
+              Abrir Chamado
+            </div>
+
+            <div class="function-desc">
+              Solicite suporte ou informe problemas no sistema.
+            </div>
+
+          </div>
+
+          <div class="function-arrow">
+            <i class="fa-solid fa-chevron-right"></i>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div
+        id="nenhumaFuncao"
+        style="
+          display:none;
+          text-align:center;
+          color:var(--cinza-500);
+          font-size:13px;
+          padding:30px 10px;
+        "
+      >
+        Nenhuma função encontrada.
+      </div>
+
+      <div class="card" style="margin-top:28px;">
+
+        <div class="card-title">
+          Documentos institucionais
+        </div>
+
         <table class="tabela">
+
           <tbody>
+
             <tr>
+
               <td>Política de Privacidade</td>
+
               <td style="text-align:right;">
-                <button class="btn btn-secondary" style="padding:6px 14px;font-size:13px;" onclick="verDocumento('privacidade')">Ver</button>
-                <button class="btn btn-secondary" style="padding:6px 14px;font-size:13px;margin-left:6px;" onclick="baixarDocumentoEspecifico('privacidade')">Baixar</button>
+
+                <button
+                  class="btn btn-secondary"
+                  style="padding:6px 12px;font-size:12px;"
+                  onclick="verDocumento('privacidade')"
+                >
+                  Ver
+                </button>
+
+                <button
+                  class="btn btn-secondary"
+                  style="padding:6px 12px;font-size:12px;margin-left:4px;"
+                  onclick="baixarDocumentoEspecifico('privacidade')"
+                >
+                  Baixar
+                </button>
+
               </td>
+
             </tr>
+
             <tr>
+
               <td>Termos de Uso</td>
+
               <td style="text-align:right;">
-                <button class="btn btn-secondary" style="padding:6px 14px;font-size:13px;" onclick="verDocumento('termos')">Ver</button>
-                <button class="btn btn-secondary" style="padding:6px 14px;font-size:13px;margin-left:6px;" onclick="baixarDocumentoEspecifico('termos')">Baixar</button>
+
+                <button
+                  class="btn btn-secondary"
+                  style="padding:6px 12px;font-size:12px;"
+                  onclick="verDocumento('termos')"
+                >
+                  Ver
+                </button>
+
+                <button
+                  class="btn btn-secondary"
+                  style="padding:6px 12px;font-size:12px;margin-left:4px;"
+                  onclick="baixarDocumentoEspecifico('termos')"
+                >
+                  Baixar
+                </button>
+
               </td>
+
             </tr>
+
             <tr>
+
               <td>Manual do Usuário</td>
+
               <td style="text-align:right;">
-                <button class="btn btn-secondary" style="padding:6px 14px;font-size:13px;" onclick="verDocumento('manual')">Ver</button>
-                <button class="btn btn-secondary" style="padding:6px 14px;font-size:13px;margin-left:6px;" onclick="baixarDocumentoEspecifico('manual')">Baixar</button>
+
+                <button
+                  class="btn btn-secondary"
+                  style="padding:6px 12px;font-size:12px;"
+                  onclick="verDocumento('manual')"
+                >
+                  Ver
+                </button>
+
+                <button
+                  class="btn btn-secondary"
+                  style="padding:6px 12px;font-size:12px;margin-left:4px;"
+                  onclick="baixarDocumentoEspecifico('manual')"
+                >
+                  Baixar
+                </button>
+
               </td>
+
             </tr>
+
           </tbody>
+
         </table>
+
       </div>
+
     </section>
   `;
-  if(pontoAtivo){
-    setTimeout(() => toast('Você possui um ponto em andamento'), 300);
-  }
+
+  const pesquisa = document.getElementById("menuPesquisa");
+  const itens = document.querySelectorAll(".function-item");
+  const nenhuma = document.getElementById("nenhumaFuncao");
+
+  pesquisa.addEventListener("input",function(){
+
+    const termo = this.value
+      .toLowerCase()
+      .trim();
+
+    let encontrou = false;
+
+    itens.forEach(item => {
+
+      const texto =
+        item.dataset.search.toLowerCase();
+
+      const mostrar =
+        !termo || texto.includes(termo);
+
+      item.style.display =
+        mostrar ? "flex" : "none";
+
+      if(mostrar) encontrou = true;
+    });
+
+    nenhuma.style.display =
+      encontrou ? "none" : "block";
+  });
+
 }
 
+/* =========================================================
+   PONTO
+========================================================= */
+
 function renderPonto(){
+
   mainArea.innerHTML = `
+
     <section class="content">
+
       <div class="page-header">
+
         <h1>Batida de Ponto</h1>
-        <div class="desc">Registre sua entrada ou saída do expediente</div>
+
+        <div class="desc">
+          Registre sua entrada ou saída do expediente
+        </div>
+
       </div>
 
       <div class="cronometro-card">
-        <div class="cronometro-label">Tempo decorrido</div>
-        <div class="cronometro-valor" id="cronodisplay">00:00:00</div>
+
+        <div class="cronometro-label">
+          Tempo decorrido
+        </div>
+
+        <div
+          class="cronometro-valor"
+          id="cronodisplay"
+        >
+          00:00:00
+        </div>
+
         <div class="acoes-ponto">
-          <button class="btn btn-primary" id="btnIniciar">Iniciar Ponto</button>
-          <button class="btn btn-danger hidden" id="btnFinalizar">Finalizar Dia</button>
+
+          <button
+            class="btn btn-primary"
+            id="btnIniciar"
+          >
+            <i class="fa-solid fa-play"></i>
+            &nbsp;Iniciar Ponto
+          </button>
+
+          <button
+            class="btn btn-danger hidden"
+            id="btnFinalizar"
+          >
+            <i class="fa-solid fa-stop"></i>
+            &nbsp;Finalizar Dia
+          </button>
+
         </div>
+
       </div>
 
       <div class="card">
-        <div class="card-title">Seu resumo do dia</div>
-        <div class="stats-grid" id="statsHoje" style="margin-bottom:0;">
-          <div class="stat-card">
-            <div class="stat-label">Status</div>
-            <div class="stat-value" id="statStatus" style="font-size:18px;">--</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Entrada de hoje</div>
-            <div class="stat-value" id="statEntrada" style="font-size:18px;">--</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Saída de hoje</div>
-            <div class="stat-value" id="statSaida" style="font-size:18px;">--</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Total de hoje</div>
-            <div class="stat-value" id="statTotalHoje" style="font-size:18px;">--</div>
-          </div>
+
+        <div class="card-title">
+          Seu resumo do dia
         </div>
+
+        <div
+          class="stats-grid"
+          id="statsHoje"
+          style="margin-bottom:0;"
+        >
+
+          <div class="stat-card">
+
+            <div class="stat-label">
+              Status
+            </div>
+
+            <div
+              class="stat-value"
+              id="statStatus"
+              style="font-size:18px;"
+            >
+              --
+            </div>
+
+          </div>
+
+          <div class="stat-card">
+
+            <div class="stat-label">
+              Entrada de hoje
+            </div>
+
+            <div
+              class="stat-value"
+              id="statEntrada"
+              style="font-size:18px;"
+            >
+              --
+            </div>
+
+          </div>
+
+          <div class="stat-card">
+
+            <div class="stat-label">
+              Saída de hoje
+            </div>
+
+            <div
+              class="stat-value"
+              id="statSaida"
+              style="font-size:18px;"
+            >
+              --
+            </div>
+
+          </div>
+
+          <div class="stat-card">
+
+            <div class="stat-label">
+              Total de hoje
+            </div>
+
+            <div
+              class="stat-value"
+              id="statTotalHoje"
+              style="font-size:18px;"
+            >
+              --
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
 
       <div class="card">
-        <div class="card-title">Últimos 7 dias</div>
-        <div class="chart-bars" id="chartSemana"></div>
+
+        <div class="card-title">
+          Últimos 7 dias
+        </div>
+
+        <div
+          class="chart-bars"
+          id="chartSemana"
+        ></div>
+
       </div>
 
       <div class="card">
-        <div class="card-title">Registros recentes</div>
+
+        <div class="card-title">
+          Registros recentes
+        </div>
+
         <div id="miniResumo"></div>
+
       </div>
+
     </section>
   `;
 
   if(pontoAtivo){
-    document.getElementById('btnIniciar').classList.add('hidden');
-    document.getElementById('btnFinalizar').classList.remove('hidden');
+
+    document
+      .getElementById("btnIniciar")
+      .classList.add("hidden");
+
+    document
+      .getElementById("btnFinalizar")
+      .classList.remove("hidden");
   }
 
   if(pontoAtivo && pontoStart){
-    document.getElementById('cronodisplay').innerText = formatDuration(Date.now() - pontoStart);
+
+    document.getElementById("cronodisplay").innerText =
+      formatDuration(Date.now() - pontoStart);
   }
+
   startCronometroLocal();
 
-  document.getElementById('btnIniciar').onclick = () => {
-    if(pontoAtivo){ toast('Ponto já iniciado'); return; }
-    abrirModalSeguranca('iniciar');
+  document.getElementById("btnIniciar").onclick = () => {
+
+    if(pontoAtivo){
+
+      toast("Ponto já iniciado");
+      return;
+    }
+
+    abrirAvisoAntesDoPonto();
   };
-  document.getElementById('btnFinalizar').onclick = () => {
-    if(!pontoAtivo){ toast('Nenhum ponto ativo'); return; }
-    abrirModalSeguranca('finalizar');
+
+  document.getElementById("btnFinalizar").onclick = () => {
+
+    if(!pontoAtivo){
+
+      toast("Nenhum ponto ativo");
+      return;
+    }
+
+    abrirModalSeguranca("finalizar");
   };
 
   carregarResumoHoje();
@@ -1326,522 +2513,1481 @@ function renderPonto(){
   carregarMiniHistorico();
 }
 
-async function carregarResumoHoje(){
-  const snap = await db.ref("historico/"+currentUser).once("value");
-  const hist = snap.val() || {};
-  const hoje = getDataChave();
-  const reg = hist[hoje];
+/* =========================================================
+   ALERTA ANTES DE INICIAR
+========================================================= */
 
-  const entradaEl = document.getElementById('statEntrada');
-  const saidaEl = document.getElementById('statSaida');
-  const totalEl = document.getElementById('statTotalHoje');
-  const statusEl = document.getElementById('statStatus');
-  if(!entradaEl) return;
+function abrirAvisoAntesDoPonto(){
 
-  if(!reg){
-    entradaEl.textContent = '--';
-    saidaEl.textContent = '--';
-    totalEl.textContent = '--';
-    statusEl.textContent = 'Não iniciado';
-    statusEl.style.color = 'var(--cinza-500)';
+  if(alertaPontoExibido){
+
+    abrirModalSeguranca("iniciar");
     return;
   }
 
-  const ini = reg.inicio ? new Date(reg.inicio).toLocaleTimeString().slice(0,5) : '--';
-  const fim = reg.fim ? new Date(reg.fim).toLocaleTimeString().slice(0,5) : '--';
+  alertaPontoExibido = true;
+
+  abrirOverlay("pontoAlerta");
+}
+
+btnOkPonto.addEventListener("click",function(){
+
+  fecharOverlay("pontoAlerta");
+
+  setTimeout(() => {
+    abrirModalSeguranca("iniciar");
+  },150);
+});
+
+/* =========================================================
+   RESUMO
+========================================================= */
+
+async function carregarResumoHoje(){
+
+  const snap =
+    await db.ref("historico/"+currentUser).once("value");
+
+  const hist = snap.val() || {};
+
+  const hoje = getDataChave();
+
+  const reg = hist[hoje];
+
+  const entradaEl =
+    document.getElementById("statEntrada");
+
+  const saidaEl =
+    document.getElementById("statSaida");
+
+  const totalEl =
+    document.getElementById("statTotalHoje");
+
+  const statusEl =
+    document.getElementById("statStatus");
+
+  if(!entradaEl) return;
+
+  if(!reg){
+
+    entradaEl.textContent = "--";
+    saidaEl.textContent = "--";
+    totalEl.textContent = "--";
+    statusEl.textContent = "Não iniciado";
+    statusEl.style.color = "var(--cinza-500)";
+
+    return;
+  }
+
+  const ini = reg.inicio
+    ? new Date(reg.inicio).toLocaleTimeString().slice(0,5)
+    : "--";
+
+  const fim = reg.fim
+    ? new Date(reg.fim).toLocaleTimeString().slice(0,5)
+    : "--";
+
   entradaEl.textContent = ini;
   saidaEl.textContent = fim;
 
   if(reg.inicio && reg.fim){
+
     const diff = reg.fim - reg.inicio;
-    totalEl.textContent = Math.floor(diff/3600000) + 'h ' + Math.floor((diff%3600000)/60000) + 'm';
-    statusEl.textContent = 'Finalizado';
-    statusEl.style.color = 'var(--verde)';
-  } else if(reg.inicio){
+
+    totalEl.textContent =
+      Math.floor(diff/3600000) + "h " +
+      Math.floor((diff%3600000)/60000) + "m";
+
+    statusEl.textContent = "Finalizado";
+    statusEl.style.color = "var(--verde)";
+
+  }else if(reg.inicio){
+
     const diff = Date.now() - reg.inicio;
-    totalEl.textContent = Math.floor(diff/3600000) + 'h ' + Math.floor((diff%3600000)/60000) + 'm';
-    statusEl.textContent = 'Em andamento';
-    statusEl.style.color = 'var(--amarelo)';
+
+    totalEl.textContent =
+      Math.floor(diff/3600000) + "h " +
+      Math.floor((diff%3600000)/60000) + "m";
+
+    statusEl.textContent = "Em andamento";
+    statusEl.style.color = "var(--amarelo)";
   }
 }
 
+/* =========================================================
+   GRÁFICO SEMANA
+========================================================= */
+
 async function carregarChartSemana(){
-  const snap = await db.ref("historico/"+currentUser).once("value");
+
+  const snap =
+    await db.ref("historico/"+currentUser).once("value");
+
   const hist = snap.val() || {};
+
   const dias = [];
 
-  const diasSemana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  for(let i = 6; i >= 0; i--){
+  const diasSemana =
+    ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+
+  for(let i=6;i>=0;i--){
+
     const d = new Date();
-    d.setDate(d.getDate() - i);
-    const chave = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+    d.setDate(d.getDate()-i);
+
+    const chave =
+      `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+
     const reg = hist[chave];
+
     let ms = 0;
-    if(reg && reg.inicio && reg.fim) ms = reg.fim - reg.inicio;
+
+    if(reg && reg.inicio && reg.fim){
+      ms = reg.fim - reg.inicio;
+    }
+
     dias.push({
-      data: d,
+      data:d,
       chave,
       ms,
-      label: diasSemana[d.getDay()],
-      hoje: i === 0
+      label:diasSemana[d.getDay()],
+      hoje:i === 0
     });
   }
 
-  const maxMs = Math.max(...dias.map(d => d.ms), 1);
-  const el = document.getElementById('chartSemana');
+  const maxMs =
+    Math.max(...dias.map(d => d.ms),1);
+
+  const el =
+    document.getElementById("chartSemana");
+
   if(!el) return;
 
   el.innerHTML = dias.map(d => {
-    const alturaPct = (d.ms / maxMs) * 100;
-    const horas = Math.floor(d.ms/3600000);
-    const mins = Math.floor((d.ms%3600000)/60000);
-    const valor = d.ms > 0 ? `${horas}h${mins > 0 ? mins : ''}` : '';
+
+    const alturaPct =
+      (d.ms / maxMs) * 100;
+
+    const horas =
+      Math.floor(d.ms/3600000);
+
+    const mins =
+      Math.floor((d.ms%3600000)/60000);
+
+    const valor =
+      d.ms > 0
+      ? `${horas}h${mins > 0 ? mins : ""}`
+      : "";
+
     return `
+
       <div class="chart-bar-item">
-        <div class="chart-value">${valor}</div>
-        <div class="chart-bar ${d.hoje ? 'hoje' : ''}" style="height:${alturaPct}%;"></div>
-        <div class="chart-label">${d.label}</div>
+
+        <div class="chart-value">
+          ${valor}
+        </div>
+
+        <div
+          class="chart-bar ${d.hoje ? "hoje" : ""}"
+          style="height:${alturaPct}%"
+        ></div>
+
+        <div class="chart-label">
+          ${d.label}
+        </div>
+
       </div>
     `;
-  }).join('');
+
+  }).join("");
 }
 
+/* =========================================================
+   MINI HISTÓRICO
+========================================================= */
+
 async function carregarMiniHistorico(){
-  const snap = await db.ref("historico/"+currentUser).once("value");
+
+  const snap =
+    await db.ref("historico/"+currentUser).once("value");
+
   const hist = snap.val() || {};
-  const entradas = Object.entries(hist).slice(-7).reverse();
-  let rows = '';
-  for(const [data, val] of entradas){
-    const ini = val.inicio ? new Date(val.inicio).toLocaleTimeString().slice(0,5) : '--';
-    const fim = val.fim ? new Date(val.fim).toLocaleTimeString().slice(0,5) : '--';
-    let dur = '--';
+
+  const entradas =
+    Object.entries(hist)
+      .slice(-7)
+      .reverse();
+
+  let rows = "";
+
+  for(const [data,val] of entradas){
+
+    const ini = val.inicio
+      ? new Date(val.inicio).toLocaleTimeString().slice(0,5)
+      : "--";
+
+    const fim = val.fim
+      ? new Date(val.fim).toLocaleTimeString().slice(0,5)
+      : "--";
+
+    let dur = "--";
+
     if(val.inicio && val.fim){
+
       const diff = val.fim - val.inicio;
-      dur = Math.floor(diff/3600000) + 'h ' + Math.floor((diff%3600000)/60000) + 'm';
+
+      dur =
+        Math.floor(diff/3600000) +
+        "h " +
+        Math.floor((diff%3600000)/60000) +
+        "m";
     }
-    rows += `<tr><td>${data}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td></tr>`;
+
+    rows += `
+      <tr>
+        <td>${data}</td>
+        <td>${ini}</td>
+        <td>${fim}</td>
+        <td>${dur}</td>
+      </tr>
+    `;
   }
-  const el = document.getElementById('miniResumo');
+
+  const el =
+    document.getElementById("miniResumo");
+
   if(!el) return;
+
   el.innerHTML = `
+
     <table class="tabela">
-      <thead><tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr></thead>
-      <tbody>${rows || '<tr><td colspan="4" style="text-align:center;color:var(--cinza-500);padding:20px;">Nenhum registro encontrado</td></tr>'}</tbody>
+
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Entrada</th>
+          <th>Saída</th>
+          <th>Duração</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        ${
+          rows ||
+          `
+          <tr>
+            <td
+              colspan="4"
+              style="text-align:center;color:var(--cinza-500);padding:20px;"
+            >
+              Nenhum registro encontrado
+            </td>
+          </tr>
+          `
+        }
+
+      </tbody>
+
     </table>
   `;
 }
 
+/* =========================================================
+   CARGA HORÁRIA
+========================================================= */
+
 function renderCarga(){
+
   mainArea.innerHTML = `
+
     <section class="content">
+
       <div class="page-header">
+
         <h1>Carga Horária</h1>
-        <div class="desc">Consulte seus registros por período</div>
+
+        <div class="desc">
+          Consulte seus registros por período
+        </div>
+
       </div>
 
       <div class="card">
-        <div class="card-title">Selecionar período</div>
-        <div class="filtro-row">
-          <div class="campo">
-            <label>Mês e ano (MM/AAAA)</label>
-            <input type="text" id="mesAnoInput" placeholder="MM/AAAA" maxlength="7">
-          </div>
-          <button class="btn btn-primary" id="btnBuscar">Buscar</button>
+
+        <div class="card-title">
+          Selecionar período
         </div>
+
+        <div class="filtro-row">
+
+          <div class="campo">
+
+            <label>
+              Mês e ano (MM/AAAA)
+            </label>
+
+            <input
+              type="text"
+              id="mesAnoInput"
+              placeholder="MM/AAAA"
+              maxlength="7"
+            >
+
+          </div>
+
+          <button
+            class="btn btn-primary"
+            id="btnBuscar"
+          >
+            <i class="fa-solid fa-magnifying-glass"></i>
+            &nbsp;Buscar
+          </button>
+
+        </div>
+
       </div>
+
     </section>
   `;
 
-  const input = document.getElementById('mesAnoInput');
-  input.addEventListener('input', function(e){
-    let val = e.target.value.replace(/\D/g,'');
-    if(val.length >= 2) val = val.slice(0,2)+'/'+val.slice(2,6);
+  const input =
+    document.getElementById("mesAnoInput");
+
+  input.addEventListener("input",function(e){
+
+    let val =
+      e.target.value.replace(/\D/g,"");
+
+    if(val.length >= 2){
+
+      val =
+        val.slice(0,2) +
+        "/" +
+        val.slice(2,6);
+    }
+
     e.target.value = val;
   });
 
-  document.getElementById('btnBuscar').onclick = async () => {
+  document.getElementById("btnBuscar").onclick =
+  async () => {
+
     const raw = input.value.trim();
-    if(!raw.match(/^\d{2}\/\d{4}$/)){ toast('Formato inválido. Use MM/AAAA'); return; }
-    const [mm, yyyy] = raw.split('/');
-    const mes = parseInt(mm), ano = parseInt(yyyy);
-    if(mes < 1 || mes > 12 || ano < 2000){ toast('Mês ou ano inválido'); return; }
 
-    showLoader('Buscando registros...');
-    const snap = await db.ref("historico/"+currentUser).once("value");
-    const pontos = snap.val() || {};
-    let totalMs = 0, linhas = '', registrosDia = [];
-    const registros = Object.entries(pontos)
-      .filter(([data]) => { const [y,m] = data.split('-').map(Number); return y===ano && m===mes; })
-      .sort((a,b) => b[0].localeCompare(a[0]));
+    if(!raw.match(/^\d{2}\/\d{4}$/)){
 
-    for(const [data, val] of registros){
-      const ini = val.inicio ? new Date(val.inicio).toLocaleTimeString().slice(0,5) : '--';
-      const fim = val.fim ? new Date(val.fim).toLocaleTimeString().slice(0,5) : '--';
-      let durMs = 0;
-      let dur = '--';
-      if(val.inicio && val.fim){
-        durMs = val.fim - val.inicio;
-        totalMs += durMs;
-        dur = `${Math.floor(durMs/3600000)}h ${Math.floor((durMs%3600000)/60000)}m`;
-      }
-      registrosDia.push({data, durMs});
-      linhas += `<tr><td>${data}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td></tr>`;
+      toast("Formato inválido. Use MM/AAAA");
+      return;
     }
 
-    const totalH = Math.floor(totalMs/3600000);
-    const totalM = Math.floor((totalMs%3600000)/60000);
-    const maxMs = Math.max(...registrosDia.map(r => r.durMs), 1);
-    const mediaMs = registrosDia.length ? totalMs / registrosDia.length : 0;
-    const mediaH = Math.floor(mediaMs/3600000);
-    const mediaM = Math.floor((mediaMs%3600000)/60000);
+    const [mm,yyyy] = raw.split("/");
 
-    const chartHTML = registrosDia.slice().reverse().map(r => {
-      const pct = (r.durMs / maxMs) * 100;
-      const horas = Math.floor(r.durMs/3600000);
-      const mins = Math.floor((r.durMs%3600000)/60000);
-      const valor = r.durMs > 0 ? `${horas}h${mins > 0 ? mins : ''}` : '';
-      const dia = r.data.split('-')[2];
-      return `
-        <div class="chart-bar-item">
-          <div class="chart-value">${valor}</div>
-          <div class="chart-bar" style="height:${pct}%;"></div>
-          <div class="chart-label">${dia}</div>
-        </div>
+    const mes = parseInt(mm);
+    const ano = parseInt(yyyy);
+
+    if(mes < 1 || mes > 12 || ano < 2000){
+
+      toast("Mês ou ano inválido");
+      return;
+    }
+
+    showLoader("Buscando registros...");
+
+    const snap =
+      await db.ref("historico/"+currentUser).once("value");
+
+    const pontos = snap.val() || {};
+
+    let totalMs = 0;
+    let linhas = "";
+    let registrosDia = [];
+
+    const registros =
+      Object.entries(pontos)
+      .filter(([data]) => {
+
+        const [y,m] =
+          data.split("-").map(Number);
+
+        return y === ano && m === mes;
+
+      })
+      .sort((a,b) =>
+        b[0].localeCompare(a[0])
+      );
+
+    for(const [data,val] of registros){
+
+      const ini = val.inicio
+        ? new Date(val.inicio).toLocaleTimeString().slice(0,5)
+        : "--";
+
+      const fim = val.fim
+        ? new Date(val.fim).toLocaleTimeString().slice(0,5)
+        : "--";
+
+      let durMs = 0;
+      let dur = "--";
+
+      if(val.inicio && val.fim){
+
+        durMs = val.fim - val.inicio;
+
+        totalMs += durMs;
+
+        dur =
+          `${Math.floor(durMs/3600000)}h ${Math.floor((durMs%3600000)/60000)}m`;
+      }
+
+      registrosDia.push({
+        data,
+        durMs
+      });
+
+      linhas += `
+        <tr>
+          <td>${data}</td>
+          <td>${ini}</td>
+          <td>${fim}</td>
+          <td>${dur}</td>
+        </tr>
       `;
-    }).join('');
+    }
+
+    const totalH =
+      Math.floor(totalMs/3600000);
+
+    const totalM =
+      Math.floor((totalMs%3600000)/60000);
+
+    const maxMs =
+      Math.max(...registrosDia.map(r => r.durMs),1);
+
+    const mediaMs =
+      registrosDia.length
+      ? totalMs / registrosDia.length
+      : 0;
+
+    const mediaH =
+      Math.floor(mediaMs/3600000);
+
+    const mediaM =
+      Math.floor((mediaMs%3600000)/60000);
+
+    const chartHTML =
+      registrosDia.slice().reverse().map(r => {
+
+        const pct =
+          (r.durMs/maxMs)*100;
+
+        const horas =
+          Math.floor(r.durMs/3600000);
+
+        const mins =
+          Math.floor((r.durMs%3600000)/60000);
+
+        const valor =
+          r.durMs > 0
+          ? `${horas}h${mins > 0 ? mins : ""}`
+          : "";
+
+        const dia =
+          r.data.split("-")[2];
+
+        return `
+
+          <div class="chart-bar-item">
+
+            <div class="chart-value">
+              ${valor}
+            </div>
+
+            <div
+              class="chart-bar"
+              style="height:${pct}%"
+            ></div>
+
+            <div class="chart-label">
+              ${dia}
+            </div>
+
+          </div>
+        `;
+      }).join("");
 
     hideLoader();
+
     mainArea.innerHTML = `
+
       <section class="content">
+
         <div class="page-header">
+
           <h1>Carga Horária</h1>
-          <div class="desc">Período consultado: ${mm}/${yyyy}</div>
+
+          <div class="desc">
+            Período consultado: ${mm}/${yyyy}
+          </div>
+
         </div>
 
         <div class="stats-grid">
+
           <div class="stat-card">
-            <div class="stat-label">Total de horas</div>
-            <div class="stat-value">${totalH}h ${totalM}m</div>
-            <div class="stat-hint">${registros.length} registros</div>
+
+            <div class="stat-label">
+              Total de horas
+            </div>
+
+            <div class="stat-value">
+              ${totalH}h ${totalM}m
+            </div>
+
+            <div class="stat-hint">
+              ${registros.length} registros
+            </div>
+
           </div>
+
           <div class="stat-card">
-            <div class="stat-label">Média diária</div>
-            <div class="stat-value">${mediaH}h ${mediaM}m</div>
-            <div class="stat-hint">Considerando dias com registro</div>
+
+            <div class="stat-label">
+              Média diária
+            </div>
+
+            <div class="stat-value">
+              ${mediaH}h ${mediaM}m
+            </div>
+
+            <div class="stat-hint">
+              Considerando dias com registro
+            </div>
+
           </div>
+
           <div class="stat-card">
-            <div class="stat-label">Dias trabalhados</div>
-            <div class="stat-value">${registros.length}</div>
-            <div class="stat-hint">No período consultado</div>
+
+            <div class="stat-label">
+              Dias trabalhados
+            </div>
+
+            <div class="stat-value">
+              ${registros.length}
+            </div>
+
+            <div class="stat-hint">
+              No período consultado
+            </div>
+
           </div>
+
         </div>
 
         <div class="card">
-          <div class="card-title">Distribuição diária</div>
-          <div class="chart-bars">${chartHTML || '<div style="text-align:center;width:100%;color:var(--cinza-500);padding:20px;">Nenhum registro no período</div>'}</div>
+
+          <div class="card-title">
+            Distribuição diária
+          </div>
+
+          <div class="chart-bars">
+
+            ${
+              chartHTML ||
+              `
+              <div
+                style="
+                  text-align:center;
+                  width:100%;
+                  color:var(--cinza-500);
+                  padding:20px;
+                "
+              >
+                Nenhum registro no período
+              </div>
+              `
+            }
+
+          </div>
+
         </div>
 
         <div class="card">
-          <div class="card-title">Registros do período</div>
+
+          <div class="card-title">
+            Registros do período
+          </div>
+
           <table class="tabela">
-            <thead><tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr></thead>
-            <tbody>${linhas || '<tr><td colspan="4" style="text-align:center;color:var(--cinza-500);padding:20px;">Nenhum registro encontrado</td></tr>'}</tbody>
+
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Entrada</th>
+                <th>Saída</th>
+                <th>Duração</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              ${
+                linhas ||
+                `
+                <tr>
+                  <td
+                    colspan="4"
+                    style="
+                      text-align:center;
+                      color:var(--cinza-500);
+                      padding:20px;
+                    "
+                  >
+                    Nenhum registro encontrado
+                  </td>
+                </tr>
+                `
+              }
+
+            </tbody>
+
           </table>
+
         </div>
 
-        <button class="btn btn-secondary" onclick="renderTela('carga')">Nova consulta</button>
+        <button
+          class="btn btn-secondary"
+          onclick="renderTela('carga')"
+        >
+          <i class="fa-solid fa-rotate"></i>
+          &nbsp;Nova consulta
+        </button>
+
       </section>
     `;
   };
 }
 
+/* =========================================================
+   CHAMADO
+========================================================= */
+
 function renderChamado(){
+
   mainArea.innerHTML = `
+
     <section class="content">
+
       <div class="page-header">
+
         <h1>Abrir Chamado</h1>
-        <div class="desc">Entre em contato com o suporte</div>
+
+        <div class="desc">
+          Entre em contato com o suporte
+        </div>
+
       </div>
 
       <div class="card">
-        <div class="card-title">Dados do solicitante</div>
+
+        <div class="card-title">
+          Dados do solicitante
+        </div>
+
         <div class="info-box">
-          <div class="linha"><strong>Nome:</strong> ${userData.nome || '--'}</div>
-          <div class="linha"><strong>NA:</strong> ${currentUser}</div>
-          <div class="linha"><strong>Telefone:</strong> ${userData.telefone || '--'}</div>
+
+          <div class="linha">
+            <strong>Nome:</strong>
+            ${userData.nome || "--"}
+          </div>
+
+          <div class="linha">
+            <strong>NA:</strong>
+            ${currentUser}
+          </div>
+
+          <div class="linha">
+            <strong>Telefone:</strong>
+            ${userData.telefone || "--"}
+          </div>
+
         </div>
 
         <div class="campo">
-          <label>Motivo do chamado</label>
-          <textarea id="motivacaoTexto" placeholder="Descreva detalhadamente o motivo do seu chamado..."></textarea>
+
+          <label>
+            Motivo do chamado
+          </label>
+
+          <textarea
+            id="motivacaoTexto"
+            placeholder="Descreva detalhadamente o motivo do seu chamado..."
+          ></textarea>
+
         </div>
 
         <div class="termo-box">
-          <p>Declaro que sou portador(a) do NA <strong>${currentUser}</strong>, responsável pelas informações prestadas, e autorizo a Academia DomusFit a tratar meus dados para fins de suporte.</p>
+
+          <p>
+            Declaro que sou portador(a) do NA
+            <strong>${currentUser}</strong>,
+            responsável pelas informações prestadas,
+            e autorizo a Academia DomusFit a tratar
+            meus dados para fins de suporte.
+          </p>
+
           <div class="termo-check">
-            <input type="checkbox" id="termoCheck">
-            <label for="termoCheck">Li e concordo com os Termos de Uso e autorizo o tratamento dos meus dados.</label>
+
+            <input
+              type="checkbox"
+              id="termoCheck"
+            >
+
+            <label for="termoCheck">
+              Li e concordo com os Termos de Uso
+              e autorizo o tratamento dos meus dados.
+            </label>
+
           </div>
+
         </div>
 
-        <button class="btn btn-primary btn-block" id="btnEnviarChamado">Enviar para o Suporte</button>
-        <div id="protocoloAviso" style="margin-top:16px;text-align:center;font-size:13px;color:var(--cinza-700);"></div>
+        <button
+          class="btn btn-primary btn-block"
+          id="btnEnviarChamado"
+        >
+          <i class="fa-solid fa-paper-plane"></i>
+          &nbsp;Enviar para o Suporte
+        </button>
+
+        <div
+          id="protocoloAviso"
+          style="
+            margin-top:16px;
+            text-align:center;
+            font-size:13px;
+            color:var(--cinza-700);
+          "
+        ></div>
+
       </div>
+
     </section>
   `;
 
-  document.getElementById('btnEnviarChamado').onclick = async () => {
-    const motiv = document.getElementById('motivacaoTexto').value.trim();
-    const termo = document.getElementById('termoCheck').checked;
-    if(motiv.length < 5){ toast('Descreva o motivo com pelo menos 5 caracteres'); return; }
-    if(!termo){ toast('É necessário concordar com os termos'); return; }
+  document.getElementById("btnEnviarChamado").onclick =
+  async () => {
 
-    showLoader('Enviando chamado...');
-    const protocolo = Math.random().toString(36).substring(2,10).toUpperCase() + Date.now().toString(36).toUpperCase();
-    const dataHora = new Date().toLocaleString("pt-BR");
+    const motiv =
+      document.getElementById("motivacaoTexto")
+      .value.trim();
+
+    const termo =
+      document.getElementById("termoCheck").checked;
+
+    if(motiv.length < 5){
+
+      toast(
+        "Descreva o motivo com pelo menos 5 caracteres"
+      );
+
+      return;
+    }
+
+    if(!termo){
+
+      toast(
+        "É necessário concordar com os termos"
+      );
+
+      return;
+    }
+
+    showLoader("Enviando chamado...");
+
+    const protocolo =
+      Math.random()
+      .toString(36)
+      .substring(2,10)
+      .toUpperCase() +
+      Date.now()
+      .toString(36)
+      .toUpperCase();
+
+    const dataHora =
+      new Date().toLocaleString("pt-BR");
+
     const chamadoData = {
-      nome: userData.nome, na: currentUser, telefone: userData.telefone || "",
-      motivacao: motiv, dataHoraEnvio: dataHora, protocolo, timestamp: Date.now(), termos_aceitos: true
+
+      nome:userData.nome,
+      na:currentUser,
+      telefone:userData.telefone || "",
+      motivacao:motiv,
+      dataHoraEnvio:dataHora,
+      protocolo,
+      timestamp:Date.now(),
+      termos_aceitos:true
+
     };
-    await db.ref("chamadosEdicao/"+currentUser).push(chamadoData);
-    const msg = `CHAMADO DOMUSFIT\n\nNome: ${userData.nome||''}\nNA: ${currentUser}\nTelefone: ${userData.telefone||''}\nProtocolo: ${protocolo}\nData: ${dataHora}\n\n${motiv}`;
-    window.open(`https://wa.me/5584991778690?text=${encodeURIComponent(msg)}`, '_blank');
+
+    await db
+      .ref("chamadosEdicao/"+currentUser)
+      .push(chamadoData);
+
+    const msg =
+`CHAMADO DOMUSFIT
+
+Nome: ${userData.nome || ""}
+NA: ${currentUser}
+Telefone: ${userData.telefone || ""}
+Protocolo: ${protocolo}
+Data: ${dataHora}
+
+${motiv}`;
+
+    window.open(
+      `https://wa.me/5584991778690?text=${encodeURIComponent(msg)}`,
+      "_blank"
+    );
+
     playNotificationSound();
+
     hideLoader();
-    document.getElementById('protocoloAviso').innerHTML = `Protocolo: <strong>${protocolo}</strong> enviado com sucesso.`;
-    document.getElementById('motivacaoTexto').value = '';
-    document.getElementById('termoCheck').checked = false;
-    toast('Chamado enviado com sucesso');
+
+    document.getElementById("protocoloAviso").innerHTML =
+      `Protocolo: <strong>${protocolo}</strong> enviado com sucesso.`;
+
+    document.getElementById("motivacaoTexto").value = "";
+    document.getElementById("termoCheck").checked = false;
+
+    toast("Chamado enviado com sucesso");
   };
 }
 
+/* =========================================================
+   DOCUMENTOS
+========================================================= */
+
 function verDocumento(chave){
+
   const doc = documentos[chave];
+
   if(!doc) return;
+
   documentoAtual = chave;
-  document.getElementById('docTituloModal').textContent = doc.titulo;
-  document.getElementById('docSubModal').textContent = 'Documento institucional';
-  document.getElementById('docCorpoModal').textContent = doc.conteudo;
-  abrirOverlay('overlayDocumento');
+
+  document.getElementById("docTituloModal")
+    .textContent = doc.titulo;
+
+  document.getElementById("docSubModal")
+    .textContent = "Documento institucional";
+
+  document.getElementById("docCorpoModal")
+    .textContent = doc.conteudo;
+
+  abrirOverlay("overlayDocumento");
 }
 
 function gerarPDFDocumento(chave){
+
   const doc = documentos[chave];
+
   if(!doc) return;
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF('p', 'mm', 'a4');
-  const pageWidth = pdf.internal.pageSize.getWidth();
+
+  const {jsPDF} = window.jspdf;
+
+  const pdf =
+    new jsPDF("p","mm","a4");
+
+  const pageWidth =
+    pdf.internal.pageSize.getWidth();
+
   let y = 20;
 
   pdf.setFontSize(14);
-  pdf.setTextColor(12, 50, 111);
-  pdf.text(doc.titulo, pageWidth/2, y, { align: 'center' });
+
+  pdf.setTextColor(
+    12,
+    50,
+    111
+  );
+
+  pdf.text(
+    doc.titulo,
+    pageWidth/2,
+    y,
+    {align:"center"}
+  );
+
   y += 10;
 
   pdf.setFontSize(9);
-  pdf.setTextColor(100, 100, 100);
-  pdf.text('Gerado em ' + new Date().toLocaleString('pt-BR'), pageWidth/2, y, { align: 'center' });
+
+  pdf.setTextColor(
+    100,
+    100,
+    100
+  );
+
+  pdf.text(
+    "Gerado em " +
+    new Date().toLocaleString("pt-BR"),
+    pageWidth/2,
+    y,
+    {align:"center"}
+  );
+
   y += 12;
 
-  pdf.setTextColor(28, 39, 51);
+  pdf.setTextColor(
+    28,
+    39,
+    51
+  );
+
   pdf.setFontSize(10.5);
-  const lines = pdf.splitTextToSize(doc.conteudo, pageWidth - 30);
-  pdf.text(lines, 15, y);
+
+  const lines =
+    pdf.splitTextToSize(
+      doc.conteudo,
+      pageWidth - 30
+    );
+
+  pdf.text(
+    lines,
+    15,
+    y
+  );
 
   return pdf;
 }
 
 function baixarDocumento(){
+
   if(!documentoAtual) return;
-  const pdf = gerarPDFDocumento(documentoAtual);
-  pdf.save(documentos[documentoAtual].titulo.replace(/ /g,'_') + '.pdf');
+
+  const pdf =
+    gerarPDFDocumento(documentoAtual);
+
+  pdf.save(
+    documentos[documentoAtual]
+      .titulo
+      .replace(/ /g,"_") +
+    ".pdf"
+  );
 }
 
 function baixarDocumentoEspecifico(chave){
-  const pdf = gerarPDFDocumento(chave);
-  pdf.save(documentos[chave].titulo.replace(/ /g,'_') + '.pdf');
+
+  const pdf =
+    gerarPDFDocumento(chave);
+
+  pdf.save(
+    documentos[chave]
+      .titulo
+      .replace(/ /g,"_") +
+    ".pdf"
+  );
 }
+
+/* =========================================================
+   SEGURANÇA
+========================================================= */
 
 function abrirModalSeguranca(acao){
+
   acaoPontoAtual = acao;
+
   const ops = [
-    {a:10,b:10,t:'10 + 10'},{a:2,b:2,t:'2 + 2'},{a:4,b:4,t:'4 + 4'},{a:40,b:40,t:'40 + 40'},
-    {a:5,b:3,t:'5 + 3'},{a:8,b:2,t:'8 + 2'},{a:15,b:5,t:'15 + 5'},{a:20,b:10,t:'20 + 10'},
-    {a:6,b:6,t:'6 + 6'},{a:25,b:25,t:'25 + 25'}
+
+    {a:10,b:10,t:"10 + 10"},
+    {a:2,b:2,t:"2 + 2"},
+    {a:4,b:4,t:"4 + 4"},
+    {a:40,b:40,t:"40 + 40"},
+    {a:5,b:3,t:"5 + 3"},
+    {a:8,b:2,t:"8 + 2"},
+    {a:15,b:5,t:"15 + 5"},
+    {a:20,b:10,t:"20 + 10"},
+    {a:6,b:6,t:"6 + 6"},
+    {a:25,b:25,t:"25 + 25"}
+
   ];
-  const op = ops[Math.floor(Math.random()*ops.length)];
-  segResultadoCorreto = op.a + op.b;
-  segOperacaoRealizada = op.t + ' = ' + segResultadoCorreto;
-  document.getElementById('campoCalculo').innerHTML = op.t + ' = ?';
-  document.getElementById('inputResultado').value = '';
-  document.getElementById('btnConfirmarSeg').disabled = true;
-  document.getElementById('segTitulo').textContent = acao === 'iniciar' ? 'Iniciar Ponto' : 'Finalizar Ponto';
-  document.getElementById('segSubtitulo').textContent = `Resolva o cálculo para ${acao === 'iniciar' ? 'iniciar' : 'finalizar'} o ponto`;
-  document.getElementById('inputResultado').focus();
 
-  document.getElementById('inputResultado').oninput = function(){
-    const val = parseInt(this.value);
-    document.getElementById('btnConfirmarSeg').disabled = (val !== segResultadoCorreto);
-  };
+  const op =
+    ops[Math.floor(Math.random()*ops.length)];
 
-  segCallback = () => abrirModalCamera();
-  abrirOverlay('overlaySeguranca');
+  segResultadoCorreto =
+    op.a + op.b;
+
+  segOperacaoRealizada =
+    op.t + " = " +
+    segResultadoCorreto;
+
+  document.getElementById("campoCalculo")
+    .innerHTML =
+    op.t + " = ?";
+
+  document.getElementById("inputResultado")
+    .value = "";
+
+  document.getElementById("btnConfirmarSeg")
+    .disabled = true;
+
+  document.getElementById("segTitulo")
+    .textContent =
+    acao === "iniciar"
+      ? "Iniciar Ponto"
+      : "Finalizar Ponto";
+
+  document.getElementById("segSubtitulo")
+    .textContent =
+    `Resolva o cálculo para ${
+      acao === "iniciar"
+        ? "iniciar"
+        : "finalizar"
+    } o ponto`;
+
+  document.getElementById("inputResultado")
+    .oninput = function(){
+
+      const val =
+        parseInt(this.value);
+
+      document.getElementById("btnConfirmarSeg")
+        .disabled =
+        val !== segResultadoCorreto;
+    };
+
+  abrirOverlay("overlaySeguranca");
+
+  setTimeout(() => {
+    document.getElementById("inputResultado").focus();
+  },150);
+
+  segCallback =
+    () => abrirModalCamera();
 }
 
-document.getElementById('btnConfirmarSeg').addEventListener('click', () => {
-  if(segCallback) segCallback();
-  fecharOverlay('overlaySeguranca');
+document.getElementById("btnConfirmarSeg")
+.addEventListener("click",() => {
+
+  if(segCallback){
+    segCallback();
+  }
+
+  fecharOverlay("overlaySeguranca");
 });
 
+/* =========================================================
+   CÂMERA
+========================================================= */
+
 function abrirModalCamera(){
-  const video = document.getElementById('videoCam');
-  const spinner = document.getElementById('spinnerCamera');
-  spinner.classList.add('hidden');
 
-  abrirOverlay('overlayCamera');
+  const video =
+    document.getElementById("videoCam");
 
-  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-    fecharOverlay('overlayCamera');
-    abrirOverlay('overlaySemCamera');
+  const spinner =
+    document.getElementById("spinnerCamera");
+
+  spinner.classList.add("hidden");
+
+  abrirOverlay("overlayCamera");
+
+  if(
+    !navigator.mediaDevices ||
+    !navigator.mediaDevices.getUserMedia
+  ){
+
+    fecharOverlay("overlayCamera");
+    abrirOverlay("overlaySemCamera");
+
     return;
   }
 
-  navigator.mediaDevices.getUserMedia({
-    video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 640 } },
-    audio: false
+  navigator.mediaDevices
+  .getUserMedia({
+
+    video:{
+      facingMode:"user",
+      width:{ideal:640},
+      height:{ideal:640}
+    },
+
+    audio:false
+
   })
+
   .then(stream => {
+
     cameraStreamActive = stream;
+
     video.srcObject = stream;
-    video.play().catch(e=>console.log('play error:', e));
+
+    video.play()
+      .catch(()=>{});
 
     setTimeout(() => {
+
       if(!cameraStreamActive) return;
-      spinner.classList.remove('hidden');
+
+      spinner.classList.remove("hidden");
+
       setTimeout(() => {
+
         if(!cameraStreamActive) return;
+
         capturarFoto();
-      }, 2000);
-    }, 3000);
+
+      },2000);
+
+    },3000);
+
   })
+
   .catch(err => {
-    console.error('camera:', err);
-    fecharOverlay('overlayCamera');
-    abrirOverlay('overlaySemCamera');
+
+    console.error("camera:",err);
+
+    fecharOverlay("overlayCamera");
+
+    abrirOverlay("overlaySemCamera");
   });
 }
 
 function capturarFoto(){
-  const video = document.getElementById('videoCam');
-  const canvas = document.createElement('canvas');
+
+  const video =
+    document.getElementById("videoCam");
+
+  const canvas =
+    document.createElement("canvas");
+
   canvas.width = 640;
   canvas.height = 640;
-  try { canvas.getContext('2d').drawImage(video, 0, 0, 640, 640); } catch(e){}
 
-  const blob = new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.9));
+  try{
+
+    canvas
+      .getContext("2d")
+      .drawImage(
+        video,
+        0,
+        0,
+        640,
+        640
+      );
+
+  }catch(e){}
+
+  const blob =
+    new Promise(resolve =>
+      canvas.toBlob(
+        resolve,
+        "image/jpeg",
+        .9
+      )
+    );
+
   if(cameraStreamActive){
-    cameraStreamActive.getTracks().forEach(t=>t.stop());
+
+    cameraStreamActive
+      .getTracks()
+      .forEach(t => t.stop());
+
     cameraStreamActive = null;
   }
-  fecharOverlay('overlayCamera');
 
-  blob.then(b => uploadCloudinary(b))
+  fecharOverlay("overlayCamera");
+
+  blob
+
+    .then(b => uploadCloudinary(b))
+
     .then(url => {
-      if(acaoPontoAtual === 'iniciar') iniciarPontoComSeguranca(url);
-      else finalizarPontoComSeguranca(url);
+
+      if(acaoPontoAtual === "iniciar"){
+        iniciarPontoComSeguranca(url);
+      }else{
+        finalizarPontoComSeguranca(url);
+      }
+
     })
+
     .catch(err => {
-      console.error('upload:', err);
-      if(acaoPontoAtual === 'iniciar') iniciarPontoComSeguranca(null);
-      else finalizarPontoComSeguranca(null);
+
+      console.error("upload:",err);
+
+      if(acaoPontoAtual === "iniciar"){
+        iniciarPontoComSeguranca(null);
+      }else{
+        finalizarPontoComSeguranca(null);
+      }
+
     });
 }
 
 function uploadCloudinary(blob){
-  const fd = new FormData();
-  fd.append('file', blob);
-  fd.append('upload_preset', UPLOAD_PRESET);
-  return fetch(CLOUDINARY_URL, { method: 'POST', body: fd })
-    .then(r => { if(!r.ok) throw new Error('Upload falhou'); return r.json(); })
-    .then(d => d.secure_url);
+
+  const fd =
+    new FormData();
+
+  fd.append("file",blob);
+  fd.append("upload_preset",UPLOAD_PRESET);
+
+  return fetch(
+    CLOUDINARY_URL,
+    {
+      method:"POST",
+      body:fd
+    }
+  )
+
+  .then(r => {
+
+    if(!r.ok){
+      throw new Error("Upload falhou");
+    }
+
+    return r.json();
+  })
+
+  .then(d => d.secure_url);
 }
 
-document.getElementById('btnCancelarCamera').addEventListener('click', () => {
+document.getElementById("btnCancelarCamera")
+.addEventListener("click",() => {
+
   if(cameraStreamActive){
-    cameraStreamActive.getTracks().forEach(t=>t.stop());
+
+    cameraStreamActive
+      .getTracks()
+      .forEach(t => t.stop());
+
     cameraStreamActive = null;
   }
-  fecharOverlay('overlayCamera');
+
+  fecharOverlay("overlayCamera");
 });
 
-document.getElementById('btnContinuarSem').addEventListener('click', () => {
-  fecharOverlay('overlaySemCamera');
-  if(acaoPontoAtual === 'iniciar') iniciarPontoComSeguranca(null);
-  else finalizarPontoComSeguranca(null);
+document.getElementById("btnContinuarSem")
+.addEventListener("click",() => {
+
+  fecharOverlay("overlaySemCamera");
+
+  if(acaoPontoAtual === "iniciar"){
+    iniciarPontoComSeguranca(null);
+  }else{
+    finalizarPontoComSeguranca(null);
+  }
 });
+
+/* =========================================================
+   INICIAR PONTO
+========================================================= */
 
 async function iniciarPontoComSeguranca(fotoUrl){
-  showLoader('Registrando entrada...');
-  const agora = Date.now();
-  const dataChave = getDataChave();
-  const update = { inicio: agora, calculo: segOperacaoRealizada, timestamp_inicio: agora };
-  if(fotoUrl) update.foto_inicio = fotoUrl;
 
-  await db.ref("historico/"+currentUser+"/"+dataChave).update(update);
-  await db.ref("pontos/"+currentUser+"/ativo").set({ inicio: agora });
+  showLoader("Registrando entrada...");
 
-  playNotificationSound();
-  hideLoader();
-  toast('Ponto iniciado com sucesso');
-  renderTela('ponto');
-}
+  const agora =
+    Date.now();
 
-async function finalizarPontoComSeguranca(fotoUrl){
-  showLoader('Finalizando ponto...');
-  const fim = Date.now();
-  const dataChave = getDataChave();
-  const update = { fim, calculo_fim: segOperacaoRealizada, timestamp_fim: fim };
-  if(fotoUrl) update.foto_fim = fotoUrl;
+  const dataChave =
+    getDataChave();
 
-  await db.ref("historico/"+currentUser+"/"+dataChave).update(update);
-  await db.ref("pontos/"+currentUser+"/ativo").remove();
+  const update = {
 
-  playNotificationSound();
-  hideLoader();
+    inicio:agora,
 
-  // Gera ID de 8 dígitos para o validador (anti-fraude)
-  const idValidador = Math.floor(10000000 + Math.random() * 90000000).toString();
+    calculo:segOperacaoRealizada,
 
-  // Salva o registro no nó de comprovantes para o validador consultar
-  const comprovante = {
-    id: idValidador,
-    nome: userData.nome || '--',
-    na: currentUser,
-    telefone: userData.telefone || '--',
-    data: new Date().toLocaleDateString('pt-BR'),
-    hora: new Date().toLocaleTimeString('pt-BR'),
-    timestamp: fim,
-    calculo: segOperacaoRealizada,
-    foto: fotoUrl || null
+    timestamp_inicio:agora
   };
 
-  try {
-    await db.ref("comprovantes/"+idValidador).set(comprovante);
-  } catch(e){
-    console.error('erro ao salvar comprovante', e);
+  if(fotoUrl){
+    update.foto_inicio = fotoUrl;
   }
 
-  // Redireciona para o validador passando o ID
-  window.location.href = "validador2v.html?id=" + idValidador;
+  try{
+
+    await db
+      .ref(
+        "historico/" +
+        currentUser +
+        "/" +
+        dataChave
+      )
+      .update(update);
+
+    await db
+      .ref(
+        "pontos/" +
+        currentUser +
+        "/ativo"
+      )
+      .set({
+        inicio:agora
+      });
+
+    playNotificationSound();
+
+    hideLoader();
+
+    toast(
+      "Ponto iniciado com sucesso"
+    );
+
+    renderTela("ponto");
+
+  }catch(err){
+
+    console.error(err);
+
+    hideLoader();
+
+    toast(
+      "Não foi possível registrar o ponto"
+    );
+  }
 }
 
-document.getElementById('anoAtual');
-db.ref("usuarios/"+currentUser).once("value").then(snap => {
+/* =========================================================
+   FINALIZAR PONTO
+========================================================= */
+
+async function finalizarPontoComSeguranca(fotoUrl){
+
+  showLoader("Finalizando ponto...");
+
+  const fim =
+    Date.now();
+
+  const dataChave =
+    getDataChave();
+
+  const update = {
+
+    fim,
+
+    calculo_fim:
+      segOperacaoRealizada,
+
+    timestamp_fim:
+      fim
+  };
+
+  if(fotoUrl){
+    update.foto_fim = fotoUrl;
+  }
+
+  try{
+
+    await db
+      .ref(
+        "historico/" +
+        currentUser +
+        "/" +
+        dataChave
+      )
+      .update(update);
+
+    await db
+      .ref(
+        "pontos/" +
+        currentUser +
+        "/ativo"
+      )
+      .remove();
+
+    playNotificationSound();
+
+    const idValidador =
+      Math.floor(
+        10000000 +
+        Math.random() * 90000000
+      ).toString();
+
+    const comprovante = {
+
+      id:idValidador,
+
+      nome:userData.nome || "--",
+
+      na:currentUser,
+
+      telefone:
+        userData.telefone || "--",
+
+      data:
+        new Date()
+        .toLocaleDateString("pt-BR"),
+
+      hora:
+        new Date()
+        .toLocaleTimeString("pt-BR"),
+
+      timestamp:fim,
+
+      calculo:
+        segOperacaoRealizada,
+
+      foto:
+        fotoUrl || null
+    };
+
+    try{
+
+      await db
+        .ref(
+          "comprovantes/" +
+          idValidador
+        )
+        .set(comprovante);
+
+    }catch(e){
+
+      console.error(
+        "erro ao salvar comprovante",
+        e
+      );
+    }
+
+    hideLoader();
+
+    window.location.href =
+      "validador2v.html?id=" +
+      idValidador;
+
+  }catch(err){
+
+    console.error(err);
+
+    hideLoader();
+
+    toast(
+      "Não foi possível finalizar o ponto"
+    );
+  }
+}
+
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
+
+db.ref("usuarios/"+currentUser)
+.once("value")
+.then(snap => {
+
   if(snap.exists()){
     userData = snap.val();
   }
-  renderTela('login');
+
+  renderTela("login");
+
 });
 </script>
+
 </body>
 </html>
