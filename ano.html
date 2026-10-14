@@ -1,68 +1,66 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Inscrição - Domus Fit</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
 body{background:#fff;color:#111;min-height:100vh}
-header{position:fixed;top:0;left:0;right:0;background:#fff;box-shadow:0 2px 12px #00000014;padding:22px 24px;z-index:300}
-header h1{font-size:22px;font-weight:600;letter-spacing:.3px}
-.info-evento{position:fixed;top:78px;left:0;right:0;background:#f7f7f7;padding:14px 24px;z-index:290;box-shadow:0 1px 3px #0000000a}
-.info-evento h2{font-size:15px;font-weight:700;margin-bottom:8px}
-.info-evento p{font-size:13px;color:#444;line-height:1.5;border-bottom:1px dashed #d5d5d5;padding-bottom:5px;margin-bottom:5px}
-.info-evento p:last-child{border:0;padding-bottom:0;margin-bottom:0}
-main{padding:300px 24px 140px;max-width:640px;margin:0 auto}
+header{position:fixed;top:0;left:0;right:0;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.08);padding:22px 24px;z-index:300;display:flex;align-items:center}
+header h1{font-size:22px;font-weight:600;letter-spacing:.3px;color:#111}
+.info-evento{position:fixed;top:78px;left:0;right:0;background:#f7f7f7;padding:14px 24px;z-index:290;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.info-evento h2{font-size:15px;font-weight:700;letter-spacing:.3px;color:#111;margin-bottom:8px}
+.info-evento p{font-size:13px;color:#444;line-height:1.5;letter-spacing:.2px;border-bottom:1px dashed #d5d5d5;padding-bottom:5px;margin-bottom:5px}
+.info-evento p:last-child{border-bottom:none;padding-bottom:0;margin-bottom:0}
+main{padding-top:300px;padding-bottom:180px;max-width:640px;margin:0 auto;padding-left:24px;padding-right:24px}
 .form-wrap{position:relative;min-height:340px}
 form{width:100%}
 .field{position:relative;margin-bottom:34px}
-.field input{width:100%;border:0;border-bottom:1.5px solid #ccc;background:transparent;padding:20px 0 8px;font-size:16px;color:#111;outline:none;letter-spacing:.5px}
+.field input{width:100%;border:none;border-bottom:1.5px solid #ccc;background:transparent;padding:20px 0 8px;font-size:16px;color:#111;outline:none;letter-spacing:.5px}
 .field input:focus{border-bottom-color:#111}
-.field label{position:absolute;left:0;top:20px;font-size:16px;color:#999;pointer-events:none;transition:all .22s}
+.field label{position:absolute;left:0;top:20px;font-size:16px;color:#999;pointer-events:none;transition:all .22s ease}
 .field input:focus+label,.field input:not(:placeholder-shown)+label{top:-2px;font-size:12px;color:#666;letter-spacing:1px}
-.phone-field{margin-bottom:34px}
-.phone-label{display:block;font-size:12px;color:#666;letter-spacing:1px;margin-bottom:7px}
-.phone-control{display:flex;align-items:center;border-bottom:1.5px solid #ccc;transition:border-color .2s}
+.phone-control{display:flex;align-items:stretch;border-bottom:1.5px solid #ccc;transition:border-color .25s}
 .phone-control:focus-within{border-bottom-color:#111}
-.country-code{display:flex;align-items:center;gap:8px;white-space:nowrap;padding:10px 12px 10px 0;border-right:1px solid #ddd;font-size:16px;color:#222}
-.country-code .flag{font-size:21px}
-.phone-control input{flex:1;min-width:0;width:100%;border:0;outline:none;background:transparent;padding:12px 0 12px 12px;font-size:16px;letter-spacing:.5px;color:#111}
-.phone-control input::placeholder{color:#aaa}
-button.submit{margin-top:12px;padding:14px 34px;background:#2e9e5b;color:#fff;border:0;border-radius:4px;font-size:14px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer}
+.phone-prefix{display:flex;align-items:center;gap:7px;padding:20px 12px 8px 0;font-size:16px;white-space:nowrap;color:#111}
+.phone-prefix img{width:24px;height:16px;object-fit:cover}
+.field .phone-control input{flex:1;min-width:0;border:0;padding-left:4px}
+.phone-control input:focus{border:0}
+.phone-label{position:absolute;left:0;top:-2px;font-size:12px!important;color:#666!important;letter-spacing:1px}
+button.submit{margin-top:12px;padding:14px 34px;background:#2e9e5b;color:#fff;border:none;border-radius:4px;font-size:14px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer}
 button.submit:hover{opacity:.88}
 button.submit:disabled{opacity:.5;cursor:not-allowed}
 #loading{display:none;position:absolute;left:0;top:70px}
-.spinner{width:100px;height:100px;border-radius:50%;border:9px solid #eee;border-top-color:#2e9e5b;border-right-color:#2e9e5b;animation:spin .9s linear infinite}
+.spinner{width:120px;height:120px;border-radius:50%;border:10px solid #eee;border-top-color:#2e9e5b;border-right-color:#2e9e5b;animation:spin .9s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-#confirmacao{display:none;animation:fadeIn .5s ease}
-#confirmacao h2{font-size:38px;margin-bottom:20px;font-weight:700}
-#confirmacao .numero{font-size:60px;font-weight:800;color:#2e9e5b;letter-spacing:4px;margin-bottom:20px;overflow-wrap:anywhere}
-#confirmacao .badge{display:inline-block;padding:10px 18px;background:#f4f4f4;border-radius:4px;font-size:13px;color:#333;margin-bottom:24px}
-#confirmacao .print{font-size:14px;color:#666;line-height:1.6;max-width:400px;margin-bottom:28px}
+#confirmacao{display:none;padding:0;animation:fadeIn .5s ease}
+#confirmacao h2{font-size:42px;margin-bottom:20px;color:#111;font-weight:700;letter-spacing:.5px}
+#confirmacao .numero{font-size:64px;font-weight:800;color:#2e9e5b;letter-spacing:4px;margin-bottom:20px;overflow-wrap:anywhere}
+#confirmacao .badge{display:inline-block;padding:10px 18px;background:#f4f4f4;border-radius:4px;font-size:13px;color:#333;letter-spacing:.5px;margin-bottom:24px}
+#confirmacao .print{font-size:14px;color:#666;letter-spacing:.3px;line-height:1.6;max-width:400px;margin-bottom:28px}
 #confirmacao .dev-logo{display:block;width:280px;height:auto;margin:0}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-footer{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:18px 20px;text-align:center;font-size:12px;color:#888;letter-spacing:.4px;z-index:300}
+.whatsapp-link{display:inline-flex;align-items:center;justify-content:center;margin-top:12px;padding:13px 18px;background:#fff;color:#111;border:1px solid #d8d8d8;text-decoration:none;font-size:12px;letter-spacing:.3px}
+footer{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 20px;text-align:center;font-size:12px;color:#888;letter-spacing:.4px;z-index:300;box-shadow:0 -2px 12px rgba(0,0,0,.03)}
 .dev-icon{width:90px;height:20px;object-fit:contain;vertical-align:middle;margin-right:8px}
+.footer-contact{display:block;margin:8px auto 0;color:#111;text-decoration:none;font-size:12px;font-weight:600;letter-spacing:.3px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:480px){
-header{padding:22px 18px}
 header h1{font-size:20px}
 .info-evento{padding:12px 18px;top:72px}
 .info-evento h2{font-size:14px}
 .info-evento p{font-size:12px}
-main{padding:280px 18px 140px}
-#confirmacao h2{font-size:30px}
-#confirmacao .numero{font-size:46px}
+main{padding-top:280px;padding-left:18px;padding-right:18px}
+#confirmacao h2{font-size:34px}
+#confirmacao .numero{font-size:48px}
 #confirmacao .dev-logo{width:220px}
-footer{padding:14px 10px;font-size:10px}
-.dev-icon{width:70px;height:18px}
+footer{padding:10px 12px;font-size:10px}
+.dev-icon{width:75px;height:18px}
 }
 </style>
 </head>
 <body>
 <header><h1>Domus Fit</h1></header>
-
 <div class="info-evento">
 <h2>1º Aniversário — Domus Fit</h2>
 <p>Data: 16/10</p>
@@ -70,7 +68,6 @@ footer{padding:14px 10px;font-size:10px}
 <p>Acompanhamento: carro com paredão de som</p>
 <p>Concentração e encerramento: frente da Academia Domus Fit</p>
 </div>
-
 <main>
 <div class="form-wrap">
 <form id="formInscricao">
@@ -78,25 +75,23 @@ footer{padding:14px 10px;font-size:10px}
 <input type="text" id="nome" placeholder=" " required autocomplete="name" maxlength="120">
 <label for="nome">nome completo</label>
 </div>
-
 <div class="field">
 <input type="text" id="endereco" placeholder=" " required autocomplete="street-address" maxlength="200">
 <label for="endereco">endereço</label>
 </div>
-
-<div class="phone-field">
-<label class="phone-label" for="telefone">TELEFONE</label>
+<div class="field">
+<label class="phone-label" for="telefone">telefone</label>
 <div class="phone-control">
-<div class="country-code"><span class="flag">🇧🇷</span><span>+55</span></div>
-<input type="tel" id="telefone" placeholder="(84) 99999-9999" autocomplete="tel-national" inputmode="numeric" maxlength="15" required>
+<div class="phone-prefix">
+<img src="https://flagcdn.com/w40/br.png" alt="Brasil">
+<span>+55</span>
+</div>
+<input type="tel" id="telefone" placeholder=" " required autocomplete="tel-national" inputmode="numeric" maxlength="15" aria-label="Número de telefone brasileiro">
 </div>
 </div>
-
 <button type="submit" class="submit" id="btnEnviar">inscrever-se</button>
 </form>
-
 <div id="loading"><div class="spinner"></div></div>
-
 <div id="confirmacao">
 <h2>Obrigado pela inscrição</h2>
 <div class="numero" id="numeroInscricao"></div>
@@ -106,12 +101,11 @@ footer{padding:14px 10px;font-size:10px}
 </div>
 </div>
 </main>
-
 <footer>
 <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEikbB5tKxaXYJHFFT3cHcm9UqVekWnRkB5t1SJr3nB7zKLYYBz_6CbJUsMgrKXw2f5twY8KFkbJxiJH4gvBiCmBiARme4P_eGUoPxV0Ko0uRUjKlytoM-3ZlYxLgt8VSmHCI0YSsrCKuPQhqFSYnwNrQplfG9jVU3pV6iIBAMYrBKiVb49E-zHkcdbswuQ/s599/8920D3B0-29EB-4E09-8AA0-0287C87BAB99.jpeg" alt="San7Doc" class="dev-icon">
-Desenvolvido por San7Doc Tecnologia • Todos os direitos reservados 2026
+<div>Desenvolvido por San7Doc Tecnologia • Todos direitos reservados 2026</div>
+<a class="footer-contact" href="https://wa.me/5584981781331" target="_blank" rel="noopener noreferrer">Contratar San7Doc para inscrições do meu evento</a>
 </footer>
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
@@ -121,111 +115,81 @@ databaseURL:"https://san7-brasil-default-rtdb.firebaseio.com",
 projectId:"san7-brasil",
 authDomain:"san7-brasil.firebaseapp.com"
 };
-
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
-const form=document.getElementById("formInscricao");
-const nomeInput=document.getElementById("nome");
-const enderecoInput=document.getElementById("endereco");
-const telefoneInput=document.getElementById("telefone");
-const btnEnviar=document.getElementById("btnEnviar");
-const confirmacao=document.getElementById("confirmacao");
-const loading=document.getElementById("loading");
-
-[nomeInput,enderecoInput].forEach(input=>{
-input.addEventListener("input",()=>{input.value=input.value.toUpperCase()});
+const form=document.getElementById('formInscricao');
+const nomeInput=document.getElementById('nome');
+const enderecoInput=document.getElementById('endereco');
+const telefoneInput=document.getElementById('telefone');
+const btnEnviar=document.getElementById('btnEnviar');
+const confirmacao=document.getElementById('confirmacao');
+const loading=document.getElementById('loading');
+[nomeInput,enderecoInput].forEach(inp=>inp.addEventListener('input',()=>{inp.value=inp.value.toLocaleUpperCase('pt-BR')}));
+telefoneInput.addEventListener('input',()=>{
+let n=telefoneInput.value.replace(/\D/g,'').slice(0,11);
+if(n.length>10)n=n.replace(/^(\d{2})(\d{5})(\d{4}).*$/,'($1) $2-$3');
+else if(n.length>6)n=n.replace(/^(\d{2})(\d{4})(\d{0,4}).*$/,'($1) $2-$3');
+else if(n.length>2)n=n.replace(/^(\d{2})(\d{0,5}).*$/,'($1) $2');
+telefoneInput.value=n;
 });
-
-function formatarTelefone(valor){
-let n=valor.replace(/\D/g,"").slice(0,11);
-if(n.length>10)return n.replace(/^(\d{2})(\d{5})(\d{0,4}).*/,"($1) $2-$3").replace(/-$/,"");
-if(n.length>6)return n.replace(/^(\d{2})(\d{4})(\d{0,4}).*/,"($1) $2-$3").replace(/-$/,"");
-if(n.length>2)return n.replace(/^(\d{2})(\d{0,5}).*/,"($1) $2");
-if(n.length>0)return "("+n;
-return "";
-}
-
-telefoneInput.addEventListener("input",()=>{
-telefoneInput.value=formatarTelefone(telefoneInput.value);
-});
-
-function gerarNumero(){
-return String(Math.floor(10000+Math.random()*90000));
-}
-
+function gerarNumero(){return String(Math.floor(10000+Math.random()*90000))}
 function tocarSomInscricao(){
 try{
 const ctx=new(window.AudioContext||window.webkitAudioContext)();
 [523.25,659.25,783.99].forEach((freq,i)=>{
-const osc=ctx.createOscillator();
-const gain=ctx.createGain();
-osc.type="sine";
-osc.frequency.value=freq;
-osc.connect(gain);
-gain.connect(ctx.destination);
+const osc=ctx.createOscillator(),gain=ctx.createGain();
+osc.type='sine';osc.frequency.value=freq;osc.connect(gain);gain.connect(ctx.destination);
 const t=ctx.currentTime+i*.12;
 gain.gain.setValueAtTime(.001,t);
-gain.gain.linearRampToValueAtTime(.15,t+.02);
+gain.gain.linearRampToValueAtTime(.25,t+.02);
 gain.gain.exponentialRampToValueAtTime(.001,t+.35);
-osc.start(t);
-osc.stop(t+.4);
+osc.start(t);osc.stop(t+.4);
 });
 }catch(e){}
 }
-
-form.addEventListener("submit",async e=>{
+form.addEventListener('submit',async e=>{
 e.preventDefault();
-
 const nome=nomeInput.value.trim();
 const endereco=enderecoInput.value.trim();
-const numeroTelefone=telefoneInput.value.replace(/\D/g,"");
-
-if(!nome||!endereco){
-alert("Preencha todos os campos.");
-return;
-}
-
-if(numeroTelefone.length!==10&&numeroTelefone.length!==11){
-alert("Informe um telefone válido com DDD.");
+const telefoneDigitos=telefoneInput.value.replace(/\D/g,'');
+if(!nome||!endereco){return}
+if(telefoneDigitos.length!==10&&telefoneDigitos.length!==11){
+alert('Informe um telefone brasileiro válido com DDD.');
 telefoneInput.focus();
 return;
 }
-
+const telefone='+55'+telefoneDigitos;
+form.style.display='none';
+loading.style.display='block';
 btnEnviar.disabled=true;
-form.style.display="none";
-loading.style.display="block";
-
 try{
 const agora=new Date();
-const dataHora=agora.toLocaleString("pt-BR");
+const dataHora=agora.toLocaleString('pt-BR');
 const numero=gerarNumero();
-const ref=db.ref("inscricoes").push();
-
+const ref=db.ref('inscricoes').push();
 await ref.set({
-nome,
-endereco,
-telefone:"+55"+numeroTelefone,
-numero,
+nome:nome,
+endereco:endereco,
+telefone:telefone,
+numero:numero,
 data:dataHora,
 timestamp:agora.getTime()
 });
-
-await new Promise(resolve=>setTimeout(resolve,1200));
-
-loading.style.display="none";
-document.querySelector(".info-evento").style.display="none";
-document.querySelector("main").style.paddingTop="160px";
-confirmacao.style.display="block";
-document.getElementById("numeroInscricao").textContent=numero;
-document.getElementById("badgeInfo").textContent=dataHora;
+await new Promise(r=>setTimeout(r,1200));
+loading.style.display='none';
+document.querySelector('.info-evento').style.display='none';
+document.querySelector('main').style.paddingTop='160px';
+confirmacao.style.display='block';
+document.getElementById('numeroInscricao').textContent=numero;
+document.getElementById('badgeInfo').textContent=dataHora;
 tocarSomInscricao();
-window.scrollTo({top:0,behavior:"smooth"});
-}catch(error){
-console.error("Erro ao gravar inscrição:",error);
-loading.style.display="none";
-form.style.display="block";
+window.scrollTo({top:0,behavior:'smooth'});
+}catch(err){
+console.error(err);
+alert('Erro ao inscrever. Verifique sua conexão e tente novamente.');
+loading.style.display='none';
+form.style.display='block';
 btnEnviar.disabled=false;
-alert("Não foi possível concluir a inscrição. Verifique sua conexão e tente novamente.");
 }
 });
 </script>
