@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Domusfit | Central Administrativa</title>
+<style>
+:root{--verde:#25834f;--verde-escuro:#19683d;--texto:#202820;--cinza:#777;--linha:#e7e7e7;--vermelho:#c43d3d}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--texto);font-family:Arial,Helvetica,sans-serif;font-size:14px}
+button,input{font:inherit}
+button{cursor:pointer}
+.cabecalho{height:64px;background:var(--verde);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:relative;z-index:10}
+.marca{font-size:22px;font-weight:700;letter-spacing:-.7px}
+.menu-botao{background:transparent;border:0;color:#fff;padding:8px;display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center}
+.menu-botao span{display:block;width:23px;height:2px;background:#fff}
+.menu{display:none;background:#fff;padding:0 20px;border-bottom:1px dashed #ccc}
+.menu.aberto{display:block}
+.menu button{width:100%;text-align:left;padding:16px 0;background:#fff;border:0;border-bottom:1px dashed #ddd;color:#333}
+main{max-width:850px;margin:0 auto;padding:24px 20px 50px}
+h1{font-size:21px;font-weight:600;margin:5px 0 8px}
+.subtitulo{color:var(--cinza);line-height:1.6;margin:0 0 25px}
+.lista-pessoas{display:flex;flex-direction:column;align-items:center;gap:0}
+.pessoa{width:100%;max-width:390px;display:flex;flex-direction:column;align-items:center;text-align:center;padding:20px 10px;background:transparent;border:0;border-bottom:1px solid #eee;color:var(--texto)}
+.foto{width:112px;height:112px;border-radius:50%;object-fit:cover;background:#f0f0f0;margin-bottom:13px}
+.nome-pessoa{font-size:17px;font-weight:600;margin-bottom:5px}
+.na-pessoa{font-size:12px;color:#777}
+.pessoa:hover .nome-pessoa{color:var(--verde)}
+.tela{display:none}
+.tela.ativa{display:block}
+.link-voltar{border:0;background:none;color:var(--verde);padding:0;margin-bottom:23px;font-weight:600}
+.campo{display:flex;flex-direction:column;gap:8px;margin:22px 0}
+.campo label{font-size:12px;color:#666}
+.campo input{width:100%;height:39px;border:0;border-bottom:1px solid #c8c8c8;border-radius:0;background:transparent;outline:none;padding:8px 2px;color:#222}
+.campo input:focus{border-bottom:2px solid var(--verde)}
+.campo input.invalido{border-bottom:2px solid var(--vermelho)}
+.linha-campos{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.botao{border:0;background:var(--verde);color:white;padding:12px 21px;min-height:42px}
+.botao:hover{background:var(--verde-escuro)}
+.botao-secundario{background:#fff;color:var(--verde);border:1px solid var(--verde)}
+.acoes{display:flex;flex-wrap:wrap;gap:10px;margin:25px 0}
+.identificacao{padding-bottom:18px;border-bottom:1px solid #eee;margin-bottom:22px}
+.identificacao h1{margin-bottom:8px}
+.identificacao p{margin:0;color:#777}
+.alerta{display:none;margin:0;padding:13px 20px;background:#f1f8f3;color:#276a3e;border-bottom:1px solid #d8e9dd;line-height:1.5;animation:aparecer .25s ease}
+.alerta.erro{background:#fff2f2;color:#a12d2d;border-bottom-color:#f0d5d5}
+.alerta.visivel{display:block}
+@keyframes aparecer{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.planilha-topo{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:20px 0}
+.contagem{color:#777;font-size:12px}
+.tabela-wrap{width:100%;overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:490px;text-align:left}
+th{font-size:11px;font-weight:600;color:#777;background:#fff}
+th,td{padding:14px 10px;border-bottom:1px solid #e8e8e8;white-space:nowrap}
+td{font-size:13px}
+td.editavel{min-width:92px;cursor:pointer;color:#246b43}
+td.editavel:focus{outline:1px solid var(--verde);outline-offset:-3px;background:#f5faf6}
+td.editavel:hover{background:#f6faf7}
+.duracao{color:#666}
+.rodape{padding:20px;text-align:center;color:#999;font-size:11px;border-top:1px solid #f0f0f0}
+.vazio{padding:30px 0;text-align:center;color:#888;line-height:1.7}
+.estado{font-size:11px;color:var(--verde);margin-left:5px}
+.carregando{color:#777;padding:25px 0;text-align:center}
+@media(max-width:520px){
+.cabecalho{height:59px;padding:0 16px}
+.marca{font-size:21px}
+main{padding:22px 16px 40px}
+.linha-campos{gap:16px}
+th,td{padding:12px 8px}
+.pessoa{padding:18px 8px}
+.foto{width:105px;height:105px}
+}
+</style>
+</head>
+<body>
+
+<header class="cabecalho">
+  <div class="marca">Domusfit</div>
+  <button class="menu-botao" id="menuBotao" aria-label="Abrir menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<nav class="menu" id="menu">
+  <button type="button" id="voltarInicio">Voltar ao início</button>
+</nav>
+
+<div class="alerta" id="alerta" role="status" aria-live="polite"></div>
+
+<main>
+  <section class="tela ativa" id="telaInicio">
+    <h1>Central administrativa</h1>
+    <p class="subtitulo">Selecione um funcionário para consultar e editar os horários registrados.</p>
+    <div id="listaPessoas" class="lista-pessoas">
+      <div class="carregando">Carregando funcionários...</div>
+    </div>
+  </section>
+
+  <section class="tela" id="telaData">
+    <button class="link-voltar" id="voltarPessoas">← Funcionários</button>
+    <div class="identificacao">
+      <h1 id="nomeSelecionado"></h1>
+      <p>NA: <span id="naSelecionado"></span></p>
+    </div>
+    <h1>Consultar horários</h1>
+    <p class="subtitulo">Informe o mês e o ano para visualizar e editar os registros.</p>
+    <form id="formFiltro">
+      <div class="linha-campos">
+        <div class="campo">
+          <label for="mes">Mês</label>
+          <input id="mes" type="number" min="1" max="12" placeholder="MM" inputmode="numeric" required>
+        </div>
+        <div class="campo">
+          <label for="ano">Ano</label>
+          <input id="ano" type="number" min="2000" max="2100" placeholder="AAAA" inputmode="numeric" required>
+        </div>
+      </div>
+      <div class="acoes">
+        <button type="submit" class="botao">Filtrar</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="tela" id="telaPlanilha">
+    <button class="link-voltar" id="voltarData">← Alterar período</button>
+    <div class="identificacao">
+      <h1 id="nomePlanilha"></h1>
+      <p>NA: <span id="naPlanilha"></span></p>
+    </div>
+    <h1 id="tituloPeriodo">Registros de horários</h1>
+    <div class="planilha-topo">
+      <span class="contagem" id="contagem"></span>
+      <button type="button" class="botao botao-secundario" id="atualizar">Atualizar</button>
+    </div>
+    <p class="subtitulo">Toque em um horário para editá-lo. A alteração será salva no banco de dados.</p>
+    <div class="tabela-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Entrada</th>
+            <th>Saída</th>
+            <th>Duração</th>
+          </tr>
+        </thead>
+        <tbody id="tabela">
+          <tr><td colspan="4">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="subtitulo" style="margin-top:20px">Para editar, selecione a célula de entrada ou saída, digite o horário no formato HH:MM e toque fora da célula para salvar.</p>
+  </section>
+</main>
+
+<footer class="rodape">Domusfit · Central administrativa</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
+  authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
+  databaseURL: "https://prefeitura-de-joao-camara-default-rtdb.firebaseio.com",
+  projectId: "prefeitura-de-joao-camara",
+  storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
+  messagingSenderId: "269299041577",
+  appId: "1:269299041577:web:fd41b2939240e9eb476338",
+  measurementId: "G-YT7NHR342J"
+};
+
+const $ = id => document.getElementById(id);
+
+const listaPessoas = $("listaPessoas");
+const alerta = $("alerta");
+const tabela = $("tabela");
+
+let NAselecionado = "";
+let funcionarioSelecionado = null;
+let periodoAtual = {mes: 0, ano: 0};
+let alertaTimer = null;
+let carregamentoId = 0;
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+function mostrarAlerta(mensagem, erro = false) {
+  clearTimeout(alertaTimer);
+  alerta.textContent = mensagem;
+  alerta.className = "alerta visivel" + (erro ? " erro" : "");
+  alertaTimer = setTimeout(() => {
+    alerta.style.transition = "opacity .4s";
+    alerta.style.opacity = "0";
+    setTimeout(() => {
+      alerta.className = "alerta";
+      alerta.style.opacity = "1";
+      alerta.style.transition = "";
+    }, 450);
+  }, 3200);
+}
+
+function mostrarTela(id) {
+  document.querySelectorAll(".tela").forEach(t => t.classList.remove("ativa"));
+  $(id).classList.add("ativa");
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
+
+function escapar(texto) {
+  return String(texto ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+
+function fotoFuncionario(dados) {
+  return dados.foto || dados.fotoURL || dados.fotoUrl || dados.imagem || dados.photoURL || "";
+}
+
+function carregarFuncionarios() {
+  db.ref("usuarios").on("value", snapshot => {
+    listaPessoas.innerHTML = "";
+
+    if (!snapshot.exists()) {
+      listaPessoas.innerHTML = '<div class="vazio">Nenhum funcionário encontrado.</div>';
+      return;
+    }
+
+    const funcionarios = Object.entries(snapshot.val())
+      .filter(([, dados]) => dados && typeof dados === "object")
+      .sort((a, b) => String(a[1].nome || "").localeCompare(String(b[1].nome || ""), "pt-BR"));
+
+    if (!funcionarios.length) {
+      listaPessoas.innerHTML = '<div class="vazio">Nenhum funcionário encontrado.</div>';
+      return;
+    }
+
+    funcionarios.forEach(([na, dados]) => {
+      const nome = dados.nome || "Funcionário sem nome";
+      const foto = fotoFuncionario(dados);
+      const botao = document.createElement("button");
+
+      botao.type = "button";
+      botao.className = "pessoa";
+      botao.innerHTML = `
+        <img class="foto" alt="" src="${escapar(foto)}">
+        <span class="nome-pessoa">${escapar(nome)}</span>
+        <span class="na-pessoa">NA: ${escapar(na)}</span>
+      `;
+
+      const imagem = botao.querySelector("img");
+      imagem.onerror = () => {
+        imagem.onerror = null;
+        imagem.src = "data:image/svg+xml," + encodeURIComponent(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><rect width="120" height="120" fill="#edf2ee"/><circle cx="60" cy="43" r="22" fill="#a6b8aa"/><path d="M17 115c2-28 19-43 43-43s41 15 43 43" fill="#a6b8aa"/></svg>'
+        );
+      };
+
+      botao.addEventListener("click", () => selecionarFuncionario(na, dados));
+      listaPessoas.appendChild(botao);
+    });
+  }, erro => {
+    listaPessoas.innerHTML = '<div class="vazio">Não foi possível carregar os funcionários.</div>';
+    mostrarAlerta("Erro ao carregar funcionários: " + erro.message, true);
+  });
+}
+
+function selecionarFuncionario(na, dados) {
+  NAselecionado = na;
+  funcionarioSelecionado = dados;
+
+  $("nomeSelecionado").textContent = dados.nome || "Funcionário";
+  $("naSelecionado").textContent = na;
+  $("nomePlanilha").textContent = dados.nome || "Funcionário";
+  $("naPlanilha").textContent = na;
+
+  const agora = new Date();
+  $("mes").value = String(agora.getMonth() + 1);
+  $("ano").value = String(agora.getFullYear());
+
+  $("menu").classList.remove("aberto");
+  $("menuBotao").setAttribute("aria-expanded", "false");
+  mostrarTela("telaData");
+}
+
+$("formFiltro").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const mes = Number($("mes").value);
+  const ano = Number($("ano").value);
+
+  $("mes").classList.toggle("invalido", !Number.isInteger(mes) || mes < 1 || mes > 12);
+  $("ano").classList.toggle("invalido", !Number.isInteger(ano) || ano < 2000 || ano > 2100);
+
+  if (!Number.isInteger(mes) || mes < 1 || mes > 12 ||
+      !Number.isInteger(ano) || ano < 2000 || ano > 2100) {
+    mostrarAlerta("Informe um mês entre 1 e 12 e um ano válido.", true);
+    return;
+  }
+
+  periodoAtual = {mes, ano};
+  $("tituloPeriodo").textContent = "Registros de " + new Date(ano, mes - 1, 1).toLocaleDateString("pt-BR", {month:"long", year:"numeric"});
+  mostrarTela("telaPlanilha");
+  carregarHistorico();
+});
+
+["mes", "ano"].forEach(id => {
+  $(id).addEventListener("input", () => $(id).classList.remove("invalido"));
+});
+
+function carregarHistorico() {
+  const id = ++carregamentoId;
+  tabela.innerHTML = '<tr><td colspan="4">Carregando registros...</td></tr>';
+  $("contagem").textContent = "";
+
+  db.ref("historico/" + NAselecionado).once("value")
+    .then(snapshot => {
+      if (id !== carregamentoId) return;
+
+      tabela.innerHTML = "";
+      let registros = [];
+
+      if (snapshot.exists()) {
+        registros = Object.entries(snapshot.val())
+          .filter(([data]) => {
+            const partes = data.split("-").map(Number);
+            return partes.length === 3 &&
+              partes[0] === periodoAtual.ano &&
+              partes[1] === periodoAtual.mes &&
+              partes.every(Number.isFinite);
+          })
+          .sort((a, b) => a[0].localeCompare(b[0]));
+      }
+
+      if (!registros.length) {
+        tabela.innerHTML = '<tr><td colspan="4" class="vazio">Nenhum registro encontrado neste período.</td></tr>';
+        $("contagem").textContent = "0 registros";
+        return;
+      }
+
+      $("contagem").textContent = registros.length + (registros.length === 1 ? " registro" : " registros");
+
+      registros.forEach(([data, valor]) => {
+        const [ano, mes, dia] = data.split("-").map(Number);
+        const inicio = valor && valor.inicio ? formatar(valor.inicio) : "";
+        const fim = valor && valor.fim ? formatar(valor.fim) : "";
+        const duracao = calcularDuracao(valor);
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${String(dia).padStart(2,"0")}/${String(mes).padStart(2,"0")}/${ano}</td>
+          <td class="editavel" tabindex="0" role="button" aria-label="Editar entrada" data-data="${data}" data-campo="inicio">${inicio || "--:--"}</td>
+          <td class="editavel" tabindex="0" role="button" aria-label="Editar saída" data-data="${data}" data-campo="fim">${fim || "--:--"}</td>
+          <td class="duracao">${duracao}</td>
+        `;
+
+        tr.querySelectorAll(".editavel").forEach(celula => {
+          celula.addEventListener("click", () => editarHorario(celula));
+          celula.addEventListener("keydown", event => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              editarHorario(celula);
+            }
+          });
+        });
+
+        tabela.appendChild(tr);
+      });
+    })
+    .catch(erro => {
+      if (id !== carregamentoId) return;
+      tabela.innerHTML = '<tr><td colspan="4" class="vazio">Não foi possível carregar os registros.</td></tr>';
+      mostrarAlerta("Erro ao consultar horários: " + erro.message, true);
+    });
+}
+
+function editarHorario(celula) {
+  if (celula.querySelector("input")) return;
+
+  const valorAnterior = celula.textContent.trim() === "--:--" ? "" : celula.textContent.trim();
+  const data = celula.dataset.data;
+  const campo = celula.dataset.campo;
+  const input = document.createElement("input");
+
+  input.type = "time";
+  input.value = valorAnterior;
+  input.style.cssText = "width:100px;min-width:90px;border:0;border-bottom:1px solid #25834f;padding:5px 0;background:white;color:#222";
+  celula.textContent = "";
+  celula.appendChild(input);
+  input.focus();
+
+  let finalizado = false;
+
+  async function concluir(salvar) {
+    if (finalizado) return;
+    finalizado = true;
+
+    const novoHorario = input.value;
+    if (!salvar) {
+      celula.textContent = valorAnterior || "--:--";
+      return;
+    }
+
+    if (!novoHorario && valorAnterior) {
+      celula.textContent = valorAnterior;
+      mostrarAlerta("Para remover um horário, use o campo vazio apenas quando não houver registro.", true);
+      return;
+    }
+
+    if (!novoHorario) {
+      celula.textContent = "--:--";
+      return;
+    }
+
+    const [hora, minuto] = novoHorario.split(":").map(Number);
+    if (!Number.isInteger(hora) || !Number.isInteger(minuto) ||
+        hora < 0 || hora > 23 || minuto < 0 || minuto > 59) {
+      celula.textContent = valorAnterior || "--:--";
+      mostrarAlerta("Horário inválido. Informe um horário válido.", true);
+      return;
+    }
+
+    const [ano, mes, dia] = data.split("-").map(Number);
+    const timestamp = new Date(ano, mes - 1, dia, hora, minuto, 0, 0).getTime();
+
+    celula.textContent = novoHorario;
+    celula.style.opacity = ".5";
+
+    try {
+      await db.ref("historico/" + NAselecionado + "/" + data + "/" + campo).set(timestamp);
+      mostrarAlerta("Horário atualizado com sucesso.");
+      carregarHistorico();
+    } catch (erro) {
+      celula.textContent = valorAnterior || "--:--";
+      mostrarAlerta("Não foi possível salvar a alteração: " + erro.message, true);
+    } finally {
+      celula.style.opacity = "1";
+    }
+  }
+
+  input.addEventListener("blur", () => concluir(true));
+  input.addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      input.blur();
+    }
+    if (event.key === "Escape") {
+      event.preventDefault();
+      concluir(false);
+    }
+  });
+}
+
+function calcularDuracao(valor) {
+  if (!valor || !valor.inicio || !valor.fim) return "--";
+
+  const diferenca = Number(valor.fim) - Number(valor.inicio);
+  if (!Number.isFinite(diferenca) || diferenca < 0) return "--";
+
+  const minutos = Math.floor(diferenca / 60000);
+  return Math.floor(minutos / 60) + "h " + String(minutos % 60).padStart(2, "0") + "m";
+}
+
+function formatar(timestamp) {
+  const data = new Date(Number(timestamp));
+  if (Number.isNaN(data.getTime())) return "--:--";
+  return String(data.getHours()).padStart(2, "0") + ":" +
+    String(data.getMinutes()).padStart(2, "0");
+}
+
+$("atualizar").addEventListener("click", carregarHistorico);
+
+$("voltarPessoas").addEventListener("click", () => mostrarTela("telaInicio"));
+$("voltarData").addEventListener("click", () => mostrarTela("telaData"));
+
+$("menuBotao").addEventListener("click", () => {
+  const aberto = $("menu").classList.toggle("aberto");
+  $("menuBotao").setAttribute("aria-expanded", String(aberto));
+});
+
+$("voltarInicio").addEventListener("click", () => {
+  $("menu").classList.remove("aberto");
+  $("menuBotao").setAttribute("aria-expanded", "false");
+  mostrarTela("telaInicio");
+});
+
+carregarFuncionarios();
+</script>
+</body>
+</html>
