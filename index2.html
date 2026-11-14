@@ -4,1269 +4,180 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Ponto DomusFit</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
-:root{
-  --azul:#1351B4;
-  --azul-escuro:#0C326F;
-  --azul-suave:#E8F0FB;
-  --verde:#168821;
-  --vermelho:#D6392A;
-  --amarelo:#E8A33D;
-  --amarelo-claro:#FFF9E8;
-  --cinza-50:#FAFAFA;
-  --cinza-100:#F2F2F2;
-  --cinza-200:#E5E5E5;
-  --cinza-300:#CCCCCC;
-  --cinza-500:#666666;
-  --cinza-700:#333333;
-  --cinza-900:#111111;
-  --branco:#FFFFFF;
-  --rodape:#F5F6F7;
-  --radius:7px;
-}
-
-html,body{
-  min-height:100%;
-}
-
-body{
-  background:#fff;
-  font-family:'Inter','Segoe UI',Arial,sans-serif;
-  color:var(--cinza-900);
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  font-size:15px;
-  line-height:1.5;
-}
-
-button,
-input,
-textarea,
-select{
-  font-family:inherit;
-}
-
-/* =========================
-   CABEÇALHO
-========================= */
-
-.header{
-  background:var(--azul);
-  color:#fff;
-  height:62px;
-  padding:0 20px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  position:sticky;
-  top:0;
-  z-index:500;
-  box-shadow:0 2px 8px rgba(0,0,0,.12);
-}
-
-.header-brand{
-  color:#fff;
-  font-size:18px;
-  font-weight:700;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  cursor:pointer;
-  white-space:nowrap;
-}
-
-.header-brand .sub{
-  font-size:11px;
-  font-weight:400;
-  opacity:.85;
-  margin-left:5px;
-}
-
-.header-right{
-  display:flex;
-  align-items:center;
-}
-
-.menu-dots{
-  position:relative;
-}
-
-.menu-btn{
-  width:40px;
-  height:40px;
-  border:0;
-  background:transparent;
-  color:#fff;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:21px;
-  transition:background .2s;
-}
-
-.menu-btn:hover{
-  background:rgba(255,255,255,.12);
-}
-
-.menu-btn i{
-  font-size:21px;
-}
-
-.menu-dropdown{
-  position:absolute;
-  top:48px;
-  right:0;
-  width:245px;
-  background:#fff;
-  display:none;
-  z-index:900;
-  box-shadow:0 10px 30px rgba(0,0,0,.18);
-  overflow:hidden;
-}
-
-.menu-dropdown.aberto{
-  display:block;
-  animation:menuIn .18s ease;
-}
-
-@keyframes menuIn{
-  from{
-    opacity:0;
-    transform:translateY(-5px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
-}
-
-.menu-dropdown .item{
-  padding:14px 18px;
-  color:var(--cinza-900);
-  font-size:14px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.menu-dropdown .item i{
-  width:20px;
-  color:var(--azul);
-  text-align:center;
-}
-
-.menu-dropdown .item:hover{
-  background:var(--azul-suave);
-  color:var(--azul);
-}
-
-.menu-dropdown .divider{
-  height:1px;
-  background:var(--cinza-200);
-}
-
-/* =========================
-   ÁREA PRINCIPAL
-========================= */
-
-.main{
-  width:100%;
-  max-width:850px;
-  margin:0 auto;
-  padding:22px 18px 110px;
-  flex:1;
-}
-
-.content{
-  width:100%;
-}
-
-.page-header{
-  margin-bottom:18px;
-}
-
-.page-header h1{
-  font-size:24px;
-  font-weight:700;
-  color:var(--cinza-900);
-  letter-spacing:-.4px;
-}
-
-.page-header .desc{
-  font-size:13px;
-  color:var(--cinza-500);
-  margin-top:3px;
-}
-
-/* =========================
-   PESQUISA
-========================= */
-
-.search-area{
-  margin-bottom:22px;
-}
-
-.search-box{
-  width:100%;
-  background:#fff;
-  border:1px solid var(--cinza-200);
-  height:48px;
-  display:flex;
-  align-items:center;
-  padding:0 15px;
-  box-shadow:0 2px 8px rgba(0,0,0,.04);
-}
-
-.search-box i{
-  color:var(--cinza-500);
-  font-size:15px;
-  margin-right:11px;
-}
-
-.search-box input{
-  flex:1;
-  border:0;
-  outline:none;
-  background:transparent;
-  font-size:14px;
-  color:var(--cinza-900);
-}
-
-.search-box input::placeholder{
-  color:#888;
-}
-
-/* =========================
-   MENU PRINCIPAL
-========================= */
-
-.function-list{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.function-item{
-  width:100%;
-  min-height:92px;
-  border:1px solid var(--cinza-200);
-  border-radius:12px;
-  background:#fff;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  padding:17px 18px;
-  text-align:left;
-  transition:background .18s,transform .18s,border-color .18s;
-}
-
-.function-item:hover{
-  background:#FAFCFF;
-  border-color:#BFD0E9;
-  transform:translateY(-1px);
-}
-
-.function-icon{
-  width:56px;
-  height:56px;
-  border-radius:12px;
-  background:var(--azul-suave);
-  color:var(--azul);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:22px;
-  flex-shrink:0;
-}
-
-.function-info{
-  padding-left:16px;
-  flex:1;
-}
-
-.function-title{
-  color:var(--cinza-900);
-  font-weight:700;
-  font-size:15px;
-  margin-bottom:2px;
-}
-
-.function-desc{
-  color:var(--cinza-500);
-  font-size:12px;
-  line-height:1.4;
-}
-
-.function-arrow{
-  color:#999;
-  font-size:14px;
-  margin-left:10px;
-}
-
-/* =========================
-   CARDS
-========================= */
-
-.card{
-  background:#fff;
-  padding:20px 0;
-  margin-bottom:15px;
-}
-
-.card-title{
-  font-size:15px;
-  font-weight:700;
-  color:var(--cinza-900);
-  margin-bottom:14px;
-}
-
-.cards-grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:10px;
-}
-
-.card-click{
-  background:#fff;
-  border:1px solid var(--cinza-200);
-  border-radius:10px;
-  padding:18px;
-  cursor:pointer;
-}
-
-.card-click:hover{
-  border-color:#BFD0E9;
-}
-
-.card-click .card-title{
-  color:var(--azul-escuro);
-  margin-bottom:5px;
-}
-
-.card-click .card-desc{
-  color:var(--cinza-500);
-  font-size:13px;
-}
-
-/* =========================
-   BOTÕES
-========================= */
-
-.btn{
-  display:inline-block;
-  padding:11px 20px;
-  border-radius:6px;
-  font-size:14px;
-  font-weight:600;
-  cursor:pointer;
-  border:1px solid transparent;
-  transition:.15s;
-  text-align:center;
-}
-
-.btn-primary{
-  background:var(--azul);
-  color:#fff;
-  border-color:var(--azul);
-}
-
-.btn-primary:hover{
-  background:var(--azul-escuro);
-  border-color:var(--azul-escuro);
-}
-
-.btn-secondary{
-  background:#fff;
-  color:var(--azul);
-  border-color:var(--azul);
-}
-
-.btn-secondary:hover{
-  background:var(--azul-suave);
-}
-
-.btn-danger{
-  background:var(--vermelho);
-  color:#fff;
-  border-color:var(--vermelho);
-}
-
-.btn-danger:hover{
-  background:#B32D20;
-}
-
-.btn-block{
-  width:100%;
-  display:block;
-}
-
-.btn:disabled{
-  opacity:.5;
-  cursor:not-allowed;
-}
-
-/* =========================
-   PONTO
-========================= */
-
-.cronometro-card{
-  background:#fff;
-  padding:25px 0;
-  text-align:center;
-  margin-bottom:10px;
-}
-
-.cronometro-label{
-  font-size:11px;
-  font-weight:600;
-  color:var(--cinza-500);
-  text-transform:uppercase;
-  letter-spacing:.7px;
-}
-
-.cronometro-valor{
-  font-size:52px;
-  font-weight:700;
-  font-family:'Courier New',monospace;
-  color:var(--azul-escuro);
-  letter-spacing:2px;
-  padding:10px 0 20px;
-}
-
-.acoes-ponto{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.acoes-ponto .btn{
-  min-width:190px;
-}
-
-/* =========================
-   ESTATÍSTICAS
-========================= */
-
-.stats-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-  margin-bottom:18px;
-}
-
-.stat-card{
-  background:#fff;
-  border:1px solid var(--cinza-200);
-  padding:16px;
-}
-
-.stat-label{
-  font-size:10px;
-  font-weight:600;
-  color:var(--cinza-500);
-  text-transform:uppercase;
-  letter-spacing:.5px;
-  margin-bottom:7px;
-}
-
-.stat-value{
-  font-size:22px;
-  font-weight:700;
-  color:var(--azul-escuro);
-}
-
-.stat-hint{
-  font-size:11px;
-  color:var(--cinza-500);
-  margin-top:3px;
-}
-
-/* =========================
-   GRÁFICO
-========================= */
-
-.chart-card{
-  background:#fff;
-  padding:20px 0;
-  margin-bottom:12px;
-}
-
-.chart-bars{
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap:8px;
-  height:180px;
-  padding:10px 0 0;
-}
-
-.chart-bar-item{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  height:100%;
-  justify-content:flex-end;
-}
-
-.chart-bar{
-  width:100%;
-  max-width:34px;
-  background:linear-gradient(180deg,var(--azul),var(--azul-escuro));
-  border-radius:5px 5px 0 0;
-  min-height:4px;
-}
-
-.chart-bar.hoje{
-  background:linear-gradient(180deg,var(--verde),#0F5C17);
-}
-
-.chart-label{
-  font-size:10px;
-  font-weight:600;
-  color:var(--cinza-500);
-  margin-top:7px;
-  text-transform:uppercase;
-}
-
-.chart-value{
-  font-size:10px;
-  color:var(--azul-escuro);
-  font-weight:700;
-  margin-bottom:4px;
-}
-
-/* =========================
-   TABELAS
-========================= */
-
-.tabela{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
-}
-
-.tabela th{
-  text-align:left;
-  padding:10px;
-  font-weight:600;
-  color:var(--cinza-500);
-  border-bottom:2px solid var(--cinza-200);
-  font-size:10px;
-  text-transform:uppercase;
-}
-
-.tabela td{
-  padding:11px 10px;
-  border-bottom:1px solid var(--cinza-200);
-  color:var(--cinza-900);
-}
-
-.tabela tr:last-child td{
-  border-bottom:0;
-}
-
-/* =========================
-   FORMULÁRIOS
-========================= */
-
-.campo{
-  margin-bottom:16px;
-}
-
-.campo label{
-  display:block;
-  font-size:13px;
-  font-weight:600;
-  color:var(--cinza-700);
-  margin-bottom:6px;
-}
-
-.campo input,
-.campo textarea,
-.campo select{
-  width:100%;
-  padding:11px 13px;
-  border:1px solid var(--cinza-300);
-  border-radius:6px;
-  font-size:14px;
-  color:var(--cinza-900);
-  background:#fff;
-}
-
-.campo input:focus,
-.campo textarea:focus,
-.campo select:focus{
-  outline:none;
-  border-color:var(--azul);
-}
-
-.campo textarea{
-  resize:vertical;
-  min-height:100px;
-}
-
-.filtro-row{
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-  align-items:flex-end;
-}
-
-.filtro-row .campo{
-  flex:1;
-  min-width:160px;
-  margin-bottom:0;
-}
-
-/* =========================
-   INFO
-========================= */
-
-.info-box{
-  background:var(--cinza-100);
-  padding:15px 17px;
-  margin-bottom:16px;
-  font-size:14px;
-}
-
-.info-box .linha{
-  padding:3px 0;
-}
-
-.info-box .linha strong{
-  color:var(--cinza-900);
-  display:inline-block;
-  min-width:100px;
-}
-
-.termo-box{
-  background:var(--cinza-100);
-  padding:15px;
-  margin-bottom:16px;
-  font-size:13px;
-  color:var(--cinza-700);
-}
-
-.termo-check{
-  display:flex;
-  align-items:flex-start;
-  gap:9px;
-  margin-top:12px;
-  padding-top:12px;
-  border-top:1px solid var(--cinza-200);
-}
-
-.termo-check input{
-  width:16px;
-  height:16px;
-  accent-color:var(--azul);
-  margin-top:2px;
-}
-
-/* =========================
-   LOGIN
-========================= */
-
-.login-wrap{
-  min-height:calc(100vh - 170px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.login-card{
-  background:#fff;
-  width:100%;
-  max-width:400px;
-  padding:35px 25px;
-  text-align:center;
-}
-
-.login-card h2{
-  font-size:20px;
-  color:var(--azul-escuro);
-  margin-bottom:5px;
-}
-
-.login-card .sub{
-  color:var(--cinza-500);
-  font-size:13px;
-  margin-bottom:22px;
-}
-
-.login-card .avatar-circle{
-  width:105px;
-  height:105px;
-  object-fit:cover;
-  border-radius:50%;
-  display:block;
-  margin:0 auto 15px;
-  background:var(--cinza-200);
-}
-
-/* =========================
-   OVERLAYS
-========================= */
-
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.56);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:1500;
-  padding:20px;
-}
-
-.overlay.aberto{
-  display:flex;
-}
-
-.modal{
-  background:#fff;
-  width:100%;
-  max-width:440px;
-  max-height:90vh;
-  overflow-y:auto;
-  padding:27px;
-  box-shadow:0 20px 50px rgba(0,0,0,.24);
-  animation:modalIn .22s ease;
-}
-
-@keyframes modalIn{
-  from{
-    opacity:0;
-    transform:translateY(15px) scale(.98);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0) scale(1);
-  }
-}
-
-.modal h3{
-  color:var(--azul-escuro);
-  font-size:18px;
-  margin-bottom:7px;
-}
-
-.modal .sub{
-  color:var(--cinza-500);
-  font-size:13px;
-  margin-bottom:18px;
-}
-
-.modal-buttons{
-  display:flex;
-  gap:10px;
-  margin-top:20px;
-}
-
-.modal-buttons .btn{
-  flex:1;
-}
-
-.calculo{
-  background:var(--cinza-100);
-  padding:20px;
-  text-align:center;
-  font-size:26px;
-  font-weight:700;
-  font-family:'Courier New',monospace;
-  color:var(--azul-escuro);
-  margin:12px 0;
-}
-
-.modal-input{
-  width:100%;
-  padding:12px 16px;
-  border:1px solid var(--cinza-300);
-  font-size:16px;
-  text-align:center;
-}
-
-.modal-input:focus{
-  outline:none;
-  border-color:var(--azul);
-}
-
-/* =========================
-   NOTIFICAÇÃO DE INÍCIO
-========================= */
-
-.ponto-alerta{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.38);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:22px;
-  z-index:1800;
-}
-
-.ponto-alerta.aberto{
-  display:flex;
-}
-
-.ponto-alerta-card{
-  width:100%;
-  max-width:390px;
-  background:#fff;
-  padding:30px 25px 25px;
-  text-align:center;
-  box-shadow:0 18px 50px rgba(0,0,0,.22);
-  animation:alertaEntrada .28s ease;
-}
-
-@keyframes alertaEntrada{
-  0%{
-    opacity:0;
-    transform:translateY(25px) scale(.96);
-  }
-  100%{
-    opacity:1;
-    transform:translateY(0) scale(1);
-  }
-}
-
-.ponto-alerta-icone{
-  width:68px;
-  height:68px;
-  margin:0 auto 18px;
-  background:var(--azul-suave);
-  color:var(--azul);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:28px;
-  animation:pulseIcon .9s ease;
-}
-
-@keyframes pulseIcon{
-  0%{transform:scale(.75);opacity:.3}
-  70%{transform:scale(1.08);opacity:1}
-  100%{transform:scale(1)}
-}
-
-.ponto-alerta-card h3{
-  color:var(--cinza-900);
-  font-size:18px;
-  margin-bottom:9px;
-}
-
-.ponto-alerta-card p{
-  color:var(--cinza-500);
-  font-size:13px;
-  line-height:1.6;
-  margin-bottom:23px;
-}
-
-.ponto-alerta-card .btn{
-  width:120px;
-}
-
-/* =========================
-   ALERTA DE PONTO ABERTO
-========================= */
-
-.ponto-aberto-bar{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  background:var(--amarelo-claro);
-  border-top:1px solid #E9DDAF;
-  z-index:800;
-  min-height:66px;
-  display:none;
-  cursor:pointer;
-  box-shadow:0 -4px 15px rgba(0,0,0,.06);
-}
-
-.ponto-aberto-bar.visivel{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.ponto-aberto-inner{
-  width:100%;
-  max-width:850px;
-  padding:10px 18px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.ponto-aberto-icone{
-  color:#9B7411;
-  font-size:20px;
-  flex-shrink:0;
-}
-
-.ponto-aberto-texto{
-  flex:1;
-}
-
-.ponto-aberto-texto strong{
-  display:block;
-  color:#6D5716;
-  font-size:13px;
-}
-
-.ponto-aberto-texto span{
-  display:block;
-  color:#806F38;
-  font-size:11px;
-}
-
-.ponto-aberto-seta{
-  color:#8B751D;
-}
-
-/* =========================
-   RODAPÉ
-========================= */
-
-.footer{
-  background:var(--rodape);
-  border-top:1px dotted #C9CDD2;
-  padding:24px 18px 30px;
-  color:var(--cinza-500);
-  margin-top:auto;
-}
-
-.footer-inner{
-  width:100%;
-  max-width:850px;
-  margin:0 auto;
-}
-
-.footer-links{
-  display:flex;
-  justify-content:center;
-  flex-wrap:wrap;
-  gap:7px 18px;
-  margin-bottom:12px;
-}
-
-.footer-link{
-  color:var(--cinza-500);
-  font-size:11px;
-  cursor:pointer;
-}
-
-.footer-link:hover{
-  color:var(--azul);
-}
-
-.footer-copy{
-  text-align:center;
-  font-size:10px;
-  color:#888;
-}
-
-/* =========================
-   TOAST
-========================= */
-
-.toast{
-  position:fixed;
-  left:50%;
-  bottom:82px;
-  transform:translateX(-50%);
-  background:#202124;
-  color:#fff;
-  padding:11px 20px;
-  font-size:13px;
-  z-index:2500;
-  box-shadow:0 5px 18px rgba(0,0,0,.22);
-  animation:toastIn .2s ease;
-}
-
-@keyframes toastIn{
-  from{
-    opacity:0;
-    transform:translate(-50%,10px);
-  }
-  to{
-    opacity:1;
-    transform:translate(-50%,0);
-  }
-}
-
-/* =========================
-   LOADER
-========================= */
-
-.loader{
-  position:fixed;
-  inset:0;
-  background:rgba(255,255,255,.92);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  z-index:2200;
-}
-
-.loader.aberto{
-  display:flex;
-}
-
-.spinner{
-  width:46px;
-  height:46px;
-  border:4px solid var(--cinza-200);
-  border-top-color:var(--azul);
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-}
-
-@keyframes spin{
-  to{transform:rotate(360deg)}
-}
-
-.loader .texto{
-  margin-top:15px;
-  color:var(--cinza-700);
-  font-size:13px;
-  font-weight:500;
-}
-
-/* =========================
-   CÂMERA
-========================= */
-
-.camera-box{
-  width:320px;
-  height:420px;
-  background:#000;
-  position:relative;
-  overflow:hidden;
-  box-shadow:0 0 0 3px var(--azul),0 20px 60px rgba(0,0,0,.5);
-}
-
-.camera-box video{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.camera-spinner{
-  position:absolute;
-  inset:0;
-  background:rgba(12,50,111,.7);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:5;
-}
-
-.camera-cancel{
-  position:absolute;
-  bottom:14px;
-  left:50%;
-  transform:translateX(-50%);
-  background:rgba(0,0,0,.7);
-  border:0;
-  padding:9px 22px;
-  color:#fff;
-  font-weight:600;
-  font-size:13px;
-  cursor:pointer;
-  z-index:10;
-}
-
-/* =========================
-   DOCUMENTOS
-========================= */
-
-.document-body{
-  max-height:50vh;
-  overflow-y:auto;
-  font-size:14px;
-  line-height:1.8;
-  color:var(--cinza-700);
-  white-space:pre-wrap;
-  padding:14px;
-  background:var(--cinza-100);
-}
-
-/* =========================
-   UTILITÁRIOS
-========================= */
-
-.hidden{
-  display:none!important;
-}
-
-/* =========================
-   RESPONSIVO
-========================= */
-
-@media(max-width:600px){
-
-  .header{
-    height:58px;
-    padding:0 15px;
-  }
-
-  .header-brand{
-    font-size:16px;
-  }
-
-  .header-brand .sub{
-    display:none;
-  }
-
-  .main{
-    padding:18px 14px 105px;
-  }
-
-  .page-header h1{
-    font-size:21px;
-  }
-
-  .function-item{
-    min-height:86px;
-  }
-
-  .function-icon{
-    width:50px;
-    height:50px;
-    font-size:20px;
-  }
-
-  .cronometro-valor{
-    font-size:38px;
-  }
-
-  .acoes-ponto .btn{
-    width:100%;
-  }
-
-  .stats-grid{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .modal{
-    padding:23px 19px;
-  }
-
-  .camera-box{
-    width:280px;
-    height:360px;
-  }
-
-  .ponto-aberto-inner{
-    padding:9px 14px;
-  }
-}
-
-@media(max-width:380px){
-  .stats-grid{
-    grid-template-columns:1fr;
-  }
-
-  .function-info{
-    padding-left:12px;
-  }
-
-  .function-title{
-    font-size:14px;
-  }
-}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--azul:#1955ad;--azul-escuro:#173d77;--azul-suave:#eef3fb;--verde:#168821;--vermelho:#d6392a;--amarelo:#e8a33d;--amarelo-claro:#fff9e8;--cinza-50:#fafafa;--cinza-100:#f2f2f2;--cinza-200:#e1e5eb;--cinza-300:#c9cdd2;--cinza-500:#657080;--cinza-700:#333333;--cinza-900:#202124;--branco:#fff;--rodape:#f7f8fa;--radius:22px}
+html,body{min-height:100%}
+body{background:#fff;font-family:Arial,sans-serif;color:var(--cinza-900);min-height:100vh;display:flex;flex-direction:column;font-size:15px;line-height:1.5}
+button,input,textarea,select{font-family:Arial,sans-serif}
+.header{background:#fff;height:66px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:500;box-shadow:0 1px 5px #172b4d0d}
+.header-brand{color:var(--azul-escuro);font:700 19px Arial,sans-serif;display:flex;align-items:center;gap:11px;cursor:pointer;white-space:nowrap}
+.header-brand .sub{font-size:11px;font-weight:400;color:var(--cinza-500);margin-left:5px}
+.header-right{display:flex;align-items:center}
+.menu-dots{position:relative}
+.menu-btn{width:38px;height:38px;border:0;background:#fff;color:#234c83;cursor:pointer;display:grid;place-items:center;font-size:18px;transition:background .2s}
+.menu-btn:hover{background:var(--azul-suave)}
+.menu-dropdown{position:absolute;top:48px;right:0;width:245px;background:#fff;display:none;z-index:900;box-shadow:0 10px 30px rgba(23,43,77,.18);overflow:hidden}
+.menu-dropdown.aberto{display:block;animation:menuIn .18s ease}
+@keyframes menuIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.menu-dropdown .item{padding:14px 18px;color:var(--cinza-900);font-size:14px;cursor:pointer;display:flex;align-items:center;gap:12px}
+.menu-dropdown .item i{width:20px;color:var(--azul);text-align:center}
+.menu-dropdown .item:hover{background:var(--azul-suave);color:var(--azul)}
+.menu-dropdown .divider{height:1px;background:var(--cinza-200)}
+.main{width:100%;max-width:850px;margin:0 auto;padding:22px 18px 110px;flex:1}
+.content{width:100%}
+.page-header{margin-bottom:18px}
+.page-header h1{font-size:28px;line-height:1.2;font-weight:700;color:var(--azul-escuro);letter-spacing:-.4px}
+.page-header .desc{font-size:13px;color:var(--cinza-500);margin-top:3px}
+.search-area{margin-bottom:22px}
+.search-box{width:100%;background:#fff;border:1px solid var(--cinza-200);height:48px;display:flex;align-items:center;padding:0 15px;box-shadow:0 2px 8px rgba(23,43,77,.04)}
+.search-box i{color:var(--cinza-500);font-size:15px;margin-right:11px}
+.search-box input{flex:1;border:0;outline:none;background:transparent;font-size:14px;color:var(--cinza-900)}
+.search-box input::placeholder{color:#888}
+.function-list{display:flex;flex-direction:column;gap:10px}
+.function-item{width:100%;min-height:92px;border:1px solid var(--cinza-200);border-radius:12px;background:#fff;cursor:pointer;display:flex;align-items:center;padding:17px 18px;text-align:left;transition:background .18s,transform .18s,border-color .18s}
+.function-item:hover{background:#fafcff;border-color:#bfd0e9;transform:translateY(-1px)}
+.function-icon{width:56px;height:56px;border-radius:12px;background:var(--azul-suave);color:var(--azul);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.function-info{padding-left:16px;flex:1}
+.function-title{color:var(--cinza-900);font-weight:700;font-size:15px;margin-bottom:2px}
+.function-desc{color:var(--cinza-500);font-size:12px;line-height:1.4}
+.function-arrow{color:#999;font-size:14px;margin-left:10px}
+.card{background:#fff;padding:20px 0;margin-bottom:15px}
+.card-title{font-size:15px;font-weight:700;color:var(--cinza-900);margin-bottom:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:7px 18px;border-radius:var(--radius);font:italic 14px Arial,sans-serif;line-height:1.3;cursor:pointer;border:1px solid transparent;transition:.15s;text-align:center;gap:8px}
+.btn-primary{background:var(--azul);color:#fff;border-color:var(--azul)}
+.btn-primary:hover{background:#12458f;border-color:#12458f}
+.btn-secondary{background:#fff;color:var(--azul);border-color:var(--azul)}
+.btn-secondary:hover{background:#f1f5fc}
+.btn-danger{background:var(--vermelho);color:#fff;border-color:var(--vermelho)}
+.btn-danger:hover{background:#b32d20;border-color:#b32d20}
+.btn-block{width:100%;display:flex}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn:focus-visible{outline:2px solid var(--azul);outline-offset:3px}
+.spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cronometro-card{background:#fff;padding:25px 0;text-align:center;margin-bottom:10px}
+.cronometro-label{font-size:11px;font-weight:600;color:var(--cinza-500);text-transform:uppercase;letter-spacing:.7px}
+.cronometro-valor{font-size:52px;font-weight:700;font-family:'Courier New',monospace;color:var(--azul-escuro);letter-spacing:2px;padding:10px 0 20px}
+.acoes-ponto{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.acoes-ponto .btn{min-width:190px}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px}
+.stat-card{background:#fff;border:1px solid var(--cinza-200);padding:16px}
+.stat-label{font-size:10px;font-weight:600;color:var(--cinza-500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+.stat-value{font-size:22px;font-weight:700;color:var(--azul-escuro)}
+.stat-hint{font-size:11px;color:var(--cinza-500);margin-top:3px}
+.chart-bars{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;height:180px;padding:10px 0 0}
+.chart-bar-item{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end}
+.chart-bar{width:100%;max-width:34px;background:linear-gradient(180deg,var(--azul),var(--azul-escuro));border-radius:5px 5px 0 0;min-height:4px}
+.chart-bar.hoje{background:linear-gradient(180deg,var(--verde),#0f5c17)}
+.chart-label{font-size:10px;font-weight:600;color:var(--cinza-500);margin-top:7px;text-transform:uppercase}
+.chart-value{font-size:10px;color:var(--azul-escuro);font-weight:700;margin-bottom:4px}
+.tabela{width:100%;border-collapse:collapse;font-size:13px}
+.tabela th{text-align:left;padding:10px;font-weight:600;color:var(--cinza-500);border-bottom:2px solid var(--cinza-200);font-size:10px;text-transform:uppercase}
+.tabela td{padding:11px 10px;border-bottom:1px solid var(--cinza-200);color:var(--cinza-900)}
+.tabela tr:last-child td{border-bottom:0}
+.campo{margin-bottom:16px}
+.campo label{display:block;font-size:13px;font-weight:600;color:var(--cinza-700);margin-bottom:6px}
+.campo input,.campo textarea,.campo select{width:100%;padding:11px 13px;border:1px solid var(--cinza-300);border-radius:6px;font-size:14px;color:var(--cinza-900);background:#fff}
+.campo input:focus,.campo textarea:focus,.campo select:focus{outline:none;border-color:var(--azul)}
+.campo textarea{resize:vertical;min-height:100px}
+.filtro-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.filtro-row .campo{flex:1;min-width:160px;margin-bottom:0}
+.info-box{background:var(--cinza-100);padding:15px 17px;margin-bottom:16px;font-size:14px}
+.info-box .linha{padding:3px 0}
+.info-box .linha strong{color:var(--cinza-900);display:inline-block;min-width:100px}
+.termo-box{background:var(--cinza-100);padding:15px;margin-bottom:16px;font-size:13px;color:var(--cinza-700)}
+.termo-check{display:flex;align-items:flex-start;gap:9px;margin-top:12px;padding-top:12px;border-top:1px solid var(--cinza-200)}
+.termo-check input{width:16px;height:16px;accent-color:var(--azul);margin-top:2px}
+.overlay{position:fixed;inset:0;background:rgba(23,36,58,.4);display:none;align-items:center;justify-content:center;z-index:1500;padding:20px}
+.overlay.aberto{display:flex}
+.modal{background:#fff;width:100%;max-width:440px;max-height:90vh;overflow-y:auto;padding:27px;box-shadow:0 20px 50px rgba(23,43,77,.24);animation:modalIn .22s ease}
+@keyframes modalIn{from{opacity:0;transform:translateY(15px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal h3{color:var(--azul-escuro);font-size:18px;margin-bottom:7px}
+.modal .sub{color:var(--cinza-500);font-size:13px;margin-bottom:18px}
+.modal ul{text-align:left;padding-left:20px;margin:10px 0 18px;font-size:13px;color:#4a3c10;line-height:1.7}
+.modal ul li{margin-bottom:5px}
+.modal .dica{background:#fff9e8;border:1px solid #f0e2b8;padding:12px 14px;margin:12px 0 18px;font-size:12px;color:#5a4a1a;line-height:1.6;border-radius:4px;text-align:left}
+.modal-buttons{display:flex;gap:10px;margin-top:20px}
+.modal-buttons .btn{flex:1}
+.calculo{background:var(--cinza-100);padding:20px;text-align:center;font-size:26px;font-weight:700;font-family:'Courier New',monospace;color:var(--azul-escuro);margin:12px 0}
+.modal-input{width:100%;padding:12px 16px;border:1px solid var(--cinza-300);font-size:16px;text-align:center}
+.modal-input:focus{outline:none;border-color:var(--azul)}
+.preview-box{width:180px;height:180px;margin:0 auto 18px;border-radius:50%;overflow:hidden;border:4px solid var(--azul);background:#eef3fb;box-shadow:0 8px 24px rgba(25,85,173,.18)}
+.preview-box img{width:100%;height:100%;object-fit:cover;display:block}
+.preview-titulo{font-size:15px;color:var(--azul-escuro);font-weight:700;margin-bottom:6px}
+.preview-txt{font-size:13px;color:var(--cinza-500);line-height:1.6;margin-bottom:16px}
+.aviso{background:#fff9e8;border-left:5px solid var(--amarelo);padding:18px 18px;margin-bottom:20px;font-size:13px;color:#5a4a1a;line-height:1.6;border-radius:0}
+.aviso strong{display:block;color:#c2410c;font-size:15px;margin-bottom:8px;font-weight:700}
+.aviso .instrucoes{background:#fff;border:1px solid #f0e2b8;padding:12px 14px;margin-top:12px;font-size:12px;color:#4a3c10;line-height:1.7;border-radius:4px}
+.aviso .instrucoes ol{padding-left:18px;margin:6px 0}
+.aviso .instrucoes li{margin-bottom:4px}
+.ponto-alerta{position:fixed;inset:0;background:rgba(23,36,58,.4);display:none;align-items:center;justify-content:center;padding:22px;z-index:1800}
+.ponto-alerta.aberto{display:flex}
+.ponto-alerta-card{width:100%;max-width:390px;background:#fff;padding:30px 25px 25px;text-align:center;box-shadow:0 18px 50px rgba(23,43,77,.22);animation:alertaEntrada .28s ease}
+@keyframes alertaEntrada{0%{opacity:0;transform:translateY(25px) scale(.96)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.ponto-alerta-icone{width:68px;height:68px;margin:0 auto 18px;background:var(--azul-suave);color:var(--azul);display:flex;align-items:center;justify-content:center;font-size:28px;animation:pulseIcon .9s ease}
+@keyframes pulseIcon{0%{transform:scale(.75);opacity:.3}70%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
+.ponto-alerta-card h3{color:var(--cinza-900);font-size:18px;margin-bottom:9px}
+.ponto-alerta-card p{color:var(--cinza-500);font-size:13px;line-height:1.6;margin-bottom:23px}
+.ponto-alerta-card .btn{width:120px}
+.ponto-aberto-bar{position:fixed;left:0;right:0;bottom:0;background:var(--amarelo-claro);border-top:1px solid #e9ddaf;z-index:800;min-height:66px;display:none;cursor:pointer;box-shadow:0 -4px 15px rgba(23,43,77,.06)}
+.ponto-aberto-bar.visivel{display:flex;align-items:center;justify-content:center}
+.ponto-aberto-inner{width:100%;max-width:850px;padding:10px 18px;display:flex;align-items:center;gap:12px}
+.ponto-aberto-icone{color:#9b7411;font-size:20px;flex-shrink:0}
+.ponto-aberto-texto{flex:1}
+.ponto-aberto-texto strong{display:block;color:#6d5716;font-size:13px}
+.ponto-aberto-texto span{display:block;color:#806f38;font-size:11px}
+.ponto-aberto-seta{color:#8b751d}
+.footer{border-top:1px solid var(--cinza-200);padding:25px 24px 30px;color:var(--cinza-500);margin-top:auto;background:#fff;text-align:center;font:12px Arial,sans-serif}
+.footer-inner{width:100%;max-width:850px;margin:0 auto}
+.footer-links{display:flex;justify-content:center;flex-wrap:wrap;gap:7px 18px;margin-bottom:12px}
+.footer-link{color:var(--cinza-500);font-size:12px;cursor:pointer}
+.footer-link:hover{color:var(--azul)}
+.footer-copy{text-align:center;font-size:12px;color:#888}
+.footer-copy strong{color:#243d60}
+.toast{position:fixed;left:50%;bottom:82px;transform:translateX(-50%);background:#202124;color:#fff;padding:11px 20px;font-size:13px;z-index:2500;box-shadow:0 5px 18px rgba(23,43,77,.22);animation:toastIn .2s ease;border-radius:4px}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+.loader{position:fixed;inset:0;background:rgba(255,255,255,.92);display:none;align-items:center;justify-content:center;flex-direction:column;z-index:2200;gap:14px}
+.loader.aberto{display:flex}
+.spin-big{width:46px;height:46px;border:4px solid var(--cinza-200);border-top-color:var(--azul);border-radius:50%;animation:spin .8s linear infinite}
+.loader .texto{color:var(--cinza-700);font-size:13px;font-weight:500}
+.camera-box{width:320px;height:420px;background:#000;position:relative;overflow:hidden;box-shadow:0 0 0 3px var(--azul),0 20px 60px rgba(23,43,77,.5);border-radius:4px}
+.camera-box video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.camera-spinner{position:absolute;inset:0;background:rgba(23,61,119,.7);display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:5;color:#fff;font-size:13px;gap:12px}
+.camera-spinner .sp{width:42px;height:42px;border:4px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+.camera-hint{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.72);color:#fff;padding:14px;text-align:center;font-size:13px;line-height:1.5}
+.camera-hint strong{display:block;font-size:14px;margin-bottom:4px;color:#ffd966}
+.camera-cancel{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);border:0;padding:9px 22px;color:#fff;font:italic 13px Arial,sans-serif;cursor:pointer;z-index:10;border-radius:22px}
+.document-body{max-height:50vh;overflow-y:auto;font-size:14px;line-height:1.8;color:var(--cinza-700);white-space:pre-wrap;padding:14px;background:var(--cinza-100)}
+.hidden{display:none!important}
+@media(max-width:600px){.header{height:58px;padding:0 15px}.header-brand{font-size:16px}.header-brand .sub{display:none}.main{padding:18px 14px 105px}.page-header h1{font-size:21px}.function-item{min-height:86px}.function-icon{width:50px;height:50px;font-size:20px}.cronometro-valor{font-size:38px}.acoes-ponto .btn{width:100%}.stats-grid{grid-template-columns:1fr 1fr}.modal{padding:23px 19px}.camera-box{width:280px;height:360px}.ponto-aberto-inner{padding:9px 14px}}
+@media(max-width:380px){.stats-grid{grid-template-columns:1fr}.function-info{padding-left:12px}.function-title{font-size:14px}}
 </style>
 </head>
-
 <body>
 
 <header class="header">
-  <div class="header-brand" onclick="goHome()">
-    <span>DomusFit</span>
-    <span class="sub">Sistema de Ponto</span>
-  </div>
-
+  <a class="brand header-brand" onclick="goHome()">
+    <span>DomusFit<span class="sub">Sistema de Ponto</span></span>
+  </a>
   <div class="header-right">
     <div class="menu-dots">
-      <button class="menu-btn" id="btnDots" aria-label="Abrir menu">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-
+      <button class="menu-btn" id="btnDots" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
       <div class="menu-dropdown" id="dotsMenu">
-
-        <div class="item" onclick="menuAction('perfil')">
-          <i class="fa-regular fa-user"></i>
-          <span>Meu Perfil</span>
-        </div>
-
+        <div class="item" onclick="menuAction('perfil')"><i class="fa-regular fa-user"></i><span>Meu Perfil</span></div>
         <div class="divider"></div>
-
-        <div class="item" onclick="menuAction('menu')">
-          <i class="fa-solid fa-house"></i>
-          <span>Menu Inicial</span>
-        </div>
-
-        <div class="item" onclick="menuAction('ponto')">
-          <i class="fa-solid fa-clock"></i>
-          <span>Batida de Ponto</span>
-        </div>
-
-        <div class="item" onclick="menuAction('carga')">
-          <i class="fa-solid fa-chart-column"></i>
-          <span>Carga Horária</span>
-        </div>
-
-        <div class="item" onclick="menuAction('chamado')">
-          <i class="fa-solid fa-headset"></i>
-          <span>Abrir Chamado</span>
-        </div>
-
+        <div class="item" onclick="menuAction('menu')"><i class="fa-solid fa-house"></i><span>Menu Inicial</span></div>
+        <div class="item" onclick="menuAction('ponto')"><i class="fa-solid fa-clock"></i><span>Batida de Ponto</span></div>
+        <div class="item" onclick="menuAction('carga')"><i class="fa-solid fa-chart-column"></i><span>Carga Horária</span></div>
+        <div class="item" onclick="menuAction('chamado')"><i class="fa-solid fa-headset"></i><span>Abrir Chamado</span></div>
         <div class="divider"></div>
-
-        <div class="item" onclick="menuAction('privacidade')">
-          <i class="fa-solid fa-shield-halved"></i>
-          <span>Política de Privacidade</span>
-        </div>
-
-        <div class="item" onclick="menuAction('termos')">
-          <i class="fa-solid fa-file-contract"></i>
-          <span>Termos de Uso</span>
-        </div>
-
-        <div class="item" onclick="menuAction('manual')">
-          <i class="fa-solid fa-book"></i>
-          <span>Manual do Usuário</span>
-        </div>
-
+        <div class="item" onclick="menuAction('privacidade')"><i class="fa-solid fa-shield-halved"></i><span>Política de Privacidade</span></div>
+        <div class="item" onclick="menuAction('termos')"><i class="fa-solid fa-file-contract"></i><span>Termos de Uso</span></div>
+        <div class="item" onclick="menuAction('manual')"><i class="fa-solid fa-book"></i><span>Manual do Usuário</span></div>
         <div class="divider"></div>
-
-        <div class="item" onclick="menuAction('sair')" style="color:var(--vermelho);">
-          <i class="fa-solid fa-right-from-bracket" style="color:var(--vermelho);"></i>
-          <span>Sair</span>
-        </div>
-
+        <div class="item" onclick="menuAction('sair')" style="color:var(--vermelho);"><i class="fa-solid fa-right-from-bracket" style="color:var(--vermelho);"></i><span>Sair</span></div>
       </div>
     </div>
   </div>
@@ -1276,326 +187,190 @@ select{
 
 <footer class="footer">
   <div class="footer-inner">
-
     <div class="footer-links">
-
-      <span class="footer-link" onclick="verDocumento('privacidade')">
-        Política de Privacidade
-      </span>
-
-      <span class="footer-link" onclick="verDocumento('termos')">
-        Termos de Uso
-      </span>
-
-      <span class="footer-link" onclick="verDocumento('manual')">
-        Manual do Usuário
-      </span>
-
-      <span class="footer-link" onclick="renderTela('chamado')">
-        Atendimento
-      </span>
-
+      <span class="footer-link" onclick="verDocumento('privacidade')">Política de Privacidade</span>
+      <span class="footer-link" onclick="verDocumento('termos')">Termos de Uso</span>
+      <span class="footer-link" onclick="verDocumento('manual')">Manual do Usuário</span>
+      <span class="footer-link" onclick="renderTela('chamado')">Atendimento</span>
     </div>
-
-    <div class="footer-copy">
-      Sistema de Ponto DomusFit
-    </div>
-
+    <div class="footer-copy">© <span class="current-year"></span> <strong>DomusFit.</strong> Todos os direitos reservados.</div>
   </div>
 </footer>
 
-<!-- ALERTA DE PONTO ABERTO -->
 <div class="ponto-aberto-bar" id="pontoAbertoBar" onclick="irParaPonto()">
   <div class="ponto-aberto-inner">
-
-    <div class="ponto-aberto-icone">
-      <i class="fa-solid fa-triangle-exclamation"></i>
-    </div>
-
+    <div class="ponto-aberto-icone"><i class="fa-solid fa-triangle-exclamation"></i></div>
     <div class="ponto-aberto-texto">
       <strong>Atenção: você está com um ponto em aberto.</strong>
       <span>Toque aqui para acessar o ponto e finalizar o expediente.</span>
     </div>
-
-    <div class="ponto-aberto-seta">
-      <i class="fa-solid fa-chevron-right"></i>
-    </div>
-
+    <div class="ponto-aberto-seta"><i class="fa-solid fa-chevron-right"></i></div>
   </div>
 </div>
 
-<!-- NOTIFICAÇÃO ANTES DO PONTO -->
 <div class="ponto-alerta" id="pontoAlerta">
-
   <div class="ponto-alerta-card">
-
-    <div class="ponto-alerta-icone">
-      <i class="fa-solid fa-clock"></i>
-    </div>
-
+    <div class="ponto-alerta-icone"><i class="fa-solid fa-clock"></i></div>
     <h3>Atenção antes de iniciar</h3>
-
-    <p>
-      Não esqueça de finalizar o ponto quando terminar o expediente.
-      O encerramento correto do registro é importante para manter sua
-      jornada registrada corretamente.
-    </p>
-
-    <button class="btn btn-primary" id="btnOkPonto">
-      OK
-    </button>
-
+    <p>Não esqueça de finalizar o ponto quando terminar o expediente. O encerramento correto do registro é importante para manter sua jornada registrada corretamente.</p>
+    <button class="btn btn-primary" id="btnOkPonto">OK</button>
   </div>
-
 </div>
 
-<!-- PERFIL -->
 <div class="overlay" id="overlayPerfil">
   <div class="modal">
-
     <h3>Meu Perfil</h3>
     <div class="sub">Dados cadastrais</div>
-
     <div class="info-box">
-      <div class="linha">
-        <strong>Nome:</strong>
-        <span id="perfilNomeValor">--</span>
-      </div>
-
-      <div class="linha">
-        <strong>NA:</strong>
-        <span id="perfilNaValor">--</span>
-      </div>
-
-      <div class="linha">
-        <strong>Telefone:</strong>
-        <span id="perfilTelefone">--</span>
-      </div>
+      <div class="linha"><strong>Nome:</strong> <span id="perfilNomeValor">--</span></div>
+      <div class="linha"><strong>NA:</strong> <span id="perfilNaValor">--</span></div>
+      <div class="linha"><strong>Telefone:</strong> <span id="perfilTelefone">--</span></div>
     </div>
-
     <div class="modal-buttons">
-      <button class="btn btn-secondary" onclick="fecharOverlay('overlayPerfil')">
-        Fechar
-      </button>
+      <button class="btn btn-secondary" onclick="fecharOverlay('overlayPerfil')">Fechar</button>
     </div>
-
   </div>
 </div>
 
-<!-- SEGURANÇA -->
 <div class="overlay" id="overlaySeguranca">
   <div class="modal">
-
     <h3 id="segTitulo">Verificação de Segurança</h3>
-
-    <div class="sub" id="segSubtitulo">
-      Resolva o cálculo para continuar
-    </div>
-
-    <div class="calculo" id="campoCalculo">
-      10 + 10 = ?
-    </div>
-
-    <input
-      type="number"
-      class="modal-input"
-      id="inputResultado"
-      placeholder="Digite o resultado"
-      inputmode="numeric"
-    >
-
+    <div class="sub" id="segSubtitulo">Resolva o cálculo para continuar</div>
+    <div class="calculo" id="campoCalculo">10 + 10 = ?</div>
+    <input type="number" class="modal-input" id="inputResultado" placeholder="Digite o resultado" inputmode="numeric">
     <div class="modal-buttons">
-
-      <button
-        class="btn btn-secondary"
-        onclick="fecharOverlay('overlaySeguranca'); segCallback=null;"
-      >
-        Cancelar
-      </button>
-
-      <button
-        class="btn btn-primary"
-        id="btnConfirmarSeg"
-        disabled
-      >
-        Confirmar
-      </button>
-
+      <button class="btn btn-secondary" onclick="fecharOverlay('overlaySeguranca'); segCallback=null;">Cancelar</button>
+      <button class="btn btn-primary" id="btnConfirmarSeg" disabled>Confirmar</button>
     </div>
-
   </div>
 </div>
 
-<!-- CÂMERA -->
 <div class="overlay" id="overlayCamera">
-
   <div class="camera-box">
-
-    <video
-      id="videoCam"
-      autoplay
-      playsinline
-      muted
-    ></video>
-
-    <div class="camera-spinner hidden" id="spinnerCamera">
-      <div class="spinner"></div>
-    </div>
-
-    <button class="camera-cancel" id="btnCancelarCamera">
-      Cancelar
-    </button>
-
+    <video id="videoCam" autoplay playsinline muted></video>
+    <div class="camera-spinner hidden" id="spinnerCamera"><div class="sp"></div><span>Centralizando...</span></div>
+    <div class="camera-hint"><strong>Centralize o rosto e aguarde</strong>A captura é automática</div>
+    <button class="camera-cancel" id="btnCancelarCamera">Cancelar</button>
   </div>
-
 </div>
 
-<!-- SEM CÂMERA -->
 <div class="overlay" id="overlaySemCamera">
-
   <div class="modal">
-
     <h3>Problemas com a câmera?</h3>
-
-    <div class="sub">
-      Se você não está conseguindo usar a câmera, prossiga sem confirmação facial.
-    </div>
-
+    <div class="sub">Se você não está conseguindo usar a câmera, prossiga sem confirmação facial.</div>
     <div class="modal-buttons">
-
-      <button
-        class="btn btn-secondary"
-        onclick="fecharOverlay('overlaySemCamera')"
-      >
-        Cancelar
-      </button>
-
-      <button
-        class="btn btn-primary"
-        id="btnContinuarSem"
-      >
-        Prosseguir
-      </button>
-
+      <button class="btn btn-secondary" onclick="fecharOverlay('overlaySemCamera')">Cancelar</button>
+      <button class="btn btn-primary" id="btnContinuarSem">Prosseguir</button>
     </div>
-
   </div>
-
 </div>
 
-<!-- DOCUMENTO -->
 <div class="overlay" id="overlayDocumento">
-
   <div class="modal" style="max-width:560px;">
-
     <h3 id="docTituloModal">Documento</h3>
-
-    <div class="sub" id="docSubModal">
-      Documento institucional
-    </div>
-
+    <div class="sub" id="docSubModal">Documento institucional</div>
     <div class="document-body" id="docCorpoModal"></div>
-
     <div class="modal-buttons">
-
-      <button
-        class="btn btn-secondary"
-        onclick="fecharOverlay('overlayDocumento')"
-      >
-        Fechar
-      </button>
-
-      <button
-        class="btn btn-primary"
-        onclick="baixarDocumento()"
-      >
-        Baixar PDF
-      </button>
-
+      <button class="btn btn-secondary" onclick="fecharOverlay('overlayDocumento')">Fechar</button>
+      <button class="btn btn-primary" onclick="baixarDocumento()">Baixar PDF</button>
     </div>
-
   </div>
-
 </div>
 
-<!-- LOADER -->
+<div class="overlay" id="overlayEscolha">
+  <div class="modal">
+    <h3>Atualizar foto de perfil</h3>
+    <div class="sub">Escolha como deseja enviar sua nova foto</div>
+    <div class="modal-buttons">
+      <button class="btn btn-secondary" id="btnEscolherArquivo">Enviar arquivo</button>
+      <button class="btn btn-primary" id="btnEscolherCamera">Tirar foto</button>
+    </div>
+    <div class="modal-buttons" style="margin-top:12px">
+      <button class="btn btn-secondary" id="btnCancelarEscolha" style="flex:1">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlayInstrucoesArquivo">
+  <div class="modal">
+    <h3>Como deve ser a foto</h3>
+    <div class="sub">Atenção aos requisitos abaixo antes de enviar</div>
+    <ul>
+      <li>Foto nítida, de frente, com o rosto bem visível.</li>
+      <li>Sem óculos escuros, boné ou máscara.</li>
+      <li>Fundo claro e neutro, de preferência.</li>
+      <li>Boa iluminação, sem sombras fortes no rosto.</li>
+      <li>Formato JPG ou PNG.</li>
+    </ul>
+    <div class="dica">Fotos fora do padrão podem ser recusadas e você precisará enviar novamente.</div>
+    <div class="modal-buttons">
+      <button class="btn btn-secondary" id="btnCancelarInstrArquivo">Cancelar</button>
+      <button class="btn btn-primary" id="btnSelecionarArquivo">Selecionar arquivo</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlayPreview">
+  <div class="modal">
+    <div class="preview-titulo">Confirme sua foto</div>
+    <div class="preview-txt">Verifique se está boa e com o ângulo correto antes de enviar.</div>
+    <div class="preview-box"><img id="previewImg" src="" alt="prévia"></div>
+    <div class="modal-buttons">
+      <button class="btn btn-secondary" id="btnRefazerFoto">Refazer</button>
+      <button class="btn btn-primary" id="btnConfirmarFoto">Confirmar e enviar</button>
+    </div>
+  </div>
+</div>
+
 <div class="loader" id="loader">
-
-  <div class="spinner"></div>
-
-  <div class="texto" id="loaderTexto">
-    Carregando...
-  </div>
-
+  <div class="spin-big"></div>
+  <div class="texto" id="loaderTexto">Carregando...</div>
 </div>
+
+<input type="file" id="fileInput" accept="image/*" style="display:none">
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <script>
-/* =========================================================
-   FIREBASE
-========================================================= */
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",
-  authDomain: "prefeitura-de-joao-camara.firebaseapp.com",
-  projectId: "prefeitura-de-joao-camara",
-  storageBucket: "prefeitura-de-joao-camara.firebasestorage.app",
-  databaseURL: "https://prefeitura-de-joao-camara-default-rtdb.firebaseio.com"
-};
-
+const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomain:"prefeitura-de-joao-camara.firebaseapp.com",projectId:"prefeitura-de-joao-camara",storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",databaseURL:"https://prefeitura-de-joao-camara-default-rtdb.firebaseio.com"};
 firebase.initializeApp(firebaseConfig);
-
-const db = firebase.database();
-
-let currentUser = localStorage.getItem("usuarioAtual");
-
-if(!currentUser){
-  window.location.href = "login2.html";
-}
-
-let userData = {};
-let pontoAtivo = false;
-let pontoStart = null;
-let cronInterval = null;
-let telaAtual = "login";
-
-let segCallback = null;
-let segResultadoCorreto = 0;
-let segOperacaoRealizada = "";
-let cameraStreamActive = null;
-let documentoAtual = "";
-let acaoPontoAtual = "";
-let alertaPontoExibido = false;
-
-const CLOUD_NAME = "dzmjto17f";
-const UPLOAD_PRESET = "ml_default";
-const CLOUDINARY_URL =
-  `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
-
-const mainArea = document.getElementById("mainArea");
-const btnDots = document.getElementById("btnDots");
-const dotsMenu = document.getElementById("dotsMenu");
-const loader = document.getElementById("loader");
-const loaderTexto = document.getElementById("loaderTexto");
-const pontoAbertoBar = document.getElementById("pontoAbertoBar");
-const pontoAlerta = document.getElementById("pontoAlerta");
-const btnOkPonto = document.getElementById("btnOkPonto");
-
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-/* =========================================================
-   DOCUMENTOS
-========================================================= */
-
-const documentos = {
-
-  privacidade:{
-    titulo:"Política de Privacidade",
-
-    conteudo:`POLÍTICA DE PRIVACIDADE - DOMUSFIT
+const db=firebase.database();
+let currentUser=localStorage.getItem("usuarioAtual");
+if(!currentUser){window.location.href="login2.html"}
+let userData={};
+let pontoAtivo=false;
+let pontoStart=null;
+let cronInterval=null;
+let telaAtual="login";
+let segCallback=null;
+let segResultadoCorreto=0;
+let segOperacaoRealizada="";
+let cameraStreamActive=null;
+let documentoAtual="";
+let acaoPontoAtual="";
+let alertaPontoExibido=false;
+let fotoAtualizadaFlag=false;
+let blobFotoPendente=null;
+let cameraFotoStream=null;
+let capturaFotoAgendada=null;
+const CLOUD_NAME="dzmjto17f";
+const UPLOAD_PRESET="ml_default";
+const CLOUDINARY_URL=`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+const FOTO_VERSAO="2026";
+const mainArea=document.getElementById("mainArea");
+const btnDots=document.getElementById("btnDots");
+const dotsMenu=document.getElementById("dotsMenu");
+const loader=document.getElementById("loader");
+const loaderTexto=document.getElementById("loaderTexto");
+const pontoAbertoBar=document.getElementById("pontoAbertoBar");
+const pontoAlerta=document.getElementById("pontoAlerta");
+const btnOkPonto=document.getElementById("btnOkPonto");
+const previewImg=document.getElementById("previewImg");
+const fileInput=document.getElementById("fileInput");
+const audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+const documentos={
+privacidade:{titulo:"Política de Privacidade",conteudo:`POLÍTICA DE PRIVACIDADE - DOMUSFIT
 
 A Academia DomusFit respeita a privacidade dos seus colaboradores e está comprometida em proteger os dados pessoais tratados no âmbito do Sistema de Ponto.
 
@@ -1617,13 +392,8 @@ Você pode solicitar acesso, correção, anonimização, portabilidade ou exclus
 6. CONTATO
 Solicitações devem ser encaminhadas ao suporte da Academia DomusFit.
 
-Este documento integra o Sistema de Ponto DomusFit.`
-  },
-
-  termos:{
-    titulo:"Termos de Uso",
-
-    conteudo:`TERMOS DE USO - SISTEMA DE PONTO DOMUSFIT
+Este documento integra o Sistema de Ponto DomusFit.`},
+termos:{titulo:"Termos de Uso",conteudo:`TERMOS DE USO - SISTEMA DE PONTO DOMUSFIT
 
 1. ACEITAÇÃO
 Ao utilizar o Sistema de Ponto DomusFit, o usuário declara ter lido, compreendido e aceito integralmente estes Termos.
@@ -1647,13 +417,8 @@ A Academia DomusFit poderá alterar estes Termos, mediante comunicação prévia
 Estes Termos vigoram a partir do primeiro uso do sistema e enquanto o usuário estiver ativo.
 
 8. FORO
-Fica eleito o foro da Comarca de João Câmara/RN para dirimir eventuais controvérsias.`
-  },
-
-  manual:{
-    titulo:"Manual do Usuário",
-
-    conteudo:`MANUAL DO USUÁRIO - SISTEMA DE PONTO DOMUSFIT
+Fica eleito o foro da Comarca de João Câmara/RN para dirimir eventuais controvérsias.`},
+manual:{titulo:"Manual do Usuário",conteudo:`MANUAL DO USUÁRIO - SISTEMA DE PONTO DOMUSFIT
 
 1. ACESSO
 Realize login com seu Número de Acesso (NA) e senha fornecidos pela Academia.
@@ -1686,2307 +451,73 @@ Realize login com seu Número de Acesso (NA) e senha fornecidos pela Academia.
 Acesse os documentos institucionais no rodapé do sistema.
 
 7. PERFIL
-Acesse "Meu Perfil" pelo menu superior.`
-  }
-
-};
-
-/* =========================================================
-   FUNÇÕES GERAIS
-========================================================= */
-
-function toast(msg){
-
-  const t = document.createElement("div");
-
-  t.className = "toast";
-  t.innerText = msg;
-
-  document.body.appendChild(t);
-
-  setTimeout(() => {
-    t.remove();
-  },2800);
-}
-
-function showLoader(msg){
-
-  loaderTexto.textContent = msg || "Carregando...";
-  loader.classList.add("aberto");
-}
-
-function hideLoader(){
-  loader.classList.remove("aberto");
-}
-
-function abrirOverlay(id){
-  const el = document.getElementById(id);
-  if(el) el.classList.add("aberto");
-}
-
-function fecharOverlay(id){
-  const el = document.getElementById(id);
-  if(el) el.classList.remove("aberto");
-}
-
-function formatDuration(ms){
-
-  const h = Math.floor(ms / 3600000);
-  const m = Math.floor((ms % 3600000) / 60000);
-  const s = Math.floor((ms % 60000) / 1000);
-
-  return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
-}
-
-function getDataChave(){
-
-  const d = new Date();
-
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-}
-
-function playNotificationSound(){
-
-  try{
-
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-
-    osc.frequency.value = 880;
-
-    gain.gain.setValueAtTime(.2,audioCtx.currentTime);
-
-    gain.gain.exponentialRampToValueAtTime(
-      .01,
-      audioCtx.currentTime + .3
-    );
-
-    osc.start();
-    osc.stop(audioCtx.currentTime + .3);
-
-  }catch(e){}
-}
-
-/* =========================================================
-   MENU
-========================================================= */
-
-btnDots.addEventListener("click",function(e){
-
-  e.stopPropagation();
-
-  dotsMenu.classList.toggle("aberto");
-});
-
-document.addEventListener("click",function(e){
-
-  if(!dotsMenu.contains(e.target) && e.target !== btnDots){
-    dotsMenu.classList.remove("aberto");
-  }
-
-});
-
-function menuAction(action){
-
-  dotsMenu.classList.remove("aberto");
-
-  if(action === "perfil"){
-    abrirPerfil();
-    return;
-  }
-
-  if(action === "menu"){
-    renderTela("menu");
-    return;
-  }
-
-  if(action === "ponto"){
-    renderTela("ponto");
-    return;
-  }
-
-  if(action === "carga"){
-    renderTela("carga");
-    return;
-  }
-
-  if(action === "chamado"){
-    renderTela("chamado");
-    return;
-  }
-
-  if(action === "privacidade" ||
-     action === "termos" ||
-     action === "manual"){
-
-    verDocumento(action);
-    return;
-  }
-
-  if(action === "sair"){
-    sair();
-  }
-}
-
-function abrirPerfil(){
-
-  document.getElementById("perfilNomeValor").textContent =
-    userData.nome || "--";
-
-  document.getElementById("perfilNaValor").textContent =
-    currentUser || "--";
-
-  document.getElementById("perfilTelefone").textContent =
-    userData.telefone || "--";
-
-  abrirOverlay("overlayPerfil");
-}
-
-function sair(){
-
-  if(!confirm("Deseja realmente sair do sistema?")) return;
-
-  localStorage.removeItem("usuarioAtual");
-
-  window.location.href = "login2.html";
-}
-
-function goHome(){
-
-  renderTela("menu");
-}
-
-/* =========================================================
-   PONTO ABERTO
-========================================================= */
-
-function atualizarAvisoPonto(){
-
-  if(pontoAtivo){
-
-    pontoAbertoBar.classList.add("visivel");
-
-  }else{
-
-    pontoAbertoBar.classList.remove("visivel");
-
-  }
-}
-
-function irParaPonto(){
-
-  renderTela("ponto");
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-}
-
-/* =========================================================
-   FIREBASE - USUÁRIO
-========================================================= */
-
-db.ref("usuarios/"+currentUser).on("value",snap => {
-
-  if(snap.exists()){
-
-    userData = snap.val();
-
-    if(telaAtual === "login"){
-      renderTela("login");
-    }
-  }
-
-});
-
-/* =========================================================
-   FIREBASE - PONTO ATIVO
-========================================================= */
-
-db.ref("pontos/"+currentUser+"/ativo/inicio")
-.on("value",snap => {
-
-  const inicio = snap.val();
-
-  if(inicio){
-
-    pontoAtivo = true;
-    pontoStart = inicio;
-
-    startCronometroLocal();
-
-  }else{
-
-    pontoAtivo = false;
-    pontoStart = null;
-
-    if(cronInterval){
-      clearInterval(cronInterval);
-      cronInterval = null;
-    }
-  }
-
-  atualizarAvisoPonto();
-
-});
-
-/* =========================================================
-   CRONÔMETRO
-========================================================= */
-
-function startCronometroLocal(){
-
-  if(cronInterval){
-    clearInterval(cronInterval);
-  }
-
-  cronInterval = setInterval(() => {
-
-    if(pontoAtivo && pontoStart){
-
-      const el = document.getElementById("cronodisplay");
-
-      if(el){
-
-        el.innerText =
-          formatDuration(Date.now() - pontoStart);
-      }
-    }
-
-  },1000);
-}
-
-/* =========================================================
-   RENDER
-========================================================= */
-
-function renderTela(tela){
-
-  telaAtual = tela;
-
-  dotsMenu.classList.remove("aberto");
-
-  mainArea.innerHTML = "";
-
-  if(tela === "menu"){
-    renderMenu();
-  }
-
-  else if(tela === "ponto"){
-    renderPonto();
-  }
-
-  else if(tela === "carga"){
-    renderCarga();
-  }
-
-  else if(tela === "chamado"){
-    renderChamado();
-  }
-
-  else if(tela === "login"){
-    renderLogin();
-  }
-
-  atualizarAvisoPonto();
-}
-
-/* =========================================================
-   LOGIN
-========================================================= */
-
-function renderLogin(){
-
-  mainArea.innerHTML = `
-
-    <div class="login-wrap">
-
-      <div class="login-card">
-
-        <h2>${userData.nome || "Carregando..."}</h2>
-
-        <div class="sub">
-          Sistema de Ponto DomusFit
-        </div>
-
-        <img
-          class="avatar-circle"
-          id="loginAvatar"
-          src="${userData.foto || ""}"
-          onerror="this.src='https://ui-avatars.com/api/?background=1351B4&color=fff&name=${encodeURIComponent(userData.nome || "U")}'"
-        >
-
-        <button
-          class="btn btn-primary btn-block"
-          id="btnAcessar"
-        >
-          Acessar o Sistema
-        </button>
-
-      </div>
-
-    </div>
-  `;
-
-  document.getElementById("btnAcessar").onclick =
-    () => renderTela("menu");
-}
-
-/* =========================================================
-   MENU PRINCIPAL
-========================================================= */
-
-function renderMenu(){
-
-  mainArea.innerHTML = `
-
-    <section class="content">
-
-      <div class="page-header">
-
-        <h1>
-          Bem-vindo(a), ${(userData.nome || "")
-          .split(" ")[0] || "Colaborador(a)"}
-        </h1>
-
-        <div class="desc">
-          Acesse os serviços do Sistema de Ponto
-        </div>
-
-      </div>
-
-      <div class="search-area">
-
-        <div class="search-box">
-
-          <i class="fa-solid fa-magnifying-glass"></i>
-
-          <input
-            type="search"
-            id="menuPesquisa"
-            placeholder="Pesquisar função..."
-            autocomplete="off"
-          >
-
-        </div>
-
-      </div>
-
-      <div class="function-list" id="functionList">
-
-        <div
-          class="function-item"
-          data-search="batida ponto entrada saída iniciar finalizar"
-          onclick="renderTela('ponto')"
-        >
-
-          <div class="function-icon">
-            <i class="fa-solid fa-clock"></i>
-          </div>
-
-          <div class="function-info">
-
-            <div class="function-title">
-              Batida de Ponto
-            </div>
-
-            <div class="function-desc">
-              Registre sua entrada e saída do expediente.
-            </div>
-
-          </div>
-
-          <div class="function-arrow">
-            <i class="fa-solid fa-chevron-right"></i>
-          </div>
-
-        </div>
-
-        <div
-          class="function-item"
-          data-search="carga horária horas registros jornada frequência"
-          onclick="renderTela('carga')"
-        >
-
-          <div class="function-icon">
-            <i class="fa-solid fa-chart-column"></i>
-          </div>
-
-          <div class="function-info">
-
-            <div class="function-title">
-              Carga Horária
-            </div>
-
-            <div class="function-desc">
-              Consulte suas horas trabalhadas e registros.
-            </div>
-
-          </div>
-
-          <div class="function-arrow">
-            <i class="fa-solid fa-chevron-right"></i>
-          </div>
-
-        </div>
-
-        <div
-          class="function-item"
-          data-search="chamado suporte atendimento ajuda correção"
-          onclick="renderTela('chamado')"
-        >
-
-          <div class="function-icon">
-            <i class="fa-solid fa-headset"></i>
-          </div>
-
-          <div class="function-info">
-
-            <div class="function-title">
-              Abrir Chamado
-            </div>
-
-            <div class="function-desc">
-              Solicite suporte ou informe problemas no sistema.
-            </div>
-
-          </div>
-
-          <div class="function-arrow">
-            <i class="fa-solid fa-chevron-right"></i>
-          </div>
-
-        </div>
-
-      </div>
-
-      <div
-        id="nenhumaFuncao"
-        style="
-          display:none;
-          text-align:center;
-          color:var(--cinza-500);
-          font-size:13px;
-          padding:30px 10px;
-        "
-      >
-        Nenhuma função encontrada.
-      </div>
-
-      <div class="card" style="margin-top:28px;">
-
-        <div class="card-title">
-          Documentos institucionais
-        </div>
-
-        <table class="tabela">
-
-          <tbody>
-
-            <tr>
-
-              <td>Política de Privacidade</td>
-
-              <td style="text-align:right;">
-
-                <button
-                  class="btn btn-secondary"
-                  style="padding:6px 12px;font-size:12px;"
-                  onclick="verDocumento('privacidade')"
-                >
-                  Ver
-                </button>
-
-                <button
-                  class="btn btn-secondary"
-                  style="padding:6px 12px;font-size:12px;margin-left:4px;"
-                  onclick="baixarDocumentoEspecifico('privacidade')"
-                >
-                  Baixar
-                </button>
-
-              </td>
-
-            </tr>
-
-            <tr>
-
-              <td>Termos de Uso</td>
-
-              <td style="text-align:right;">
-
-                <button
-                  class="btn btn-secondary"
-                  style="padding:6px 12px;font-size:12px;"
-                  onclick="verDocumento('termos')"
-                >
-                  Ver
-                </button>
-
-                <button
-                  class="btn btn-secondary"
-                  style="padding:6px 12px;font-size:12px;margin-left:4px;"
-                  onclick="baixarDocumentoEspecifico('termos')"
-                >
-                  Baixar
-                </button>
-
-              </td>
-
-            </tr>
-
-            <tr>
-
-              <td>Manual do Usuário</td>
-
-              <td style="text-align:right;">
-
-                <button
-                  class="btn btn-secondary"
-                  style="padding:6px 12px;font-size:12px;"
-                  onclick="verDocumento('manual')"
-                >
-                  Ver
-                </button>
-
-                <button
-                  class="btn btn-secondary"
-                  style="padding:6px 12px;font-size:12px;margin-left:4px;"
-                  onclick="baixarDocumentoEspecifico('manual')"
-                >
-                  Baixar
-                </button>
-
-              </td>
-
-            </tr>
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    </section>
-  `;
-
-  const pesquisa = document.getElementById("menuPesquisa");
-  const itens = document.querySelectorAll(".function-item");
-  const nenhuma = document.getElementById("nenhumaFuncao");
-
-  pesquisa.addEventListener("input",function(){
-
-    const termo = this.value
-      .toLowerCase()
-      .trim();
-
-    let encontrou = false;
-
-    itens.forEach(item => {
-
-      const texto =
-        item.dataset.search.toLowerCase();
-
-      const mostrar =
-        !termo || texto.includes(termo);
-
-      item.style.display =
-        mostrar ? "flex" : "none";
-
-      if(mostrar) encontrou = true;
-    });
-
-    nenhuma.style.display =
-      encontrou ? "none" : "block";
-  });
-
-}
-
-/* =========================================================
-   PONTO
-========================================================= */
-
-function renderPonto(){
-
-  mainArea.innerHTML = `
-
-    <section class="content">
-
-      <div class="page-header">
-
-        <h1>Batida de Ponto</h1>
-
-        <div class="desc">
-          Registre sua entrada ou saída do expediente
-        </div>
-
-      </div>
-
-      <div class="cronometro-card">
-
-        <div class="cronometro-label">
-          Tempo decorrido
-        </div>
-
-        <div
-          class="cronometro-valor"
-          id="cronodisplay"
-        >
-          00:00:00
-        </div>
-
-        <div class="acoes-ponto">
-
-          <button
-            class="btn btn-primary"
-            id="btnIniciar"
-          >
-            <i class="fa-solid fa-play"></i>
-            &nbsp;Iniciar Ponto
-          </button>
-
-          <button
-            class="btn btn-danger hidden"
-            id="btnFinalizar"
-          >
-            <i class="fa-solid fa-stop"></i>
-            &nbsp;Finalizar Dia
-          </button>
-
-        </div>
-
-      </div>
-
-      <div class="card">
-
-        <div class="card-title">
-          Seu resumo do dia
-        </div>
-
-        <div
-          class="stats-grid"
-          id="statsHoje"
-          style="margin-bottom:0;"
-        >
-
-          <div class="stat-card">
-
-            <div class="stat-label">
-              Status
-            </div>
-
-            <div
-              class="stat-value"
-              id="statStatus"
-              style="font-size:18px;"
-            >
-              --
-            </div>
-
-          </div>
-
-          <div class="stat-card">
-
-            <div class="stat-label">
-              Entrada de hoje
-            </div>
-
-            <div
-              class="stat-value"
-              id="statEntrada"
-              style="font-size:18px;"
-            >
-              --
-            </div>
-
-          </div>
-
-          <div class="stat-card">
-
-            <div class="stat-label">
-              Saída de hoje
-            </div>
-
-            <div
-              class="stat-value"
-              id="statSaida"
-              style="font-size:18px;"
-            >
-              --
-            </div>
-
-          </div>
-
-          <div class="stat-card">
-
-            <div class="stat-label">
-              Total de hoje
-            </div>
-
-            <div
-              class="stat-value"
-              id="statTotalHoje"
-              style="font-size:18px;"
-            >
-              --
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      <div class="card">
-
-        <div class="card-title">
-          Últimos 7 dias
-        </div>
-
-        <div
-          class="chart-bars"
-          id="chartSemana"
-        ></div>
-
-      </div>
-
-      <div class="card">
-
-        <div class="card-title">
-          Registros recentes
-        </div>
-
-        <div id="miniResumo"></div>
-
-      </div>
-
-    </section>
-  `;
-
-  if(pontoAtivo){
-
-    document
-      .getElementById("btnIniciar")
-      .classList.add("hidden");
-
-    document
-      .getElementById("btnFinalizar")
-      .classList.remove("hidden");
-  }
-
-  if(pontoAtivo && pontoStart){
-
-    document.getElementById("cronodisplay").innerText =
-      formatDuration(Date.now() - pontoStart);
-  }
-
-  startCronometroLocal();
-
-  document.getElementById("btnIniciar").onclick = () => {
-
-    if(pontoAtivo){
-
-      toast("Ponto já iniciado");
-      return;
-    }
-
-    abrirAvisoAntesDoPonto();
-  };
-
-  document.getElementById("btnFinalizar").onclick = () => {
-
-    if(!pontoAtivo){
-
-      toast("Nenhum ponto ativo");
-      return;
-    }
-
-    abrirModalSeguranca("finalizar");
-  };
-
-  carregarResumoHoje();
-  carregarChartSemana();
-  carregarMiniHistorico();
-}
-
-/* =========================================================
-   ALERTA ANTES DE INICIAR
-========================================================= */
-
-function abrirAvisoAntesDoPonto(){
-
-  if(alertaPontoExibido){
-
-    abrirModalSeguranca("iniciar");
-    return;
-  }
-
-  alertaPontoExibido = true;
-
-  abrirOverlay("pontoAlerta");
-}
-
-btnOkPonto.addEventListener("click",function(){
-
-  fecharOverlay("pontoAlerta");
-
-  setTimeout(() => {
-    abrirModalSeguranca("iniciar");
-  },150);
-});
-
-/* =========================================================
-   RESUMO
-========================================================= */
-
-async function carregarResumoHoje(){
-
-  const snap =
-    await db.ref("historico/"+currentUser).once("value");
-
-  const hist = snap.val() || {};
-
-  const hoje = getDataChave();
-
-  const reg = hist[hoje];
-
-  const entradaEl =
-    document.getElementById("statEntrada");
-
-  const saidaEl =
-    document.getElementById("statSaida");
-
-  const totalEl =
-    document.getElementById("statTotalHoje");
-
-  const statusEl =
-    document.getElementById("statStatus");
-
-  if(!entradaEl) return;
-
-  if(!reg){
-
-    entradaEl.textContent = "--";
-    saidaEl.textContent = "--";
-    totalEl.textContent = "--";
-    statusEl.textContent = "Não iniciado";
-    statusEl.style.color = "var(--cinza-500)";
-
-    return;
-  }
-
-  const ini = reg.inicio
-    ? new Date(reg.inicio).toLocaleTimeString().slice(0,5)
-    : "--";
-
-  const fim = reg.fim
-    ? new Date(reg.fim).toLocaleTimeString().slice(0,5)
-    : "--";
-
-  entradaEl.textContent = ini;
-  saidaEl.textContent = fim;
-
-  if(reg.inicio && reg.fim){
-
-    const diff = reg.fim - reg.inicio;
-
-    totalEl.textContent =
-      Math.floor(diff/3600000) + "h " +
-      Math.floor((diff%3600000)/60000) + "m";
-
-    statusEl.textContent = "Finalizado";
-    statusEl.style.color = "var(--verde)";
-
-  }else if(reg.inicio){
-
-    const diff = Date.now() - reg.inicio;
-
-    totalEl.textContent =
-      Math.floor(diff/3600000) + "h " +
-      Math.floor((diff%3600000)/60000) + "m";
-
-    statusEl.textContent = "Em andamento";
-    statusEl.style.color = "var(--amarelo)";
-  }
-}
-
-/* =========================================================
-   GRÁFICO SEMANA
-========================================================= */
-
-async function carregarChartSemana(){
-
-  const snap =
-    await db.ref("historico/"+currentUser).once("value");
-
-  const hist = snap.val() || {};
-
-  const dias = [];
-
-  const diasSemana =
-    ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
-
-  for(let i=6;i>=0;i--){
-
-    const d = new Date();
-
-    d.setDate(d.getDate()-i);
-
-    const chave =
-      `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-
-    const reg = hist[chave];
-
-    let ms = 0;
-
-    if(reg && reg.inicio && reg.fim){
-      ms = reg.fim - reg.inicio;
-    }
-
-    dias.push({
-      data:d,
-      chave,
-      ms,
-      label:diasSemana[d.getDay()],
-      hoje:i === 0
-    });
-  }
-
-  const maxMs =
-    Math.max(...dias.map(d => d.ms),1);
-
-  const el =
-    document.getElementById("chartSemana");
-
-  if(!el) return;
-
-  el.innerHTML = dias.map(d => {
-
-    const alturaPct =
-      (d.ms / maxMs) * 100;
-
-    const horas =
-      Math.floor(d.ms/3600000);
-
-    const mins =
-      Math.floor((d.ms%3600000)/60000);
-
-    const valor =
-      d.ms > 0
-      ? `${horas}h${mins > 0 ? mins : ""}`
-      : "";
-
-    return `
-
-      <div class="chart-bar-item">
-
-        <div class="chart-value">
-          ${valor}
-        </div>
-
-        <div
-          class="chart-bar ${d.hoje ? "hoje" : ""}"
-          style="height:${alturaPct}%"
-        ></div>
-
-        <div class="chart-label">
-          ${d.label}
-        </div>
-
-      </div>
-    `;
-
-  }).join("");
-}
-
-/* =========================================================
-   MINI HISTÓRICO
-========================================================= */
-
-async function carregarMiniHistorico(){
-
-  const snap =
-    await db.ref("historico/"+currentUser).once("value");
-
-  const hist = snap.val() || {};
-
-  const entradas =
-    Object.entries(hist)
-      .slice(-7)
-      .reverse();
-
-  let rows = "";
-
-  for(const [data,val] of entradas){
-
-    const ini = val.inicio
-      ? new Date(val.inicio).toLocaleTimeString().slice(0,5)
-      : "--";
-
-    const fim = val.fim
-      ? new Date(val.fim).toLocaleTimeString().slice(0,5)
-      : "--";
-
-    let dur = "--";
-
-    if(val.inicio && val.fim){
-
-      const diff = val.fim - val.inicio;
-
-      dur =
-        Math.floor(diff/3600000) +
-        "h " +
-        Math.floor((diff%3600000)/60000) +
-        "m";
-    }
-
-    rows += `
-      <tr>
-        <td>${data}</td>
-        <td>${ini}</td>
-        <td>${fim}</td>
-        <td>${dur}</td>
-      </tr>
-    `;
-  }
-
-  const el =
-    document.getElementById("miniResumo");
-
-  if(!el) return;
-
-  el.innerHTML = `
-
-    <table class="tabela">
-
-      <thead>
-        <tr>
-          <th>Data</th>
-          <th>Entrada</th>
-          <th>Saída</th>
-          <th>Duração</th>
-        </tr>
-      </thead>
-
-      <tbody>
-
-        ${
-          rows ||
-          `
-          <tr>
-            <td
-              colspan="4"
-              style="text-align:center;color:var(--cinza-500);padding:20px;"
-            >
-              Nenhum registro encontrado
-            </td>
-          </tr>
-          `
-        }
-
-      </tbody>
-
-    </table>
-  `;
-}
-
-/* =========================================================
-   CARGA HORÁRIA
-========================================================= */
-
-function renderCarga(){
-
-  mainArea.innerHTML = `
-
-    <section class="content">
-
-      <div class="page-header">
-
-        <h1>Carga Horária</h1>
-
-        <div class="desc">
-          Consulte seus registros por período
-        </div>
-
-      </div>
-
-      <div class="card">
-
-        <div class="card-title">
-          Selecionar período
-        </div>
-
-        <div class="filtro-row">
-
-          <div class="campo">
-
-            <label>
-              Mês e ano (MM/AAAA)
-            </label>
-
-            <input
-              type="text"
-              id="mesAnoInput"
-              placeholder="MM/AAAA"
-              maxlength="7"
-            >
-
-          </div>
-
-          <button
-            class="btn btn-primary"
-            id="btnBuscar"
-          >
-            <i class="fa-solid fa-magnifying-glass"></i>
-            &nbsp;Buscar
-          </button>
-
-        </div>
-
-      </div>
-
-    </section>
-  `;
-
-  const input =
-    document.getElementById("mesAnoInput");
-
-  input.addEventListener("input",function(e){
-
-    let val =
-      e.target.value.replace(/\D/g,"");
-
-    if(val.length >= 2){
-
-      val =
-        val.slice(0,2) +
-        "/" +
-        val.slice(2,6);
-    }
-
-    e.target.value = val;
-  });
-
-  document.getElementById("btnBuscar").onclick =
-  async () => {
-
-    const raw = input.value.trim();
-
-    if(!raw.match(/^\d{2}\/\d{4}$/)){
-
-      toast("Formato inválido. Use MM/AAAA");
-      return;
-    }
-
-    const [mm,yyyy] = raw.split("/");
-
-    const mes = parseInt(mm);
-    const ano = parseInt(yyyy);
-
-    if(mes < 1 || mes > 12 || ano < 2000){
-
-      toast("Mês ou ano inválido");
-      return;
-    }
-
-    showLoader("Buscando registros...");
-
-    const snap =
-      await db.ref("historico/"+currentUser).once("value");
-
-    const pontos = snap.val() || {};
-
-    let totalMs = 0;
-    let linhas = "";
-    let registrosDia = [];
-
-    const registros =
-      Object.entries(pontos)
-      .filter(([data]) => {
-
-        const [y,m] =
-          data.split("-").map(Number);
-
-        return y === ano && m === mes;
-
-      })
-      .sort((a,b) =>
-        b[0].localeCompare(a[0])
-      );
-
-    for(const [data,val] of registros){
-
-      const ini = val.inicio
-        ? new Date(val.inicio).toLocaleTimeString().slice(0,5)
-        : "--";
-
-      const fim = val.fim
-        ? new Date(val.fim).toLocaleTimeString().slice(0,5)
-        : "--";
-
-      let durMs = 0;
-      let dur = "--";
-
-      if(val.inicio && val.fim){
-
-        durMs = val.fim - val.inicio;
-
-        totalMs += durMs;
-
-        dur =
-          `${Math.floor(durMs/3600000)}h ${Math.floor((durMs%3600000)/60000)}m`;
-      }
-
-      registrosDia.push({
-        data,
-        durMs
-      });
-
-      linhas += `
-        <tr>
-          <td>${data}</td>
-          <td>${ini}</td>
-          <td>${fim}</td>
-          <td>${dur}</td>
-        </tr>
-      `;
-    }
-
-    const totalH =
-      Math.floor(totalMs/3600000);
-
-    const totalM =
-      Math.floor((totalMs%3600000)/60000);
-
-    const maxMs =
-      Math.max(...registrosDia.map(r => r.durMs),1);
-
-    const mediaMs =
-      registrosDia.length
-      ? totalMs / registrosDia.length
-      : 0;
-
-    const mediaH =
-      Math.floor(mediaMs/3600000);
-
-    const mediaM =
-      Math.floor((mediaMs%3600000)/60000);
-
-    const chartHTML =
-      registrosDia.slice().reverse().map(r => {
-
-        const pct =
-          (r.durMs/maxMs)*100;
-
-        const horas =
-          Math.floor(r.durMs/3600000);
-
-        const mins =
-          Math.floor((r.durMs%3600000)/60000);
-
-        const valor =
-          r.durMs > 0
-          ? `${horas}h${mins > 0 ? mins : ""}`
-          : "";
-
-        const dia =
-          r.data.split("-")[2];
-
-        return `
-
-          <div class="chart-bar-item">
-
-            <div class="chart-value">
-              ${valor}
-            </div>
-
-            <div
-              class="chart-bar"
-              style="height:${pct}%"
-            ></div>
-
-            <div class="chart-label">
-              ${dia}
-            </div>
-
-          </div>
-        `;
-      }).join("");
-
-    hideLoader();
-
-    mainArea.innerHTML = `
-
-      <section class="content">
-
-        <div class="page-header">
-
-          <h1>Carga Horária</h1>
-
-          <div class="desc">
-            Período consultado: ${mm}/${yyyy}
-          </div>
-
-        </div>
-
-        <div class="stats-grid">
-
-          <div class="stat-card">
-
-            <div class="stat-label">
-              Total de horas
-            </div>
-
-            <div class="stat-value">
-              ${totalH}h ${totalM}m
-            </div>
-
-            <div class="stat-hint">
-              ${registros.length} registros
-            </div>
-
-          </div>
-
-          <div class="stat-card">
-
-            <div class="stat-label">
-              Média diária
-            </div>
-
-            <div class="stat-value">
-              ${mediaH}h ${mediaM}m
-            </div>
-
-            <div class="stat-hint">
-              Considerando dias com registro
-            </div>
-
-          </div>
-
-          <div class="stat-card">
-
-            <div class="stat-label">
-              Dias trabalhados
-            </div>
-
-            <div class="stat-value">
-              ${registros.length}
-            </div>
-
-            <div class="stat-hint">
-              No período consultado
-            </div>
-
-          </div>
-
-        </div>
-
-        <div class="card">
-
-          <div class="card-title">
-            Distribuição diária
-          </div>
-
-          <div class="chart-bars">
-
-            ${
-              chartHTML ||
-              `
-              <div
-                style="
-                  text-align:center;
-                  width:100%;
-                  color:var(--cinza-500);
-                  padding:20px;
-                "
-              >
-                Nenhum registro no período
-              </div>
-              `
-            }
-
-          </div>
-
-        </div>
-
-        <div class="card">
-
-          <div class="card-title">
-            Registros do período
-          </div>
-
-          <table class="tabela">
-
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>Entrada</th>
-                <th>Saída</th>
-                <th>Duração</th>
-              </tr>
-            </thead>
-
-            <tbody>
-
-              ${
-                linhas ||
-                `
-                <tr>
-                  <td
-                    colspan="4"
-                    style="
-                      text-align:center;
-                      color:var(--cinza-500);
-                      padding:20px;
-                    "
-                  >
-                    Nenhum registro encontrado
-                  </td>
-                </tr>
-                `
-              }
-
-            </tbody>
-
-          </table>
-
-        </div>
-
-        <button
-          class="btn btn-secondary"
-          onclick="renderTela('carga')"
-        >
-          <i class="fa-solid fa-rotate"></i>
-          &nbsp;Nova consulta
-        </button>
-
-      </section>
-    `;
-  };
-}
-
-/* =========================================================
-   CHAMADO
-========================================================= */
-
-function renderChamado(){
-
-  mainArea.innerHTML = `
-
-    <section class="content">
-
-      <div class="page-header">
-
-        <h1>Abrir Chamado</h1>
-
-        <div class="desc">
-          Entre em contato com o suporte
-        </div>
-
-      </div>
-
-      <div class="card">
-
-        <div class="card-title">
-          Dados do solicitante
-        </div>
-
-        <div class="info-box">
-
-          <div class="linha">
-            <strong>Nome:</strong>
-            ${userData.nome || "--"}
-          </div>
-
-          <div class="linha">
-            <strong>NA:</strong>
-            ${currentUser}
-          </div>
-
-          <div class="linha">
-            <strong>Telefone:</strong>
-            ${userData.telefone || "--"}
-          </div>
-
-        </div>
-
-        <div class="campo">
-
-          <label>
-            Motivo do chamado
-          </label>
-
-          <textarea
-            id="motivacaoTexto"
-            placeholder="Descreva detalhadamente o motivo do seu chamado..."
-          ></textarea>
-
-        </div>
-
-        <div class="termo-box">
-
-          <p>
-            Declaro que sou portador(a) do NA
-            <strong>${currentUser}</strong>,
-            responsável pelas informações prestadas,
-            e autorizo a Academia DomusFit a tratar
-            meus dados para fins de suporte.
-          </p>
-
-          <div class="termo-check">
-
-            <input
-              type="checkbox"
-              id="termoCheck"
-            >
-
-            <label for="termoCheck">
-              Li e concordo com os Termos de Uso
-              e autorizo o tratamento dos meus dados.
-            </label>
-
-          </div>
-
-        </div>
-
-        <button
-          class="btn btn-primary btn-block"
-          id="btnEnviarChamado"
-        >
-          <i class="fa-solid fa-paper-plane"></i>
-          &nbsp;Enviar para o Suporte
-        </button>
-
-        <div
-          id="protocoloAviso"
-          style="
-            margin-top:16px;
-            text-align:center;
-            font-size:13px;
-            color:var(--cinza-700);
-          "
-        ></div>
-
-      </div>
-
-    </section>
-  `;
-
-  document.getElementById("btnEnviarChamado").onclick =
-  async () => {
-
-    const motiv =
-      document.getElementById("motivacaoTexto")
-      .value.trim();
-
-    const termo =
-      document.getElementById("termoCheck").checked;
-
-    if(motiv.length < 5){
-
-      toast(
-        "Descreva o motivo com pelo menos 5 caracteres"
-      );
-
-      return;
-    }
-
-    if(!termo){
-
-      toast(
-        "É necessário concordar com os termos"
-      );
-
-      return;
-    }
-
-    showLoader("Enviando chamado...");
-
-    const protocolo =
-      Math.random()
-      .toString(36)
-      .substring(2,10)
-      .toUpperCase() +
-      Date.now()
-      .toString(36)
-      .toUpperCase();
-
-    const dataHora =
-      new Date().toLocaleString("pt-BR");
-
-    const chamadoData = {
-
-      nome:userData.nome,
-      na:currentUser,
-      telefone:userData.telefone || "",
-      motivacao:motiv,
-      dataHoraEnvio:dataHora,
-      protocolo,
-      timestamp:Date.now(),
-      termos_aceitos:true
-
-    };
-
-    await db
-      .ref("chamadosEdicao/"+currentUser)
-      .push(chamadoData);
-
-    const msg =
-`CHAMADO DOMUSFIT
-
-Nome: ${userData.nome || ""}
-NA: ${currentUser}
-Telefone: ${userData.telefone || ""}
-Protocolo: ${protocolo}
-Data: ${dataHora}
-
-${motiv}`;
-
-    window.open(
-      `https://wa.me/5584991778690?text=${encodeURIComponent(msg)}`,
-      "_blank"
-    );
-
-    playNotificationSound();
-
-    hideLoader();
-
-    document.getElementById("protocoloAviso").innerHTML =
-      `Protocolo: <strong>${protocolo}</strong> enviado com sucesso.`;
-
-    document.getElementById("motivacaoTexto").value = "";
-    document.getElementById("termoCheck").checked = false;
-
-    toast("Chamado enviado com sucesso");
-  };
-}
-
-/* =========================================================
-   DOCUMENTOS
-========================================================= */
-
-function verDocumento(chave){
-
-  const doc = documentos[chave];
-
-  if(!doc) return;
-
-  documentoAtual = chave;
-
-  document.getElementById("docTituloModal")
-    .textContent = doc.titulo;
-
-  document.getElementById("docSubModal")
-    .textContent = "Documento institucional";
-
-  document.getElementById("docCorpoModal")
-    .textContent = doc.conteudo;
-
-  abrirOverlay("overlayDocumento");
-}
-
-function gerarPDFDocumento(chave){
-
-  const doc = documentos[chave];
-
-  if(!doc) return;
-
-  const {jsPDF} = window.jspdf;
-
-  const pdf =
-    new jsPDF("p","mm","a4");
-
-  const pageWidth =
-    pdf.internal.pageSize.getWidth();
-
-  let y = 20;
-
-  pdf.setFontSize(14);
-
-  pdf.setTextColor(
-    12,
-    50,
-    111
-  );
-
-  pdf.text(
-    doc.titulo,
-    pageWidth/2,
-    y,
-    {align:"center"}
-  );
-
-  y += 10;
-
-  pdf.setFontSize(9);
-
-  pdf.setTextColor(
-    100,
-    100,
-    100
-  );
-
-  pdf.text(
-    "Gerado em " +
-    new Date().toLocaleString("pt-BR"),
-    pageWidth/2,
-    y,
-    {align:"center"}
-  );
-
-  y += 12;
-
-  pdf.setTextColor(
-    28,
-    39,
-    51
-  );
-
-  pdf.setFontSize(10.5);
-
-  const lines =
-    pdf.splitTextToSize(
-      doc.conteudo,
-      pageWidth - 30
-    );
-
-  pdf.text(
-    lines,
-    15,
-    y
-  );
-
-  return pdf;
-}
-
-function baixarDocumento(){
-
-  if(!documentoAtual) return;
-
-  const pdf =
-    gerarPDFDocumento(documentoAtual);
-
-  pdf.save(
-    documentos[documentoAtual]
-      .titulo
-      .replace(/ /g,"_") +
-    ".pdf"
-  );
-}
-
-function baixarDocumentoEspecifico(chave){
-
-  const pdf =
-    gerarPDFDocumento(chave);
-
-  pdf.save(
-    documentos[chave]
-      .titulo
-      .replace(/ /g,"_") +
-    ".pdf"
-  );
-}
-
-/* =========================================================
-   SEGURANÇA
-========================================================= */
-
-function abrirModalSeguranca(acao){
-
-  acaoPontoAtual = acao;
-
-  const ops = [
-
-    {a:10,b:10,t:"10 + 10"},
-    {a:2,b:2,t:"2 + 2"},
-    {a:4,b:4,t:"4 + 4"},
-    {a:40,b:40,t:"40 + 40"},
-    {a:5,b:3,t:"5 + 3"},
-    {a:8,b:2,t:"8 + 2"},
-    {a:15,b:5,t:"15 + 5"},
-    {a:20,b:10,t:"20 + 10"},
-    {a:6,b:6,t:"6 + 6"},
-    {a:25,b:25,t:"25 + 25"}
-
-  ];
-
-  const op =
-    ops[Math.floor(Math.random()*ops.length)];
-
-  segResultadoCorreto =
-    op.a + op.b;
-
-  segOperacaoRealizada =
-    op.t + " = " +
-    segResultadoCorreto;
-
-  document.getElementById("campoCalculo")
-    .innerHTML =
-    op.t + " = ?";
-
-  document.getElementById("inputResultado")
-    .value = "";
-
-  document.getElementById("btnConfirmarSeg")
-    .disabled = true;
-
-  document.getElementById("segTitulo")
-    .textContent =
-    acao === "iniciar"
-      ? "Iniciar Ponto"
-      : "Finalizar Ponto";
-
-  document.getElementById("segSubtitulo")
-    .textContent =
-    `Resolva o cálculo para ${
-      acao === "iniciar"
-        ? "iniciar"
-        : "finalizar"
-    } o ponto`;
-
-  document.getElementById("inputResultado")
-    .oninput = function(){
-
-      const val =
-        parseInt(this.value);
-
-      document.getElementById("btnConfirmarSeg")
-        .disabled =
-        val !== segResultadoCorreto;
-    };
-
-  abrirOverlay("overlaySeguranca");
-
-  setTimeout(() => {
-    document.getElementById("inputResultado").focus();
-  },150);
-
-  segCallback =
-    () => abrirModalCamera();
-}
-
-document.getElementById("btnConfirmarSeg")
-.addEventListener("click",() => {
-
-  if(segCallback){
-    segCallback();
-  }
-
-  fecharOverlay("overlaySeguranca");
-});
-
-/* =========================================================
-   CÂMERA
-========================================================= */
-
-function abrirModalCamera(){
-
-  const video =
-    document.getElementById("videoCam");
-
-  const spinner =
-    document.getElementById("spinnerCamera");
-
-  spinner.classList.add("hidden");
-
-  abrirOverlay("overlayCamera");
-
-  if(
-    !navigator.mediaDevices ||
-    !navigator.mediaDevices.getUserMedia
-  ){
-
-    fecharOverlay("overlayCamera");
-    abrirOverlay("overlaySemCamera");
-
-    return;
-  }
-
-  navigator.mediaDevices
-  .getUserMedia({
-
-    video:{
-      facingMode:"user",
-      width:{ideal:640},
-      height:{ideal:640}
-    },
-
-    audio:false
-
-  })
-
-  .then(stream => {
-
-    cameraStreamActive = stream;
-
-    video.srcObject = stream;
-
-    video.play()
-      .catch(()=>{});
-
-    setTimeout(() => {
-
-      if(!cameraStreamActive) return;
-
-      spinner.classList.remove("hidden");
-
-      setTimeout(() => {
-
-        if(!cameraStreamActive) return;
-
-        capturarFoto();
-
-      },2000);
-
-    },3000);
-
-  })
-
-  .catch(err => {
-
-    console.error("camera:",err);
-
-    fecharOverlay("overlayCamera");
-
-    abrirOverlay("overlaySemCamera");
-  });
-}
-
-function capturarFoto(){
-
-  const video =
-    document.getElementById("videoCam");
-
-  const canvas =
-    document.createElement("canvas");
-
-  canvas.width = 640;
-  canvas.height = 640;
-
-  try{
-
-    canvas
-      .getContext("2d")
-      .drawImage(
-        video,
-        0,
-        0,
-        640,
-        640
-      );
-
-  }catch(e){}
-
-  const blob =
-    new Promise(resolve =>
-      canvas.toBlob(
-        resolve,
-        "image/jpeg",
-        .9
-      )
-    );
-
-  if(cameraStreamActive){
-
-    cameraStreamActive
-      .getTracks()
-      .forEach(t => t.stop());
-
-    cameraStreamActive = null;
-  }
-
-  fecharOverlay("overlayCamera");
-
-  blob
-
-    .then(b => uploadCloudinary(b))
-
-    .then(url => {
-
-      if(acaoPontoAtual === "iniciar"){
-        iniciarPontoComSeguranca(url);
-      }else{
-        finalizarPontoComSeguranca(url);
-      }
-
-    })
-
-    .catch(err => {
-
-      console.error("upload:",err);
-
-      if(acaoPontoAtual === "iniciar"){
-        iniciarPontoComSeguranca(null);
-      }else{
-        finalizarPontoComSeguranca(null);
-      }
-
-    });
-}
-
-function uploadCloudinary(blob){
-
-  const fd =
-    new FormData();
-
-  fd.append("file",blob);
-  fd.append("upload_preset",UPLOAD_PRESET);
-
-  return fetch(
-    CLOUDINARY_URL,
-    {
-      method:"POST",
-      body:fd
-    }
-  )
-
-  .then(r => {
-
-    if(!r.ok){
-      throw new Error("Upload falhou");
-    }
-
-    return r.json();
-  })
-
-  .then(d => d.secure_url);
-}
-
-document.getElementById("btnCancelarCamera")
-.addEventListener("click",() => {
-
-  if(cameraStreamActive){
-
-    cameraStreamActive
-      .getTracks()
-      .forEach(t => t.stop());
-
-    cameraStreamActive = null;
-  }
-
-  fecharOverlay("overlayCamera");
-});
-
-document.getElementById("btnContinuarSem")
-.addEventListener("click",() => {
-
-  fecharOverlay("overlaySemCamera");
-
-  if(acaoPontoAtual === "iniciar"){
-    iniciarPontoComSeguranca(null);
-  }else{
-    finalizarPontoComSeguranca(null);
-  }
-});
-
-/* =========================================================
-   INICIAR PONTO
-========================================================= */
-
-async function iniciarPontoComSeguranca(fotoUrl){
-
-  showLoader("Registrando entrada...");
-
-  const agora =
-    Date.now();
-
-  const dataChave =
-    getDataChave();
-
-  const update = {
-
-    inicio:agora,
-
-    calculo:segOperacaoRealizada,
-
-    timestamp_inicio:agora
-  };
-
-  if(fotoUrl){
-    update.foto_inicio = fotoUrl;
-  }
-
-  try{
-
-    await db
-      .ref(
-        "historico/" +
-        currentUser +
-        "/" +
-        dataChave
-      )
-      .update(update);
-
-    await db
-      .ref(
-        "pontos/" +
-        currentUser +
-        "/ativo"
-      )
-      .set({
-        inicio:agora
-      });
-
-    playNotificationSound();
-
-    hideLoader();
-
-    toast(
-      "Ponto iniciado com sucesso"
-    );
-
-    renderTela("ponto");
-
-  }catch(err){
-
-    console.error(err);
-
-    hideLoader();
-
-    toast(
-      "Não foi possível registrar o ponto"
-    );
-  }
-}
-
-/* =========================================================
-   FINALIZAR PONTO
-========================================================= */
-
-async function finalizarPontoComSeguranca(fotoUrl){
-
-  showLoader("Finalizando ponto...");
-
-  const fim =
-    Date.now();
-
-  const dataChave =
-    getDataChave();
-
-  const update = {
-
-    fim,
-
-    calculo_fim:
-      segOperacaoRealizada,
-
-    timestamp_fim:
-      fim
-  };
-
-  if(fotoUrl){
-    update.foto_fim = fotoUrl;
-  }
-
-  try{
-
-    await db
-      .ref(
-        "historico/" +
-        currentUser +
-        "/" +
-        dataChave
-      )
-      .update(update);
-
-    await db
-      .ref(
-        "pontos/" +
-        currentUser +
-        "/ativo"
-      )
-      .remove();
-
-    playNotificationSound();
-
-    const idValidador =
-      Math.floor(
-        10000000 +
-        Math.random() * 90000000
-      ).toString();
-
-    const comprovante = {
-
-      id:idValidador,
-
-      nome:userData.nome || "--",
-
-      na:currentUser,
-
-      telefone:
-        userData.telefone || "--",
-
-      data:
-        new Date()
-        .toLocaleDateString("pt-BR"),
-
-      hora:
-        new Date()
-        .toLocaleTimeString("pt-BR"),
-
-      timestamp:fim,
-
-      calculo:
-        segOperacaoRealizada,
-
-      foto:
-        fotoUrl || null
-    };
-
-    try{
-
-      await db
-        .ref(
-          "comprovantes/" +
-          idValidador
-        )
-        .set(comprovante);
-
-    }catch(e){
-
-      console.error(
-        "erro ao salvar comprovante",
-        e
-      );
-    }
-
-    hideLoader();
-
-    window.location.href =
-      "validador2v.html?id=" +
-      idValidador;
-
-  }catch(err){
-
-    console.error(err);
-
-    hideLoader();
-
-    toast(
-      "Não foi possível finalizar o ponto"
-    );
-  }
-}
-
-/* =========================================================
-   INICIALIZAÇÃO
-========================================================= */
-
-db.ref("usuarios/"+currentUser)
-.once("value")
-.then(snap => {
-
-  if(snap.exists()){
-    userData = snap.val();
-  }
-
-  renderTela("login");
-
-});
+Acesse "Meu Perfil" pelo menu superior.`}};
+function toast(msg){const t=document.createElement("div");t.className="toast";t.innerText=msg;document.body.appendChild(t);setTimeout(()=>{t.remove()},2800)}
+function showLoader(msg){loaderTexto.textContent=msg||"Carregando...";loader.classList.add("aberto")}
+function hideLoader(){loader.classList.remove("aberto")}
+function abrirOverlay(id){const el=document.getElementById(id);if(el)el.classList.add("aberto")}
+function fecharOverlay(id){const el=document.getElementById(id);if(el)el.classList.remove("aberto")}
+function formatDuration(ms){const h=Math.floor(ms/3600000);const m=Math.floor((ms%3600000)/60000);const s=Math.floor((ms%60000)/1000);return`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`}
+function getDataChave(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+function playNotificationSound(){try{const osc=audioCtx.createOscillator();const gain=audioCtx.createGain();osc.connect(gain);gain.connect(audioCtx.destination);osc.frequency.value=880;gain.gain.setValueAtTime(.2,audioCtx.currentTime);gain.gain.exponentialRampToValueAtTime(.01,audioCtx.currentTime+.3);osc.start();osc.stop(audioCtx.currentTime+.3)}catch(e){}}
+function falar(texto){try{if(!("speechSynthesis" in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(texto);u.lang="pt-BR";u.rate=1;u.pitch=1.15;const voices=window.speechSynthesis.getVoices();const fem=voices.find(v=>v.lang==="pt-BR"&&/(female|maria|luciana|helo|google)/i.test(v.name));if(fem)u.voice=fem;window.speechSynthesis.speak(u)}catch(e){}}
+if("speechSynthesis" in window){window.speechSynthesis.onvoiceschanged=()=>{}}
+function fotoAtualizada(u){if(!u)return false;return u.foto_versao===FOTO_VERSAO&&u.foto}
+btnDots.addEventListener("click",function(e){e.stopPropagation();dotsMenu.classList.toggle("aberto")});
+document.addEventListener("click",function(e){if(!dotsMenu.contains(e.target)&&e.target!==btnDots){dotsMenu.classList.remove("aberto")}});
+function menuAction(action){dotsMenu.classList.remove("aberto");if(action==="perfil"){abrirPerfil();return}if(action==="menu"){renderTela("menu");return}if(action==="ponto"){renderTela("ponto");return}if(action==="carga"){renderTela("carga");return}if(action==="chamado"){renderTela("chamado");return}if(action==="privacidade"||action==="termos"||action==="manual"){verDocumento(action);return}if(action==="sair"){sair()}}
+function abrirPerfil(){document.getElementById("perfilNomeValor").textContent=userData.nome||"--";document.getElementById("perfilNaValor").textContent=currentUser||"--";document.getElementById("perfilTelefone").textContent=userData.telefone||"--";abrirOverlay("overlayPerfil")}
+function sair(){if(!confirm("Deseja realmente sair do sistema?"))return;localStorage.removeItem("usuarioAtual");window.location.href="login2.html"}
+function goHome(){if(!fotoAtualizadaFlag){renderBloqueioAtualizacao();return}renderTela("menu")}
+function atualizarAvisoPonto(){if(pontoAtivo&&fotoAtualizadaFlag){pontoAbertoBar.classList.add("visivel")}else{pontoAbertoBar.classList.remove("visivel")}}
+function irParaPonto(){renderTela("ponto");window.scrollTo({top:0,behavior:"smooth"})}
+db.ref("usuarios/"+currentUser).on("value",snap=>{if(snap.exists()){userData=snap.val();fotoAtualizadaFlag=fotoAtualizada(userData);if(telaAtual==="login"){if(fotoAtualizadaFlag){renderTela("login")}else{renderBloqueioAtualizacao()}}else if(!fotoAtualizadaFlag){renderBloqueioAtualizacao()}}});
+db.ref("pontos/"+currentUser+"/ativo/inicio").on("value",snap=>{const inicio=snap.val();if(inicio){pontoAtivo=true;pontoStart=inicio;startCronometroLocal()}else{pontoAtivo=false;pontoStart=null;if(cronInterval){clearInterval(cronInterval);cronInterval=null}}atualizarAvisoPonto()});
+function startCronometroLocal(){if(cronInterval){clearInterval(cronInterval)}cronInterval=setInterval(()=>{if(pontoAtivo&&pontoStart){const el=document.getElementById("cronodisplay");if(el){el.innerText=formatDuration(Date.now()-pontoStart)}}},1000)}
+function renderTela(tela){if(!fotoAtualizadaFlag){renderBloqueioAtualizacao();return}telaAtual=tela;dotsMenu.classList.remove("aberto");mainArea.innerHTML="";if(tela==="menu"){renderMenu()}else if(tela==="ponto"){renderPonto()}else if(tela==="carga"){renderCarga()}else if(tela==="chamado"){renderChamado()}else if(tela==="login"){renderLogin()}atualizarAvisoPonto()}
+function renderLogin(){mainArea.innerHTML=`<div style="min-height:calc(100vh - 200px);display:flex;align-items:center;justify-content:center"><div style="background:#fff;width:100%;max-width:400px;padding:35px 25px;text-align:center"><h2 style="font-size:20px;color:var(--azul-escuro);margin-bottom:5px">${userData.nome||"Carregando..."}</h2><div style="color:var(--cinza-500);font-size:13px;margin-bottom:22px">Sistema de Ponto DomusFit</div><img style="width:105px;height:105px;object-fit:cover;border-radius:50%;display:block;margin:0 auto 15px;background:var(--cinza-200)" src="${userData.foto||""}" onerror="this.src='https://ui-avatars.com/api/?background=1955ad&color=fff&name=${encodeURIComponent(userData.nome||"U")}'"><button class="btn btn-primary btn-block" id="btnAcessar">Acessar o Sistema</button></div></div>`;document.getElementById("btnAcessar").onclick=()=>renderTela("menu")}
+function renderBloqueioAtualizacao(){mainArea.innerHTML=`<section class="content"><div class="page-header"><h1>Atualização obrigatória de foto</h1><div class="desc">É necessário atualizar sua foto de perfil para continuar</div></div><div class="card"><div class="aviso"><strong>Atualização obrigatória</strong>Já faz mais de um ano que sua foto está no sistema. Para o bom funcionamento e segurança, é necessário enviar uma nova foto agora para continuar. Sem isso, não é possível iniciar ou finalizar o ponto.<div class="instrucoes"><strong style="display:block;color:#7a5a00;font-size:12px;margin-bottom:6px;font-weight:700">Como enviar</strong><ol><li>Toque em <strong>Enviar foto</strong> abaixo.</li><li>Escolha <strong>Tirar foto</strong> ou <strong>Enviar arquivo</strong>.</li><li>Se tirar foto, permita o acesso à câmera.</li><li>Centralize o rosto e aguarde a captura automática.</li><li>Após o envio, você será liberado automaticamente.</li></ol></div></div><div class="campo"><label>NA confirmado</label><input type="text" class="campo input" value="${currentUser}" readonly style="width:100%;padding:11px 13px;border:1px solid #d4a72c;border-radius:6px;background:#fffdf2;font-size:14px;color:var(--cinza-900)"></div><button class="btn btn-primary btn-block" id="btnEnviarFoto">Enviar foto</button><button class="btn btn-secondary btn-block" id="btnSairAtualizacao" style="margin-top:10px">Sair da conta</button></div></section>`;document.getElementById("btnEnviarFoto").onclick=abrirEscolhaFoto;document.getElementById("btnSairAtualizacao").onclick=()=>{localStorage.removeItem("usuarioAtual");window.location.href="login2.html"}}
+function abrirEscolhaFoto(){falar("Atualização obrigatória de foto. Escolha como deseja enviar sua nova foto");abrirOverlay("overlayEscolha")}
+document.getElementById("btnCancelarEscolha").onclick=()=>{fecharOverlay("overlayEscolha")};
+document.getElementById("btnEscolherArquivo").onclick=()=>{fecharOverlay("overlayEscolha");abrirOverlay("overlayInstrucoesArquivo")};
+document.getElementById("btnEscolherCamera").onclick=()=>{fecharOverlay("overlayEscolha");abrirCameraFoto()};
+document.getElementById("btnCancelarInstrArquivo").onclick=()=>{fecharOverlay("overlayInstrucoesArquivo")};
+document.getElementById("btnSelecionarArquivo").onclick=()=>{fecharOverlay("overlayInstrucoesArquivo");fileInput.click()};
+fileInput.addEventListener("change",e=>{const f=e.target.files[0];fileInput.value="";if(!f)return;if(!f.type.startsWith("image/")){toast("Selecione uma imagem válida");return}blobFotoPendente=f;mostrarPreview(URL.createObjectURL(f))});
+function mostrarPreview(src){previewImg.src=src;abrirOverlay("overlayPreview")}
+function fecharPreview(){fecharOverlay("overlayPreview");if(previewImg.src&&previewImg.src.startsWith("blob:")){URL.revokeObjectURL(previewImg.src)}previewImg.src=""}
+document.getElementById("btnRefazerFoto").onclick=()=>{fecharPreview();blobFotoPendente=null;abrirEscolhaFoto()};
+document.getElementById("btnConfirmarFoto").onclick=()=>{if(!blobFotoPendente){toast("Nenhuma foto selecionada");return}const blob=blobFotoPendente;const btn=document.getElementById("btnConfirmarFoto");const btnRef=document.getElementById("btnRefazerFoto");btn.disabled=true;btnRef.disabled=true;btn.innerHTML='<span class="spinner"></span>Enviando';uploadFotoCloudinary(blob).then(url=>{fecharPreview();salvarFotoPerfil(url)}).catch(err=>{console.error(err);btn.disabled=false;btnRef.disabled=false;btn.innerHTML="Confirmar e enviar";toast("Não foi possível enviar a foto")})};
+function abrirCameraFoto(){if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast("Câmera indisponível neste dispositivo");return}abrirOverlay("overlayCamera");const video=document.getElementById("videoCam");const spinner=document.getElementById("spinnerCamera");spinner.classList.add("hidden");navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:{ideal:640},height:{ideal:640}},audio:false}).then(stream=>{cameraFotoStream=stream;video.srcObject=stream;video.play().catch(()=>{});capturaFotoAgendada=setTimeout(()=>{if(!cameraFotoStream)return;spinner.classList.remove("hidden");setTimeout(()=>{if(!cameraFotoStream)return;capturarFotoPerfil()},2200)},2200)}).catch(err=>{console.error(err);fecharOverlay("overlayCamera");toast("Não foi possível acessar a câmera")})}
+function pararCameraFoto(){if(capturaFotoAgendada){clearTimeout(capturaFotoAgendada);capturaFotoAgendada=null}if(cameraFotoStream){cameraFotoStream.getTracks().forEach(t=>t.stop());cameraFotoStream=null}document.getElementById("videoCam").srcObject=null;document.getElementById("spinnerCamera").classList.add("hidden")}
+function capturarFotoPerfil(){const video=document.getElementById("videoCam");const canvas=document.createElement("canvas");canvas.width=640;canvas.height=640;try{canvas.getContext("2d").drawImage(video,0,0,640,640)}catch(e){}canvas.toBlob(blob=>{pararCameraFoto();fecharOverlay("overlayCamera");if(!blob){toast("Falha na captura");return}blobFotoPendente=blob;mostrarPreview(URL.createObjectURL(blob))},"image/jpeg",.92)}
+document.getElementById("btnCancelarCamera").onclick=()=>{pararCameraFoto();fecharOverlay("overlayCamera")};
+function uploadFotoCloudinary(fileOrBlob){const fd=new FormData();fd.append("file",fileOrBlob);fd.append("upload_preset",UPLOAD_PRESET);return fetch(CLOUDINARY_URL,{method:"POST",body:fd}).then(r=>{if(!r.ok)throw new Error("upload falhou");return r.json()}).then(d=>{if(!d.secure_url)throw new Error("url ausente");return d.secure_url})}
+function salvarFotoPerfil(url){const na=currentUser;if(!na){toast("Sessão expirada");return}showLoader("Salvando sua nova foto...");db.ref("usuarios/"+na).update({foto:url,foto_versao:FOTO_VERSAO,foto_atualizada_em:Date.now()}).then(()=>{hideLoader();toast("Foto atualizada com sucesso");blobFotoPendente=null;db.ref("usuarios/"+na).once("value").then(snap=>{if(snap.exists()){userData=snap.val();fotoAtualizadaFlag=fotoAtualizada(userData);renderTela("menu")}})}).catch(err=>{console.error(err);hideLoader();toast("Erro ao salvar foto")})}
+function renderMenu(){mainArea.innerHTML=`<section class="content"><div class="page-header"><h1>Bem-vindo(a), ${(userData.nome||"").split(" ")[0]||"Colaborador(a)"}</h1><div class="desc">Acesse os serviços do Sistema de Ponto</div></div><div class="search-area"><div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="search" id="menuPesquisa" placeholder="Pesquisar função..." autocomplete="off"></div></div><div class="function-list" id="functionList"><div class="function-item" data-search="batida ponto entrada saída iniciar finalizar" onclick="renderTela('ponto')"><div class="function-icon"><i class="fa-solid fa-clock"></i></div><div class="function-info"><div class="function-title">Batida de Ponto</div><div class="function-desc">Registre sua entrada e saída do expediente.</div></div><div class="function-arrow"><i class="fa-solid fa-chevron-right"></i></div></div><div class="function-item" data-search="carga horária horas registros jornada frequência" onclick="renderTela('carga')"><div class="function-icon"><i class="fa-solid fa-chart-column"></i></div><div class="function-info"><div class="function-title">Carga Horária</div><div class="function-desc">Consulte suas horas trabalhadas e registros.</div></div><div class="function-arrow"><i class="fa-solid fa-chevron-right"></i></div></div><div class="function-item" data-search="chamado suporte atendimento ajuda correção" onclick="renderTela('chamado')"><div class="function-icon"><i class="fa-solid fa-headset"></i></div><div class="function-info"><div class="function-title">Abrir Chamado</div><div class="function-desc">Solicite suporte ou informe problemas no sistema.</div></div><div class="function-arrow"><i class="fa-solid fa-chevron-right"></i></div></div></div><div id="nenhumaFuncao" style="display:none;text-align:center;color:var(--cinza-500);font-size:13px;padding:30px 10px">Nenhuma função encontrada.</div><div class="card" style="margin-top:28px"><div class="card-title">Documentos institucionais</div><table class="tabela"><tbody><tr><td>Política de Privacidade</td><td style="text-align:right"><button class="btn btn-secondary" style="padding:6px 12px;font-size:12px" onclick="verDocumento('privacidade')">Ver</button><button class="btn btn-secondary" style="padding:6px 12px;font-size:12px;margin-left:4px" onclick="baixarDocumentoEspecifico('privacidade')">Baixar</button></td></tr><tr><td>Termos de Uso</td><td style="text-align:right"><button class="btn btn-secondary" style="padding:6px 12px;font-size:12px" onclick="verDocumento('termos')">Ver</button><button class="btn btn-secondary" style="padding:6px 12px;font-size:12px;margin-left:4px" onclick="baixarDocumentoEspecifico('termos')">Baixar</button></td></tr><tr><td>Manual do Usuário</td><td style="text-align:right"><button class="btn btn-secondary" style="padding:6px 12px;font-size:12px" onclick="verDocumento('manual')">Ver</button><button class="btn btn-secondary" style="padding:6px 12px;font-size:12px;margin-left:4px" onclick="baixarDocumentoEspecifico('manual')">Baixar</button></td></tr></tbody></table></div></section>`;const pesquisa=document.getElementById("menuPesquisa");const itens=document.querySelectorAll(".function-item");const nenhuma=document.getElementById("nenhumaFuncao");pesquisa.addEventListener("input",function(){const termo=this.value.toLowerCase().trim();let encontrou=false;itens.forEach(item=>{const texto=item.dataset.search.toLowerCase();const mostrar=!termo||texto.includes(termo);item.style.display=mostrar?"flex":"none";if(mostrar)encontrou=true});nenhuma.style.display=encontrou?"none":"block"})}
+function renderPonto(){if(!fotoAtualizadaFlag){renderBloqueioAtualizacao();return}mainArea.innerHTML=`<section class="content"><div class="page-header"><h1>Batida de Ponto</h1><div class="desc">Registre sua entrada ou saída do expediente</div></div><div class="cronometro-card"><div class="cronometro-label">Tempo decorrido</div><div class="cronometro-valor" id="cronodisplay">00:00:00</div><div class="acoes-ponto"><button class="btn btn-primary" id="btnIniciar"><i class="fa-solid fa-play"></i>&nbsp;Iniciar Ponto</button><button class="btn btn-danger hidden" id="btnFinalizar"><i class="fa-solid fa-stop"></i>&nbsp;Finalizar Dia</button></div></div><div class="card"><div class="card-title">Seu resumo do dia</div><div class="stats-grid" id="statsHoje" style="margin-bottom:0"><div class="stat-card"><div class="stat-label">Status</div><div class="stat-value" id="statStatus" style="font-size:18px">--</div></div><div class="stat-card"><div class="stat-label">Entrada de hoje</div><div class="stat-value" id="statEntrada" style="font-size:18px">--</div></div><div class="stat-card"><div class="stat-label">Saída de hoje</div><div class="stat-value" id="statSaida" style="font-size:18px">--</div></div><div class="stat-card"><div class="stat-label">Total de hoje</div><div class="stat-value" id="statTotalHoje" style="font-size:18px">--</div></div></div></div><div class="card"><div class="card-title">Últimos 7 dias</div><div class="chart-bars" id="chartSemana"></div></div><div class="card"><div class="card-title">Registros recentes</div><div id="miniResumo"></div></div></section>`;if(pontoAtivo){document.getElementById("btnIniciar").classList.add("hidden");document.getElementById("btnFinalizar").classList.remove("hidden")}if(pontoAtivo&&pontoStart){document.getElementById("cronodisplay").innerText=formatDuration(Date.now()-pontoStart)}startCronometroLocal();document.getElementById("btnIniciar").onclick=()=>{if(!fotoAtualizadaFlag){renderBloqueioAtualizacao();return}if(pontoAtivo){toast("Ponto já iniciado");return}abrirAvisoAntesDoPonto()};document.getElementById("btnFinalizar").onclick=()=>{if(!fotoAtualizadaFlag){renderBloqueioAtualizacao();return}if(!pontoAtivo){toast("Nenhum ponto ativo");return}abrirModalSeguranca("finalizar")};carregarResumoHoje();carregarChartSemana();carregarMiniHistorico()}
+function abrirAvisoAntesDoPonto(){if(alertaPontoExibido){abrirModalSeguranca("iniciar");return}alertaPontoExibido=true;abrirOverlay("pontoAlerta")}
+btnOkPonto.addEventListener("click",function(){fecharOverlay("pontoAlerta");setTimeout(()=>{abrirModalSeguranca("iniciar")},150)});
+async function carregarResumoHoje(){const snap=await db.ref("historico/"+currentUser).once("value");const hist=snap.val()||{};const hoje=getDataChave();const reg=hist[hoje];const entradaEl=document.getElementById("statEntrada");const saidaEl=document.getElementById("statSaida");const totalEl=document.getElementById("statTotalHoje");const statusEl=document.getElementById("statStatus");if(!entradaEl)return;if(!reg){entradaEl.textContent="--";saidaEl.textContent="--";totalEl.textContent="--";statusEl.textContent="Não iniciado";statusEl.style.color="var(--cinza-500)";return}const ini=reg.inicio?new Date(reg.inicio).toLocaleTimeString().slice(0,5):"--";const fim=reg.fim?new Date(reg.fim).toLocaleTimeString().slice(0,5):"--";entradaEl.textContent=ini;saidaEl.textContent=fim;if(reg.inicio&&reg.fim){const diff=reg.fim-reg.inicio;totalEl.textContent=Math.floor(diff/3600000)+"h "+Math.floor((diff%3600000)/60000)+"m";statusEl.textContent="Finalizado";statusEl.style.color="var(--verde)"}else if(reg.inicio){const diff=Date.now()-reg.inicio;totalEl.textContent=Math.floor(diff/3600000)+"h "+Math.floor((diff%3600000)/60000)+"m";statusEl.textContent="Em andamento";statusEl.style.color="var(--amarelo)"}}
+async function carregarChartSemana(){const snap=await db.ref("historico/"+currentUser).once("value");const hist=snap.val()||{};const dias=[];const diasSemana=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const chave=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;const reg=hist[chave];let ms=0;if(reg&&reg.inicio&&reg.fim){ms=reg.fim-reg.inicio}dias.push({data:d,chave,ms,label:diasSemana[d.getDay()],hoje:i===0})}const maxMs=Math.max(...dias.map(d=>d.ms),1);const el=document.getElementById("chartSemana");if(!el)return;el.innerHTML=dias.map(d=>{const alturaPct=(d.ms/maxMs)*100;const horas=Math.floor(d.ms/3600000);const mins=Math.floor((d.ms%3600000)/60000);const valor=d.ms>0?`${horas}h${mins>0?mins:""}`:"";return`<div class="chart-bar-item"><div class="chart-value">${valor}</div><div class="chart-bar ${d.hoje?"hoje":""}" style="height:${alturaPct}%"></div><div class="chart-label">${d.label}</div></div>`}).join("")}
+async function carregarMiniHistorico(){const snap=await db.ref("historico/"+currentUser).once("value");const hist=snap.val()||{};const entradas=Object.entries(hist).slice(-7).reverse();let rows="";for(const[data,val]of entradas){const ini=val.inicio?new Date(val.inicio).toLocaleTimeString().slice(0,5):"--";const fim=val.fim?new Date(val.fim).toLocaleTimeString().slice(0,5):"--";let dur="--";if(val.inicio&&val.fim){const diff=val.fim-val.inicio;dur=Math.floor(diff/3600000)+"h "+Math.floor((diff%3600000)/60000)+"m"}rows+=`<tr><td>${data}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td></tr>`}const el=document.getElementById("miniResumo");if(!el)return;el.innerHTML=`<table class="tabela"><thead><tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr></thead><tbody>${rows||`<tr><td colspan="4" style="text-align:center;color:var(--cinza-500);padding:20px">Nenhum registro encontrado</td></tr>`}</tbody></table>`}
+function renderCarga(){mainArea.innerHTML=`<section class="content"><div class="page-header"><h1>Carga Horária</h1><div class="desc">Consulte seus registros por período</div></div><div class="card"><div class="card-title">Selecionar período</div><div class="filtro-row"><div class="campo"><label>Mês e ano (MM/AAAA)</label><input type="text" id="mesAnoInput" placeholder="MM/AAAA" maxlength="7"></div><button class="btn btn-primary" id="btnBuscar"><i class="fa-solid fa-magnifying-glass"></i>&nbsp;Buscar</button></div></div></section>`;const input=document.getElementById("mesAnoInput");input.addEventListener("input",function(e){let val=e.target.value.replace(/\D/g,"");if(val.length>=2){val=val.slice(0,2)+"/"+val.slice(2,6)}e.target.value=val});document.getElementById("btnBuscar").onclick=async()=>{const raw=input.value.trim();if(!raw.match(/^\d{2}\/\d{4}$/)){toast("Formato inválido. Use MM/AAAA");return}const[mm,yyyy]=raw.split("/");const mes=parseInt(mm);const ano=parseInt(yyyy);if(mes<1||mes>12||ano<2000){toast("Mês ou ano inválido");return}showLoader("Buscando registros...");const snap=await db.ref("historico/"+currentUser).once("value");const pontos=snap.val()||{};let totalMs=0;let linhas="";let registrosDia=[];const registros=Object.entries(pontos).filter(([data])=>{const[y,m]=data.split("-").map(Number);return y===ano&&m===mes}).sort((a,b)=>b[0].localeCompare(a[0]));for(const[data,val]of registros){const ini=val.inicio?new Date(val.inicio).toLocaleTimeString().slice(0,5):"--";const fim=val.fim?new Date(val.fim).toLocaleTimeString().slice(0,5):"--";let durMs=0;let dur="--";if(val.inicio&&val.fim){durMs=val.fim-val.inicio;totalMs+=durMs;dur=`${Math.floor(durMs/3600000)}h ${Math.floor((durMs%3600000)/60000)}m`}registrosDia.push({data,durMs});linhas+=`<tr><td>${data}</td><td>${ini}</td><td>${fim}</td><td>${dur}</td></tr>`}const totalH=Math.floor(totalMs/3600000);const totalM=Math.floor((totalMs%3600000)/60000);const maxMs=Math.max(...registrosDia.map(r=>r.durMs),1);const mediaMs=registrosDia.length?totalMs/registrosDia.length:0;const mediaH=Math.floor(mediaMs/3600000);const mediaM=Math.floor((mediaMs%3600000)/60000);const chartHTML=registrosDia.slice().reverse().map(r=>{const pct=(r.durMs/maxMs)*100;const horas=Math.floor(r.durMs/3600000);const mins=Math.floor((r.durMs%3600000)/60000);const valor=r.durMs>0?`${horas}h${mins>0?mins:""}`:"";const dia=r.data.split("-")[2];return`<div class="chart-bar-item"><div class="chart-value">${valor}</div><div class="chart-bar" style="height:${pct}%"></div><div class="chart-label">${dia}</div></div>`}).join("");hideLoader();mainArea.innerHTML=`<section class="content"><div class="page-header"><h1>Carga Horária</h1><div class="desc">Período consultado: ${mm}/${yyyy}</div></div><div class="stats-grid"><div class="stat-card"><div class="stat-label">Total de horas</div><div class="stat-value">${totalH}h ${totalM}m</div><div class="stat-hint">${registros.length} registros</div></div><div class="stat-card"><div class="stat-label">Média diária</div><div class="stat-value">${mediaH}h ${mediaM}m</div><div class="stat-hint">Considerando dias com registro</div></div><div class="stat-card"><div class="stat-label">Dias trabalhados</div><div class="stat-value">${registros.length}</div><div class="stat-hint">No período consultado</div></div></div><div class="card"><div class="card-title">Distribuição diária</div><div class="chart-bars">${chartHTML||`<div style="text-align:center;width:100%;color:var(--cinza-500);padding:20px">Nenhum registro no período</div>`}</div></div><div class="card"><div class="card-title">Registros do período</div><table class="tabela"><thead><tr><th>Data</th><th>Entrada</th><th>Saída</th><th>Duração</th></tr></thead><tbody>${linhas||`<tr><td colspan="4" style="text-align:center;color:var(--cinza-500);padding:20px">Nenhum registro encontrado</td></tr>`}</tbody></table></div><button class="btn btn-secondary" onclick="renderTela('carga')"><i class="fa-solid fa-rotate"></i>&nbsp;Nova consulta</button></section>`}}
+function renderChamado(){mainArea.innerHTML=`<section class="content"><div class="page-header"><h1>Abrir Chamado</h1><div class="desc">Entre em contato com o suporte</div></div><div class="card"><div class="card-title">Dados do solicitante</div><div class="info-box"><div class="linha"><strong>Nome:</strong> ${userData.nome||"--"}</div><div class="linha"><strong>NA:</strong> ${currentUser}</div><div class="linha"><strong>Telefone:</strong> ${userData.telefone||"--"}</div></div><div class="campo"><label>Motivo do chamado</label><textarea id="motivacaoTexto" placeholder="Descreva detalhadamente o motivo do seu chamado..."></textarea></div><div class="termo-box"><p>Declaro que sou portador(a) do NA <strong>${currentUser}</strong>, responsável pelas informações prestadas, e autorizo a Academia DomusFit a tratar meus dados para fins de suporte.</p><div class="termo-check"><input type="checkbox" id="termoCheck"><label for="termoCheck">Li e concordo com os Termos de Uso e autorizo o tratamento dos meus dados.</label></div></div><button class="btn btn-primary btn-block" id="btnEnviarChamado"><i class="fa-solid fa-paper-plane"></i>&nbsp;Enviar para o Suporte</button><div id="protocoloAviso" style="margin-top:16px;text-align:center;font-size:13px;color:var(--cinza-700)"></div></div></section>`;document.getElementById("btnEnviarChamado").onclick=async()=>{const motiv=document.getElementById("motivacaoTexto").value.trim();const termo=document.getElementById("termoCheck").checked;if(motiv.length<5){toast("Descreva o motivo com pelo menos 5 caracteres");return}if(!termo){toast("É necessário concordar com os termos");return}showLoader("Enviando chamado...");const protocolo=Math.random().toString(36).substring(2,10).toUpperCase()+Date.now().toString(36).toUpperCase();const dataHora=new Date().toLocaleString("pt-BR");const chamadoData={nome:userData.nome,na:currentUser,telefone:userData.telefone||"",motivacao:motiv,dataHoraEnvio:dataHora,protocolo,timestamp:Date.now(),termos_aceitos:true};await db.ref("chamadosEdicao/"+currentUser).push(chamadoData);const msg=`CHAMADO DOMUSFIT\n\nNome: ${userData.nome||""}\nNA: ${currentUser}\nTelefone: ${userData.telefone||""}\nProtocolo: ${protocolo}\nData: ${dataHora}\n\n${motiv}`;window.open(`https://wa.me/5584991778690?text=${encodeURIComponent(msg)}`,"_blank");playNotificationSound();hideLoader();document.getElementById("protocoloAviso").innerHTML=`Protocolo: <strong>${protocolo}</strong> enviado com sucesso.`;document.getElementById("motivacaoTexto").value="";document.getElementById("termoCheck").checked=false;toast("Chamado enviado com sucesso")}}
+function verDocumento(chave){const doc=documentos[chave];if(!doc)return;documentoAtual=chave;document.getElementById("docTituloModal").textContent=doc.titulo;document.getElementById("docSubModal").textContent="Documento institucional";document.getElementById("docCorpoModal").textContent=doc.conteudo;abrirOverlay("overlayDocumento")}
+function gerarPDFDocumento(chave){const doc=documentos[chave];if(!doc)return;const{jsPDF}=window.jspdf;const pdf=new jsPDF("p","mm","a4");const pageWidth=pdf.internal.pageSize.getWidth();let y=20;pdf.setFontSize(14);pdf.setTextColor(23,61,119);pdf.text(doc.titulo,pageWidth/2,y,{align:"center"});y+=10;pdf.setFontSize(9);pdf.setTextColor(100,100,100);pdf.text("Gerado em "+new Date().toLocaleString("pt-BR"),pageWidth/2,y,{align:"center"});y+=12;pdf.setTextColor(32,33,36);pdf.setFontSize(10.5);const lines=pdf.splitTextToSize(doc.conteudo,pageWidth-30);pdf.text(lines,15,y);return pdf}
+function baixarDocumento(){if(!documentoAtual)return;const pdf=gerarPDFDocumento(documentoAtual);pdf.save(documentos[documentoAtual].titulo.replace(/ /g,"_")+".pdf")}
+function baixarDocumentoEspecifico(chave){const pdf=gerarPDFDocumento(chave);pdf.save(documentos[chave].titulo.replace(/ /g,"_")+".pdf")}
+function abrirModalSeguranca(acao){if(!fotoAtualizadaFlag){renderBloqueioAtualizacao();return}acaoPontoAtual=acao;const ops=[{a:10,b:10,t:"10 + 10"},{a:2,b:2,t:"2 + 2"},{a:4,b:4,t:"4 + 4"},{a:40,b:40,t:"40 + 40"},{a:5,b:3,t:"5 + 3"},{a:8,b:2,t:"8 + 2"},{a:15,b:5,t:"15 + 5"},{a:20,b:10,t:"20 + 10"},{a:6,b:6,t:"6 + 6"},{a:25,b:25,t:"25 + 25"}];const op=ops[Math.floor(Math.random()*ops.length)];segResultadoCorreto=op.a+op.b;segOperacaoRealizada=op.t+" = "+segResultadoCorreto;document.getElementById("campoCalculo").innerHTML=op.t+" = ?";document.getElementById("inputResultado").value="";document.getElementById("btnConfirmarSeg").disabled=true;document.getElementById("segTitulo").textContent=acao==="iniciar"?"Iniciar Ponto":"Finalizar Ponto";document.getElementById("segSubtitulo").textContent=`Resolva o cálculo para ${acao==="iniciar"?"iniciar":"finalizar"} o ponto`;document.getElementById("inputResultado").oninput=function(){const val=parseInt(this.value);document.getElementById("btnConfirmarSeg").disabled=val!==segResultadoCorreto};abrirOverlay("overlaySeguranca");setTimeout(()=>{document.getElementById("inputResultado").focus()},150);segCallback=()=>abrirModalCamera()}
+document.getElementById("btnConfirmarSeg").addEventListener("click",()=>{if(segCallback){segCallback()}fecharOverlay("overlaySeguranca")});
+function abrirModalCamera(){const video=document.getElementById("videoCam");const spinner=document.getElementById("spinnerCamera");spinner.classList.add("hidden");abrirOverlay("overlayCamera");if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){fecharOverlay("overlayCamera");abrirOverlay("overlaySemCamera");return}navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:{ideal:640},height:{ideal:640}},audio:false}).then(stream=>{cameraStreamActive=stream;video.srcObject=stream;video.play().catch(()=>{});setTimeout(()=>{if(!cameraStreamActive)return;spinner.classList.remove("hidden");setTimeout(()=>{if(!cameraStreamActive)return;capturarFoto()},2000)},3000)}).catch(err=>{console.error("camera:",err);fecharOverlay("overlayCamera");abrirOverlay("overlaySemCamera")})}
+function capturarFoto(){const video=document.getElementById("videoCam");const canvas=document.createElement("canvas");canvas.width=640;canvas.height=640;try{canvas.getContext("2d").drawImage(video,0,0,640,640)}catch(e){}const blob=new Promise(resolve=>canvas.toBlob(resolve,"image/jpeg",.9));if(cameraStreamActive){cameraStreamActive.getTracks().forEach(t=>t.stop());cameraStreamActive=null}fecharOverlay("overlayCamera");blob.then(b=>uploadCloudinary(b)).then(url=>{if(acaoPontoAtual==="iniciar"){iniciarPontoComSeguranca(url)}else{finalizarPontoComSeguranca(url)}}).catch(err=>{console.error("upload:",err);if(acaoPontoAtual==="iniciar"){iniciarPontoComSeguranca(null)}else{finalizarPontoComSeguranca(null)}})}
+function uploadCloudinary(blob){const fd=new FormData();fd.append("file",blob);fd.append("upload_preset",UPLOAD_PRESET);return fetch(CLOUDINARY_URL,{method:"POST",body:fd}).then(r=>{if(!r.ok){throw new Error("Upload falhou")}return r.json()}).then(d=>d.secure_url)}
+document.getElementById("btnCancelarCamera").addEventListener("click",()=>{if(cameraStreamActive){cameraStreamActive.getTracks().forEach(t=>t.stop());cameraStreamActive=null}fecharOverlay("overlayCamera")});
+document.getElementById("btnContinuarSem").addEventListener("click",()=>{fecharOverlay("overlaySemCamera");if(acaoPontoAtual==="iniciar"){iniciarPontoComSeguranca(null)}else{finalizarPontoComSeguranca(null)}});
+async function iniciarPontoComSeguranca(fotoUrl){if(!fotoAtualizadaFlag){renderBloqueioAtualizacao();return}showLoader("Registrando entrada...");const agora=Date.now();const dataChave=getDataChave();const update={inicio:agora,calculo:segOperacaoRealizada,timestamp_inicio:agora};if(fotoUrl){update.foto_inicio=fotoUrl}try{await db.ref("historico/"+currentUser+"/"+dataChave).update(update);await db.ref("pontos/"+currentUser+"/ativo").set({inicio:agora});playNotificationSound();hideLoader();toast("Ponto iniciado com sucesso");renderTela("ponto")}catch(err){console.error(err);hideLoader();toast("Não foi possível registrar o ponto")}}
+async function finalizarPontoComSeguranca(fotoUrl){if(!fotoAtualizadaFlag){renderBloqueioAtualizacao();return}showLoader("Finalizando ponto...");const fim=Date.now();const dataChave=getDataChave();const update={fim,calculo_fim:segOperacaoRealizada,timestamp_fim:fim};if(fotoUrl){update.foto_fim=fotoUrl}try{await db.ref("historico/"+currentUser+"/"+dataChave).update(update);await db.ref("pontos/"+currentUser+"/ativo").remove();playNotificationSound();const idValidador=Math.floor(10000000+Math.random()*90000000).toString();const comprovante={id:idValidador,nome:userData.nome||"--",na:currentUser,telefone:userData.telefone||"--",data:new Date().toLocaleDateString("pt-BR"),hora:new Date().toLocaleTimeString("pt-BR"),timestamp:fim,calculo:segOperacaoRealizada,foto:fotoUrl||null};try{await db.ref("comprovantes/"+idValidador).set(comprovante)}catch(e){console.error("erro ao salvar comprovante",e)}hideLoader();window.location.href="validador2v.html?id="+idValidador}catch(err){console.error(err);hideLoader();toast("Não foi possível finalizar o ponto")}}
+db.ref("usuarios/"+currentUser).once("value").then(snap=>{if(snap.exists()){userData=snap.val();fotoAtualizadaFlag=fotoAtualizada(userData);if(fotoAtualizadaFlag){renderTela("login")}else{renderBloqueioAtualizacao()}}else{window.location.href="login2.html"}});
+document.querySelectorAll(".current-year").forEach(el=>el.textContent=new Date().getFullYear());
 </script>
 
 </body>
