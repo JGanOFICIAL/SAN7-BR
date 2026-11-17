@@ -7,7 +7,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{background:#fff;font-family:Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column;color:#202124;overflow:hidden}
-.app-header{background:#fff;height:66px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:500;box-shadow:0 1px 5px #172b4d0d;width:100%}
+.app-header{background:#fff;height:66px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:500;box-shadow:0 2px 8px rgba(0,0,0,0.08);width:100%;border-bottom:1px solid #e1e5eb}
 .header-brand{color:#173d77;font:700 19px Arial,sans-serif;display:flex;align-items:center;gap:11px}
 .main{width:100%;max-width:420px;margin:0 auto;padding:40px 20px;flex:1;display:flex;align-items:center;justify-content:center}
 .welcome-text{text-align:center;color:#657080;font-size:14px;line-height:1.6}
@@ -17,14 +17,19 @@ body{background:#fff;font-family:Arial,sans-serif;min-height:100vh;display:flex;
 .campo{width:100%;display:flex;flex-direction:column;align-items:center}
 .field{width:100%;height:50px;background:#fff;border:0;border-radius:25px;padding:0 20px;color:#202124;font:16px Arial,sans-serif;outline:none;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,.1)}
 .field::placeholder{color:#888}
-.btn{width:100%;height:50px;background:#1955ad;color:#fff;border:0;border-radius:25px;font:italic 16px Arial,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .2s}
+.btn{width:100%;height:50px;background:#1955ad;color:#fff;border:0;border-radius:25px;font:italic 16px Arial,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .2s;text-decoration:none}
 .btn:hover{background:#12458f}
+.btn-outline{background:transparent;border:1px solid #fff;color:#fff;margin-top:5px}
+.btn-outline:hover{background:rgba(255,255,255,0.1)}
 .spinner{width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
 .btn.loading .spinner{display:inline-block}
 .btn.loading .btn-text{display:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 .toast{position:fixed;left:50%;top:20px;transform:translateX(-50%);background:#d6392a;color:#fff;padding:11px 20px;font-size:13px;z-index:2500;border-radius:4px;box-shadow:0 5px 18px rgba(23,43,77,.22);animation:toastIn .2s ease;display:none}
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translate(-50%,0)}}
+.user-info{text-align:center;color:#fff;margin-bottom:10px}
+.user-info h2{font-size:22px;font-weight:700;margin-bottom:5px}
+.user-info p{font-size:14px;color:#eef3fb;opacity:0.9}
 </style>
 </head>
 <body>
@@ -34,20 +39,11 @@ body{background:#fff;font-family:Arial,sans-serif;min-height:100vh;display:flex;
 </header>
 
 <main class="main">
-  <div class="welcome-text">
-    Toque na tela ou deslize para cima para acessar o sistema.
-  </div>
+  <div class="welcome-text" id="welcomeText">Toque na tela ou deslize para cima para acessar o sistema.</div>
 </main>
 
 <div class="menu-flutuante" id="menuAcesso">
-  <div class="menu-titulo">Acessar Conta</div>
-  <div class="campo">
-    <input type="text" id="naInput" class="field" placeholder="Digite seu NA (Número de Acesso)" autocomplete="off" inputmode="numeric">
-  </div>
-  <button class="btn" id="btnAcessar">
-    <span class="spinner"></span>
-    <span class="btn-text">Acessar</span>
-  </button>
+  <div id="menuConteudo"></div>
 </div>
 
 <div class="toast" id="toastErro">NA não encontrado. Verifique e tente novamente.</div>
@@ -60,16 +56,21 @@ firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 
 const menuAcesso=document.getElementById("menuAcesso");
-const naInput=document.getElementById("naInput");
-const btnAcessar=document.getElementById("btnAcessar");
+const menuConteudo=document.getElementById("menuConteudo");
 const toastErro=document.getElementById("toastErro");
+const welcomeText=document.getElementById("welcomeText");
+
+let currentUser = localStorage.getItem("usuarioAtual");
 
 function mostrarMenu(){
   menuAcesso.classList.add("aberto");
-  setTimeout(()=>naInput.focus(),400);
 }
 
-setTimeout(mostrarMenu, 500);
+function mostrarErro(msg){
+  toastErro.textContent = msg;
+  toastErro.style.display = "block";
+  setTimeout(()=>{ toastErro.style.display = "none"; }, 3000);
+}
 
 document.body.addEventListener("click", function(e){
   if(!menuAcesso.classList.contains("aberto") && !menuAcesso.contains(e.target)){
@@ -86,44 +87,98 @@ document.addEventListener("touchend", e => {
   }
 });
 
-function mostrarErro(msg){
-  toastErro.textContent = msg;
-  toastErro.style.display = "block";
-  setTimeout(()=>{ toastErro.style.display = "none"; }, 3000);
+async function renderizarConteudo() {
+  if (currentUser) {
+    welcomeText.style.display = "none";
+    menuConteudo.innerHTML = `
+      <div class="user-info">
+        <h2 id="nomeUsuario">Carregando...</h2>
+        <p>NA: ${currentUser}</p>
+        <p style="margin-top: 10px; font-size: 13px; color: #a9c4f5;">Seus dados e informações estão salvos.</p>
+      </div>
+      <a href="index2.html" class="btn" style="text-decoration:none;">
+        <span class="btn-text">Acessar Perfil</span>
+      </a>
+      <button class="btn btn-outline" id="btnSair">
+        <span class="btn-text">Sair da conta</span>
+      </button>
+    `;
+    
+    document.getElementById("btnSair").onclick = () => {
+      localStorage.removeItem("usuarioAtual");
+      currentUser = null;
+      renderizarConteudo();
+    };
+
+    try {
+      const snap = await db.ref("usuarios/" + currentUser).once("value");
+      if (snap.exists()) {
+        const userData = snap.val();
+        document.getElementById("nomeUsuario").textContent = userData.nome || "Colaborador(a)";
+      } else {
+        document.getElementById("nomeUsuario").textContent = "Usuário";
+      }
+    } catch (e) {
+      document.getElementById("nomeUsuario").textContent = "Usuário";
+    }
+    
+    mostrarMenu();
+  } else {
+    welcomeText.style.display = "block";
+    menuConteudo.innerHTML = `
+      <div class="menu-titulo">Acessar Conta</div>
+      <div class="campo">
+        <input type="text" id="naInput" class="field" placeholder="Digite seu NA (Número de Acesso)" autocomplete="off" inputmode="numeric">
+      </div>
+      <button class="btn" id="btnAcessar">
+        <span class="spinner"></span>
+        <span class="btn-text">Acessar</span>
+      </button>
+    `;
+
+    const naInput = document.getElementById("naInput");
+    const btnAcessar = document.getElementById("btnAcessar");
+
+    btnAcessar.onclick = async () => {
+      const na = naInput.value.trim();
+      if(!na){
+        mostrarErro("Informe o NA cadastrado.");
+        return;
+      }
+      btnAcessar.classList.add("loading");
+      btnAcessar.disabled = true;
+      
+      try {
+        const snap = await db.ref("usuarios/" + na).once("value");
+        if(snap.exists()){
+          localStorage.setItem("usuarioAtual", na);
+          currentUser = na;
+          renderizarConteudo();
+        } else {
+          btnAcessar.classList.remove("loading");
+          btnAcessar.disabled = false;
+          mostrarErro("NA não encontrado. Verifique e tente novamente.");
+        }
+      } catch (error) {
+        console.error(error);
+        btnAcessar.classList.remove("loading");
+        btnAcessar.disabled = false;
+        mostrarErro("Erro de conexão. Tente novamente.");
+      }
+    };
+
+    naInput.addEventListener("keydown", e => {
+      if(e.key === "Enter"){
+        btnAcessar.click();
+      }
+    });
+
+    setTimeout(()=>naInput.focus(),400);
+    mostrarMenu();
+  }
 }
 
-btnAcessar.onclick = async () => {
-  const na = naInput.value.trim();
-  if(!na){
-    mostrarErro("Informe o NA cadastrado.");
-    return;
-  }
-  btnAcessar.classList.add("loading");
-  btnAcessar.disabled = true;
-  
-  try {
-    const snap = await db.ref("usuarios/" + na).once("value");
-    if(snap.exists()){
-      localStorage.setItem("usuarioAtual", na);
-      window.location.href = "index2.html";
-    } else {
-      btnAcessar.classList.remove("loading");
-      btnAcessar.disabled = false;
-      mostrarErro("NA não encontrado. Verifique e tente novamente.");
-    }
-  } catch (error) {
-    console.error(error);
-    btnAcessar.classList.remove("loading");
-    btnAcessar.disabled = false;
-    mostrarErro("Erro de conexão. Tente novamente.");
-  }
-};
-
-naInput.addEventListener("keydown", e => {
-  if(e.key === "Enter"){
-    btnAcessar.click();
-  }
-});
+setTimeout(renderizarConteudo, 300);
 </script>
 </body>
 </html>
