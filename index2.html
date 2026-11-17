@@ -13,9 +13,9 @@ button,input,textarea,select{font-family:Arial,sans-serif}
 .header{background:#fff;height:66px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:500;box-shadow:0 1px 5px #172b4d0d;width:100%}
 .header-brand{color:var(--azul-escuro);font:700 19px Arial,sans-serif;display:flex;align-items:center;gap:11px;cursor:pointer;white-space:nowrap;text-decoration:none}
 .header-right{display:flex;align-items:center}
-.menu-btn{width:38px;height:38px;border:0;background:#fff;color:#234c83;cursor:pointer;display:grid;place-items:center;font-size:18px;transition:background .2s}
+.menu-btn{width:50px;height:50px;border:0;background:#fff;color:#234c83;cursor:pointer;display:grid;place-items:center;font-size:32px;transition:background .2s}
 .menu-btn:hover{background:var(--azul-suave)}
-.menu-dropdown{position:absolute;top:60px;right:24px;width:245px;background:#fff;display:none;z-index:900;box-shadow:0 10px 30px rgba(23,43,77,.18);overflow:hidden;border-radius:4px}
+.menu-dropdown{position:absolute;top:66px;right:24px;width:245px;background:#fff;display:none;z-index:900;box-shadow:0 10px 30px rgba(23,43,77,.18);overflow:hidden;border-radius:4px}
 .menu-dropdown.aberto{display:block;animation:menuIn .18s ease}
 @keyframes menuIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
 .menu-dropdown .item{padding:14px 18px;color:var(--cinza-900);font-size:14px;cursor:pointer;display:flex;align-items:center;gap:12px}
@@ -123,7 +123,7 @@ button,input,textarea,select{font-family:Arial,sans-serif}
 .camera-cancel{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);border:0;padding:9px 22px;color:#fff;font:italic 13px Arial,sans-serif;cursor:pointer;z-index:10;border-radius:22px}
 .document-body{max-height:50vh;overflow-y:auto;font-size:14px;line-height:1.8;color:var(--cinza-700);white-space:pre-wrap;padding:14px;background:var(--cinza-100)}
 .hidden{display:none!important}
-@media(max-width:600px){.header{height:58px;padding:0 15px}.header-brand{font-size:16px}.main{padding:18px 14px 40px}.page-header h1{font-size:21px}.cronometro-valor{font-size:38px}.stats-grid{grid-template-columns:1fr 1fr}.modal{padding:23px 19px}.camera-box{width:280px;height:360px}.ponto-aberto-inner{padding:9px 14px}.actions-bottom{margin:24px -14px -40px;padding:24px 14px 40px}}
+@media(max-width:600px){.header{height:58px;padding:0 15px}.header-brand{font-size:16px}.menu-btn{width:45px;height:45px;font-size:28px}.main{padding:18px 14px 40px}.page-header h1{font-size:21px}.cronometro-valor{font-size:38px}.stats-grid{grid-template-columns:1fr 1fr}.modal{padding:23px 19px}.camera-box{width:280px;height:360px}.ponto-aberto-inner{padding:9px 14px}.actions-bottom{margin:24px -14px -40px;padding:24px 14px 40px}}
 </style>
 </head>
 <body>
@@ -269,30 +269,6 @@ button,input,textarea,select{font-family:Arial,sans-serif}
   </div>
 </div>
 
-<div class="overlay" id="overlayAdmin">
-  <div class="modal" style="max-width:500px">
-    <h3>Painel Administrativo</h3>
-    <div class="sub">Gerencie as imagens do painel</div>
-    <div style="margin-bottom:15px;padding-bottom:15px;border-bottom:1px solid var(--cinza-200)">
-      <label style="display:block;font-size:13px;font-weight:600;margin-bottom:5px">Nova Imagem</label>
-      <input type="file" id="adminImgInput" accept="image/*" style="width:100%;margin-bottom:10px">
-      <label style="display:block;font-size:13px;font-weight:600;margin-bottom:5px">Tamanho da Imagem</label>
-      <select id="adminImgSize" style="width:100%;padding:10px;margin-bottom:10px;border:1px solid var(--cinza-300);border-radius:6px">
-        <option value="100%">Tamanho Original (100%)</option>
-        <option value="75%">Grande (75%)</option>
-        <option value="50%">Médio (50%)</option>
-        <option value="25%">Pequeno (25%)</option>
-      </select>
-      <button class="btn btn-primary" id="btnAdminUpload" style="min-height:36px;padding:7px 15px;font-size:13px">Fazer Upload</button>
-    </div>
-    <div id="adminListaImgs" style="display:flex;flex-direction:column;gap:10px;max-height:40vh;overflow-y:auto">
-    </div>
-    <div class="modal-buttons">
-      <button class="btn btn-secondary" onclick="fecharOverlay('overlayAdmin')">Fechar</button>
-    </div>
-  </div>
-</div>
-
 <div class="loader" id="loader">
   <div class="spinner"></div>
   <div class="texto" id="loaderTexto">Carregando...</div>
@@ -404,7 +380,7 @@ if("speechSynthesis" in window){window.speechSynthesis.onvoiceschanged=()=>{}}
 function fotoAtualizada(u){if(!u)return false;return u.foto_versao===FOTO_VERSAO&&u.foto}
 btnDots.addEventListener("click",function(e){e.stopPropagation();dotsMenu.classList.toggle("aberto")});
 document.addEventListener("click",function(e){if(!dotsMenu.contains(e.target)&&e.target!==btnDots){dotsMenu.classList.remove("aberto")}});
-function menuAction(action){dotsMenu.classList.remove("aberto");if(action==="menu"){renderTela("menu");return}if(action==="ponto"){renderTela("ponto");return}if(action==="carga"){renderTela("carga");return}if(action==="chamado"){renderTela("chamado");return}if(action==="relatorio"){renderTela("relatorio");return}if(action==="perfil"){renderTela("perfil");return}if(action==="admin"){abrirAdmin();return}if(action==="privacidade"||action==="termos"){verDocumento(action);return}if(action==="sair"){sair()}}
+function menuAction(action){dotsMenu.classList.remove("aberto");if(action==="menu"){renderTela("menu");return}if(action==="ponto"){renderTela("ponto");return}if(action==="carga"){renderTela("carga");return}if(action==="chamado"){renderTela("chamado");return}if(action==="relatorio"){renderTela("relatorio");return}if(action==="perfil"){renderTela("perfil");return}if(action==="privacidade"||action==="termos"){verDocumento(action);return}if(action==="sair"){sair()}}
 function sair(){if(!confirm("Deseja realmente sair do sistema?"))return;localStorage.removeItem("usuarioAtual");window.location.href="login2.html"}
 function goHome(){if(!fotoAtualizadaFlag){renderBloqueioAtualizacao();return}renderTela("menu")}
 function atualizarAvisoPonto(){if(pontoAtivo&&fotoAtualizadaFlag){pontoAbertoBar.classList.add("visivel")}else{pontoAbertoBar.classList.remove("visivel")}}
@@ -427,6 +403,7 @@ async function renderMenu(){
   mainArea.innerHTML=`<section class="content">
   <div class="banner-topo"><span>Acompanhe sua carga horária e modos de uso</span><span style="font-family:monospace;font-size:12px;opacity:0.8;">Sessão: ${sessaoToken}</span></div>
   <div class="contador-mes">
+    <div style="font-size:14px;color:var(--cinza-500);margin-bottom:5px;">Total de horas deste mês até agora</div>
     <div class="contador-horas">${fmtH}</div>
     <div class="contador-mes-nome"><strong>${nomesMeses[mesAtual]}</strong></div>
     <div class="contador-ano">${anoAtual}</div>
@@ -442,7 +419,6 @@ async function renderMenu(){
   <div class="actions-bottom">
     <button class="btn btn-warning" onclick="renderDocumentos()">Termos de Uso e Política</button>
     <button class="btn btn-primary" onclick="renderManual()">Manual de Uso</button>
-    <button class="btn btn-primary" onclick="abrirAdmin()">Painel Administrativo</button>
   </div>
   <div id="galeriaImgsAdmin" class="galeria-imagens"></div>
   </section>`;
@@ -462,45 +438,6 @@ async function carregarGaleriaAdmin(){
   }
   div.innerHTML=html;
 }
-async function abrirAdmin(){
-  const snap=await db.ref("painel_imagens").once("value");
-  const imgs=snap.val()||{};
-  const lista=document.getElementById("adminListaImgs");
-  let html="";
-  for(const[key,val]of Object.entries(imgs)){
-    html+=`<div style="display:flex;align-items:center;justify-content:space-between;background:#f9f9f9;padding:10px;"><img src="${val.url}" style="width:50px;height:50px;object-fit:cover;"><button class="btn btn-danger" onclick="excluirImagemAdmin('${key}')" style="width:auto;min-height:30px;padding:5px 10px;font-size:12px;margin-left:10px;">Excluir</button></div>`;
-  }
-  lista.innerHTML=html||"<div style='text-align:center;font-size:13px;color:#666;'>Nenhuma imagem cadastrada.</div>";
-  abrirOverlay("overlayAdmin");
-}
-async function excluirImagemAdmin(key){
-  if(!confirm("Deseja excluir esta imagem?"))return;
-  await db.ref("painel_imagens/"+key).remove();
-  abrirAdmin();
-  if(telaAtual==="menu")carregarGaleriaAdmin();
-  toast("Imagem excluída.");
-}
-document.getElementById("btnAdminUpload").onclick=async()=>{
-  const input=document.getElementById("adminImgInput");
-  const size=document.getElementById("adminImgSize").value;
-  const file=input.files[0];
-  if(!file){toast("Selecione uma imagem.");return;}
-  showLoader("Enviando imagem...");
-  try{
-    const fd=new FormData();fd.append("file",file);fd.append("upload_preset",UPLOAD_PRESET);
-    const req=await fetch(CLOUDINARY_URL,{method:"POST",body:fd});
-    const res=await req.json();
-    await db.ref("painel_imagens").push({url:res.secure_url,size:size});
-    input.value="";
-    abrirAdmin();
-    if(telaAtual==="menu")carregarGaleriaAdmin();
-    hideLoader();
-    toast("Imagem adicionada!");
-  }catch(e){
-    hideLoader();
-    toast("Erro no upload.");
-  }
-};
 function renderDocumentos(){mainArea.innerHTML=`<section class="content"><div class="page-header"><h1>Termos e Política</h1><div class="desc">Documentos institucionais</div></div><button class="btn btn-primary" onclick="verDocumento('termos')" style="margin-bottom:10px">Termos de Uso</button><button class="btn btn-primary" onclick="verDocumento('privacidade')">Política de Privacidade</button><div class="actions-bottom"><button class="btn btn-secondary" onclick="renderTela('menu')">Voltar ao Menu</button></div></section>`}
 function renderManual(){mainArea.innerHTML=`<section class="content"><div class="page-header"><h1>Manual de Uso</h1><div class="desc">Aprenda a usar o sistema</div></div><div style="font-size:14px;line-height:1.8;color:var(--cinza-700);text-align:left"><h2 style="font-size:18px;color:var(--azul-escuro);margin:20px 0 10px">1. Meu Ponto</h2><p>Acesse para registrar sua entrada e saída. Você precisará resolver um cálculo de segurança e permitir o acesso à câmera.</p><h2 style="font-size:18px;color:var(--azul-escuro);margin:20px 0 10px">2. Carga Horária</h2><p>Consulte suas horas trabalhadas informando o mês e o ano desejados.</p><h2 style="font-size:18px;color:var(--azul-escuro);margin:20px 0 10px">3. Abrir Chamado</h2><p>Descreva o problema e envie o chamado pelo WhatsApp para o suporte.</p><h2 style="font-size:18px;color:var(--azul-escuro);margin:20px 0 10px">4. Relatório</h2><p>Visualize um resumo de todas as suas atividades no sistema e baixe em PDF.</p></div><div class="actions-bottom"><button class="btn btn-secondary" onclick="renderTela('menu')">Voltar ao Menu</button></div></section>`}
 function renderPerfil(){const foto=userData.foto||"";const nome=userData.nome||"Colaborador";mainArea.innerHTML=`<section class="content"><div class="page-header"><h1>Meu Perfil</h1><div class="desc">Seus dados cadastrais</div></div><div style="display:flex;flex-direction:column;align-items:center;padding:20px 0"><img src="${foto}" style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid var(--azul);background:#eef3fb;margin-bottom:15px" onerror="this.src='https://ui-avatars.com/api/?background=1955ad&color=fff&name=${encodeURIComponent(nome)}'"><div style="font-size:22px;font-weight:700;color:var(--azul-escuro);margin-bottom:5px">${nome}</div><div style="font-size:13px;color:var(--cinza-500);background:#eef3fb;padding:7px 16px;font-family:'Courier New',monospace;border-radius:22px;margin-bottom:20px">NA: ${currentUser}</div><button class="btn btn-primary" onclick="abrirEscolhaFoto()" style="max-width:300px">Atualizar foto de perfil</button></div><div style="font-size:13px;color:var(--cinza-500);margin-top:20px">Último registro de foto de perfil atualizada em: <strong>${userData.foto_atualizada_em?new Date(userData.foto_atualizada_em).toLocaleDateString("pt-BR"):"--"}</strong></div><div class="actions-bottom"><button class="btn btn-secondary" onclick="renderTela('menu')">Voltar ao Menu</button></div></section>`}
