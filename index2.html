@@ -7,12 +7,11 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--azul:#1955ad;--azul-escuro:#173d77;--azul-suave:#eef3fb;--verde:#168821;--vermelho:#d6392a;--amarelo:#e8a33d;--amarelo-claro:#fff9e8;--cinza-50:#fafafa;--cinza-100:#f2f2f2;--cinza-200:#e1e5eb;--cinza-300:#c9cdd2;--cinza-500:#657080;--cinza-700:#333333;--cinza-900:#202124;--branco:#fff;--radius:22px}
+:root{--azul:#1955ad;--azul-escuro:#173d77;--azul-suave:#eef3fb;--azul-banner:#4682b4;--verde:#168821;--vermelho:#d6392a;--amarelo:#e8a33d;--amarelo-claro:#fff9e8;--cinza-50:#fafafa;--cinza-100:#f2f2f2;--cinza-200:#e1e5eb;--cinza-300:#c9cdd2;--cinza-500:#657080;--cinza-700:#333333;--cinza-900:#202124;--branco:#fff;--radius:22px}
 body{background:#fff;font-family:Arial,sans-serif;color:var(--cinza-900);min-height:100vh;display:flex;flex-direction:column;font-size:15px;line-height:1.5;overflow-x:hidden}
 button,input,textarea,select{font-family:Arial,sans-serif}
 .header{background:#fff;height:66px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:500;box-shadow:0 1px 5px #172b4d0d;width:100%}
 .header-brand{color:var(--azul-escuro);font:700 19px Arial,sans-serif;display:flex;align-items:center;gap:11px;cursor:pointer;white-space:nowrap;text-decoration:none}
-.header-brand .mark{width:32px;height:32px;display:grid;place-items:center;background:var(--azul);color:#fff;font:700 15px Arial,sans-serif;display:none}
 .header-right{display:flex;align-items:center}
 .menu-btn{width:38px;height:38px;border:0;background:#fff;color:#234c83;cursor:pointer;display:grid;place-items:center;font-size:18px;transition:background .2s}
 .menu-btn:hover{background:var(--azul-suave)}
@@ -24,6 +23,12 @@ button,input,textarea,select{font-family:Arial,sans-serif}
 .menu-dropdown .divider{height:1px;background:var(--cinza-200)}
 .main{width:100%;max-width:850px;margin:0 auto;padding:22px 18px 40px;flex:1;overflow-x:hidden;display:flex;flex-direction:column}
 .content{width:100%;flex:1}
+.banner-topo{width:100vw;background:var(--azul-banner);color:#fff;padding:16px 24px;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;font-size:14px;font-weight:600;text-align:left;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center}
+.contador-mes{text-align:center;margin-bottom:24px}
+.contador-horas{font-size:48px;color:var(--azul-escuro);font-weight:400}
+.contador-mes-nome{font-size:14px;color:var(--cinza-900);margin-top:5px}
+.contador-mes-nome strong{font-weight:700}
+.contador-ano{font-size:12px;color:var(--cinza-500);margin-top:2px}
 .page-header{margin-bottom:22px;text-align:left}
 .page-header h1{font-size:28px;line-height:1.2;font-weight:700;color:var(--azul-escuro);letter-spacing:-.4px}
 .page-header .desc{font-size:13px;color:var(--cinza-500);margin-top:3px}
@@ -35,8 +40,8 @@ button,input,textarea,select{font-family:Arial,sans-serif}
 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 18px;border-radius:var(--radius);font:italic 15px Arial,sans-serif;line-height:1.3;cursor:pointer;border:1px solid transparent;transition:.15s;text-align:center;width:100%;text-decoration:none}
 .btn-primary{background:var(--azul);color:#fff;border-color:var(--azul)}
 .btn-primary:hover{background:#12458f;border-color:#12458f}
-.btn-secondary{background:#fff;color:var(--azul);border-color:var(--azul)}
-.btn-secondary:hover{background:#f1f5fc}
+.btn-secondary{background:var(--azul);color:#fff;border-color:var(--azul)}
+.btn-secondary:hover{background:#12458f;border-color:#12458f}
 .btn-warning{background:var(--amarelo-claro);color:#6d5716;border-color:var(--amarelo);font-weight:600}
 .btn-warning:hover{background:#f5eed6}
 .btn-danger{background:var(--vermelho);color:#fff;border-color:var(--vermelho)}
@@ -44,6 +49,9 @@ button,input,textarea,select{font-family:Arial,sans-serif}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .btn:focus-visible{outline:2px solid var(--azul);outline-offset:3px}
 .actions-bottom{background:var(--cinza-50);margin:24px -18px -40px;padding:24px 18px 40px;border-top:1px solid var(--cinza-200);display:flex;flex-direction:column;gap:10px}
+.galeria-imagens{display:grid;grid-template-columns:1fr;gap:16px;margin-top:20px}
+@media(min-width:640px){.galeria-imagens{grid-template-columns:1fr 1fr}}
+.galeria-imagens img{width:100%;height:auto;display:block;border-radius:0;border:0;object-fit:cover}
 .main-loader{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .3s}
 .main-loader .spinner{width:50px;height:50px;border:4px solid var(--cinza-200);border-top-color:var(--azul);border-radius:50%;animation:spin .8s linear infinite}
 .cronometro-card{background:#fff;padding:25px 0;text-align:center;margin-bottom:10px}
@@ -126,7 +134,7 @@ button,input,textarea,select{font-family:Arial,sans-serif}
 
 <header class="header">
   <a class="header-brand" onclick="goHome()">
-    <span>SAN7DOC<span class="sub"></span></span>
+    <span>DomusFit<span class="sub">Sistema de Ponto</span></span>
   </a>
   <div class="header-right">
     <div class="menu-dots">
@@ -261,6 +269,30 @@ button,input,textarea,select{font-family:Arial,sans-serif}
   </div>
 </div>
 
+<div class="overlay" id="overlayAdmin">
+  <div class="modal" style="max-width:500px">
+    <h3>Painel Administrativo</h3>
+    <div class="sub">Gerencie as imagens do painel</div>
+    <div style="margin-bottom:15px;padding-bottom:15px;border-bottom:1px solid var(--cinza-200)">
+      <label style="display:block;font-size:13px;font-weight:600;margin-bottom:5px">Nova Imagem</label>
+      <input type="file" id="adminImgInput" accept="image/*" style="width:100%;margin-bottom:10px">
+      <label style="display:block;font-size:13px;font-weight:600;margin-bottom:5px">Tamanho da Imagem</label>
+      <select id="adminImgSize" style="width:100%;padding:10px;margin-bottom:10px;border:1px solid var(--cinza-300);border-radius:6px">
+        <option value="100%">Tamanho Original (100%)</option>
+        <option value="75%">Grande (75%)</option>
+        <option value="50%">Médio (50%)</option>
+        <option value="25%">Pequeno (25%)</option>
+      </select>
+      <button class="btn btn-primary" id="btnAdminUpload" style="min-height:36px;padding:7px 15px;font-size:13px">Fazer Upload</button>
+    </div>
+    <div id="adminListaImgs" style="display:flex;flex-direction:column;gap:10px;max-height:40vh;overflow-y:auto">
+    </div>
+    <div class="modal-buttons">
+      <button class="btn btn-secondary" onclick="fecharOverlay('overlayAdmin')">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <div class="loader" id="loader">
   <div class="spinner"></div>
   <div class="texto" id="loaderTexto">Carregando...</div>
@@ -293,6 +325,7 @@ let fotoAtualizadaFlag=false;
 let blobFotoPendente=null;
 let cameraFotoStream=null;
 let capturaFotoAgendada=null;
+let sessaoToken=Math.floor(10000000+Math.random()*90000000).toString();
 const CLOUD_NAME="dzmjto17f";
 const UPLOAD_PRESET="ml_default";
 const CLOUDINARY_URL=`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
@@ -371,7 +404,7 @@ if("speechSynthesis" in window){window.speechSynthesis.onvoiceschanged=()=>{}}
 function fotoAtualizada(u){if(!u)return false;return u.foto_versao===FOTO_VERSAO&&u.foto}
 btnDots.addEventListener("click",function(e){e.stopPropagation();dotsMenu.classList.toggle("aberto")});
 document.addEventListener("click",function(e){if(!dotsMenu.contains(e.target)&&e.target!==btnDots){dotsMenu.classList.remove("aberto")}});
-function menuAction(action){dotsMenu.classList.remove("aberto");if(action==="menu"){renderTela("menu");return}if(action==="ponto"){renderTela("ponto");return}if(action==="carga"){renderTela("carga");return}if(action==="chamado"){renderTela("chamado");return}if(action==="relatorio"){renderTela("relatorio");return}if(action==="perfil"){renderTela("perfil");return}if(action==="privacidade"||action==="termos"){verDocumento(action);return}if(action==="sair"){sair()}}
+function menuAction(action){dotsMenu.classList.remove("aberto");if(action==="menu"){renderTela("menu");return}if(action==="ponto"){renderTela("ponto");return}if(action==="carga"){renderTela("carga");return}if(action==="chamado"){renderTela("chamado");return}if(action==="relatorio"){renderTela("relatorio");return}if(action==="perfil"){renderTela("perfil");return}if(action==="admin"){abrirAdmin();return}if(action==="privacidade"||action==="termos"){verDocumento(action);return}if(action==="sair"){sair()}}
 function sair(){if(!confirm("Deseja realmente sair do sistema?"))return;localStorage.removeItem("usuarioAtual");window.location.href="login2.html"}
 function goHome(){if(!fotoAtualizadaFlag){renderBloqueioAtualizacao();return}renderTela("menu")}
 function atualizarAvisoPonto(){if(pontoAtivo&&fotoAtualizadaFlag){pontoAbertoBar.classList.add("visivel")}else{pontoAbertoBar.classList.remove("visivel")}}
@@ -380,10 +413,97 @@ db.ref("usuarios/"+currentUser).on("value",snap=>{if(snap.exists()){userData=sna
 db.ref("pontos/"+currentUser+"/ativo/inicio").on("value",snap=>{const inicio=snap.val();if(inicio){pontoAtivo=true;pontoStart=inicio;startCronometroLocal()}else{pontoAtivo=false;pontoStart=null;if(cronInterval){clearInterval(cronInterval);cronInterval=null}}atualizarAvisoPonto()});
 function startCronometroLocal(){if(cronInterval){clearInterval(cronInterval)}cronInterval=setInterval(()=>{if(pontoAtivo&&pontoStart){const el=document.getElementById("cronodisplay");if(el){el.innerText=formatDuration(Date.now()-pontoStart)}}},1000)}
 function renderTela(tela){if(!fotoAtualizadaFlag){renderBloqueioAtualizacao();return}telaAtual=tela;dotsMenu.classList.remove("aberto");mainArea.innerHTML="";if(tela==="menu"){renderMenu()}else if(tela==="ponto"){renderPonto()}else if(tela==="carga"){renderCarga()}else if(tela==="chamado"){renderChamado()}else if(tela==="relatorio"){renderRelatorio()}else if(tela==="perfil"){renderPerfil()}atualizarAvisoPonto()}
-function renderMenu(){mainArea.innerHTML=`<section class="content"><div class="page-header"><h1>Olá, ${(userData.nome||"").split(" ")[0]||"Colaborador(a)"}</h1><div class="desc">O que você deseja fazer?</div></div><div class="search-area"><div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="search" id="menuPesquisa" placeholder="Pesquisar função..." autocomplete="off"></div></div><div class="function-list" id="functionList" style="display:flex;flex-direction:column;gap:10px"><button class="btn btn-primary" data-search="ponto" onclick="renderTela('ponto')">Meu Ponto</button><button class="btn btn-secondary" data-search="carga" onclick="renderTela('carga')">Carga Horária</button><button class="btn btn-secondary" data-search="chamado" onclick="renderTela('chamado')">Abrir Chamado</button><button class="btn btn-secondary" data-search="relatorio" onclick="renderTela('relatorio')">Relatório</button></div><div id="nenhumaFuncao" style="display:none;text-align:center;color:var(--cinza-500);font-size:13px;padding:30px 10px">Nenhuma função encontrada.</div><div class="actions-bottom"><button class="btn btn-warning" onclick="renderDocumentos()">Termos de Uso e Política</button><button class="btn btn-secondary" onclick="renderManual()">Manual de Uso</button></div></section>`;const pesquisa=document.getElementById("menuPesquisa");const itens=document.querySelectorAll("#functionList .btn");const nenhuma=document.getElementById("nenhumaFuncao");pesquisa.addEventListener("input",function(){const termo=this.value.toLowerCase().trim();let encontrou=false;itens.forEach(item=>{const texto=item.dataset.search.toLowerCase();const mostrar=!termo||texto.includes(termo);item.style.display=mostrar?"flex":"none";if(mostrar)encontrou=true});nenhuma.style.display=encontrou?"none":"block"})}
+async function renderMenu(){
+  const data=new Date();const mesAtual=data.getMonth();const anoAtual=data.getFullYear();
+  const nomesMeses=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+  let totalMs=0;const snap=await db.ref("historico/"+currentUser).once("value");const hist=snap.val()||{};
+  for(const[dataStr,val]of Object.entries(hist)){
+    const[y,m]=dataStr.split("-").map(Number);
+    if(y===anoAtual&&m===(mesAtual+1)&&val.inicio&&val.fim){totalMs+=val.fim-val.inicio;}
+  }
+  const totalH=Math.floor(totalMs/3600000);const totalM=Math.floor((totalMs%3600000)/60000);
+  const fmtH=String(totalH).padStart(2,'0')+"h "+String(totalM).padStart(2,'0')+"m";
+  
+  mainArea.innerHTML=`<section class="content">
+  <div class="banner-topo"><span>Acompanhe sua carga horária e modos de uso</span><span style="font-family:monospace;font-size:12px;opacity:0.8;">Sessão: ${sessaoToken}</span></div>
+  <div class="contador-mes">
+    <div class="contador-horas">${fmtH}</div>
+    <div class="contador-mes-nome"><strong>${nomesMeses[mesAtual]}</strong></div>
+    <div class="contador-ano">${anoAtual}</div>
+  </div>
+  <div class="search-area"><div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="search" id="menuPesquisa" placeholder="Pesquisar função..." autocomplete="off"></div></div>
+  <div class="function-list" id="functionList" style="display:flex;flex-direction:column;gap:10px">
+    <button class="btn btn-primary" data-search="ponto" onclick="renderTela('ponto')">Meu Ponto</button>
+    <button class="btn btn-primary" data-search="carga" onclick="renderTela('carga')">Carga Horária</button>
+    <button class="btn btn-primary" data-search="chamado" onclick="renderTela('chamado')">Abrir Chamado</button>
+    <button class="btn btn-primary" data-search="relatorio" onclick="renderTela('relatorio')">Relatório</button>
+  </div>
+  <div id="nenhumaFuncao" style="display:none;text-align:center;color:var(--cinza-500);font-size:13px;padding:30px 10px">Nenhuma função encontrada.</div>
+  <div class="actions-bottom">
+    <button class="btn btn-warning" onclick="renderDocumentos()">Termos de Uso e Política</button>
+    <button class="btn btn-primary" onclick="renderManual()">Manual de Uso</button>
+    <button class="btn btn-primary" onclick="abrirAdmin()">Painel Administrativo</button>
+  </div>
+  <div id="galeriaImgsAdmin" class="galeria-imagens"></div>
+  </section>`;
+  
+  const pesquisa=document.getElementById("menuPesquisa");const itens=document.querySelectorAll("#functionList .btn");const nenhuma=document.getElementById("nenhumaFuncao");
+  pesquisa.addEventListener("input",function(){const termo=this.value.toLowerCase().trim();let encontrou=false;itens.forEach(item=>{const texto=item.dataset.search.toLowerCase();const mostrar=!termo||texto.includes(termo);item.style.display=mostrar?"flex":"none";if(mostrar)encontrou=true});nenhuma.style.display=encontrou?"none":"block"});
+  carregarGaleriaAdmin();
+}
+async function carregarGaleriaAdmin(){
+  const snap=await db.ref("painel_imagens").once("value");
+  const imgs=snap.val()||{};
+  const div=document.getElementById("galeriaImgsAdmin");
+  if(!div)return;
+  let html="";
+  for(const[key,val]of Object.entries(imgs)){
+    html+=`<div style="width:${val.size};margin:0 auto;"><img src="${val.url}" alt="Imagem"></div>`;
+  }
+  div.innerHTML=html;
+}
+async function abrirAdmin(){
+  const snap=await db.ref("painel_imagens").once("value");
+  const imgs=snap.val()||{};
+  const lista=document.getElementById("adminListaImgs");
+  let html="";
+  for(const[key,val]of Object.entries(imgs)){
+    html+=`<div style="display:flex;align-items:center;justify-content:space-between;background:#f9f9f9;padding:10px;"><img src="${val.url}" style="width:50px;height:50px;object-fit:cover;"><button class="btn btn-danger" onclick="excluirImagemAdmin('${key}')" style="width:auto;min-height:30px;padding:5px 10px;font-size:12px;margin-left:10px;">Excluir</button></div>`;
+  }
+  lista.innerHTML=html||"<div style='text-align:center;font-size:13px;color:#666;'>Nenhuma imagem cadastrada.</div>";
+  abrirOverlay("overlayAdmin");
+}
+async function excluirImagemAdmin(key){
+  if(!confirm("Deseja excluir esta imagem?"))return;
+  await db.ref("painel_imagens/"+key).remove();
+  abrirAdmin();
+  if(telaAtual==="menu")carregarGaleriaAdmin();
+  toast("Imagem excluída.");
+}
+document.getElementById("btnAdminUpload").onclick=async()=>{
+  const input=document.getElementById("adminImgInput");
+  const size=document.getElementById("adminImgSize").value;
+  const file=input.files[0];
+  if(!file){toast("Selecione uma imagem.");return;}
+  showLoader("Enviando imagem...");
+  try{
+    const fd=new FormData();fd.append("file",file);fd.append("upload_preset",UPLOAD_PRESET);
+    const req=await fetch(CLOUDINARY_URL,{method:"POST",body:fd});
+    const res=await req.json();
+    await db.ref("painel_imagens").push({url:res.secure_url,size:size});
+    input.value="";
+    abrirAdmin();
+    if(telaAtual==="menu")carregarGaleriaAdmin();
+    hideLoader();
+    toast("Imagem adicionada!");
+  }catch(e){
+    hideLoader();
+    toast("Erro no upload.");
+  }
+};
 function renderDocumentos(){mainArea.innerHTML=`<section class="content"><div class="page-header"><h1>Termos e Política</h1><div class="desc">Documentos institucionais</div></div><button class="btn btn-primary" onclick="verDocumento('termos')" style="margin-bottom:10px">Termos de Uso</button><button class="btn btn-primary" onclick="verDocumento('privacidade')">Política de Privacidade</button><div class="actions-bottom"><button class="btn btn-secondary" onclick="renderTela('menu')">Voltar ao Menu</button></div></section>`}
 function renderManual(){mainArea.innerHTML=`<section class="content"><div class="page-header"><h1>Manual de Uso</h1><div class="desc">Aprenda a usar o sistema</div></div><div style="font-size:14px;line-height:1.8;color:var(--cinza-700);text-align:left"><h2 style="font-size:18px;color:var(--azul-escuro);margin:20px 0 10px">1. Meu Ponto</h2><p>Acesse para registrar sua entrada e saída. Você precisará resolver um cálculo de segurança e permitir o acesso à câmera.</p><h2 style="font-size:18px;color:var(--azul-escuro);margin:20px 0 10px">2. Carga Horária</h2><p>Consulte suas horas trabalhadas informando o mês e o ano desejados.</p><h2 style="font-size:18px;color:var(--azul-escuro);margin:20px 0 10px">3. Abrir Chamado</h2><p>Descreva o problema e envie o chamado pelo WhatsApp para o suporte.</p><h2 style="font-size:18px;color:var(--azul-escuro);margin:20px 0 10px">4. Relatório</h2><p>Visualize um resumo de todas as suas atividades no sistema e baixe em PDF.</p></div><div class="actions-bottom"><button class="btn btn-secondary" onclick="renderTela('menu')">Voltar ao Menu</button></div></section>`}
-function renderPerfil(){const foto=userData.foto||"";const nome=userData.nome||"Colaborador";mainArea.innerHTML=`<section class="content"><div class="page-header"><h1>Meu Perfil</h1><div class="desc">Seus dados cadastrais</div></div><div style="display:flex;flex-direction:column;align-items:center;padding:20px 0"><img src="${foto}" style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid var(--azul);background:#eef3fb;margin-bottom:15px" onerror="this.src='https://ui-avatars.com/api/?background=1955ad&color=fff&name=${encodeURIComponent(nome)}'"><div style="font-size:22px;font-weight:700;color:var(--azul-escuro);margin-bottom:5px">${nome}</div><div style="font-size:13px;color:var(--cinza-500);background:#eef3fb;padding:7px 16px;font-family:'Courier New',monospace;border-radius:22px;margin-bottom:20px">NA: ${currentUser}</div><button class="btn btn-secondary" onclick="abrirEscolhaFoto()" style="max-width:300px">Atualizar foto de perfil</button></div><div style="font-size:13px;color:var(--cinza-500);margin-top:20px">Último registro de foto de perfil atualizada em: <strong>${userData.foto_atualizada_em?new Date(userData.foto_atualizada_em).toLocaleDateString("pt-BR"):"--"}</strong></div><div class="actions-bottom"><button class="btn btn-secondary" onclick="renderTela('menu')">Voltar ao Menu</button></div></section>`}
+function renderPerfil(){const foto=userData.foto||"";const nome=userData.nome||"Colaborador";mainArea.innerHTML=`<section class="content"><div class="page-header"><h1>Meu Perfil</h1><div class="desc">Seus dados cadastrais</div></div><div style="display:flex;flex-direction:column;align-items:center;padding:20px 0"><img src="${foto}" style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid var(--azul);background:#eef3fb;margin-bottom:15px" onerror="this.src='https://ui-avatars.com/api/?background=1955ad&color=fff&name=${encodeURIComponent(nome)}'"><div style="font-size:22px;font-weight:700;color:var(--azul-escuro);margin-bottom:5px">${nome}</div><div style="font-size:13px;color:var(--cinza-500);background:#eef3fb;padding:7px 16px;font-family:'Courier New',monospace;border-radius:22px;margin-bottom:20px">NA: ${currentUser}</div><button class="btn btn-primary" onclick="abrirEscolhaFoto()" style="max-width:300px">Atualizar foto de perfil</button></div><div style="font-size:13px;color:var(--cinza-500);margin-top:20px">Último registro de foto de perfil atualizada em: <strong>${userData.foto_atualizada_em?new Date(userData.foto_atualizada_em).toLocaleDateString("pt-BR"):"--"}</strong></div><div class="actions-bottom"><button class="btn btn-secondary" onclick="renderTela('menu')">Voltar ao Menu</button></div></section>`}
 function renderRelatorio(){mainArea.innerHTML=`<section class="content"><div class="page-header"><h1>Relatório de Atividades</h1><div class="desc">Seu histórico no sistema</div></div><div id="relatorioConteudo" style="font-size:14px;line-height:1.8;color:var(--cinza-700);text-align:left">Carregando dados...</div><div class="actions-bottom"><button class="btn btn-primary" onclick="gerarRelatorioPDF()">Baixar PDF</button><button class="btn btn-secondary" onclick="renderTela('menu')">Voltar ao Menu</button></div></section>`;carregarDadosRelatorio()}
 async function carregarDadosRelatorio(){const snap=await db.ref("historico/"+currentUser).once("value");const hist=snap.val()||{};let totalMs=0;let diasTrabalhados=0;const entradas=Object.entries(hist).sort((a,b)=>b[0].localeCompare(a[0]));for(const[data,val]of entradas){if(val.inicio&&val.fim){totalMs+=val.fim-val.inicio;diasTrabalhados++}}const totalH=Math.floor(totalMs/3600000);const totalM=Math.floor((totalMs%3600000)/60000);const div=document.getElementById("relatorioConteudo");if(!div)return;div.innerHTML=`<p>O colaborador <strong>${userData.nome||"--"}</strong>, portador do Número de Acesso (NA) <strong>${currentUser}</strong>, possui um histórico de atividades registrado no Sistema de Ponto DomusFit.</p><p>Ao longo do período em que esteve ativo no sistema, foram contabilizados um total de <strong>${diasTrabalhados} dias trabalhados</strong>.</p><p>A carga horária total acumulada até a presente data é de <strong>${totalH} horas e ${totalM} minutos</strong>.</p><p>O último registro de foto de perfil atualizada ocorreu em: <strong>${userData.foto_atualizada_em?new Date(userData.foto_atualizada_em).toLocaleDateString("pt-BR"):"Data não informada"}</strong>.</p><p>Este relatório resume as interações de registro de ponto, consentimentos e atualizações cadastrais realizadas pelo colaborador.</p>`}
 function gerarRelatorioPDF(){const{jsPDF}=window.jspdf;const pdf=new jsPDF("p","mm","a4");const pageWidth=pdf.internal.pageSize.getWidth();let y=20;pdf.setFontSize(14);pdf.setTextColor(23,61,119);pdf.text("Relatório de Atividades - DomusFit",pageWidth/2,y,{align:"center"});y+=10;pdf.setFontSize(9);pdf.setTextColor(100,100,100);pdf.text("Gerado em "+new Date().toLocaleString("pt-BR"),pageWidth/2,y,{align:"center"});y+=12;pdf.setTextColor(32,33,36);pdf.setFontSize(10.5);const div=document.getElementById("relatorioConteudo");const texto=div?div.innerText:"Sem dados";const lines=pdf.splitTextToSize(texto,pageWidth-30);pdf.text(lines,15,y);pdf.save("Relatorio_DomusFit.pdf")}
