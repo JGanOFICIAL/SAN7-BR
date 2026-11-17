@@ -6,224 +6,124 @@
 <title>DomusFit · Acesso</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:#fff;font-family:Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column;color:#202124}
-.app-header{position:sticky;top:0;width:100%;background:#fff;padding:0 24px;height:66px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 5px #172b4d0d;z-index:30}
-.header-brand{color:#173d77;font:700 19px Arial,sans-serif;display:flex;align-items:center}
-.header-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;background:#e1e5eb;border:2px solid #1955ad;cursor:pointer;display:none}
-.main{width:100%;max-width:420px;margin:0 auto;padding:40px 20px;flex:1}
-.card{background:#fff;padding:32px 24px}
-.card h1{font-size:24px;color:#173d77;font-weight:700;margin-bottom:8px;letter-spacing:-.4px;text-align:center}
-.card .sub{font-size:13px;color:#657080;text-align:center;margin-bottom:28px}
-.campo{margin-bottom:18px}
-.campo label{display:block;font-size:12px;color:#4c586a;margin-bottom:5px}
-.field{display:block;width:100%;height:44px;padding:10px 12px;background:#fff;border:0;border-bottom:1px solid #7b8798;border-radius:0;color:#202124;font:14px Arial,sans-serif;outline:none}
-.field:focus{border-bottom:2px solid #1955ad}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:7px 18px;border-radius:22px;font:italic 14px Arial,sans-serif;line-height:1.3;cursor:pointer;border:1px solid transparent;transition:.15s;text-align:center;gap:8px}
-.btn-primary{background:#1955ad;color:#fff;border-color:#1955ad;width:100%}
-.btn-primary:hover{background:#12458f}
-.btn-secondary{background:#fff;color:#1955ad;border-color:#1955ad}
-.btn-secondary:hover{background:#f1f5fc}
-.btn:disabled{opacity:.6;cursor:not-allowed}
-.spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;flex-shrink:0}
-.spinner-azul{width:18px;height:18px;border:2.5px solid rgba(25,85,173,.2);border-top-color:#1955ad;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;flex-shrink:0}
+body{background:#fff;font-family:Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column;color:#202124;overflow:hidden}
+.app-header{background:#fff;height:66px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:500;box-shadow:0 1px 5px #172b4d0d;width:100%}
+.header-brand{color:#173d77;font:700 19px Arial,sans-serif;display:flex;align-items:center;gap:11px}
+.main{width:100%;max-width:420px;margin:0 auto;padding:40px 20px;flex:1;display:flex;align-items:center;justify-content:center}
+.welcome-text{text-align:center;color:#657080;font-size:14px;line-height:1.6}
+.menu-flutuante{position:fixed;bottom:0;left:0;right:0;width:100%;background:#173d77;border-radius:24px 24px 0 0;padding:30px 24px 40px;z-index:1000;box-shadow:0 -10px 30px rgba(23,43,77,.2);transform:translateY(100%);transition:transform .4s cubic-bezier(0.4, 0, 0.2, 1);display:flex;flex-direction:column;gap:16px}
+.menu-flutuante.aberto{transform:translateY(0)}
+.menu-titulo{color:#fff;font-size:20px;font-weight:700;margin-bottom:10px;text-align:center}
+.campo{width:100%;display:flex;flex-direction:column;align-items:center}
+.field{width:100%;height:50px;background:#fff;border:0;border-radius:25px;padding:0 20px;color:#202124;font:16px Arial,sans-serif;outline:none;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,.1)}
+.field::placeholder{color:#888}
+.btn{width:100%;height:50px;background:#1955ad;color:#fff;border:0;border-radius:25px;font:italic 16px Arial,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .2s}
+.btn:hover{background:#12458f}
+.spinner{width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+.btn.loading .spinner{display:inline-block}
+.btn.loading .btn-text{display:none}
 @keyframes spin{to{transform:rotate(360deg)}}
-.user-card{display:flex;flex-direction:column;align-items:center;gap:16px}
-.user-avatar{width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #1955ad;background:#eef3fb}
-.user-nome{font-size:22px;font-weight:700;color:#173d77;text-align:center}
-.user-na{font-size:13px;color:#657080;background:#eef3fb;padding:7px 16px;font-family:'Courier New',monospace;letter-spacing:.3px;border-radius:22px}
-.link-btn{background:transparent;border:none;color:#d6392a;font:italic 14px Arial,sans-serif;cursor:pointer;text-decoration:underline;padding:6px}
-.aviso{background:#fff9e8;border-left:5px solid #e8a33d;padding:18px 18px;margin-bottom:20px;font-size:13px;color:#5a4a1a;line-height:1.6;border-radius:0}
-.aviso strong{display:block;color:#c2410c;font-size:15px;margin-bottom:8px;font-weight:700}
-.aviso .instrucoes{background:#fff;border:1px solid #f0e2b8;padding:12px 14px;margin-top:12px;font-size:12px;color:#4a3c10;line-height:1.7;border-radius:4px}
-.aviso .instrucoes ol{padding-left:18px;margin:6px 0}
-.aviso .instrucoes li{margin-bottom:4px}
-.field-amarelo{background:#fffdf2!important;border-bottom:1px solid #d4a72c!important}
-.field-amarelo:focus{border-bottom:2px solid #c2410c!important}
-.overlay{position:fixed;inset:0;background:rgba(23,36,58,.65);display:none;align-items:center;justify-content:center;z-index:1500;padding:20px}
-.overlay.aberto{display:flex}
-.modal{background:#fff;width:100%;max-width:400px;padding:26px;box-shadow:0 20px 50px rgba(23,43,77,.24);text-align:center;border-radius:4px}
-.modal h3{color:#173d77;font-size:18px;margin-bottom:8px;font-weight:700}
-.modal .sub{color:#657080;font-size:13px;margin-bottom:18px;line-height:1.5}
-.modal ul{text-align:left;padding-left:20px;margin:10px 0 18px;font-size:13px;color:#4a3c10;line-height:1.7}
-.modal ul li{margin-bottom:5px}
-.modal .dica{background:#fff9e8;border:1px solid #f0e2b8;padding:12px 14px;margin:12px 0 18px;font-size:12px;color:#5a4a1a;line-height:1.6;border-radius:4px;text-align:left}
-.modal-buttons{display:flex;gap:10px;margin-top:18px}
-.modal-buttons .btn{flex:1}
-.modal-buttons .btn-secondary{background:#fff}
-.preview-box{width:180px;height:180px;margin:0 auto 18px;border-radius:50%;overflow:hidden;border:4px solid #1955ad;background:#eef3fb;box-shadow:0 8px 24px rgba(25,85,173,.18)}
-.preview-box img{width:100%;height:100%;object-fit:cover;display:block}
-.preview-titulo{font-size:15px;color:#173d77;font-weight:700;margin-bottom:6px}
-.preview-txt{font-size:13px;color:#657080;line-height:1.6;margin-bottom:16px}
-.camera-box{width:300px;height:380px;background:#000;position:relative;overflow:hidden;box-shadow:0 0 0 3px #1955ad,0 20px 60px rgba(23,43,77,.5);border-radius:4px}
-.camera-box video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.camera-hint{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.72);color:#fff;padding:14px;text-align:center;font-size:13px;line-height:1.5}
-.camera-hint strong{display:block;font-size:14px;margin-bottom:4px;color:#ffd966}
-.camera-spinner{position:absolute;inset:0;background:rgba(23,61,119,.75);display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:5;color:#fff;font-size:13px;gap:12px}
-.camera-spinner .sp{width:42px;height:42px;border:4px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
-.camera-cancel{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);border:0;padding:9px 22px;color:#fff;font:italic 13px Arial,sans-serif;cursor:pointer;z-index:10;border-radius:22px}
-.loader-full{position:fixed;inset:0;background:rgba(255,255,255,.94);display:none;align-items:center;justify-content:center;flex-direction:column;z-index:2200;gap:14px}
-.loader-full.aberto{display:flex}
-.loader-full .sp2{width:46px;height:46px;border:4px solid #e1e5eb;border-top-color:#1955ad;border-radius:50%;animation:spin .8s linear infinite}
-.loader-full .txt{color:#333;font-size:13px;font-weight:500}
-.app-footer{border-top:1px solid #e1e5eb;padding:25px 24px;text-align:center;color:#657080;font:12px Arial,sans-serif;margin-top:auto}
-.app-footer strong{color:#243d60}
-.toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%);background:#202124;color:#fff;padding:11px 20px;font-size:13px;z-index:2500;box-shadow:0 5px 18px rgba(23,43,77,.22);border-radius:4px;animation:toastIn .2s ease}
-@keyframes toastIn{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
-@media(max-width:480px){.main{padding:28px 16px}.card{padding:24px 18px}.camera-box{width:270px;height:340px}}
+.toast{position:fixed;left:50%;top:20px;transform:translateX(-50%);background:#d6392a;color:#fff;padding:11px 20px;font-size:13px;z-index:2500;border-radius:4px;box-shadow:0 5px 18px rgba(23,43,77,.22);animation:toastIn .2s ease;display:none}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translate(-50%,0)}}
 </style>
 </head>
 <body>
 
 <header class="app-header">
   <div class="header-brand"><span>DomusFit</span></div>
-  <img class="header-avatar" id="headerAvatar" src="" alt="perfil">
 </header>
 
 <main class="main">
-  <div class="card" id="dynamicCard"></div>
+  <div class="welcome-text">
+    Toque na tela ou deslize para cima para acessar o sistema.
+  </div>
 </main>
 
-<footer class="app-footer">
-  <div>© <span class="current-year"></span> <strong>DomusFit.</strong> Todos os direitos reservados.</div>
-</footer>
-
-<div class="overlay" id="overlayEscolha">
-  <div class="modal">
-    <h3>Atualizar foto de perfil</h3>
-    <div class="sub">Escolha como deseja enviar sua nova foto</div>
-    <div class="modal-buttons">
-      <button class="btn btn-secondary" id="btnEscolherArquivo">Enviar arquivo</button>
-      <button class="btn btn-primary" id="btnEscolherCamera">Tirar foto</button>
-    </div>
-    <div class="modal-buttons" style="margin-top:12px">
-      <button class="btn btn-secondary" id="btnCancelarEscolha" style="flex:1">Cancelar</button>
-    </div>
+<div class="menu-flutuante" id="menuAcesso">
+  <div class="menu-titulo">Acessar Conta</div>
+  <div class="campo">
+    <input type="text" id="naInput" class="field" placeholder="Digite seu NA (Número de Acesso)" autocomplete="off" inputmode="numeric">
   </div>
+  <button class="btn" id="btnAcessar">
+    <span class="spinner"></span>
+    <span class="btn-text">Acessar</span>
+  </button>
 </div>
 
-<div class="overlay" id="overlayInstrucoesCamera">
-  <div class="modal">
-    <h3>Instruções para a foto</h3>
-    <div class="sub">Siga as orientações abaixo para uma boa captura</div>
-    <ul>
-      <li>Permita o acesso à câmera quando solicitado.</li>
-      <li>Centralize o rosto no quadro.</li>
-      <li>Mantenha o rosto parado e olhe para a câmera.</li>
-      <li>A captura será feita automaticamente após 2 segundos.</li>
-      <li>Use boa iluminação, sem contraluz.</li>
-    </ul>
-    <div class="modal-buttons">
-      <button class="btn btn-secondary" id="btnCancelarInstrCamera">Cancelar</button>
-      <button class="btn btn-primary" id="btnIniciarCamera">Iniciar captura</button>
-    </div>
-  </div>
-</div>
-
-<div class="overlay" id="overlayInstrucoesArquivo">
-  <div class="modal">
-    <h3>Como deve ser a foto</h3>
-    <div class="sub">Atenção aos requisitos abaixo antes de enviar</div>
-    <ul>
-      <li>Foto nítida, de frente, com o rosto bem visível.</li>
-      <li>Sem óculos escuros, boné ou máscara.</li>
-      <li>Fundo claro e neutro, de preferência.</li>
-      <li>Boa iluminação, sem sombras fortes no rosto.</li>
-      <li>Formato JPG ou PNG.</li>
-    </ul>
-    <div class="dica">Fotos fora do padrão podem ser recusadas e você precisará enviar novamente.</div>
-    <div class="modal-buttons">
-      <button class="btn btn-secondary" id="btnCancelarInstrArquivo">Cancelar</button>
-      <button class="btn btn-primary" id="btnSelecionarArquivo">Selecionar arquivo</button>
-    </div>
-  </div>
-</div>
-
-<div class="overlay" id="overlayPreview">
-  <div class="modal">
-    <div class="preview-titulo">Confirme sua foto</div>
-    <div class="preview-txt">Verifique se está boa e com o ângulo correto antes de enviar.</div>
-    <div class="preview-box"><img id="previewImg" src="" alt="prévia"></div>
-    <div class="modal-buttons">
-      <button class="btn btn-secondary" id="btnRefazerFoto">Refazer</button>
-      <button class="btn btn-primary" id="btnConfirmarFoto">Confirmar e enviar</button>
-    </div>
-  </div>
-</div>
-
-<div class="overlay" id="overlayCamera">
-  <div class="camera-box">
-    <video id="videoCam" autoplay playsinline muted></video>
-    <div class="camera-spinner hidden" id="spinnerCamera"><div class="sp"></div><span>Centralizando...</span></div>
-    <div class="camera-hint"><strong>Centralize o rosto e aguarde</strong>A captura é automática</div>
-    <button class="camera-cancel" id="btnCancelarCamera">Cancelar</button>
-  </div>
-</div>
-
-<div class="loader-full" id="loaderFull">
-  <div class="sp2"></div>
-  <div class="txt" id="loaderTxt">Processando...</div>
-</div>
-
-<input type="file" id="fileInput" accept="image/*" style="display:none">
+<div class="toast" id="toastErro">NA não encontrado. Verifique e tente novamente.</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomain:"prefeitura-de-joao-camara.firebaseapp.com",projectId:"prefeitura-de-joao-camara",storageBucket:"prefeitura-de-joao-camara.firebasestorage.app"};
+const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomain:"prefeitura-de-joao-camara.firebaseapp.com",projectId:"prefeitura-de-joao-camara",storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",databaseURL:"https://prefeitura-de-joao-camara-default-rtdb.firebaseio.com"};
 firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
-let currentSerial=localStorage.getItem("usuarioAtual");
-let usuarioAtual=null;
-let cameraStream=null;
-let capturaAgendada=null;
-let blobPendente=null;
-const cardDiv=document.getElementById("dynamicCard");
-const headerAvatar=document.getElementById("headerAvatar");
-const overlayEscolha=document.getElementById("overlayEscolha");
-const overlayInstrucoesCamera=document.getElementById("overlayInstrucoesCamera");
-const overlayInstrucoesArquivo=document.getElementById("overlayInstrucoesArquivo");
-const overlayPreview=document.getElementById("overlayPreview");
-const overlayCamera=document.getElementById("overlayCamera");
-const videoCam=document.getElementById("videoCam");
-const spinnerCamera=document.getElementById("spinnerCamera");
-const previewImg=document.getElementById("previewImg");
-const fileInput=document.getElementById("fileInput");
-const loaderFull=document.getElementById("loaderFull");
-const loaderTxt=document.getElementById("loaderTxt");
-const CLOUDINARY_URL="https://api.cloudinary.com/v1_1/dzmjto17f/image/upload";
-const UPLOAD_PRESET="ml_default";
-const FOTO_VERSAO="2026";
-document.querySelectorAll(".current-year").forEach(el=>el.textContent=new Date().getFullYear());
-function toast(msg){const t=document.createElement("div");t.className="toast";t.innerText=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2800)}
-function showLoader(txt){loaderTxt.textContent=txt||"Carregando...";loaderFull.classList.add("aberto")}
-function hideLoader(){loaderFull.classList.remove("aberto")}
-function atualizarHeaderAvatar(url){if(url){headerAvatar.style.display="block";headerAvatar.src=url}else{headerAvatar.style.display="none"}}
-function falar(texto){try{if(!("speechSynthesis" in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(texto);u.lang="pt-BR";u.rate=1;u.pitch=1.15;const voices=window.speechSynthesis.getVoices();const fem=voices.find(v=>v.lang==="pt-BR"&&/(female|maria|luciana|helo|google)/i.test(v.name));if(fem)u.voice=fem;window.speechSynthesis.speak(u)}catch(e){}}
-if("speechSynthesis" in window){window.speechSynthesis.onvoiceschanged=()=>{}}
-function fotoAtualizada(user){if(!user)return false;return user.foto_versao===FOTO_VERSAO&&user.foto}
-function renderLoginForm(){atualizarHeaderAvatar("");cardDiv.innerHTML=`<h1>Acessar</h1><div class="sub">Informe seu número de registro</div><div class="campo"><label for="naInput">Número de Acesso (NA)</label><input type="text" id="naInput" class="field" placeholder="Digite seu NA" autocomplete="off" inputmode="numeric"></div><button class="btn btn-primary" id="btnLogin">Acessar plataforma</button>`;const btn=document.getElementById("btnLogin");const input=document.getElementById("naInput");const doLogin=async()=>{const na=input.value.trim();if(!na){toast("Informe o NA cadastrado");return}btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Validando';const snap=await db.ref("usuarios/"+na).once("value");if(!snap.exists()){btn.disabled=false;btn.innerHTML="Acessar plataforma";toast("NA não encontrado");return}const user=snap.val();usuarioAtual=user;currentSerial=na;localStorage.setItem("usuarioAtual",na);btn.disabled=false;btn.innerHTML="Acessar plataforma";if(!fotoAtualizada(user)){renderAtualizacaoObrigatoria()}else{renderPerfilSalvo(user)}};btn.onclick=doLogin;input.addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()})}
-function renderPerfilSalvo(user){const foto=user.foto||"";const nome=user.nome||"Colaborador";atualizarHeaderAvatar(foto);cardDiv.innerHTML=`<div class="user-card"><img class="user-avatar" src="${foto}" onerror="this.src='https://ui-avatars.com/api/?background=1955ad&color=fff&name=${encodeURIComponent(nome)}'"><div class="user-nome">${nome}</div><div class="user-na">NA: ${currentSerial}</div><button class="btn btn-primary" id="btnContinuar">Acessar painel</button><button class="link-btn" id="btnTrocar">Trocar conta</button></div>`;document.getElementById("btnContinuar").onclick=()=>{window.location.href="index2.html"};document.getElementById("btnTrocar").onclick=()=>{localStorage.removeItem("usuarioAtual");currentSerial=null;usuarioAtual=null;renderLoginForm()}}
-function renderAtualizacaoObrigatoria(){cardDiv.innerHTML=`<div class="aviso"><strong>Atualização obrigatória de foto</strong>Já faz mais de um ano que sua foto está no sistema. Para o bom funcionamento e segurança, é necessário enviar uma nova foto agora para continuar.<div class="instrucoes"><strong style="display:block;color:#7a5a00;font-size:12px;margin-bottom:6px;font-weight:700">Como enviar</strong><ol><li>Toque em <strong>Enviar foto</strong> abaixo.</li><li>Escolha <strong>Tirar foto</strong> ou <strong>Enviar arquivo</strong>.</li><li>Se tirar foto, permita o acesso à câmera.</li><li>Centralize o rosto e aguarde a captura automática.</li><li>Após o envio, você será liberado automaticamente.</li></ol></div></div><div class="campo"><label for="naConfirm">Confirme seu NA</label><input type="text" id="naConfirm" class="field field-amarelo" value="${currentSerial}" readonly></div><button class="btn btn-primary" id="btnEnviarFoto">Enviar foto</button><button class="link-btn" id="btnSairAtualizacao" style="display:block;margin:14px auto 0">Sair da conta</button>`;document.getElementById("btnEnviarFoto").onclick=abrirEscolhaFoto;document.getElementById("btnSairAtualizacao").onclick=()=>{localStorage.removeItem("usuarioAtual");currentSerial=null;usuarioAtual=null;renderLoginForm()}}
-function abrirEscolhaFoto(){falar("Atualização obrigatória de foto. Escolha como deseja enviar sua nova foto");overlayEscolha.classList.add("aberto")}
-document.getElementById("btnCancelarEscolha").onclick=()=>{overlayEscolha.classList.remove("aberto")};
-document.getElementById("btnEscolherArquivo").onclick=()=>{overlayEscolha.classList.remove("aberto");overlayInstrucoesArquivo.classList.add("aberto")};
-document.getElementById("btnEscolherCamera").onclick=()=>{overlayEscolha.classList.remove("aberto");overlayInstrucoesCamera.classList.add("aberto")};
-document.getElementById("btnCancelarInstrCamera").onclick=()=>{overlayInstrucoesCamera.classList.remove("aberto")};
-document.getElementById("btnIniciarCamera").onclick=()=>{overlayInstrucoesCamera.classList.remove("aberto");abrirCamera()};
-document.getElementById("btnCancelarInstrArquivo").onclick=()=>{overlayInstrucoesArquivo.classList.remove("aberto")};
-document.getElementById("btnSelecionarArquivo").onclick=()=>{overlayInstrucoesArquivo.classList.remove("aberto");fileInput.click()};
-fileInput.addEventListener("change",e=>{const f=e.target.files[0];fileInput.value="";if(!f)return;if(!f.type.startsWith("image/")){toast("Selecione uma imagem válida");return}blobPendente=f;mostrarPreview(URL.createObjectURL(f))});
-function mostrarPreview(src){previewImg.src=src;overlayPreview.classList.add("aberto")}
-function fecharPreview(){overlayPreview.classList.remove("aberto");if(previewImg.src&&previewImg.src.startsWith("blob:")){URL.revokeObjectURL(previewImg.src)}previewImg.src=""}
-document.getElementById("btnRefazerFoto").onclick=()=>{fecharPreview();blobPendente=null;abrirEscolhaFoto()};
-document.getElementById("btnConfirmarFoto").onclick=()=>{if(!blobPendente){toast("Nenhuma foto selecionada");return}const blob=blobPendente;const btn=document.getElementById("btnConfirmarFoto");const btnRef=document.getElementById("btnRefazerFoto");btn.disabled=true;btnRef.disabled=true;btn.innerHTML='<span class="spinner"></span>Enviando';uploadCloudinary(blob).then(url=>{fecharPreview();salvarNovaFoto(url)}).catch(err=>{console.error(err);btn.disabled=false;btnRef.disabled=false;btn.innerHTML="Confirmar e enviar";toast("Não foi possível enviar a foto")})};
-function abrirCamera(){if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast("Câmera indisponível neste dispositivo");return}overlayCamera.classList.add("aberto");spinnerCamera.classList.add("hidden");navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:{ideal:640},height:{ideal:640}},audio:false}).then(stream=>{cameraStream=stream;videoCam.srcObject=stream;videoCam.play().catch(()=>{});capturaAgendada=setTimeout(()=>{if(!cameraStream)return;spinnerCamera.classList.remove("hidden");setTimeout(()=>{if(!cameraStream)return;capturarFrame()},2200)},2200)}).catch(err=>{console.error(err);overlayCamera.classList.remove("aberto");toast("Não foi possível acessar a câmera")})}
-function pararCamera(){if(capturaAgendada){clearTimeout(capturaAgendada);capturaAgendada=null}if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null}videoCam.srcObject=null;spinnerCamera.classList.add("hidden")}
-function capturarFrame(){const canvas=document.createElement("canvas");canvas.width=640;canvas.height=640;try{canvas.getContext("2d").drawImage(videoCam,0,0,640,640)}catch(e){}canvas.toBlob(blob=>{pararCamera();overlayCamera.classList.remove("aberto");if(!blob){toast("Falha na captura");return}blobPendente=blob;mostrarPreview(URL.createObjectURL(blob))},"image/jpeg",.92)}
-document.getElementById("btnCancelarCamera").onclick=()=>{pararCamera();overlayCamera.classList.remove("aberto")};
-function uploadCloudinary(fileOrBlob){const fd=new FormData();fd.append("file",fileOrBlob);fd.append("upload_preset",UPLOAD_PRESET);return fetch(CLOUDINARY_URL,{method:"POST",body:fd}).then(r=>{if(!r.ok)throw new Error("upload falhou");return r.json()}).then(d=>{if(!d.secure_url)throw new Error("url ausente");return d.secure_url})}
-function salvarNovaFoto(url){const na=currentSerial;if(!na){toast("Sessão expirada");return}showLoader("Salvando sua nova foto...");db.ref("usuarios/"+na).update({foto:url,foto_versao:FOTO_VERSAO,foto_atualizada_em:Date.now()}).then(()=>{hideLoader();toast("Foto atualizada com sucesso");db.ref("usuarios/"+na).once("value").then(snap=>{if(snap.exists()){usuarioAtual=snap.val();setTimeout(()=>{window.location.href="index2.html"},700)}else{renderLoginForm()}})}).catch(err=>{console.error(err);hideLoader();toast("Erro ao salvar foto")})}
-if(currentSerial){showLoader("Verificando acesso...");db.ref("usuarios/"+currentSerial).once("value").then(snap=>{hideLoader();if(snap.exists()){usuarioAtual=snap.val();if(!fotoAtualizada(usuarioAtual)){renderAtualizacaoObrigatoria()}else{renderPerfilSalvo(usuarioAtual)}}else{localStorage.removeItem("usuarioAtual");currentSerial=null;renderLoginForm()}}).catch(()=>{hideLoader();renderLoginForm()})}else{renderLoginForm()}
+
+const menuAcesso=document.getElementById("menuAcesso");
+const naInput=document.getElementById("naInput");
+const btnAcessar=document.getElementById("btnAcessar");
+const toastErro=document.getElementById("toastErro");
+
+function mostrarMenu(){
+  menuAcesso.classList.add("aberto");
+  setTimeout(()=>naInput.focus(),400);
+}
+
+setTimeout(mostrarMenu, 500);
+
+document.body.addEventListener("click", function(e){
+  if(!menuAcesso.classList.contains("aberto") && !menuAcesso.contains(e.target)){
+    mostrarMenu();
+  }
+});
+
+let touchStartY = 0;
+document.addEventListener("touchstart", e => { touchStartY = e.touches[0].clientY; });
+document.addEventListener("touchend", e => {
+  const touchEndY = e.changedTouches[0].clientY;
+  if (touchStartY - touchEndY > 50 && !menuAcesso.classList.contains("aberto")) {
+    mostrarMenu();
+  }
+});
+
+function mostrarErro(msg){
+  toastErro.textContent = msg;
+  toastErro.style.display = "block";
+  setTimeout(()=>{ toastErro.style.display = "none"; }, 3000);
+}
+
+btnAcessar.onclick = async () => {
+  const na = naInput.value.trim();
+  if(!na){
+    mostrarErro("Informe o NA cadastrado.");
+    return;
+  }
+  btnAcessar.classList.add("loading");
+  btnAcessar.disabled = true;
+  
+  try {
+    const snap = await db.ref("usuarios/" + na).once("value");
+    if(snap.exists()){
+      localStorage.setItem("usuarioAtual", na);
+      window.location.href = "index2.html";
+    } else {
+      btnAcessar.classList.remove("loading");
+      btnAcessar.disabled = false;
+      mostrarErro("NA não encontrado. Verifique e tente novamente.");
+    }
+  } catch (error) {
+    console.error(error);
+    btnAcessar.classList.remove("loading");
+    btnAcessar.disabled = false;
+    mostrarErro("Erro de conexão. Tente novamente.");
+  }
+};
+
+naInput.addEventListener("keydown", e => {
+  if(e.key === "Enter"){
+    btnAcessar.click();
+  }
+});
 </script>
 </body>
 </html>
