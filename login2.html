@@ -10,7 +10,6 @@ body{background:#fff;font-family:Arial,sans-serif;min-height:100vh;display:flex;
 .app-header{background:#fff;height:66px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:500;box-shadow:0 2px 8px rgba(0,0,0,0.08);width:100%;border-bottom:1px solid #e1e5eb}
 .header-brand{color:#173d77;font:700 19px Arial,sans-serif;display:flex;align-items:center;gap:11px}
 .main{width:100%;max-width:420px;margin:0 auto;padding:40px 20px;flex:1;display:flex;align-items:center;justify-content:center;text-align:center;}
-.welcome-text{color:#657080;font-size:14px;line-height:1.6}
 .menu-flutuante{position:fixed;bottom:0;left:0;right:0;width:100%;background:#173d77;border-radius:24px 24px 0 0;padding:30px 24px calc(20px + env(safe-area-inset-bottom));z-index:1000;box-shadow:0 -10px 30px rgba(23,43,77,.2);transform:translateY(100%);transition:transform .4s cubic-bezier(0.4, 0, 0.2, 1);display:flex;flex-direction:column}
 .menu-flutuante.aberto{transform:translateY(0)}
 .menu-titulo{color:#fff;font-size:20px;font-weight:700;margin-bottom:20px;text-align:center}
@@ -27,9 +26,14 @@ body{background:#fff;font-family:Arial,sans-serif;min-height:100vh;display:flex;
 @keyframes spin{to{transform:rotate(360deg)}}
 .toast{position:fixed;left:50%;top:20px;transform:translateX(-50%);background:#d6392a;color:#fff;padding:11px 20px;font-size:13px;z-index:2500;border-radius:4px;box-shadow:0 5px 18px rgba(23,43,77,.22);animation:toastIn .2s ease;display:none}
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translate(-50%,0)}}
-.user-info{text-align:center;color:#fff;margin-bottom:20px}
-.user-info h2{font-size:22px;font-weight:700;margin-bottom:5px}
-.user-info p{font-size:14px;color:#eef3fb;opacity:0.9}
+.user-info{text-align:center;margin-bottom:24px;}
+.user-info h2{font-size:26px;font-weight:700;color:#173d77;margin-bottom:8px;}
+.user-info p{font-size:15px;color:#657080;}
+.user-actions{display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px;margin:0 auto;}
+.btn-center{background:#1955ad;color:#fff;border:0;border-radius:25px;height:50px;font:italic 16px Arial,sans-serif;display:flex;align-items:center;justify-content:center;text-decoration:none;width:100%;cursor:pointer;}
+.btn-center:hover{background:#12458f;}
+.btn-center-outline{background:transparent;border:1px solid #1955ad;color:#1955ad;border-radius:25px;height:50px;font:italic 16px Arial,sans-serif;display:flex;align-items:center;justify-content:center;text-decoration:none;width:100%;cursor:pointer;}
+.btn-center-outline:hover{background:#f1f5fc;}
 .termos-texto{margin-top:10px;margin-bottom:20px;font-size:10px;color:#eef3fb;opacity:0.7;line-height:1.4;text-align:center;padding:0 10px;}
 </style>
 </head>
@@ -39,9 +43,7 @@ body{background:#fff;font-family:Arial,sans-serif;min-height:100vh;display:flex;
   <div class="header-brand"><span>DomusFit</span></div>
 </header>
 
-<main class="main">
-  <div class="welcome-text" id="welcomeText"></div>
-</main>
+<main class="main" id="mainContent"></main>
 
 <div class="menu-flutuante" id="menuAcesso">
   <div id="menuConteudo"></div>
@@ -59,7 +61,7 @@ const db=firebase.database();
 const menuAcesso=document.getElementById("menuAcesso");
 const menuConteudo=document.getElementById("menuConteudo");
 const toastErro=document.getElementById("toastErro");
-const welcomeText=document.getElementById("welcomeText");
+const mainContent=document.getElementById("mainContent");
 
 let currentUser = localStorage.getItem("usuarioAtual");
 
@@ -73,42 +75,41 @@ function mostrarErro(msg){
   setTimeout(()=>{ toastErro.style.display = "none"; }, 3000);
 }
 
-document.body.addEventListener("click", function(e){
-  if(!menuAcesso.classList.contains("aberto") && !menuAcesso.contains(e.target)){
-    mostrarMenu();
-  }
-});
-
 let touchStartY = 0;
 document.addEventListener("touchstart", e => { touchStartY = e.touches[0].clientY; });
 document.addEventListener("touchend", e => {
   const touchEndY = e.changedTouches[0].clientY;
-  if (touchStartY - touchEndY > 50 && !menuAcesso.classList.contains("aberto")) {
+  if (touchStartY - touchEndY > 50 && currentUser === null && !menuAcesso.classList.contains("aberto")) {
+    mostrarMenu();
+  }
+});
+
+document.body.addEventListener("click", function(e){
+  if(currentUser === null && !menuAcesso.classList.contains("aberto") && !menuAcesso.contains(e.target)){
     mostrarMenu();
   }
 });
 
 async function renderizarConteudo() {
   if (currentUser) {
-    welcomeText.style.display = "none";
-    menuConteudo.innerHTML = `
-      <div class="user-info">
-        <h2 id="nomeUsuario">Carregando...</h2>
-        <p>NA: ${currentUser}</p>
-        <p style="margin-top: 10px; font-size: 13px; color: #a9c4f5;">Seus dados e informações estão salvos.</p>
+    mainContent.innerHTML = `
+      <div style="width: 100%;">
+        <div class="user-info">
+          <h2 id="nomeUsuario">Carregando...</h2>
+          <p>NA: ${currentUser}</p>
+          <p style="margin-top: 10px; font-size: 13px; color: #657080;">Seus dados e informações estão salvos.</p>
+        </div>
+        <div class="user-actions">
+          <a href="index2.html" class="btn-center">Acessar Perfil</a>
+          <button class="btn-center-outline" id="btnSair">Sair da conta</button>
+        </div>
       </div>
-      <a href="index2.html" class="btn" style="text-decoration:none;">
-        <span class="btn-text">Acessar Perfil</span>
-      </a>
-      <button class="btn btn-outline" id="btnSair">
-        <span class="btn-text">Sair da conta</span>
-      </button>
-      <div class="termos-texto">Ao acessar, você concorda com nossos Termos de Uso e Política de Privacidade.</div>
     `;
     
     document.getElementById("btnSair").onclick = () => {
       localStorage.removeItem("usuarioAtual");
       currentUser = null;
+      menuAcesso.classList.remove("aberto");
       renderizarConteudo();
     };
 
@@ -123,10 +124,8 @@ async function renderizarConteudo() {
     } catch (e) {
       document.getElementById("nomeUsuario").textContent = "Usuário";
     }
-    
-    mostrarMenu();
   } else {
-    welcomeText.style.display = "block";
+    mainContent.innerHTML = "";
     menuConteudo.innerHTML = `
       <div class="menu-titulo">Acessar Conta</div>
       <div class="campo">
@@ -156,6 +155,7 @@ async function renderizarConteudo() {
         if(snap.exists()){
           localStorage.setItem("usuarioAtual", na);
           currentUser = na;
+          menuAcesso.classList.remove("aberto");
           renderizarConteudo();
         } else {
           btnAcessar.classList.remove("loading");
@@ -176,8 +176,10 @@ async function renderizarConteudo() {
       }
     });
 
-    setTimeout(()=>naInput.focus(),400);
-    mostrarMenu();
+    setTimeout(()=>{
+      naInput.focus();
+      mostrarMenu();
+    }, 400);
   }
 }
 
