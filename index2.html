@@ -123,7 +123,24 @@ button,input,textarea,select{font-family:Arial,sans-serif}
 .camera-cancel{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);border:0;padding:9px 22px;color:#fff;font:italic 13px Arial,sans-serif;cursor:pointer;z-index:10;border-radius:22px}
 .document-body{max-height:50vh;overflow-y:auto;font-size:14px;line-height:1.8;color:var(--cinza-700);white-space:pre-wrap;padding:14px;background:var(--cinza-100)}
 .hidden{display:none!important}
-@media(max-width:600px){.header{height:58px;padding:0 15px}.header-brand{font-size:16px}.menu-btn{width:45px;height:45px;font-size:28px}.main{padding:18px 14px 40px}.page-header h1{font-size:21px}.cronometro-valor{font-size:38px}.stats-grid{grid-template-columns:1fr 1fr}.modal{padding:23px 19px}.camera-box{width:280px;height:360px}.ponto-aberto-inner{padding:9px 14px}.actions-bottom{margin:24px -14px -40px;padding:24px 14px 40px}}
+.atualizacao-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;padding:30px 10px}
+.atualizacao-titulo{font-size:30px;font-weight:700;color:var(--azul-escuro);letter-spacing:-.5px;margin-bottom:6px}
+.atualizacao-subtitulo{font-size:15px;color:var(--cinza-500);margin-bottom:30px}
+.atualizacao-versao{display:inline-block;background:var(--azul-suave);color:var(--azul);font-size:12px;font-weight:700;padding:6px 16px;border-radius:20px;letter-spacing:.5px;margin-bottom:34px;text-transform:uppercase}
+.btn-atualizar{max-width:260px;min-height:52px;font-size:16px;font-style:normal;font-weight:700;transition:opacity .4s ease}
+.btn-atualizar .fa-arrows-rotate{margin-right:9px}
+.btn-atualizar.girando .fa-arrows-rotate{animation:girarBtn 1s linear infinite}
+@keyframes girarBtn{to{transform:rotate(360deg)}}
+.btn-atualizar.esmaecendo{opacity:0;pointer-events:none}
+.barra-container{width:100%;max-width:420px;margin-top:6px;display:none;flex-direction:column;align-items:center}
+.barra-container.visivel{display:flex}
+.barra-label{font-size:12px;color:var(--cinza-500);margin-bottom:12px;letter-spacing:.5px;font-weight:600;text-transform:uppercase}
+.barra-progresso-antiga{width:100%;height:26px;background:var(--cinza-100);border:2px solid var(--azul-escuro);padding:3px;display:flex;gap:2px;overflow:hidden}
+.barra-progresso-antiga .segmento{flex:1;background:#dfe4ea;height:100%;transition:background .12s linear}
+.barra-progresso-antiga .segmento.ativo{background:repeating-linear-gradient(45deg,var(--azul),var(--azul) 6px,var(--azul-escuro) 6px,var(--azul-escuro) 12px);animation:listras .5s linear infinite}
+@keyframes listras{from{background-position:0 0}to{background-position:24px 0}}
+.barra-pct{margin-top:12px;font-family:'Courier New',monospace;font-size:14px;font-weight:700;color:var(--azul-escuro);letter-spacing:1px}
+@media(max-width:600px){.header{height:58px;padding:0 15px}.header-brand{font-size:16px}.menu-btn{width:45px;height:45px;font-size:28px}.main{padding:18px 14px 40px}.page-header h1{font-size:21px}.cronometro-valor{font-size:38px}.stats-grid{grid-template-columns:1fr 1fr}.modal{padding:23px 19px}.camera-box{width:280px;height:360px}.ponto-aberto-inner{padding:9px 14px}.actions-bottom{margin:24px -14px -40px;padding:24px 14px 40px}.atualizacao-titulo{font-size:24px}}
 </style>
 </head>
 <body>
@@ -306,6 +323,7 @@ const CLOUD_NAME="dzmjto17f";
 const UPLOAD_PRESET="ml_default";
 const CLOUDINARY_URL=`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 const FOTO_VERSAO="2026";
+const ATUALIZACAO_VERSAO="2.0";
 const mainArea=document.getElementById("mainArea");
 const btnDots=document.getElementById("btnDots");
 const dotsMenu=document.getElementById("dotsMenu");
@@ -385,7 +403,92 @@ function sair(){if(!confirm("Deseja realmente sair do sistema?"))return;localSto
 function goHome(){if(!fotoAtualizadaFlag){renderBloqueioAtualizacao();return}renderTela("menu")}
 function atualizarAvisoPonto(){if(pontoAtivo&&fotoAtualizadaFlag){pontoAbertoBar.classList.add("visivel")}else{pontoAbertoBar.classList.remove("visivel")}}
 function irParaPonto(){renderTela("ponto");window.scrollTo({top:0,behavior:"smooth"})}
-db.ref("usuarios/"+currentUser).on("value",snap=>{if(snap.exists()){userData=snap.val();fotoAtualizadaFlag=fotoAtualizada(userData);if(telaAtual==="login"){if(fotoAtualizadaFlag){renderTela("menu")}else{renderBloqueioAtualizacao()}}else if(!fotoAtualizadaFlag){renderBloqueioAtualizacao()}}});
+
+let atualizacaoJaFeita = false; // controle por sessão; evita exibir novamente
+function verificarAtualizacaoUsuario(na) {
+  return new Promise((resolve) => {
+    db.ref("atualizacoes_sistema/usuarios/" + na).once("value").then(snap => {
+      const feito = snap.val();
+      if (feito && feito.versao === ATUALIZACAO_VERSAO) {
+        atualizacaoJaFeita = true;
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    }).catch(() => resolve(false));
+  });
+}
+
+function marcarAtualizacaoFeita(na) {
+  return db.ref("atualizacoes_sistema/usuarios/" + na).set({ versao: ATUALIZACAO_VERSAO, timestamp: Date.now() });
+}
+
+function renderAtualizacaoSistema() {
+  // exibe tela mesmo com ponto aberto
+  telaAtual = "atualizacao";
+  mainArea.innerHTML = `
+    <section class="content">
+      <div class="atualizacao-wrap">
+        <div class="atualizacao-versao">Nova versão ${ATUALIZACAO_VERSAO}</div>
+        <div class="atualizacao-titulo">Atualização do Sistema</div>
+        <div class="atualizacao-subtitulo">Estamos preparando melhorias para você. Toque em atualizar para continuar.</div>
+        <button class="btn btn-primary btn-atualizar" id="btnAtualizarSistema">
+          <i class="fa-solid fa-arrows-rotate"></i> Atualizar
+        </button>
+        <div class="barra-container" id="barraAtualizacaoContainer">
+          <div class="barra-label">Instalando atualização...</div>
+          <div class="barra-progresso-antiga" id="barraProgressoAntiga">
+            <div class="segmento"></div><div class="segmento"></div><div class="segmento"></div><div class="segmento"></div><div class="segmento"></div>
+            <div class="segmento"></div><div class="segmento"></div><div class="segmento"></div><div class="segmento"></div><div class="segmento"></div>
+            <div class="segmento"></div><div class="segmento"></div><div class="segmento"></div><div class="segmento"></div><div class="segmento"></div>
+            <div class="segmento"></div><div class="segmento"></div><div class="segmento"></div><div class="segmento"></div><div class="segmento"></div>
+          </div>
+          <div class="barra-pct" id="barraPct">0%</div>
+        </div>
+      </div>
+    </section>
+  `;
+  pontoAbertoBar.classList.remove("visivel");
+  document.getElementById("btnAtualizarSistema").addEventListener("click", iniciarAtualizacaoSimulada);
+}
+
+function iniciarAtualizacaoSimulada() {
+  const btn = document.getElementById("btnAtualizarSistema");
+  if (!btn) return;
+  btn.classList.add("girando");
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.classList.remove("girando");
+    btn.classList.add("esmaecendo");
+    setTimeout(() => {
+      btn.style.display = "none";
+      const container = document.getElementById("barraAtualizacaoContainer");
+      if (!container) return;
+      container.classList.add("visivel");
+      const segmentos = container.querySelectorAll(".segmento");
+      const pctEl = document.getElementById("barraPct");
+      const totalSeg = segmentos.length;
+      let progresso = 0;
+      const intervalo = 4000 / totalSeg;
+      const timer = setInterval(() => {
+        if (progresso < totalSeg) {
+          segmentos[progresso].classList.add("ativo");
+          progresso++;
+          if (pctEl) pctEl.textContent = Math.round((progresso / totalSeg) * 100) + "%";
+        } else {
+          clearInterval(timer);
+          marcarAtualizacaoFeita(currentUser).finally(() => {
+            atualizacaoJaFeita = true;
+            telaAtual = "menu";
+            renderTela("menu");
+          });
+        }
+      }, intervalo);
+    }, 450);
+  }, 2000);
+}
+
+db.ref("usuarios/"+currentUser).on("value",snap=>{if(snap.exists()){userData=snap.val();fotoAtualizadaFlag=fotoAtualizada(userData);if(telaAtual==="login"){if(fotoAtualizadaFlag){verificarAtualizacaoUsuario(currentUser).then(feito => {if (!feito && !atualizacaoJaFeita) {renderAtualizacaoSistema();} else {renderTela("menu");}});}else{renderBloqueioAtualizacao()}}else if(!fotoAtualizadaFlag){renderBloqueioAtualizacao()}}});
 db.ref("pontos/"+currentUser+"/ativo/inicio").on("value",snap=>{const inicio=snap.val();if(inicio){pontoAtivo=true;pontoStart=inicio;startCronometroLocal()}else{pontoAtivo=false;pontoStart=null;if(cronInterval){clearInterval(cronInterval);cronInterval=null}}atualizarAvisoPonto()});
 function startCronometroLocal(){if(cronInterval){clearInterval(cronInterval)}cronInterval=setInterval(()=>{if(pontoAtivo&&pontoStart){const el=document.getElementById("cronodisplay");if(el){el.innerText=formatDuration(Date.now()-pontoStart)}}},1000)}
 function renderTela(tela){if(!fotoAtualizadaFlag){renderBloqueioAtualizacao();return}telaAtual=tela;dotsMenu.classList.remove("aberto");mainArea.innerHTML="";if(tela==="menu"){renderMenu()}else if(tela==="ponto"){renderPonto()}else if(tela==="carga"){renderCarga()}else if(tela==="chamado"){renderChamado()}else if(tela==="relatorio"){renderRelatorio()}else if(tela==="perfil"){renderPerfil()}atualizarAvisoPonto()}
@@ -482,7 +585,7 @@ document.getElementById("btnCancelarCamera").addEventListener("click",()=>{if(ca
 document.getElementById("btnContinuarSem").addEventListener("click",()=>{fecharOverlay("overlaySemCamera");if(acaoPontoAtual==="iniciar"){iniciarPontoComSeguranca(null)}else{finalizarPontoComSeguranca(null)}});
 async function iniciarPontoComSeguranca(fotoUrl){if(!fotoAtualizadaFlag){renderBloqueioAtualizacao();return}showLoader("Registrando entrada...");const agora=Date.now();const dataChave=getDataChave();const update={inicio:agora,calculo:segOperacaoRealizada,timestamp_inicio:agora};if(fotoUrl){update.foto_inicio=fotoUrl}try{await db.ref("historico/"+currentUser+"/"+dataChave).update(update);await db.ref("pontos/"+currentUser+"/ativo").set({inicio:agora});playNotificationSound();hideLoader();toast("Ponto iniciado com sucesso");renderTela("ponto")}catch(err){console.error(err);hideLoader();toast("Não foi possível registrar o ponto")}}
 async function finalizarPontoComSeguranca(fotoUrl){if(!fotoAtualizadaFlag){renderBloqueioAtualizacao();return}showLoader("Finalizando ponto...");const fim=Date.now();const dataChave=getDataChave();const update={fim,calculo_fim:segOperacaoRealizada,timestamp_fim:fim};if(fotoUrl){update.foto_fim=fotoUrl}try{await db.ref("historico/"+currentUser+"/"+dataChave).update(update);await db.ref("pontos/"+currentUser+"/ativo").remove();playNotificationSound();const idValidador=Math.floor(10000000+Math.random()*90000000).toString();const comprovante={id:idValidador,nome:userData.nome||"--",na:currentUser,telefone:userData.telefone||"--",data:new Date().toLocaleDateString("pt-BR"),hora:new Date().toLocaleTimeString("pt-BR"),timestamp:fim,calculo:segOperacaoRealizada,foto:fotoUrl||null};try{await db.ref("comprovantes/"+idValidador).set(comprovante)}catch(e){console.error("erro ao salvar comprovante",e)}hideLoader();window.location.href="validador2v.html?id="+idValidador}catch(err){console.error(err);hideLoader();toast("Não foi possível finalizar o ponto")}}
-db.ref("usuarios/"+currentUser).once("value").then(snap=>{setTimeout(()=>{loaderInicial.style.opacity="0";setTimeout(()=>loaderInicial.remove(),300)},2000);if(snap.exists()){userData=snap.val();fotoAtualizadaFlag=fotoAtualizada(userData);if(fotoAtualizadaFlag){renderTela("menu")}else{renderBloqueioAtualizacao()}}else{window.location.href="login2.html"}});
+db.ref("usuarios/"+currentUser).once("value").then(snap=>{setTimeout(()=>{loaderInicial.style.opacity="0";setTimeout(()=>loaderInicial.remove(),300)},2000);if(snap.exists()){userData=snap.val();fotoAtualizadaFlag=fotoAtualizada(userData);if(fotoAtualizadaFlag){verificarAtualizacaoUsuario(currentUser).then(feito => {if (!feito && !atualizacaoJaFeita) {renderAtualizacaoSistema();} else {renderTela("menu");}});}else{renderBloqueioAtualizacao()}}else{window.location.href="login2.html"}});
 document.querySelectorAll(".current-year").forEach(el=>el.textContent=new Date().getFullYear());
 </script>
 
