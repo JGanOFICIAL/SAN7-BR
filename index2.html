@@ -124,9 +124,9 @@ button,input,textarea,select{font-family:Arial,sans-serif}
 .document-body{max-height:50vh;overflow-y:auto;font-size:14px;line-height:1.8;color:var(--cinza-700);white-space:pre-wrap;padding:14px;background:var(--cinza-100)}
 .hidden{display:none!important}
 .atualizacao-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;padding:30px 10px}
-.atualizacao-titulo{font-size:30px;font-weight:700;color:var(--azul-escuro);letter-spacing:-.5px;margin-bottom:6px}
-.atualizacao-subtitulo{font-size:15px;color:var(--cinza-500);margin-bottom:30px}
-.atualizacao-versao{display:inline-block;background:var(--azul-suave);color:var(--azul);font-size:12px;font-weight:700;padding:6px 16px;border-radius:20px;letter-spacing:.5px;margin-bottom:34px;text-transform:uppercase}
+.atualizacao-titulo{font-size:30px;font-weight:700;color:var(--azul-escuro);letter-spacing:-.5px;margin-bottom:8px}
+.atualizacao-descricao{font-size:15px;color:var(--cinza-500);margin-bottom:14px;max-width:420px;line-height:1.6}
+.atualizacao-id{display:inline-block;background:var(--azul-suave);color:var(--azul);font-size:12px;font-weight:700;padding:6px 16px;border-radius:20px;letter-spacing:1.5px;margin-bottom:34px;font-family:'Courier New',monospace}
 .btn-atualizar{max-width:260px;min-height:52px;font-size:16px;font-style:normal;font-weight:700;transition:opacity .4s ease}
 .btn-atualizar .fa-arrows-rotate{margin-right:9px}
 .btn-atualizar.girando .fa-arrows-rotate{animation:girarBtn 1s linear infinite}
@@ -404,7 +404,14 @@ function goHome(){if(!fotoAtualizadaFlag){renderBloqueioAtualizacao();return}ren
 function atualizarAvisoPonto(){if(pontoAtivo&&fotoAtualizadaFlag){pontoAbertoBar.classList.add("visivel")}else{pontoAbertoBar.classList.remove("visivel")}}
 function irParaPonto(){renderTela("ponto");window.scrollTo({top:0,behavior:"smooth"})}
 
-let atualizacaoJaFeita = false; // controle por sessão; evita exibir novamente
+let atualizacaoJaFeita = false;
+let idAtualizacaoGlobal = "";
+function gerarIdAtualizacao(){
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let id = "";
+  for(let i=0;i<8;i++){ id += chars.charAt(Math.floor(Math.random()*chars.length)); }
+  return id;
+}
 function verificarAtualizacaoUsuario(na) {
   return new Promise((resolve) => {
     db.ref("atualizacoes_sistema/usuarios/" + na).once("value").then(snap => {
@@ -419,19 +426,19 @@ function verificarAtualizacaoUsuario(na) {
   });
 }
 
-function marcarAtualizacaoFeita(na) {
-  return db.ref("atualizacoes_sistema/usuarios/" + na).set({ versao: ATUALIZACAO_VERSAO, timestamp: Date.now() });
+function marcarAtualizacaoFeita(na, idAtualizacao) {
+  return db.ref("atualizacoes_sistema/usuarios/" + na).set({ versao: ATUALIZACAO_VERSAO, id: idAtualizacao, timestamp: Date.now() });
 }
 
 function renderAtualizacaoSistema() {
-  // exibe tela mesmo com ponto aberto
   telaAtual = "atualizacao";
+  idAtualizacaoGlobal = gerarIdAtualizacao();
   mainArea.innerHTML = `
     <section class="content">
       <div class="atualizacao-wrap">
-        <div class="atualizacao-versao">Nova versão ${ATUALIZACAO_VERSAO}</div>
         <div class="atualizacao-titulo">Atualização do Sistema</div>
-        <div class="atualizacao-subtitulo">Estamos preparando melhorias para você. Toque em atualizar para continuar.</div>
+        <div class="atualizacao-descricao">Atualizamos a performance para um melhor funcionamento.</div>
+        <div class="atualizacao-id">ID: ${idAtualizacaoGlobal}</div>
         <button class="btn btn-primary btn-atualizar" id="btnAtualizarSistema">
           <i class="fa-solid fa-arrows-rotate"></i> Atualizar
         </button>
@@ -469,7 +476,7 @@ function iniciarAtualizacaoSimulada() {
       const pctEl = document.getElementById("barraPct");
       const totalSeg = segmentos.length;
       let progresso = 0;
-      const intervalo = 4000 / totalSeg;
+      const intervalo = 6000 / totalSeg;
       const timer = setInterval(() => {
         if (progresso < totalSeg) {
           segmentos[progresso].classList.add("ativo");
@@ -477,7 +484,7 @@ function iniciarAtualizacaoSimulada() {
           if (pctEl) pctEl.textContent = Math.round((progresso / totalSeg) * 100) + "%";
         } else {
           clearInterval(timer);
-          marcarAtualizacaoFeita(currentUser).finally(() => {
+          marcarAtualizacaoFeita(currentUser, idAtualizacaoGlobal).finally(() => {
             atualizacaoJaFeita = true;
             telaAtual = "menu";
             renderTela("menu");
