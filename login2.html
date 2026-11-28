@@ -1,189 +1,81 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>DomusFit · Acesso</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#245caa">
+<title>San7Doc Tecnologia</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:#fff;font-family:Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column;color:#202124;overflow:hidden}
-.app-header{background:#fff;height:66px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:500;box-shadow:0 2px 8px rgba(0,0,0,0.08);width:100%;border-bottom:1px solid #e1e5eb}
-.header-brand{color:#173d77;font:700 19px Arial,sans-serif;display:flex;align-items:center;gap:11px}
-.main{width:100%;max-width:420px;margin:0 auto;padding:40px 20px;flex:1;display:flex;align-items:center;justify-content:center;text-align:center;}
-.menu-flutuante{position:fixed;bottom:0;left:0;right:0;width:100%;background:#173d77;border-radius:24px 24px 0 0;padding:30px 24px calc(20px + env(safe-area-inset-bottom));z-index:1000;box-shadow:0 -10px 30px rgba(23,43,77,.2);transform:translateY(100%);transition:transform .4s cubic-bezier(0.4, 0, 0.2, 1);display:flex;flex-direction:column}
-.menu-flutuante.aberto{transform:translateY(0)}
-.menu-titulo{color:#fff;font-size:20px;font-weight:700;margin-bottom:20px;text-align:center}
-.campo{width:100%;display:flex;flex-direction:column;align-items:center;margin-bottom:16px;}
-.field{width:100%;height:50px;background:#fff;border:0;border-radius:25px;padding:0 20px;color:#202124;font:16px Arial,sans-serif;outline:none;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,.1)}
-.field::placeholder{color:#888}
-.btn{width:100%;height:50px;background:#1955ad;color:#fff;border:0;border-radius:25px;font:italic 16px Arial,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .2s;text-decoration:none;margin-bottom:16px;}
-.btn:hover{background:#12458f}
-.btn-outline{background:transparent;border:1px solid #fff;color:#fff}
-.btn-outline:hover{background:rgba(255,255,255,0.1)}
-.spinner{width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
-.btn.loading .spinner{display:inline-block}
-.btn.loading .btn-text{display:none}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;color:#282d35;background:#fff}
+body{min-height:100vh}
+.page{min-height:100vh;display:flex;flex-direction:column}
+.header{height:92px;min-height:92px;background:#245caa;display:flex;align-items:center;justify-content:center;padding:0 20px}
+.brand{font-size:clamp(21px,4vw,29px);font-weight:800;color:#fff;letter-spacing:.4px;text-align:center}
+.welcome{min-height:155px;background:linear-gradient(135deg,#e9ebef,#cfd4dc);color:#30343a;display:grid;place-items:center;text-align:center;padding:20px}
+.welcome h1{font-size:24px;margin:0 0 7px}
+.welcome p{font-size:11px;margin:0;opacity:.85}
+.form{width:min(390px,calc(100% - 36px));margin:auto;padding:28px 0;display:flex;flex-direction:column;justify-content:center;flex:1}
+.form h2{text-align:center;font-size:19px;margin:0 0 6px}
+.hint{text-align:center;color:#858b94;font-size:11px;margin-bottom:20px}
+.input{width:100%;height:44px;border:1px solid #cfd3d9;border-radius:23px;margin-bottom:12px;padding:0 15px;font-size:13px;outline:none;text-align:center;background:#fff;color:#282d35}
+.input:focus{border-color:#245caa;box-shadow:0 0 0 2px #245caa20}
+.access{height:43px;border:0;border-radius:4px;background:#245caa;color:#fff;font-size:11px;font-weight:700;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;gap:9px}
+.access:active{background:#fff;color:#245caa;box-shadow:inset 0 0 0 1px #245caa;transform:scale(.99)}
+.access:disabled{opacity:.75;cursor:wait}
+.spinner{width:15px;height:15px;border:2px solid #ffffff65;border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+.access.loading .spinner{display:inline-block}
+.access.loading .button-label{display:none}
 @keyframes spin{to{transform:rotate(360deg)}}
-.toast{position:fixed;left:50%;top:20px;transform:translateX(-50%);background:#d6392a;color:#fff;padding:11px 20px;font-size:13px;z-index:2500;border-radius:4px;box-shadow:0 5px 18px rgba(23,43,77,.22);animation:toastIn .2s ease;display:none}
-@keyframes toastIn{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translate(-50%,0)}}
-.user-info{text-align:center;margin-bottom:24px;}
-.user-info h2{font-size:26px;font-weight:700;color:#173d77;margin-bottom:8px;}
-.user-info p{font-size:15px;color:#657080;}
-.user-actions{display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px;margin:0 auto;}
-.btn-center{background:#1955ad;color:#fff;border:0;border-radius:25px;height:50px;font:italic 16px Arial,sans-serif;display:flex;align-items:center;justify-content:center;text-decoration:none;width:100%;cursor:pointer;}
-.btn-center:hover{background:#12458f;}
-.btn-center-outline{background:transparent;border:1px solid #1955ad;color:#1955ad;border-radius:25px;height:50px;font:italic 16px Arial,sans-serif;display:flex;align-items:center;justify-content:center;text-decoration:none;width:100%;cursor:pointer;}
-.btn-center-outline:hover{background:#f1f5fc;}
-.termos-texto{margin-top:10px;margin-bottom:20px;font-size:10px;color:#eef3fb;opacity:0.7;line-height:1.4;text-align:center;padding:0 10px;}
+.developer{text-align:center;color:#969ba3;font-size:9px;opacity:.75;margin-top:13px}
+.footer{min-height:48px;background:#f8f8f8;border-top:1px solid #ececec;display:flex;align-items:center;justify-content:center;text-align:center;padding:11px;color:#858990;font-size:9px}
+.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);width:min( calc(100% - 32px),420px);padding:12px 16px;background:#c83b36;color:#fff;border-radius:4px;font-size:12px;text-align:center;box-shadow:0 5px 18px #0002;z-index:20;display:none}
+.user-panel{width:100%;text-align:center}
+.user-panel h2{font-size:23px;color:#245caa;margin:0 0 9px}
+.user-panel p{font-size:12px;color:#737b86;margin:7px 0}
+.user-actions{display:flex;flex-direction:column;gap:10px;margin:24px auto 0;width:100%;max-width:320px}
+.user-button{height:43px;border:1px solid #245caa;border-radius:4px;background:#245caa;color:#fff;font-size:11px;font-weight:700;text-decoration:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.user-button.secondary{background:#fff;color:#245caa}
+@media(min-width:900px){.page{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:78px 1fr 46px}.header{grid-column:1/3;grid-row:1;height:78px;min-height:78px}.welcome{grid-column:1;grid-row:2;min-height:0}.form{grid-column:2;grid-row:2;width:min(400px,85%)}.footer{grid-column:1/3;grid-row:3}}
+@media(min-width:600px) and (max-width:899px){.page{display:grid;grid-template-columns:40% 60%;grid-template-rows:78px 1fr 45px}.header{grid-column:1/3;grid-row:1;height:78px;min-height:78px}.welcome{grid-column:1;grid-row:2;min-height:0}.form{grid-column:2;grid-row:2;width:90%;padding:18px}.footer{grid-column:1/3;grid-row:3}}
+@media(max-width:599px){.header{height:78px;min-height:78px}.welcome{min-height:145px}.form{padding:32px 0}.footer{font-size:8px}}
 </style>
 </head>
 <body>
-
-<header class="app-header">
-  <div class="header-brand"><span>DomusFit</span></div>
-</header>
-
-<main class="main" id="mainContent"></main>
-
-<div class="menu-flutuante" id="menuAcesso">
-  <div id="menuConteudo"></div>
-</div>
-
-<div class="toast" id="toastErro">NA não encontrado. Verifique e tente novamente.</div>
-
+<main class="page">
+<header class="header"><div class="brand">San7Doc Tecnologia</div></header>
+<section class="welcome"><div><h1>Bem-vindo de volta</h1><p>Acesse sua conta para continuar</p></div></section>
+<section class="form" id="formArea">
+<h2>Entrar na sua conta</h2>
+<div class="hint">Informe seu Número de Acesso (NA)</div>
+<input class="input" id="naInput" type="text" inputmode="numeric" autocomplete="off" aria-label="Número de Acesso" placeholder="Número de Acesso (NA)">
+<button class="access" id="btnAcessar" type="button"><span class="spinner"></span><span class="button-label">ACESSAR</span></button>
+<div class="developer">Developed by SAN7 Tecnologia</div>
+</section>
+<footer class="footer">© 2026 SAN7. All rights reserved. • Terms of Use • Privacy Policy</footer>
+</main>
+<div class="toast" id="toastErro" role="status" aria-live="polite"></div>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
+'use strict';
 const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomain:"prefeitura-de-joao-camara.firebaseapp.com",projectId:"prefeitura-de-joao-camara",storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",databaseURL:"https://prefeitura-de-joao-camara-default-rtdb.firebaseio.com"};
-firebase.initializeApp(firebaseConfig);
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
-
-const menuAcesso=document.getElementById("menuAcesso");
-const menuConteudo=document.getElementById("menuConteudo");
-const toastErro=document.getElementById("toastErro");
-const mainContent=document.getElementById("mainContent");
-
-let currentUser = localStorage.getItem("usuarioAtual");
-
-function mostrarMenu(){
-  menuAcesso.classList.add("aberto");
-}
-
-function mostrarErro(msg){
-  toastErro.textContent = msg;
-  toastErro.style.display = "block";
-  setTimeout(()=>{ toastErro.style.display = "none"; }, 3000);
-}
-
-let touchStartY = 0;
-document.addEventListener("touchstart", e => { touchStartY = e.touches[0].clientY; });
-document.addEventListener("touchend", e => {
-  const touchEndY = e.changedTouches[0].clientY;
-  if (touchStartY - touchEndY > 50 && currentUser === null && !menuAcesso.classList.contains("aberto")) {
-    mostrarMenu();
-  }
-});
-
-document.body.addEventListener("click", function(e){
-  if(currentUser === null && !menuAcesso.classList.contains("aberto") && !menuAcesso.contains(e.target)){
-    mostrarMenu();
-  }
-});
-
-async function renderizarConteudo() {
-  if (currentUser) {
-    mainContent.innerHTML = `
-      <div style="width: 100%;">
-        <div class="user-info">
-          <h2 id="nomeUsuario">Carregando...</h2>
-          <p>NA: ${currentUser}</p>
-          <p style="margin-top: 10px; font-size: 13px; color: #657080;">Seus dados e informações estão salvos.</p>
-        </div>
-        <div class="user-actions">
-          <a href="index2.html" class="btn-center">Acessar Perfil</a>
-          <button class="btn-center-outline" id="btnSair">Sair da conta</button>
-        </div>
-      </div>
-    `;
-    
-    document.getElementById("btnSair").onclick = () => {
-      localStorage.removeItem("usuarioAtual");
-      currentUser = null;
-      menuAcesso.classList.remove("aberto");
-      renderizarConteudo();
-    };
-
-    try {
-      const snap = await db.ref("usuarios/" + currentUser).once("value");
-      if (snap.exists()) {
-        const userData = snap.val();
-        document.getElementById("nomeUsuario").textContent = userData.nome || "Colaborador(a)";
-      } else {
-        document.getElementById("nomeUsuario").textContent = "Usuário";
-      }
-    } catch (e) {
-      document.getElementById("nomeUsuario").textContent = "Usuário";
-    }
-  } else {
-    mainContent.innerHTML = "";
-    menuConteudo.innerHTML = `
-      <div class="menu-titulo">Acessar Conta</div>
-      <div class="campo">
-        <input type="text" id="naInput" class="field" placeholder="Digite seu NA (Número de Acesso)" autocomplete="off" inputmode="numeric">
-      </div>
-      <button class="btn" id="btnAcessar">
-        <span class="spinner"></span>
-        <span class="btn-text">Acessar</span>
-      </button>
-      <div class="termos-texto">Ao acessar, você concorda com nossos Termos de Uso e Política de Privacidade.</div>
-    `;
-
-    const naInput = document.getElementById("naInput");
-    const btnAcessar = document.getElementById("btnAcessar");
-
-    btnAcessar.onclick = async () => {
-      const na = naInput.value.trim();
-      if(!na){
-        mostrarErro("Informe o NA cadastrado.");
-        return;
-      }
-      btnAcessar.classList.add("loading");
-      btnAcessar.disabled = true;
-      
-      try {
-        const snap = await db.ref("usuarios/" + na).once("value");
-        if(snap.exists()){
-          localStorage.setItem("usuarioAtual", na);
-          currentUser = na;
-          menuAcesso.classList.remove("aberto");
-          renderizarConteudo();
-        } else {
-          btnAcessar.classList.remove("loading");
-          btnAcessar.disabled = false;
-          mostrarErro("NA não encontrado. Verifique e tente novamente.");
-        }
-      } catch (error) {
-        console.error(error);
-        btnAcessar.classList.remove("loading");
-        btnAcessar.disabled = false;
-        mostrarErro("Erro de conexão. Tente novamente.");
-      }
-    };
-
-    naInput.addEventListener("keydown", e => {
-      if(e.key === "Enter"){
-        btnAcessar.click();
-      }
-    });
-
-    setTimeout(()=>{
-      naInput.focus();
-      mostrarMenu();
-    }, 400);
-  }
-}
-
-setTimeout(renderizarConteudo, 300);
+const naInput=document.getElementById('naInput');
+const btnAcessar=document.getElementById('btnAcessar');
+const toastErro=document.getElementById('toastErro');
+const formArea=document.getElementById('formArea');
+let currentUser=localStorage.getItem('usuarioAtual');
+let toastTimer;
+function mostrarErro(mensagem){toastErro.textContent=mensagem;toastErro.style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>toastErro.style.display='none',3000)}
+function definirCarregamento(ativo){btnAcessar.classList.toggle('loading',ativo);btnAcessar.disabled=ativo;naInput.disabled=ativo}
+function mostrarUsuario(na,dados){formArea.innerHTML='';const panel=document.createElement('div');panel.className='user-panel';const nome=document.createElement('h2');nome.textContent=dados&&dados.nome?dados.nome:'Colaborador(a)';const numero=document.createElement('p');numero.textContent='NA: '+na;const info=document.createElement('p');info.textContent='Seus dados e informações estão salvos.';const actions=document.createElement('div');actions.className='user-actions';const acessar=document.createElement('a');acessar.className='user-button';acessar.href='index2.html';acessar.textContent='ACESSAR PERFIL';const sair=document.createElement('button');sair.className='user-button secondary';sair.type='button';sair.textContent='SAIR DA CONTA';sair.addEventListener('click',()=>{localStorage.removeItem('usuarioAtual');currentUser=null;location.reload()});actions.append(acessar,sair);panel.append(nome,numero,info,actions);formArea.append(panel)}
+async function carregarUsuario(na){try{const snap=await db.ref('usuarios/'+na).once('value');if(snap.exists()){mostrarUsuario(na,snap.val()||{});return true}localStorage.removeItem('usuarioAtual');currentUser=null;return false}catch(error){mostrarErro('Não foi possível carregar sua conta. Verifique a conexão.');return false}}
+async function acessar(){const na=naInput.value.trim();if(!na){mostrarErro('Informe seu NA cadastrado.');naInput.focus();return}definirCarregamento(true);try{const snap=await db.ref('usuarios/'+na).once('value');if(snap.exists()){localStorage.setItem('usuarioAtual',na);currentUser=na;mostrarUsuario(na,snap.val()||{})}else{mostrarErro('NA não encontrado. Verifique e tente novamente.')}}catch(error){mostrarErro('Erro de conexão. Tente novamente.')}finally{if(!currentUser)definirCarregamento(false)}}
+btnAcessar.addEventListener('click',acessar);
+naInput.addEventListener('keydown',event=>{if(event.key==='Enter')acessar()});
+if(currentUser){formArea.innerHTML='<div class="hint">Verificando seu acesso...</div>';carregarUsuario(currentUser).then(ok=>{if(!ok){formArea.innerHTML='<h2>Entrar na sua conta</h2><div class="hint">Informe seu Número de Acesso (NA)</div><input class="input" id="naInput" type="text" inputmode="numeric" autocomplete="off" aria-label="Número de Acesso" placeholder="Número de Acesso (NA)"><button class="access" id="btnAcessar" type="button"><span class="spinner"></span><span class="button-label">ACESSAR</span></button><div class="developer">Developed by SAN7 Tecnologia</div>';location.reload()}})}
 </script>
 </body>
 </html>
