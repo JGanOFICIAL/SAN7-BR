@@ -11,9 +11,9 @@ html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;color:
 body{min-height:100vh}
 button,input{font:inherit}
 .page{min-height:100vh;display:flex;flex-direction:column}
-.header{height:92px;min-height:92px;background:#245caa;display:flex;align-items:center;justify-content:center;padding:0 20px}
-.brand{font-size:clamp(21px,4vw,29px);font-weight:800;color:#fff;letter-spacing:.4px;text-align:center}
-.welcome{min-height:155px;background:linear-gradient(135deg,#e9ebef,#cfd4dc);color:#30343a;display:grid;place-items:center;text-align:center;padding:20px}
+.welcome{position:relative;min-height:220px;background:linear-gradient(135deg,#e9ebef,#cfd4dc);color:#30343a;display:grid;place-items:center;text-align:center;padding:20px;overflow:hidden}
+.welcome-bg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:60%;max-height:70%;object-fit:contain;opacity:.35;pointer-events:none;z-index:0}
+.welcome-content{position:relative;z-index:1}
 .welcome h1{font-size:24px;margin:0 0 7px}
 .welcome p{font-size:11px;margin:0;opacity:.85}
 .form{position:relative;width:min(390px,calc(100% - 36px));margin:auto;padding:48px 0 28px;display:flex;flex-direction:column;justify-content:center;flex:1}
@@ -29,7 +29,7 @@ button,input{font:inherit}
 .access.loading .spinner{display:inline-block}
 .access.loading .button-label{display:none}
 @keyframes spin{to{transform:rotate(360deg)}}
-.developer{text-align:center;color:#969ba3;font-size:9px;opacity:.75;margin-top:13px}
+.developer{text-align:center;color:#969ba3;font-size:9px;opacity:.85;margin-top:13px}
 .footer{min-height:48px;background:#f8f8f8;border-top:1px solid #ececec;display:flex;align-items:center;justify-content:center;text-align:center;padding:11px;color:#858990;font-size:9px}
 .menu-trigger{position:absolute;top:12px;right:0;width:36px;height:32px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;padding:4px;z-index:2}
 .menu-trigger span{display:block;width:21px;height:2px;background:#20242a;border-radius:2px;transition:transform .2s,opacity .2s}
@@ -61,24 +61,26 @@ button,input{font:inherit}
 .user-button.secondary{background:#fff;color:#245caa}
 .sync-state{display:flex;align-items:center;justify-content:center;gap:9px;color:#858b94;font-size:11px}
 .sync-state .spinner{display:block}
-@media(min-width:900px){.page{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:78px 1fr 46px}.header{grid-column:1/3;grid-row:1;height:78px;min-height:78px}.welcome{grid-column:1;grid-row:2;min-height:0}.form{grid-column:2;grid-row:2;width:min(400px,85%)}.footer{grid-column:1/3;grid-row:3}}
-@media(min-width:600px) and (max-width:899px){.page{display:grid;grid-template-columns:40% 60%;grid-template-rows:78px 1fr 45px}.header{grid-column:1/3;grid-row:1;height:78px;min-height:78px}.welcome{grid-column:1;grid-row:2;min-height:0}.form{grid-column:2;grid-row:2;width:90%;padding:48px 18px 18px}.footer{grid-column:1/3;grid-row:3}}
-@media(max-width:599px){.header{height:78px;min-height:78px}.welcome{min-height:145px}.form{padding:48px 0 32px}.menu-trigger{right:0;top:10px}.footer{font-size:8px}}
+@media(min-width:900px){.page{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 46px}.welcome{grid-column:1;grid-row:1;min-height:0}.welcome-bg{top:50%;left:50%;transform:translate(-50%,-50%);max-width:55%;max-height:45%;opacity:.35}.form{grid-column:2;grid-row:1;width:min(400px,85%)}.footer{grid-column:1/3;grid-row:2}}
+@media(min-width:600px) and (max-width:899px){.page{display:grid;grid-template-columns:40% 60%;grid-template-rows:1fr 45px}.welcome{grid-column:1;grid-row:1;min-height:0}.welcome-bg{top:50%;left:50%;transform:translate(-50%,-50%);max-width:60%;max-height:50%;opacity:.35}.form{grid-column:2;grid-row:1;width:90%;padding:48px 18px 18px}.footer{grid-column:1/3;grid-row:2}}
+@media(max-width:599px){.welcome{min-height:220px}.welcome-bg{top:50%;left:50%;transform:translate(-50%,-50%);max-width:60%;max-height:70%;opacity:.35}.form{padding:48px 0 32px}.menu-trigger{right:0;top:10px}.footer{font-size:8px}}
 </style>
 </head>
 <body>
 <main class="page">
-<header class="header"><div class="brand">San7Doc Tecnologia</div></header>
-<section class="welcome"><div><h1>Bem-vindo de volta</h1><p>Acesse sua conta para continuar</p></div></section>
+<section class="welcome">
+<img class="welcome-bg" id="welcomeBg" src="COLE_AQUI_LOGO" alt="">
+<div class="welcome-content"><h1>Academia DomusFit</h1><p>Acesse sua conta para continuar</p></div>
+</section>
 <section class="form" id="formArea">
 <button class="menu-trigger" id="menuTrigger" type="button" aria-label="Abrir menu de suporte" aria-expanded="false"><span></span><span></span><span></span></button>
 <h2>Entrar na sua conta</h2>
 <div class="hint">Informe seu Número de Acesso (NA)</div>
 <input class="input" id="naInput" type="text" inputmode="numeric" autocomplete="off" aria-label="Número de Acesso" placeholder="Número de Acesso (NA)">
 <button class="access" id="btnAcessar" type="button"><span class="spinner"></span><span class="button-label">ACESSAR</span></button>
-<div class="developer">Developed by SAN7 Tecnologia</div>
+<div class="developer">Developed by San7Doc Tecnologia</div>
 </section>
-<footer class="footer">© 2026 SAN7. All rights reserved. • Terms of Use • Privacy Policy</footer>
+<footer class="footer">© 2026 San7Doc Tecnologia. All rights reserved. • Terms of Use • Privacy Policy</footer>
 </main>
 <div class="overlay" id="menuOverlay" aria-hidden="true">
 <div class="menu-card" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
@@ -99,12 +101,14 @@ button,input{font:inherit}
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
 'use strict';
+const LOGO_URL='https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/Crystal_Clear_app_Login_Manager.svg/3840px-Crystal_Clear_app_Login_Manager.svg.png?utm_source=pt.wikipedia.org&utm_campaign=index&utm_content=thumbnail';
+const LOGO_WIDTH_PX=220;
 const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomain:"prefeitura-de-joao-camara.firebaseapp.com",projectId:"prefeitura-de-joao-camara",storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",databaseURL:"https://prefeitura-de-joao-camara-default-rtdb.firebaseio.com"};
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 const formArea=document.getElementById('formArea');
-const menuTrigger=document.getElementById('menuTrigger');
 const menuOverlay=document.getElementById('menuOverlay');
+const menuTrigger=document.getElementById('menuTrigger');
 const closeMenu=document.getElementById('closeMenu');
 const supportButton=document.getElementById('supportButton');
 const alertOverlay=document.getElementById('alertOverlay');
@@ -112,23 +116,24 @@ const alertTitle=document.getElementById('alertTitle');
 const alertMessage=document.getElementById('alertMessage');
 const alertOk=document.getElementById('alertOk');
 let currentUser=localStorage.getItem('usuarioAtual');
-let alertTimer;
-function mostrarAlerta(mensagem,titulo='Atenção'){alertTitle.textContent=titulo;alertMessage.textContent=mensagem;alertOverlay.classList.add('show');alertOverlay.setAttribute('aria-hidden','false');clearTimeout(alertTimer)}
+function configurarLogomarca(){const bg=document.getElementById('welcomeBg');if(!bg)return;bg.style.width=LOGO_WIDTH_PX+'px';bg.style.height='auto';if(LOGO_URL&&LOGO_URL!=='COLE_AQUI_LOGO'){bg.src=LOGO_URL;bg.style.display='block'}else{bg.removeAttribute('src');bg.style.display='none'}}
+function mostrarAlerta(mensagem,titulo='Atenção'){alertTitle.textContent=titulo;alertMessage.textContent=mensagem;alertOverlay.classList.add('show');alertOverlay.setAttribute('aria-hidden','false')}
 function fecharAlerta(){alertOverlay.classList.remove('show');alertOverlay.setAttribute('aria-hidden','true')}
-function abrirMenu(){menuOverlay.classList.add('open');menuOverlay.setAttribute('aria-hidden','false');menuTrigger.setAttribute('aria-expanded','true')}
-function fecharMenu(){menuOverlay.classList.remove('open');menuOverlay.setAttribute('aria-hidden','true');menuTrigger.setAttribute('aria-expanded','false')}
-function mostrarCarregamentoInicial(){formArea.innerHTML='<button class="menu-trigger" id="menuTrigger" type="button" aria-label="Abrir menu de suporte" aria-expanded="false"><span></span><span></span><span></span></button><div class="sync-state"><span class="spinner"></span></div>';document.getElementById('menuTrigger').addEventListener('click',abrirMenu)}
-function mostrarFormulario(){formArea.innerHTML='<button class="menu-trigger" id="menuTrigger" type="button" aria-label="Abrir menu de suporte" aria-expanded="false"><span></span><span></span><span></span></button><h2>Entrar na sua conta</h2><div class="hint">Informe seu Número de Acesso (NA)</div><input class="input" id="naInput" type="text" inputmode="numeric" autocomplete="off" aria-label="Número de Acesso" placeholder="Número de Acesso (NA)"><button class="access" id="btnAcessar" type="button"><span class="spinner"></span><span class="button-label">ACESSAR</span></button><div class="developer">Developed by SAN7 Tecnologia</div>';document.getElementById('menuTrigger').addEventListener('click',abrirMenu);document.getElementById('btnAcessar').addEventListener('click',acessar);document.getElementById('naInput').addEventListener('keydown',e=>{if(e.key==='Enter')acessar()})}
-function mostrarUsuario(na,dados){formArea.innerHTML='<button class="menu-trigger" id="menuTrigger" type="button" aria-label="Abrir menu de suporte" aria-expanded="false"><span></span><span></span><span></span></button><div class="user-panel"><h2 id="userName"></h2><p id="userNa"></p><p>Seus dados e informações estão salvos.</p><div class="user-actions"><a class="user-button" href="index2.html">ACESSAR PERFIL</a><button class="user-button secondary" id="btnSair" type="button">SAIR DA CONTA</button></div></div>';document.getElementById('menuTrigger').addEventListener('click',abrirMenu);document.getElementById('userName').textContent=dados&&dados.nome?dados.nome:'Colaborador(a)';document.getElementById('userNa').textContent='NA: '+na;document.getElementById('btnSair').addEventListener('click',()=>{localStorage.removeItem('usuarioAtual');currentUser=null;mostrarFormulario()})}
+function abrirMenu(){menuOverlay.classList.add('open');menuOverlay.setAttribute('aria-hidden','false');const trigger=document.getElementById('menuTrigger');if(trigger)trigger.setAttribute('aria-expanded','true')}
+function fecharMenu(){menuOverlay.classList.remove('open');menuOverlay.setAttribute('aria-hidden','true');const trigger=document.getElementById('menuTrigger');if(trigger)trigger.setAttribute('aria-expanded','false')}
+function ligarMenu(){const trigger=document.getElementById('menuTrigger');if(trigger)trigger.addEventListener('click',abrirMenu)}
+function mostrarCarregamentoInicial(){formArea.innerHTML='<button class="menu-trigger" id="menuTrigger" type="button" aria-label="Abrir menu de suporte" aria-expanded="false"><span></span><span></span><span></span></button><div class="sync-state"><span class="spinner"></span></div>';ligarMenu()}
+function mostrarFormulario(){formArea.innerHTML='<button class="menu-trigger" id="menuTrigger" type="button" aria-label="Abrir menu de suporte" aria-expanded="false"><span></span><span></span><span></span></button><h2>Entrar na sua conta</h2><div class="hint">Informe seu Número de Acesso (NA)</div><input class="input" id="naInput" type="text" inputmode="numeric" autocomplete="off" aria-label="Número de Acesso" placeholder="Número de Acesso (NA)"><button class="access" id="btnAcessar" type="button"><span class="spinner"></span><span class="button-label">ACESSAR</span></button><div class="developer">Developed by San7Doc Tecnologia</div>';ligarMenu();document.getElementById('btnAcessar').addEventListener('click',acessar);document.getElementById('naInput').addEventListener('keydown',e=>{if(e.key==='Enter')acessar()})}
+function mostrarUsuario(na,dados){formArea.innerHTML='<button class="menu-trigger" id="menuTrigger" type="button" aria-label="Abrir menu de suporte" aria-expanded="false"><span></span><span></span><span></span></button><div class="user-panel"><h2 id="userName"></h2><p id="userNa"></p><p>Seus dados e informações estão salvos.</p><div class="user-actions"><a class="user-button" href="index2.html">ACESSAR PERFIL</a><button class="user-button secondary" id="btnSair" type="button">SAIR DA CONTA</button></div><div class="developer">San7Doc Tecnologia</div></div>';ligarMenu();document.getElementById('userName').textContent=dados&&dados.nome?dados.nome:'Colaborador(a)';document.getElementById('userNa').textContent='NA: '+na;document.getElementById('btnSair').addEventListener('click',()=>{localStorage.removeItem('usuarioAtual');currentUser=null;mostrarFormulario()})}
 async function acessar(){const input=document.getElementById('naInput');const button=document.getElementById('btnAcessar');if(!input||!button)return;const na=input.value.trim();if(!na){mostrarAlerta('Informe seu NA cadastrado.');input.focus();return}button.classList.add('loading');button.disabled=true;input.disabled=true;try{const snap=await db.ref('usuarios/'+na).once('value');if(snap.exists()){localStorage.setItem('usuarioAtual',na);currentUser=na;mostrarUsuario(na,snap.val()||{})}else{mostrarAlerta('NA não encontrado. Verifique e tente novamente.');button.classList.remove('loading');button.disabled=false;input.disabled=false;input.focus()}}catch(error){mostrarAlerta('Não foi possível sincronizar seus dados. Verifique sua conexão e tente novamente.');button.classList.remove('loading');button.disabled=false;input.disabled=false}}
 async function iniciar(){if(currentUser){mostrarCarregamentoInicial();try{const snap=await db.ref('usuarios/'+currentUser).once('value');if(snap.exists()){mostrarUsuario(currentUser,snap.val()||{})}else{localStorage.removeItem('usuarioAtual');currentUser=null;mostrarFormulario()}}catch(error){mostrarAlerta('Não foi possível sincronizar sua conta. Verifique sua conexão.');mostrarFormulario()}}else{mostrarFormulario()}}
-menuTrigger.addEventListener('click',abrirMenu);
 closeMenu.addEventListener('click',fecharMenu);
 menuOverlay.addEventListener('click',e=>{if(e.target===menuOverlay)fecharMenu()});
 supportButton.addEventListener('click',()=>{window.open('https://wa.me/5584981783113','_blank','noopener,noreferrer');fecharMenu()});
 alertOk.addEventListener('click',fecharAlerta);
 alertOverlay.addEventListener('click',e=>{if(e.target===alertOverlay)fecharAlerta()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){fecharMenu();fecharAlerta()}});
+configurarLogomarca();
 iniciar();
 </script>
 </body>
