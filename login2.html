@@ -9,13 +9,14 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;color:#282d35;background:#fff}
 body{min-height:100vh}
+button,input{font:inherit}
 .page{min-height:100vh;display:flex;flex-direction:column}
 .header{height:92px;min-height:92px;background:#245caa;display:flex;align-items:center;justify-content:center;padding:0 20px}
 .brand{font-size:clamp(21px,4vw,29px);font-weight:800;color:#fff;letter-spacing:.4px;text-align:center}
 .welcome{min-height:155px;background:linear-gradient(135deg,#e9ebef,#cfd4dc);color:#30343a;display:grid;place-items:center;text-align:center;padding:20px}
 .welcome h1{font-size:24px;margin:0 0 7px}
 .welcome p{font-size:11px;margin:0;opacity:.85}
-.form{width:min(390px,calc(100% - 36px));margin:auto;padding:28px 0;display:flex;flex-direction:column;justify-content:center;flex:1}
+.form{position:relative;width:min(390px,calc(100% - 36px));margin:auto;padding:48px 0 28px;display:flex;flex-direction:column;justify-content:center;flex:1}
 .form h2{text-align:center;font-size:19px;margin:0 0 6px}
 .hint{text-align:center;color:#858b94;font-size:11px;margin-bottom:20px}
 .input{width:100%;height:44px;border:1px solid #cfd3d9;border-radius:23px;margin-bottom:12px;padding:0 15px;font-size:13px;outline:none;text-align:center;background:#fff;color:#282d35}
@@ -23,22 +24,46 @@ body{min-height:100vh}
 .access{height:43px;border:0;border-radius:4px;background:#245caa;color:#fff;font-size:11px;font-weight:700;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;gap:9px}
 .access:active{background:#fff;color:#245caa;box-shadow:inset 0 0 0 1px #245caa;transform:scale(.99)}
 .access:disabled{opacity:.75;cursor:wait}
-.spinner{width:15px;height:15px;border:2px solid #ffffff65;border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+.spinner{width:16px;height:16px;border:2px solid #245caa30;border-top-color:#245caa;border-radius:50%;animation:spin .7s linear infinite;display:none;flex-shrink:0}
+.access .spinner{border-color:#ffffff65;border-top-color:#fff}
 .access.loading .spinner{display:inline-block}
 .access.loading .button-label{display:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 .developer{text-align:center;color:#969ba3;font-size:9px;opacity:.75;margin-top:13px}
 .footer{min-height:48px;background:#f8f8f8;border-top:1px solid #ececec;display:flex;align-items:center;justify-content:center;text-align:center;padding:11px;color:#858990;font-size:9px}
-.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);width:min( calc(100% - 32px),420px);padding:12px 16px;background:#c83b36;color:#fff;border-radius:4px;font-size:12px;text-align:center;box-shadow:0 5px 18px #0002;z-index:20;display:none}
+.menu-trigger{position:absolute;top:12px;right:0;width:36px;height:32px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;padding:4px;z-index:2}
+.menu-trigger span{display:block;width:21px;height:2px;background:#20242a;border-radius:2px;transition:transform .2s,opacity .2s}
+.menu-trigger:active{transform:scale(.94)}
+.overlay{position:fixed;inset:0;background:rgba(25,31,41,.48);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;opacity:0;visibility:hidden;transition:opacity .22s,visibility .22s}
+.overlay.open{opacity:1;visibility:visible}
+.menu-card{width:min(330px,100%);background:#fff;border-radius:3px;padding:22px;box-shadow:0 16px 45px rgba(0,0,0,.2);transform:translateY(12px) scale(.97);transition:transform .22s}
+.overlay.open .menu-card{transform:translateY(0) scale(1)}
+.menu-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.menu-head h3{font-size:17px;margin:0;color:#282d35}
+.close-menu{width:30px;height:30px;border:0;background:#f1f3f6;color:#525a65;font-size:21px;line-height:1;cursor:pointer}
+.support-button{width:100%;height:44px;border:0;border-radius:3px;background:#245caa;color:#fff;font-size:11px;font-weight:700;cursor:pointer}
+.support-button:active{background:#194987}
+.menu-caption{font-size:10px;color:#858b94;text-align:center;margin:14px 0 0}
+.alert-overlay{position:fixed;inset:0;background:rgba(25,31,41,.42);display:flex;align-items:center;justify-content:center;padding:22px;z-index:100;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
+.alert-overlay.show{opacity:1;visibility:visible}
+.alert-card{width:min(330px,100%);background:#fff;border-radius:4px;text-align:center;padding:27px 23px 22px;box-shadow:0 16px 45px rgba(0,0,0,.22);transform:scale(.88);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.alert-overlay.show .alert-card{transform:scale(1)}
+.alert-symbol{width:48px;height:48px;border:3px solid #d94b45;border-radius:50%;color:#d94b45;display:grid;place-items:center;font-size:30px;font-weight:700;margin:0 auto 15px;animation:alertPulse 1.1s ease-in-out infinite}
+@keyframes alertPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(217,75,69,0)}50%{transform:scale(1.07);box-shadow:0 0 0 7px rgba(217,75,69,.09)}}
+.alert-card h3{font-size:17px;margin:0 0 8px;color:#282d35}
+.alert-card p{font-size:12px;line-height:1.5;color:#727985;margin:0 0 20px}
+.alert-ok{height:39px;min-width:110px;padding:0 20px;border:0;border-radius:3px;background:#245caa;color:#fff;font-size:11px;font-weight:700;cursor:pointer}
 .user-panel{width:100%;text-align:center}
 .user-panel h2{font-size:23px;color:#245caa;margin:0 0 9px}
 .user-panel p{font-size:12px;color:#737b86;margin:7px 0}
 .user-actions{display:flex;flex-direction:column;gap:10px;margin:24px auto 0;width:100%;max-width:320px}
 .user-button{height:43px;border:1px solid #245caa;border-radius:4px;background:#245caa;color:#fff;font-size:11px;font-weight:700;text-decoration:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .user-button.secondary{background:#fff;color:#245caa}
+.sync-state{display:flex;align-items:center;justify-content:center;gap:9px;color:#858b94;font-size:11px}
+.sync-state .spinner{display:block}
 @media(min-width:900px){.page{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:78px 1fr 46px}.header{grid-column:1/3;grid-row:1;height:78px;min-height:78px}.welcome{grid-column:1;grid-row:2;min-height:0}.form{grid-column:2;grid-row:2;width:min(400px,85%)}.footer{grid-column:1/3;grid-row:3}}
-@media(min-width:600px) and (max-width:899px){.page{display:grid;grid-template-columns:40% 60%;grid-template-rows:78px 1fr 45px}.header{grid-column:1/3;grid-row:1;height:78px;min-height:78px}.welcome{grid-column:1;grid-row:2;min-height:0}.form{grid-column:2;grid-row:2;width:90%;padding:18px}.footer{grid-column:1/3;grid-row:3}}
-@media(max-width:599px){.header{height:78px;min-height:78px}.welcome{min-height:145px}.form{padding:32px 0}.footer{font-size:8px}}
+@media(min-width:600px) and (max-width:899px){.page{display:grid;grid-template-columns:40% 60%;grid-template-rows:78px 1fr 45px}.header{grid-column:1/3;grid-row:1;height:78px;min-height:78px}.welcome{grid-column:1;grid-row:2;min-height:0}.form{grid-column:2;grid-row:2;width:90%;padding:48px 18px 18px}.footer{grid-column:1/3;grid-row:3}}
+@media(max-width:599px){.header{height:78px;min-height:78px}.welcome{min-height:145px}.form{padding:48px 0 32px}.menu-trigger{right:0;top:10px}.footer{font-size:8px}}
 </style>
 </head>
 <body>
@@ -46,6 +71,7 @@ body{min-height:100vh}
 <header class="header"><div class="brand">San7Doc Tecnologia</div></header>
 <section class="welcome"><div><h1>Bem-vindo de volta</h1><p>Acesse sua conta para continuar</p></div></section>
 <section class="form" id="formArea">
+<button class="menu-trigger" id="menuTrigger" type="button" aria-label="Abrir menu de suporte" aria-expanded="false"><span></span><span></span><span></span></button>
 <h2>Entrar na sua conta</h2>
 <div class="hint">Informe seu Número de Acesso (NA)</div>
 <input class="input" id="naInput" type="text" inputmode="numeric" autocomplete="off" aria-label="Número de Acesso" placeholder="Número de Acesso (NA)">
@@ -54,7 +80,21 @@ body{min-height:100vh}
 </section>
 <footer class="footer">© 2026 SAN7. All rights reserved. • Terms of Use • Privacy Policy</footer>
 </main>
-<div class="toast" id="toastErro" role="status" aria-live="polite"></div>
+<div class="overlay" id="menuOverlay" aria-hidden="true">
+<div class="menu-card" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
+<div class="menu-head"><h3 id="menuTitle">Menu</h3><button class="close-menu" id="closeMenu" type="button" aria-label="Fechar menu">×</button></div>
+<button class="support-button" id="supportButton" type="button">ENTRAR EM CONTATO COM O SUPORTE</button>
+<p class="menu-caption">San7Doc Tecnologia</p>
+</div>
+</div>
+<div class="alert-overlay" id="alertOverlay" aria-hidden="true">
+<div class="alert-card" role="alertdialog" aria-modal="true" aria-labelledby="alertTitle" aria-describedby="alertMessage">
+<div class="alert-symbol">!</div>
+<h3 id="alertTitle">Atenção</h3>
+<p id="alertMessage"></p>
+<button class="alert-ok" id="alertOk" type="button">ENTENDI</button>
+</div>
+</div>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
@@ -62,20 +102,34 @@ body{min-height:100vh}
 const firebaseConfig={apiKey:"AIzaSyBPiznHCVkTAgx6m02bZB8b0FFaot9UkBU",authDomain:"prefeitura-de-joao-camara.firebaseapp.com",projectId:"prefeitura-de-joao-camara",storageBucket:"prefeitura-de-joao-camara.firebasestorage.app",databaseURL:"https://prefeitura-de-joao-camara-default-rtdb.firebaseio.com"};
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
-const naInput=document.getElementById('naInput');
-const btnAcessar=document.getElementById('btnAcessar');
-const toastErro=document.getElementById('toastErro');
 const formArea=document.getElementById('formArea');
+const menuTrigger=document.getElementById('menuTrigger');
+const menuOverlay=document.getElementById('menuOverlay');
+const closeMenu=document.getElementById('closeMenu');
+const supportButton=document.getElementById('supportButton');
+const alertOverlay=document.getElementById('alertOverlay');
+const alertTitle=document.getElementById('alertTitle');
+const alertMessage=document.getElementById('alertMessage');
+const alertOk=document.getElementById('alertOk');
 let currentUser=localStorage.getItem('usuarioAtual');
-let toastTimer;
-function mostrarErro(mensagem){toastErro.textContent=mensagem;toastErro.style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>toastErro.style.display='none',3000)}
-function definirCarregamento(ativo){btnAcessar.classList.toggle('loading',ativo);btnAcessar.disabled=ativo;naInput.disabled=ativo}
-function mostrarUsuario(na,dados){formArea.innerHTML='';const panel=document.createElement('div');panel.className='user-panel';const nome=document.createElement('h2');nome.textContent=dados&&dados.nome?dados.nome:'Colaborador(a)';const numero=document.createElement('p');numero.textContent='NA: '+na;const info=document.createElement('p');info.textContent='Seus dados e informações estão salvos.';const actions=document.createElement('div');actions.className='user-actions';const acessar=document.createElement('a');acessar.className='user-button';acessar.href='index2.html';acessar.textContent='ACESSAR PERFIL';const sair=document.createElement('button');sair.className='user-button secondary';sair.type='button';sair.textContent='SAIR DA CONTA';sair.addEventListener('click',()=>{localStorage.removeItem('usuarioAtual');currentUser=null;location.reload()});actions.append(acessar,sair);panel.append(nome,numero,info,actions);formArea.append(panel)}
-async function carregarUsuario(na){try{const snap=await db.ref('usuarios/'+na).once('value');if(snap.exists()){mostrarUsuario(na,snap.val()||{});return true}localStorage.removeItem('usuarioAtual');currentUser=null;return false}catch(error){mostrarErro('Não foi possível carregar sua conta. Verifique a conexão.');return false}}
-async function acessar(){const na=naInput.value.trim();if(!na){mostrarErro('Informe seu NA cadastrado.');naInput.focus();return}definirCarregamento(true);try{const snap=await db.ref('usuarios/'+na).once('value');if(snap.exists()){localStorage.setItem('usuarioAtual',na);currentUser=na;mostrarUsuario(na,snap.val()||{})}else{mostrarErro('NA não encontrado. Verifique e tente novamente.')}}catch(error){mostrarErro('Erro de conexão. Tente novamente.')}finally{if(!currentUser)definirCarregamento(false)}}
-btnAcessar.addEventListener('click',acessar);
-naInput.addEventListener('keydown',event=>{if(event.key==='Enter')acessar()});
-if(currentUser){formArea.innerHTML='<div class="hint">Verificando seu acesso...</div>';carregarUsuario(currentUser).then(ok=>{if(!ok){formArea.innerHTML='<h2>Entrar na sua conta</h2><div class="hint">Informe seu Número de Acesso (NA)</div><input class="input" id="naInput" type="text" inputmode="numeric" autocomplete="off" aria-label="Número de Acesso" placeholder="Número de Acesso (NA)"><button class="access" id="btnAcessar" type="button"><span class="spinner"></span><span class="button-label">ACESSAR</span></button><div class="developer">Developed by SAN7 Tecnologia</div>';location.reload()}})}
+let alertTimer;
+function mostrarAlerta(mensagem,titulo='Atenção'){alertTitle.textContent=titulo;alertMessage.textContent=mensagem;alertOverlay.classList.add('show');alertOverlay.setAttribute('aria-hidden','false');clearTimeout(alertTimer)}
+function fecharAlerta(){alertOverlay.classList.remove('show');alertOverlay.setAttribute('aria-hidden','true')}
+function abrirMenu(){menuOverlay.classList.add('open');menuOverlay.setAttribute('aria-hidden','false');menuTrigger.setAttribute('aria-expanded','true')}
+function fecharMenu(){menuOverlay.classList.remove('open');menuOverlay.setAttribute('aria-hidden','true');menuTrigger.setAttribute('aria-expanded','false')}
+function mostrarCarregamentoInicial(){formArea.innerHTML='<button class="menu-trigger" id="menuTrigger" type="button" aria-label="Abrir menu de suporte" aria-expanded="false"><span></span><span></span><span></span></button><div class="sync-state"><span class="spinner"></span></div>';document.getElementById('menuTrigger').addEventListener('click',abrirMenu)}
+function mostrarFormulario(){formArea.innerHTML='<button class="menu-trigger" id="menuTrigger" type="button" aria-label="Abrir menu de suporte" aria-expanded="false"><span></span><span></span><span></span></button><h2>Entrar na sua conta</h2><div class="hint">Informe seu Número de Acesso (NA)</div><input class="input" id="naInput" type="text" inputmode="numeric" autocomplete="off" aria-label="Número de Acesso" placeholder="Número de Acesso (NA)"><button class="access" id="btnAcessar" type="button"><span class="spinner"></span><span class="button-label">ACESSAR</span></button><div class="developer">Developed by SAN7 Tecnologia</div>';document.getElementById('menuTrigger').addEventListener('click',abrirMenu);document.getElementById('btnAcessar').addEventListener('click',acessar);document.getElementById('naInput').addEventListener('keydown',e=>{if(e.key==='Enter')acessar()})}
+function mostrarUsuario(na,dados){formArea.innerHTML='<button class="menu-trigger" id="menuTrigger" type="button" aria-label="Abrir menu de suporte" aria-expanded="false"><span></span><span></span><span></span></button><div class="user-panel"><h2 id="userName"></h2><p id="userNa"></p><p>Seus dados e informações estão salvos.</p><div class="user-actions"><a class="user-button" href="index2.html">ACESSAR PERFIL</a><button class="user-button secondary" id="btnSair" type="button">SAIR DA CONTA</button></div></div>';document.getElementById('menuTrigger').addEventListener('click',abrirMenu);document.getElementById('userName').textContent=dados&&dados.nome?dados.nome:'Colaborador(a)';document.getElementById('userNa').textContent='NA: '+na;document.getElementById('btnSair').addEventListener('click',()=>{localStorage.removeItem('usuarioAtual');currentUser=null;mostrarFormulario()})}
+async function acessar(){const input=document.getElementById('naInput');const button=document.getElementById('btnAcessar');if(!input||!button)return;const na=input.value.trim();if(!na){mostrarAlerta('Informe seu NA cadastrado.');input.focus();return}button.classList.add('loading');button.disabled=true;input.disabled=true;try{const snap=await db.ref('usuarios/'+na).once('value');if(snap.exists()){localStorage.setItem('usuarioAtual',na);currentUser=na;mostrarUsuario(na,snap.val()||{})}else{mostrarAlerta('NA não encontrado. Verifique e tente novamente.');button.classList.remove('loading');button.disabled=false;input.disabled=false;input.focus()}}catch(error){mostrarAlerta('Não foi possível sincronizar seus dados. Verifique sua conexão e tente novamente.');button.classList.remove('loading');button.disabled=false;input.disabled=false}}
+async function iniciar(){if(currentUser){mostrarCarregamentoInicial();try{const snap=await db.ref('usuarios/'+currentUser).once('value');if(snap.exists()){mostrarUsuario(currentUser,snap.val()||{})}else{localStorage.removeItem('usuarioAtual');currentUser=null;mostrarFormulario()}}catch(error){mostrarAlerta('Não foi possível sincronizar sua conta. Verifique sua conexão.');mostrarFormulario()}}else{mostrarFormulario()}}
+menuTrigger.addEventListener('click',abrirMenu);
+closeMenu.addEventListener('click',fecharMenu);
+menuOverlay.addEventListener('click',e=>{if(e.target===menuOverlay)fecharMenu()});
+supportButton.addEventListener('click',()=>{window.open('https://wa.me/5584981783113','_blank','noopener,noreferrer');fecharMenu()});
+alertOk.addEventListener('click',fecharAlerta);
+alertOverlay.addEventListener('click',e=>{if(e.target===alertOverlay)fecharAlerta()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){fecharMenu();fecharAlerta()}});
+iniciar();
 </script>
 </body>
 </html>
